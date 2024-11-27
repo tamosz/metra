@@ -43,7 +43,3 @@
 | Weapon Type | Primary | Secondary |
 |-------------|---------|-----------|
 | Knuckle | STR × 4.8 | DEX |
-
-## Special Skills and Abilities
-
-### Magic Damage
