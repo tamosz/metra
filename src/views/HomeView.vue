@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import Chart from '../components/Chart.vue'
+// import Chart from '../components/Chart.vue'
 import DamageCalculator from '../components/DamageCalculator.vue'
 </script>
 
