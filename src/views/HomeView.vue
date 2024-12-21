@@ -1,11 +1,9 @@
 <script setup lang="ts">
-// import Chart from '../components/Chart.vue'
-import DamageCalculator from '../components/DamageCalculator.vue'
+import ChartItem from '../components/ChartItem.vue'
 </script>
 
 <template>
   <main>
-    <!-- <Chart /> -->
-    <DamageCalculator />
+    <ChartItem/>
   </main>
 </template>
