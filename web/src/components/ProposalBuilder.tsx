@@ -7,6 +7,7 @@ import {
   discoverClassesAndTiers,
 } from '../data/bundle.js';
 import { setProposalInUrl } from '../utils/url-encoding.js';
+import { colors } from '../theme.js';
 
 interface ProposalBuilderProps {
   proposalState: ProposalState;
@@ -14,7 +15,7 @@ interface ProposalBuilderProps {
 }
 
 const focusStyleTag = `
-  .metra-input:focus { border-color: #3a3a6e !important; }
+  .metra-input:focus { border-color: ${colors.borderButton} !important; }
 `;
 
 export function ProposalBuilder({ proposalState, simulation }: ProposalBuilderProps) {
@@ -80,7 +81,7 @@ export function ProposalBuilder({ proposalState, simulation }: ProposalBuilderPr
       />
 
       <div style={{ marginTop: 20, marginBottom: 8, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <h3 style={{ margin: 0, fontSize: 13, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: '#888' }}>
+        <h3 style={{ margin: 0, fontSize: 13, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: colors.textMuted }}>
           Changes
         </h3>
       </div>
@@ -123,29 +124,29 @@ function JsonPanel({
 }) {
   return (
     <div style={{
-      background: '#12121a',
-      border: '1px solid #1e1e2e',
+      background: colors.bgRaised,
+      border: `1px solid ${colors.border}`,
       borderRadius: 8,
       padding: 16,
       marginBottom: 16,
     }}>
       <div style={{ marginBottom: 12 }}>
-        <div style={{ fontSize: 12, color: '#888', marginBottom: 4 }}>Export (current proposal)</div>
+        <div style={{ fontSize: 12, color: colors.textMuted, marginBottom: 4 }}>Export (current proposal)</div>
         <pre data-testid="json-export" style={{
-          background: '#0a0a0f',
+          background: colors.bg,
           padding: 12,
           borderRadius: 4,
           fontSize: 12,
           overflow: 'auto',
           maxHeight: 200,
-          color: '#aaa',
+          color: colors.textSecondary,
           margin: 0,
         }}>
           {JSON.stringify(proposal, null, 2)}
         </pre>
       </div>
       <div>
-        <div style={{ fontSize: 12, color: '#888', marginBottom: 4 }}>Import</div>
+        <div style={{ fontSize: 12, color: colors.textMuted, marginBottom: 4 }}>Import</div>
         <textarea
           className="metra-input"
           data-testid="json-import"
@@ -160,7 +161,7 @@ function JsonPanel({
             fontSize: 12,
           }}
         />
-        {jsonError && <div style={{ color: '#e05555', fontSize: 12, marginTop: 4 }}>{jsonError}</div>}
+        {jsonError && <div style={{ color: colors.negative, fontSize: 12, marginTop: 4 }}>{jsonError}</div>}
         <button onClick={onImport} style={{ ...linkButtonStyle, marginTop: 8 }}>
           Import
         </button>
@@ -176,20 +177,20 @@ function ChangeRow({ change, onRemove }: { change: ProposalChange; onRemove: () 
       alignItems: 'center',
       gap: 12,
       padding: '8px 12px',
-      background: '#12121a',
+      background: colors.bgRaised,
       borderRadius: 6,
       marginBottom: 6,
       fontSize: 13,
     }}>
-      <span style={{ color: '#888' }}>{change.target}</span>
-      <span style={{ color: '#666' }}>.</span>
-      <span style={{ color: '#aaa' }}>{change.field}</span>
+      <span style={{ color: colors.textMuted }}>{change.target}</span>
+      <span style={{ color: colors.textDim }}>.</span>
+      <span style={{ color: colors.textSecondary }}>{change.field}</span>
       {change.from !== undefined && (
-        <span style={{ color: '#666' }}>{change.from}</span>
+        <span style={{ color: colors.textDim }}>{change.from}</span>
       )}
-      <span style={{ color: '#555' }}>&rarr;</span>
-      <span style={{ fontWeight: 600, color: '#55b8e0' }}>{change.to}</span>
-      <button onClick={onRemove} style={{ ...linkButtonStyle, color: '#e05555', marginLeft: 'auto' }}>
+      <span style={{ color: colors.textFaint }}>&rarr;</span>
+      <span style={{ fontWeight: 600, color: colors.accent }}>{change.to}</span>
+      <button onClick={onRemove} style={{ ...linkButtonStyle, color: colors.negative, marginLeft: 'auto' }}>
         Remove
       </button>
     </div>
@@ -281,7 +282,7 @@ function AddChangeForm({
         <label style={labelStyle}>
           New value
           {currentValue !== undefined && (
-            <span style={{ color: '#666', fontWeight: 400 }}> (was {String(currentValue)})</span>
+            <span style={{ color: colors.textDim, fontWeight: 400 }}> (was {String(currentValue)})</span>
           )}
         </label>
         <input
@@ -340,7 +341,7 @@ function Input({
 const labelStyle: React.CSSProperties = {
   display: 'block',
   fontSize: 11,
-  color: '#888',
+  color: colors.textMuted,
   textTransform: 'uppercase',
   letterSpacing: '0.05em',
   marginBottom: 4,
@@ -349,20 +350,20 @@ const labelStyle: React.CSSProperties = {
 
 const inputStyle: React.CSSProperties = {
   width: '100%',
-  background: '#12121a',
-  border: '1px solid #1e1e2e',
+  background: colors.bgRaised,
+  border: `1px solid ${colors.border}`,
   borderRadius: 4,
   padding: '6px 10px',
-  color: '#e0e0e8',
+  color: colors.text,
   fontSize: 13,
   outline: 'none',
   boxSizing: 'border-box',
 };
 
 const buttonStyle: React.CSSProperties = {
-  background: '#2a2a4e',
-  color: '#e0e0e8',
-  border: '1px solid #3a3a6e',
+  background: colors.bgButton,
+  color: colors.text,
+  border: `1px solid ${colors.borderButton}`,
   borderRadius: 6,
   padding: '8px 20px',
   fontSize: 13,
@@ -373,7 +374,7 @@ const buttonStyle: React.CSSProperties = {
 const linkButtonStyle: React.CSSProperties = {
   background: 'transparent',
   border: 'none',
-  color: '#55b8e0',
+  color: colors.accent,
   fontSize: 12,
   cursor: 'pointer',
   padding: 0,
