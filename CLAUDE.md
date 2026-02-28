@@ -20,7 +20,7 @@ The project is being translated from an existing Google Sheets calculator (expor
 ## Running the Project
 
 ```bash
-# Run all tests (75 tests across 10 files)
+# Run all tests (78 tests across 10 files)
 npx vitest run
 
 # Run a proposal and print the Markdown comparison report
@@ -52,7 +52,7 @@ Pure functions. No side effects, no I/O. Takes game data + a character build, ou
 - `damage.ts` — raw damage range (min/max), range cap from damage cap, adjusted range for capped distributions.
 - `buffs.ts` — Maple Warrior stat boost, Echo of Hero WATK bonus, total attack/stat aggregation.
 - `attack-speed.ts` — weapon speed resolution (base speed + booster + SI), attack time lookup by skill category.
-- `dps.ts` — full DPS pipeline: attack time → skill damage% → SE crit damage% → range caps → adjusted ranges → average damage → DPS.
+- `dps.ts` — full DPS pipeline: attack time → skill damage% → SE crit damage% → range caps → adjusted ranges → average damage → DPS. Uses `skill.weaponType` (not build) for weapon multiplier lookup, enabling weapon variants within the same class/tier.
 - `index.ts` — re-exports.
 
 **Not yet implemented:**
@@ -117,7 +117,7 @@ Two formula variants exist, configured per class via `seCritFormula`:
 **Implemented (3 warrior classes):**
 - **Hero** — 2H Sword/Axe, Brandish (2-hit)
 - **Dark Knight (DrK)** — Spear/Polearm, Crusher and Fury
-- **Paladin** — 1H Sword/BW/2H Sword/2H BW, Blast and Rush
+- **Paladin** — 2H Sword/2H BW, Blast (4 variants: Holy and F/I/L Charge × Sword and BW)
 
 **Future expansion targets:**
 - Night Lord (ranged physical, stars)
