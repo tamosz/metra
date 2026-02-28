@@ -151,7 +151,7 @@ Two formula variants exist, configured per class via `seCritFormula`:
 ### Funding Tiers
 Balance is evaluated across funding levels. Current tiers:
 - **low** — base/tradeable gear, no scrolling, reasonable potions
-- **high** — well-scrolled endgame gear, Apple potion, Echo of Hero
+- **high** — well-scrolled endgame gear, Apple potion
 
 A change that looks balanced at high funding might be wildly unbalanced at low funding, and vice versa. Always evaluate across tiers.
 
@@ -162,7 +162,7 @@ All templates assume a fully buffed party scenario: MW20, Sharp Eyes, Speed Infu
 Standard scenarios for comparison reports (all implemented):
 - **Buffed** — all buffs on (MW, SE, SI, Echo, attack potions). Primary comparison metric.
 - **Unbuffed** — no SE, Echo, SI, MW, or attack potion. Shows raw class power.
-- **No-Echo** — all buffs except Echo of Hero. Shows impact of event-gated buff.
+- **No-Echo** — all buffs except Echo of Hero. Shows Echo's DPS contribution.
 - **Bossing (50% PDR)** — fully buffed with 50% Physical Damage Reduction applied. Shows sustained bossing DPS.
 - **Training** (planned) — kills/hr and EXP/hr at a reference map/mob.
 

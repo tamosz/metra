@@ -1,5 +1,5 @@
 {
-  "source": "gear templates sheet, Bucc rows, Low. Knuckle base speed 6 (Normal). echoActive false for low tier.",
+  "source": "gear templates sheet, Bucc rows, Low. Knuckle base speed 6 (Normal).",
   "label": "Bucc Low",
   "className": "Buccaneer",
   "baseStats": { "STR": 797, "DEX": 25, "INT": 4, "LUK": 4 },
@@ -10,7 +10,7 @@
   "attackPotion": 60,
   "potionName": "Stopper",
   "projectile": 0,
-  "echoActive": false,
+  "echoActive": true,
   "mapleWarriorLevel": 20,
   "speedInfusion": true,
   "sharpEyes": true,

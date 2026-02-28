@@ -11,7 +11,7 @@
   "potionName": "Stopper",
   "projectile": 20,
   "projectileName": "Eternal Bullet",
-  "echoActive": false,
+  "echoActive": true,
   "mapleWarriorLevel": 20,
   "speedInfusion": true,
   "sharpEyes": true,
