@@ -138,6 +138,7 @@ function ComparisonChart({ deltas }: { deltas: DeltaEntry[] }) {
             type="category"
             dataKey="label"
             width={280}
+            interval={0}
             tick={{ fill: colors.textSecondary, fontSize: 12 }}
             axisLine={false}
             tickLine={false}
