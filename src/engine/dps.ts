@@ -101,9 +101,10 @@ export function calculateSkillDps(
 
   // Damage range: throwing stars use a different formula
   const totalAttack = calculateTotalAttack(build);
-  const { primary, secondary } = calculateTotalStats(build, mapleWarriorData);
+  const { primary, secondary } = calculateTotalStats(build, classData, mapleWarriorData);
   let damageRange: DamageRange;
-  if (skill.weaponType === 'Claw') {
+  const damageFormula = classData.damageFormula ?? 'standard';
+  if (damageFormula === 'throwingStar') {
     damageRange = calculateThrowingStarRange(primary, totalAttack);
   } else {
     const weaponMultiplier = getWeaponMultiplier(weaponData, skill.weaponType, skill.attackType);

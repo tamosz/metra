@@ -7,6 +7,7 @@
   "sharpEyesCritRate": 0.15,
   "sharpEyesCritDamageBonus": 140,
   "seCritFormula": "addBeforeMultiply",
+  "damageFormula": "throwingStar",
   "skills": [
     {
       "name": "Triple Throw 30",

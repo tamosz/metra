@@ -7,6 +7,7 @@
   "sharpEyesCritRate": 0.15,
   "sharpEyesCritDamageBonus": 140,
   "seCritFormula": "addAfterMultiply",
+  "damageFormula": "standard",
   "skills": [
     {
       "name": "Blast (Holy, Sword)",

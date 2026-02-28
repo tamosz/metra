@@ -63,6 +63,7 @@ export function applyProposal(
     // Validate field name
     const validFields: ReadonlySet<string> = new Set([
       'basePower', 'multiplier', 'hitCount', 'speedCategory', 'weaponType', 'name',
+      'attackType', 'builtInCritRate', 'builtInCritDamageBonus',
     ]);
     if (!validFields.has(change.field)) {
       throw new Error(

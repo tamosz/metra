@@ -1,4 +1,4 @@
-import type { CharacterBuild, MapleWarriorData } from '../data/types.js';
+import type { CharacterBuild, ClassSkillData, MapleWarriorData } from '../data/types.js';
 
 /**
  * Apply Maple Warrior to base stats, returning the MW-boosted stat value.
@@ -69,6 +69,7 @@ export function calculateTotalAttack(build: CharacterBuild): number {
  */
 export function calculateTotalStats(
   build: CharacterBuild,
+  classData: ClassSkillData,
   mapleWarriorData: MapleWarriorData
 ): { primary: number; secondary: number } {
   const mwMultiplier = getMapleWarriorMultiplier(
@@ -76,8 +77,8 @@ export function calculateTotalStats(
     build.mapleWarriorLevel
   );
 
-  const primaryStatKey = getPrimaryStatKey(build.className);
-  const secondaryStatKey = getSecondaryStatKey(build.className);
+  const primaryStatKey = classData.primaryStat;
+  const secondaryStatKey = classData.secondaryStat;
 
   const primaryBase = Math.floor(
     build.baseStats[primaryStatKey] * mwMultiplier
@@ -90,52 +91,4 @@ export function calculateTotalStats(
     primary: build.gearStats[primaryStatKey] + primaryBase,
     secondary: build.gearStats[secondaryStatKey] + secondaryBase,
   };
-}
-
-function getPrimaryStatKey(
-  className: string
-): 'STR' | 'DEX' | 'INT' | 'LUK' {
-  switch (className) {
-    case 'Hero':
-    case 'Paladin':
-    case 'DrK':
-    case 'Bucc':
-      return 'STR';
-    case 'BM':
-    case 'MM':
-    case 'Sair':
-      return 'DEX';
-    case 'NL':
-    case 'Shad':
-      return 'LUK';
-    case 'Archmage':
-    case 'Bishop':
-      return 'INT';
-    default:
-      throw new Error(`Unknown class: ${className}`);
-  }
-}
-
-function getSecondaryStatKey(
-  className: string
-): 'STR' | 'DEX' | 'INT' | 'LUK' {
-  switch (className) {
-    case 'Hero':
-    case 'Paladin':
-    case 'DrK':
-    case 'Bucc':
-      return 'DEX';
-    case 'BM':
-    case 'MM':
-    case 'Sair':
-      return 'STR';
-    case 'NL':
-    case 'Shad':
-      return 'STR';
-    case 'Archmage':
-    case 'Bishop':
-      return 'LUK';
-    default:
-      throw new Error(`Unknown class: ${className}`);
-  }
 }

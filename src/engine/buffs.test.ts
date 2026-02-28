@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeAll } from 'vitest';
-import { loadMapleWarrior } from '../data/loader.js';
-import type { MapleWarriorData, CharacterBuild } from '../data/types.js';
+import { loadMapleWarrior, loadClassSkills } from '../data/loader.js';
+import type { MapleWarriorData, ClassSkillData, CharacterBuild } from '../data/types.js';
 import {
   applyMapleWarrior,
   calculateEcho,
@@ -9,9 +9,11 @@ import {
 } from './buffs.js';
 
 let mwData: MapleWarriorData;
+let heroData: ClassSkillData;
 
 beforeAll(() => {
   mwData = loadMapleWarrior();
+  heroData = loadClassSkills('Hero');
 });
 
 describe('applyMapleWarrior', () => {
@@ -64,7 +66,7 @@ describe('calculateTotalStats', () => {
       baseStats: { STR: 999, DEX: 23, INT: 4, LUK: 4 },
       gearStats: { STR: 174, DEX: 102, INT: 0, LUK: 0 },
     });
-    const stats = calculateTotalStats(build, mwData);
+    const stats = calculateTotalStats(build, heroData, mwData);
     // STR: 174 + floor(999 * 1.10) = 174 + 1098 = 1272
     expect(stats.primary).toBe(1272);
     // DEX: 102 + floor(23 * 1.10) = 102 + 25 = 127
@@ -76,7 +78,7 @@ describe('calculateTotalStats', () => {
       baseStats: { STR: 700, DEX: 22, INT: 4, LUK: 4 },
       gearStats: { STR: 107, DEX: 96, INT: 0, LUK: 0 },
     });
-    const stats = calculateTotalStats(build, mwData);
+    const stats = calculateTotalStats(build, heroData, mwData);
     // STR: 107 + floor(700 * 1.10) = 107 + 770 = 877
     expect(stats.primary).toBe(877);
     // DEX: 96 + floor(22 * 1.10) = 96 + 24 = 120
