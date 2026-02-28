@@ -1,5 +1,8 @@
 import type { CharacterBuild, ClassSkillData, MapleWarriorData } from '../data/types.js';
 
+/** Echo of Hero bonus multiplier (4%). Source: range calculator E10. */
+const ECHO_MULTIPLIER = 0.04;
+
 /**
  * Apply Maple Warrior to base stats, returning the MW-boosted stat value.
  * MW is applied to base stats only, then floored.
@@ -11,11 +14,8 @@ export function applyMapleWarrior(
   mapleWarriorData: MapleWarriorData,
   mapleWarriorLevel: number
 ): number {
-  const entry = mapleWarriorData.find((e) => e.level === mapleWarriorLevel);
-  if (!entry) {
-    throw new Error(`MW level ${mapleWarriorLevel} not found`);
-  }
-  return Math.floor(baseStat * entry.multiplier);
+  const multiplier = getMapleWarriorMultiplier(mapleWarriorData, mapleWarriorLevel);
+  return Math.floor(baseStat * multiplier);
 }
 
 /**
@@ -41,7 +41,7 @@ export function calculateEcho(
   attackPotion: number,
   projectile: number
 ): number {
-  return Math.floor((totalWeaponAttack + attackPotion + projectile) * 0.04);
+  return Math.floor((totalWeaponAttack + attackPotion + projectile) * ECHO_MULTIPLIER);
 }
 
 /**
@@ -72,7 +72,7 @@ export function calculateMageEcho(
   totalMagicAttack: number,
   attackPotion: number
 ): number {
-  return Math.floor((totalInt + totalMagicAttack + attackPotion) * 0.04);
+  return Math.floor((totalInt + totalMagicAttack + attackPotion) * ECHO_MULTIPLIER);
 }
 
 /**

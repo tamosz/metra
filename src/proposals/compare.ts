@@ -48,7 +48,7 @@ export function compareProposal(
 }
 
 function scenarioKey(r: ScenarioResult): string {
-  return `${r.scenario}|${r.className}|${r.skillName}|${r.tier}`;
+  return `${r.scenario}\0${r.className}\0${r.skillName}\0${r.tier}`;
 }
 
 function computeDeltas(
@@ -95,7 +95,7 @@ function computeRanks(results: ScenarioResult[]): Map<string, number> {
   // Group by (scenario, tier)
   const groups = new Map<string, ScenarioResult[]>();
   for (const r of results) {
-    const groupKey = `${r.scenario}|${r.tier}`;
+    const groupKey = `${r.scenario}\0${r.tier}`;
     const group = groups.get(groupKey);
     if (group) {
       group.push(r);
