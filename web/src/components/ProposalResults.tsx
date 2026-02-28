@@ -43,7 +43,6 @@ export function ProposalResults({ result, proposal }: ProposalResultsProps) {
   );
 
   const changed = filtered.filter((d) => d.change !== 0);
-  const unchanged = filtered.filter((d) => d.change === 0);
 
   const handleShare = () => {
     setProposalInUrl(proposal);
@@ -63,38 +62,36 @@ export function ProposalResults({ result, proposal }: ProposalResultsProps) {
     navigator.clipboard.writeText(bbcode);
   };
 
+  const actionBtn = 'cursor-pointer rounded border border-border-default bg-bg-active px-2.5 py-1 text-xs text-text-secondary hover:border-border-active hover:text-text-bright transition-colors';
+
   return (
-    <div style={{ marginTop: 32 }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
-        <h2 style={{ margin: 0, fontSize: 16, fontWeight: 600 }}>Results</h2>
-        <div style={{ display: 'flex', gap: 8 }}>
-          <button onClick={handleShare} style={actionButtonStyle}>
+    <div className="mt-8">
+      <div className="mb-4 flex items-center justify-between">
+        <h2 className="m-0 text-base font-semibold">Results</h2>
+        <div className="flex gap-2">
+          <button onClick={handleShare} className={actionBtn}>
             {copied ? 'Copied!' : 'Copy Share Link'}
           </button>
-          <button onClick={handleCopyMarkdown} style={actionButtonStyle}>
+          <button onClick={handleCopyMarkdown} className={actionBtn}>
             Copy Markdown
           </button>
-          <button onClick={handleCopyBBCode} style={actionButtonStyle}>
+          <button onClick={handleCopyBBCode} className={actionBtn}>
             Copy for Forum
           </button>
         </div>
       </div>
 
       {scenarios.length > 1 && (
-        <div style={{ display: 'flex', gap: 2, marginBottom: 16 }}>
+        <div className="mb-4 flex gap-0.5">
           {scenarios.map((s) => (
             <button
               key={s}
               onClick={() => setSelectedScenario(s)}
-              style={{
-                background: selectedScenario === s ? colors.filterBg : 'transparent',
-                color: selectedScenario === s ? colors.textBright : colors.textDim,
-                border: selectedScenario === s ? `1px solid ${colors.borderActive}` : '1px solid transparent',
-                padding: '4px 10px',
-                borderRadius: 4,
-                fontSize: 12,
-                cursor: 'pointer',
-              }}
+              className={`cursor-pointer rounded px-2.5 py-1 text-xs transition-colors ${
+                selectedScenario === s
+                  ? 'border border-border-active bg-bg-active text-text-bright'
+                  : 'border border-transparent bg-transparent text-text-dim hover:text-text-muted'
+              }`}
             >
               {s}
             </button>
@@ -123,7 +120,7 @@ function ComparisonChart({ deltas }: { deltas: DeltaEntry[] }) {
   const chartHeight = Math.max(200, chartData.length * barHeight + 60);
 
   return (
-    <div data-testid="comparison-chart" style={{ width: '100%', height: chartHeight, marginBottom: 24 }}>
+    <div data-testid="comparison-chart" style={{ width: '100%', height: chartHeight }} className="mb-6">
       <ResponsiveContainer>
         <BarChart
           data={chartData}
@@ -141,7 +138,7 @@ function ComparisonChart({ deltas }: { deltas: DeltaEntry[] }) {
             type="category"
             dataKey="label"
             width={280}
-            tick={{ fill: '#ccc', fontSize: 12 }}
+            tick={{ fill: colors.textSecondary, fontSize: 12 }}
             axisLine={false}
             tickLine={false}
           />
@@ -150,22 +147,16 @@ function ComparisonChart({ deltas }: { deltas: DeltaEntry[] }) {
               if (!active || !payload?.length) return null;
               const d = payload[0]?.payload;
               return (
-                <div style={{
-                  background: colors.bgSurface,
-                  border: `1px solid ${colors.bgButton}`,
-                  borderRadius: 6,
-                  padding: '8px 12px',
-                  fontSize: 12,
-                }}>
-                  <div style={{ fontWeight: 600, color: getClassColor(d.className) }}>
+                <div className="rounded-md border border-border-active bg-bg-surface p-3 text-xs">
+                  <div className="font-semibold" style={{ color: getClassColor(d.className) }}>
                     {d.label}
                   </div>
-                  <div style={{ marginTop: 4 }}>
-                    <span style={{ color: colors.textMuted }}>Before: </span>
+                  <div className="mt-1">
+                    <span className="text-text-muted">Before: </span>
                     <span>{d.before.toLocaleString()}</span>
                   </div>
                   <div>
-                    <span style={{ color: colors.textMuted }}>After: </span>
+                    <span className="text-text-muted">After: </span>
                     <span>{d.after.toLocaleString()}</span>
                   </div>
                   <div style={{ color: d.after > d.before ? colors.positive : colors.negative }}>
@@ -177,7 +168,7 @@ function ComparisonChart({ deltas }: { deltas: DeltaEntry[] }) {
           />
           <Legend
             wrapperStyle={{ fontSize: 12 }}
-            formatter={(value: string) => <span style={{ color: colors.textSecondary }}>{value}</span>}
+            formatter={(value: string) => <span className="text-text-secondary">{value}</span>}
           />
           <Bar dataKey="before" name="Before" fill={colors.textFaint} fillOpacity={0.6} barSize={14} radius={[0, 3, 3, 0]} />
           <Bar dataKey="after" name="After" barSize={14} radius={[0, 3, 3, 0]}>
@@ -201,57 +192,49 @@ function DeltaTable({ deltas }: { deltas: DeltaEntry[] }) {
   });
 
   const hasRanks = sorted.some((d) => d.rankBefore != null);
+  const th = 'px-3 py-2 text-[11px] uppercase tracking-wide text-text-dim font-medium';
 
   return (
-    <table data-testid="delta-table" style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
+    <table data-testid="delta-table" className="w-full border-collapse text-sm">
       <thead>
-        <tr style={{ borderBottom: `1px solid ${colors.border}` }}>
-          {hasRanks && <th style={thStyle}>Rank</th>}
-          <th style={{ ...thStyle, textAlign: 'left' }}>Class</th>
-          <th style={{ ...thStyle, textAlign: 'left' }}>Skill</th>
-          <th style={{ ...thStyle, textAlign: 'left' }}>Tier</th>
-          <th style={{ ...thStyle, textAlign: 'right' }}>Before</th>
-          <th style={{ ...thStyle, textAlign: 'right' }}>After</th>
-          <th style={{ ...thStyle, textAlign: 'right' }}>Change</th>
-          <th style={{ ...thStyle, textAlign: 'right' }}>%</th>
+        <tr className="border-b border-border-default">
+          {hasRanks && <th className={th}>Rank</th>}
+          <th className={`${th} text-left`}>Class</th>
+          <th className={`${th} text-left`}>Skill</th>
+          <th className={`${th} text-left`}>Tier</th>
+          <th className={`${th} text-right`}>Before</th>
+          <th className={`${th} text-right`}>After</th>
+          <th className={`${th} text-right`}>Change</th>
+          <th className={`${th} text-right`}>%</th>
         </tr>
       </thead>
       <tbody>
         {sorted.map((d, i) => {
           const isChanged = d.change !== 0;
           return (
-            <tr key={i} style={{
-              borderBottom: `1px solid ${colors.borderSubtle}`,
-              background: isChanged ? 'rgba(85, 184, 224, 0.03)' : undefined,
-            }}>
+            <tr key={i} className={`border-b border-border-subtle ${isChanged ? 'bg-accent/[0.03]' : ''}`}>
               {hasRanks && (
-                <td style={{ ...tdStyle, color: colors.textDim, fontSize: 12 }}>
+                <td className="px-3 py-2 text-xs text-text-dim">
                   {formatRank(d.rankBefore, d.rankAfter)}
                 </td>
               )}
-              <td style={tdStyle}>{d.className}</td>
-              <td style={{ ...tdStyle, color: colors.textSecondary }}>{d.skillName}</td>
-              <td style={{ ...tdStyle, color: colors.textMuted }}>
+              <td className="px-3 py-2">{d.className}</td>
+              <td className="px-3 py-2 text-text-secondary">{d.skillName}</td>
+              <td className="px-3 py-2 text-text-muted">
                 {d.tier.charAt(0).toUpperCase() + d.tier.slice(1)}
               </td>
-              <td style={{ ...tdStyle, textAlign: 'right', fontVariantNumeric: 'tabular-nums' }}>
+              <td className="px-3 py-2 text-right tabular-nums">
                 {formatDps(d.before)}
               </td>
-              <td style={{ ...tdStyle, textAlign: 'right', fontVariantNumeric: 'tabular-nums' }}>
+              <td className="px-3 py-2 text-right tabular-nums">
                 {formatDps(d.after)}
               </td>
-              <td style={{
-                ...tdStyle,
-                textAlign: 'right',
-                fontVariantNumeric: 'tabular-nums',
+              <td className="px-3 py-2 text-right tabular-nums" style={{
                 color: d.change > 0 ? colors.positive : d.change < 0 ? colors.negative : colors.textFaint,
               }}>
                 {d.change > 0 ? '+' : ''}{formatDps(d.change)}
               </td>
-              <td style={{
-                ...tdStyle,
-                textAlign: 'right',
-                fontVariantNumeric: 'tabular-nums',
+              <td className="px-3 py-2 text-right tabular-nums" style={{
                 color: d.changePercent > 0 ? colors.positive : d.changePercent < 0 ? colors.negative : colors.textFaint,
               }}>
                 {d.changePercent > 0 ? '+' : ''}{d.changePercent.toFixed(1)}%
@@ -273,26 +256,3 @@ function formatRank(before?: number, after?: number): string {
 function formatDps(n: number): string {
   return Math.round(n).toLocaleString();
 }
-
-const thStyle: React.CSSProperties = {
-  padding: '8px 12px',
-  fontSize: 11,
-  textTransform: 'uppercase',
-  letterSpacing: '0.05em',
-  color: colors.textDim,
-  fontWeight: 500,
-};
-
-const tdStyle: React.CSSProperties = {
-  padding: '8px 12px',
-};
-
-const actionButtonStyle: React.CSSProperties = {
-  background: colors.bgActive,
-  color: colors.textSecondary,
-  border: `1px solid ${colors.borderMuted}`,
-  borderRadius: 4,
-  padding: '4px 10px',
-  fontSize: 12,
-  cursor: 'pointer',
-};
