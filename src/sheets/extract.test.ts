@@ -43,9 +43,6 @@ describe('getCellValue', () => {
     expect(getCellValue(workbook, 'maple warrior', 'B22')).toBe(1.1);
   });
 
-  it('reads maple warrior B32 = 1.15 (MW level 30 multiplier)', () => {
-    expect(getCellValue(workbook, 'maple warrior', 'B32')).toBe(1.15);
-  });
 
   it('reads Weapons E12 = 4.0 (1H Sword slash multiplier)', () => {
     expect(getCellValue(workbook, 'Weapons', 'E12')).toBe(4);
@@ -91,6 +88,6 @@ describe('readSheet', () => {
     const data = readSheet(workbook, 'maple warrior');
     expect(data['A1'].value).toBe('Lv');
     expect(data['B1'].value).toBe('Multiplier');
-    expect(data['B32'].value).toBe(1.15);
+    expect(data['B22'].value).toBe(1.1);
   });
 });

@@ -18,7 +18,7 @@ Cross-referenced against MapleRoyals forum guides:
 
 | Assumption | Value | Notes |
 |------------|-------|-------|
-| MW level | 20 (not 30) | Matches source spreadsheet. MW30 is max but MW20 is the common party buff level. |
+| MW level | 20 | MW20 is the max level in MapleRoyals. |
 | Sharp Eyes | Always active | SE from BM/MM mule or party member. Guides call it "the most important buff." |
 | Speed Infusion | Always active | SI from Buccaneer. |
 | Echo of Hero | Always active | Event buff (4% WATK). Available periodically. Both tiers assume it. |
@@ -142,25 +142,22 @@ low tier is genuinely budget.
 
 ## 4. Open Questions
 
-1. **MW 20 vs MW 30** — MW20 is the realistic party buff level (not everyone has MW30).
-   The spreadsheet uses MW20. If MW30 were used, all DPS values would increase slightly.
-
-2. **Echo on low tier** — Echo requires event access. Both tiers having Echo makes them
+1. **Echo on low tier** — Echo requires event access. Both tiers having Echo makes them
    harder to differentiate. Consider removing Echo from low tier for a more realistic
    budget scenario.
 
-3. **Warrior high C/G/S at 20/20/20** — Cape/Glove/Shoe all at 20 WATK is near-godly.
+2. **Warrior high C/G/S at 20/20/20** — Cape/Glove/Shoe all at 20 WATK is near-godly.
    Forum guides suggest 15+ gloves, 10+ cape, 7+ shoes for "endgame." Our high tier
    models a top-0.1% character.
 
-4. **Warrior low weapon at 140** — Still very well-scrolled for a "budget" build.
+3. **Warrior low weapon at 140** — Still very well-scrolled for a "budget" build.
    Closer to mid-funded. Budget weapons are typically 120-130.
 
-5. **Stonetooth speed** — Stonetooth Sword is speed 5 (Fast), not speed 6 (Normal).
+4. **Stonetooth speed** — Stonetooth Sword is speed 5 (Fast), not speed 6 (Normal).
    If Hero high uses Stonetooth, weapon speed should be 5. Current templates use speed 6
    to match the source spreadsheet. This is a design decision, not a bug.
 
-6. **Axe/BW weapon multipliers may be wrong** — The project uses 1H Axe 4.4 / 2H Axe 4.8
+5. **Axe/BW weapon multipliers may be wrong** — The project uses 1H Axe 4.4 / 2H Axe 4.8
    and 1H BW 4.4 / 2H BW 4.8 (from the source spreadsheet). Standard GMS v62 values are
    1H 4.0 / 2H 4.2. A forum thread ([The Balancing of Axes & Blunt Weapons](https://royals.ms/forum/threads/the-balancing-of-axes-blunt-weapons-data-included.53212/))
    proposed buffing these values but noted that "changing calculations is difficult without
@@ -168,7 +165,7 @@ low tier is genuinely budget.
    in-game verification.** If the actual values are GMS v62, Axe/BW damage would decrease
    significantly (Axe 2H: 4.8→4.2 = ~12.5% less primary stat contribution).
 
-7. **Weapon multipliers distinguish slash/stab** — Spear (3.0 slash / 5.0 stab) and Polearm
+6. **Weapon multipliers distinguish slash/stab** — Spear (3.0 slash / 5.0 stab) and Polearm
    (5.0 slash / 3.0 stab) now use the correct multiplier based on skill attack type.
    Crusher stabs (Spear 5.0), Fury slashes (Polearm 5.0). Both get the optimal 5.0
    multiplier when using their intended weapon.
