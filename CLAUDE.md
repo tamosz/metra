@@ -20,7 +20,7 @@ The project is being translated from an existing Google Sheets calculator (expor
 ## Running the Project
 
 ```bash
-# Run all tests (111 tests across 10 files)
+# Run all tests
 npx vitest run
 
 # Run a proposal and print the Markdown comparison report
@@ -38,7 +38,7 @@ Three layers. Keep them cleanly separated.
 Static game data stored as JSON files, version-controlled, human-readable and human-editable. This is the "current state of MapleRoyals."
 
 Actual files:
-- `skills/` — one file per class (`hero.json`, `drk.json`, `paladin.json`, `nl.json`, `bowmaster.json`). Each contains mastery, stat mapping, SE crit config, and a `skills[]` array.
+- `skills/` — one file per class (`hero.json`, `drk.json`, `paladin.json`, `nl.json`, `bowmaster.json`, `sair.json`, `bucc.json`). Each contains mastery, stat mapping, SE crit config, and a `skills[]` array.
 - `gear-templates/` — character builds at each funding tier (`hero-low.json`, `hero-high.json`, etc.). Include full gear breakdown, stats, buffs, and weapon info.
 - `weapons.json` — weapon type slash/stab multipliers for the damage formula.
 - `attack-speed.json` — effective speed tier → attack time lookup, keyed by skill category.
@@ -55,6 +55,9 @@ Pure functions. No side effects, no I/O. Takes game data + a character build, ou
 - `attack-speed.ts` — weapon speed resolution (base speed + booster + SI), attack time lookup by skill category.
 - `dps.ts` — full DPS pipeline: attack time → skill damage% → crit damage% → range caps → adjusted ranges → average damage → DPS. Uses `skill.weaponType` (not build) for weapon multiplier lookup, enabling weapon variants within the same class/tier. Supports built-in crit (additive with SE), throwing star formula (branches on `weaponType === 'Claw'`), and Shadow Partner (1.5× multiplier).
 - `index.ts` — re-exports.
+
+**Simulation features:**
+- **comboGroup**: skills sharing a `comboGroup` string on `SkillEntry` have their DPS summed into a single row in simulation output (used for Buccaneer's Barrage + Dragon Strike multi-part rotation).
 
 **Not yet implemented:**
 - Training efficiency (kills/hr, EXP/hr on a given mob).
@@ -125,19 +128,21 @@ Source: range calculator F18/F19. No weapon multiplier or secondary stat — fla
 
 ### Crit Damage
 Two formula variants exist, configured per class via `seCritFormula`:
-- **`addBeforeMultiply`** (Hero, DrK, NL): `critDmg% = (basePower + totalCritBonus) * multiplier`
+- **`addBeforeMultiply`** (Hero, DrK, NL, Corsair, Buccaneer): `critDmg% = (basePower + totalCritBonus) * multiplier`
 - **`addAfterMultiply`** (Paladin): `critDmg% = basePower * multiplier + totalCritBonus`
 
 `totalCritBonus` = built-in crit bonus (e.g., TT +100) + SE bonus (+140 if active). Crit rate is also additive: built-in (e.g., TT 0.50) + SE (0.15), capped at 1.0.
 
 ### Key Classes
 
-**Implemented (5 classes):**
+**Implemented (7 classes):**
 - **Hero** — 2H Sword/Axe, Brandish (2-hit)
 - **Dark Knight (DrK)** — Spear/Polearm, Crusher and Fury
 - **Paladin** — 2H Sword/2H BW, Blast (4 variants: Holy and F/I/L Charge × Sword and BW)
 - **Night Lord (NL)** — Claw, Triple Throw (3-hit, built-in 50% crit, Shadow Partner)
 - **Bowmaster** — Bow, Hurricane (fixed 0.12s attack time) and Strafe (4-hit), built-in 40% crit from Critical Shot
+- **Corsair (Sair)** — Gun, Battleship Cannon (4-hit, 0.60s) and Rapid Fire (Hurricane-style 0.12s). DEX primary, 3.6× weapon multiplier.
+- **Buccaneer (Bucc)** — Knuckle, Demolition (8-hit, fixed 2.34s cycle) and Barrage + Dragon Strike (multi-part combo via `comboGroup`, fixed 2.34s cycle). STR primary, 4.8× weapon multiplier.
 
 **Future expansion targets:**
 - Arch Mage (Ice/Lightning) (magic)
@@ -210,14 +215,20 @@ metra/
 │   │   ├── drk.json
 │   │   ├── paladin.json
 │   │   ├── nl.json
-│   │   └── bowmaster.json
+│   │   ├── bowmaster.json
+│   │   ├── sair.json
+│   │   └── bucc.json
 │   └── gear-templates/
 │       ├── hero-low.json
 │       ├── hero-high.json
 │       ├── drk-low.json
 │       ├── drk-high.json
 │       ├── paladin-low.json
-│       └── paladin-high.json
+│       ├── paladin-high.json
+│       ├── sair-low.json
+│       ├── sair-high.json
+│       ├── bucc-low.json
+│       └── bucc-high.json
 ├── proposals/                   # balance change proposals
 │   ├── brandish-buff-20.json
 │   └── warrior-rebalance.json
@@ -245,7 +256,7 @@ metra/
     │   ├── types.ts             # Proposal, ProposalChange, ScenarioResult, DeltaEntry, ComparisonResult
     │   ├── apply.ts             # apply proposal changes to skill data
     │   ├── apply.test.ts
-    │   ├── simulate.ts          # run DPS across all classes × tiers × skills
+    │   ├── simulate.ts          # run DPS across all classes × tiers × skills, comboGroup aggregation
     │   ├── compare.ts           # before/after comparison with deltas
     │   └── compare.test.ts
     ├── report/
