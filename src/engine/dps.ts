@@ -89,7 +89,7 @@ export function calculateSkillDps(
       : (skill.basePower + classData.sharpEyesCritDamageBonus) * skill.multiplier;
 
   // Damage range
-  const weaponMultiplier = getWeaponMultiplier(weaponData, build.weaponType);
+  const weaponMultiplier = getWeaponMultiplier(weaponData, skill.weaponType);
   const totalAttack = calculateTotalAttack(build);
   const { primary, secondary } = calculateTotalStats(build, mapleWarriorData);
   const damageRange = calculateDamageRange(

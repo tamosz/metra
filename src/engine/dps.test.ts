@@ -280,6 +280,86 @@ describe('Paladin Blast DPS', () => {
   });
 });
 
+describe('Paladin BW Blast DPS', () => {
+  it('uses 2H BW weapon multiplier (4.8) for Blast (Holy, BW)', () => {
+    const blast = paladinData.skills.find(
+      (s) => s.name === 'Blast (Holy, BW)'
+    )!;
+    const result = calculateSkillDps(
+      paladinHigh,
+      paladinData,
+      blast,
+      weaponData,
+      attackSpeedData,
+      mapleWarriorData
+    );
+
+    // Same speed category as Sword Blast → same attack time
+    expect(result.attackTime).toBe(0.63);
+    // Same base power and multiplier as Sword variant
+    expect(result.skillDamagePercent).toBe(812);
+    // SE: 580 * 1.4 + 140 = 952 (addAfterMultiply)
+    expect(result.seDamagePercent).toBe(952);
+    // 2H BW slash = 4.8, primary STR = 1272, secondary DEX = 127, totalAttack = 326
+    // max = floor((1272 * 4.8 + 127) * 326 / 100) = 20318
+    // min = floor((1272 * 4.8 * 0.9 * 0.6 + 127) * 326 / 100) = 11162
+    expect(result.damageRange.max).toBe(20318);
+    expect(result.damageRange.min).toBe(11162);
+  });
+
+  it('Blast (F/I/L Charge, BW) uses Blast speed category', () => {
+    const blast = paladinData.skills.find(
+      (s) => s.name === 'Blast (F/I/L Charge, BW)'
+    )!;
+    const result = calculateSkillDps(
+      paladinHigh,
+      paladinData,
+      blast,
+      weaponData,
+      attackSpeedData,
+      mapleWarriorData
+    );
+
+    // BW charge variant uses Blast speed (same as all BW variants)
+    expect(result.attackTime).toBe(0.63);
+    expect(result.skillDamagePercent).toBe(754);
+    // SE: 580 * 1.3 + 140 = 894
+    expect(result.seDamagePercent).toBe(894);
+    // Same damage range as Holy BW (same weapon type, same gear)
+    expect(result.damageRange.max).toBe(20318);
+    expect(result.damageRange.min).toBe(11162);
+  });
+
+  it('BW variant has higher DPS than Sword variant (higher weapon multiplier)', () => {
+    const swordBlast = paladinData.skills.find(
+      (s) => s.name === 'Blast (Holy, Sword)'
+    )!;
+    const bwBlast = paladinData.skills.find(
+      (s) => s.name === 'Blast (Holy, BW)'
+    )!;
+    const swordResult = calculateSkillDps(
+      paladinHigh,
+      paladinData,
+      swordBlast,
+      weaponData,
+      attackSpeedData,
+      mapleWarriorData
+    );
+    const bwResult = calculateSkillDps(
+      paladinHigh,
+      paladinData,
+      bwBlast,
+      weaponData,
+      attackSpeedData,
+      mapleWarriorData
+    );
+
+    // 2H BW (4.8) > 2H Sword (4.6) → BW should deal more damage
+    expect(bwResult.damageRange.max).toBeGreaterThan(swordResult.damageRange.max);
+    expect(bwResult.dps).toBeGreaterThan(swordResult.dps);
+  });
+});
+
 describe('DPS result structure', () => {
   it('includes all expected fields', () => {
     const brandish = heroData.skills.find(
