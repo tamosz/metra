@@ -9,14 +9,21 @@ export interface DamageRange {
 /**
  * Look up the weapon multiplier for a given weapon type and attack type.
  * Slash is the default (most skills slash). Stab uses stabMultiplier.
+ *
+ * If attackRatio is provided, computes a weighted average of slash and stab
+ * multipliers. Source: royals.ms forum — BW Blast uses 3:2 swing/stab ratio.
  */
 export function getWeaponMultiplier(
   weaponData: WeaponData,
   weaponType: string,
-  attackType: 'slash' | 'stab' = 'slash'
+  attackType: 'slash' | 'stab' = 'slash',
+  attackRatio?: { slash: number; stab: number }
 ): number {
   const weapon = weaponData.types.find((w) => w.name === weaponType);
   if (!weapon) throw new Error(`Unknown weapon type: ${weaponType}`);
+  if (attackRatio) {
+    return weapon.slashMultiplier * attackRatio.slash + weapon.stabMultiplier * attackRatio.stab;
+  }
   return attackType === 'stab' ? weapon.stabMultiplier : weapon.slashMultiplier;
 }
 

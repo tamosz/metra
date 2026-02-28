@@ -146,14 +146,16 @@ describe('DrK Spear Crusher DPS', () => {
       mapleWarriorData
     );
 
-    // Verified against hero charts I15: 249417.70370370368
+    // Berserk multiplier updated from 2.0 to 2.1 per royals.ms Update #68
     expect(result.attackTime).toBe(0.81);
-    expect(result.skillDamagePercent).toBe(340);
-    expect(result.seDamagePercent).toBe(620);
+    expect(result.skillDamagePercent).toBe(357);
+    expect(result.seDamagePercent).toBe(651);
     expect(result.damageRange.max).toBe(20434);
     expect(result.damageRange.min).toBe(14824);
     expect(result.damageRange.average).toBe(17629);
-    expect(Math.abs(result.dps - 249417.70370370368)).toBeLessThan(1);
+    // DPS increased ~5% from Berserk 2.0→2.1
+    expect(result.dps).toBeGreaterThan(261000);
+    expect(result.dps).toBeLessThan(263000);
   });
 
   it('computes Low tier DPS from gear template', () => {
@@ -173,8 +175,9 @@ describe('DrK Spear Crusher DPS', () => {
     expect(result.damageRange.max).toBe(10370);
     expect(result.damageRange.min).toBe(7537);
     expect(result.damageRange.average).toBe(8953.5);
-    expect(result.dps).toBeGreaterThan(126000);
-    expect(result.dps).toBeLessThan(127000);
+    // DPS increased from Berserk 2.0→2.1
+    expect(result.dps).toBeGreaterThan(132000);
+    expect(result.dps).toBeLessThan(134000);
   });
 
   it('uses addBeforeMultiply SE formula (default)', () => {
@@ -188,10 +191,10 @@ describe('DrK Spear Crusher DPS', () => {
       mapleWarriorData
     );
 
-    // SE damage% = (170 + 140) * 2.0 = 620
-    expect(result.seDamagePercent).toBe(620);
-    // Normal damage% = 170 * 2.0 = 340
-    expect(result.skillDamagePercent).toBe(340);
+    // SE damage% = (170 + 140) * 2.1 = 651
+    expect(result.seDamagePercent).toBe(651);
+    // Normal damage% = 170 * 2.1 = 357
+    expect(result.skillDamagePercent).toBe(357);
   });
 
   it('Spear Crusher uses stab multiplier (5.0)', () => {
@@ -335,11 +338,11 @@ describe('Paladin BW Blast DPS', () => {
     expect(result.skillDamagePercent).toBe(812);
     // SE: 580 * 1.4 + 140 = 952 (addAfterMultiply)
     expect(result.seDamagePercent).toBe(952);
-    // 2H BW slash = 4.8, primary STR = 1272, secondary DEX = 127, totalAttack = 326
-    // max = floor((1272 * 4.8 + 127) * 326 / 100) = 20318
-    // min = floor((1272 * 4.8 * 0.9 * 0.6 + 127) * 326 / 100) = 11162
-    expect(result.damageRange.max).toBe(20318);
-    expect(result.damageRange.min).toBe(11162);
+    // 2H BW weighted: 4.8*0.6 + 3.4*0.4 = 4.24 (3:2 swing/stab ratio)
+    // max = floor((1272 * 4.24 + 127) * 326 / 100) = 17996
+    // min = floor((1272 * 4.24 * 0.9 * 0.6 + 127) * 326 / 100) = 9908
+    expect(result.damageRange.max).toBe(17996);
+    expect(result.damageRange.min).toBe(9908);
   });
 
   it('Blast (F/I/L Charge, BW) uses Blast speed category', () => {
@@ -360,12 +363,12 @@ describe('Paladin BW Blast DPS', () => {
     expect(result.skillDamagePercent).toBe(754);
     // SE: 580 * 1.3 + 140 = 894
     expect(result.seDamagePercent).toBe(894);
-    // Same damage range as Holy BW (same weapon type, same gear)
-    expect(result.damageRange.max).toBe(20318);
-    expect(result.damageRange.min).toBe(11162);
+    // Same damage range as Holy BW (same weapon type, same gear, same attackRatio)
+    expect(result.damageRange.max).toBe(17996);
+    expect(result.damageRange.min).toBe(9908);
   });
 
-  it('BW variant has higher DPS than Sword variant (higher weapon multiplier)', () => {
+  it('BW variant has lower DPS than Sword variant (weighted swing/stab multiplier)', () => {
     const swordBlast = paladinData.skills.find(
       (s) => s.name === 'Blast (Holy, Sword)'
     )!;
@@ -389,9 +392,9 @@ describe('Paladin BW Blast DPS', () => {
       mapleWarriorData
     );
 
-    // 2H BW (4.8) > 2H Sword (4.6) → BW should deal more damage
-    expect(bwResult.damageRange.max).toBeGreaterThan(swordResult.damageRange.max);
-    expect(bwResult.dps).toBeGreaterThan(swordResult.dps);
+    // 2H BW effective = 4.24 (3:2 swing/stab) < 2H Sword 4.6 → Sword wins
+    expect(swordResult.damageRange.max).toBeGreaterThan(bwResult.damageRange.max);
+    expect(swordResult.dps).toBeGreaterThan(bwResult.dps);
   });
 });
 

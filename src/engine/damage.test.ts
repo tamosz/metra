@@ -31,6 +31,20 @@ describe('getWeaponMultiplier', () => {
     expect(getWeaponMultiplier(weapons, '2H Sword', 'slash')).toBe(4.6);
     expect(getWeaponMultiplier(weapons, '2H Sword', 'stab')).toBe(4.6);
   });
+
+  it('computes weighted average with attackRatio (BW 3:2 swing/stab)', () => {
+    const weapons = loadWeapons();
+    // 2H BW: slash=4.8, stab=3.4. Ratio 3:2 → 4.8*0.6 + 3.4*0.4 = 4.24
+    const ratio = { slash: 0.6, stab: 0.4 };
+    expect(getWeaponMultiplier(weapons, '2H BW', 'slash', ratio)).toBeCloseTo(4.24);
+  });
+
+  it('weighted average is identity when slash=stab (swords)', () => {
+    const weapons = loadWeapons();
+    const ratio = { slash: 0.6, stab: 0.4 };
+    // 2H Sword: slash=4.6, stab=4.6 → 4.6*0.6 + 4.6*0.4 = 4.6
+    expect(getWeaponMultiplier(weapons, '2H Sword', 'slash', ratio)).toBeCloseTo(4.6);
+  });
 });
 
 describe('calculateDamageRange', () => {
