@@ -13,8 +13,12 @@ interface ProposalBuilderProps {
   simulation: SimulationData;
 }
 
+const focusStyleTag = `
+  .metra-input:focus { border-color: #3a3a6e !important; }
+`;
+
 export function ProposalBuilder({ proposalState, simulation }: ProposalBuilderProps) {
-  const { proposal, setName, setAuthor, setDescription, addChange, removeChange, simulate } = proposalState;
+  const { proposal, simulating, setName, setAuthor, setDescription, addChange, removeChange, simulate } = proposalState;
   const [showJson, setShowJson] = useState(false);
   const [jsonInput, setJsonInput] = useState('');
   const [jsonError, setJsonError] = useState('');
@@ -43,6 +47,7 @@ export function ProposalBuilder({ proposalState, simulation }: ProposalBuilderPr
 
   return (
     <div>
+      <style>{focusStyleTag}</style>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
         <h2 style={{ margin: 0, fontSize: 16, fontWeight: 600 }}>Proposal Builder</h2>
         <button
@@ -89,14 +94,14 @@ export function ProposalBuilder({ proposalState, simulation }: ProposalBuilderPr
       <div style={{ marginTop: 24, display: 'flex', gap: 12 }}>
         <button
           onClick={handleSimulate}
-          disabled={proposal.changes.length === 0 || !proposal.name}
+          disabled={proposal.changes.length === 0 || !proposal.name || simulating}
           style={{
             ...buttonStyle,
-            opacity: proposal.changes.length === 0 || !proposal.name ? 0.4 : 1,
-            cursor: proposal.changes.length === 0 || !proposal.name ? 'not-allowed' : 'pointer',
+            opacity: proposal.changes.length === 0 || !proposal.name || simulating ? 0.4 : 1,
+            cursor: proposal.changes.length === 0 || !proposal.name || simulating ? 'not-allowed' : 'pointer',
           }}
         >
-          Simulate
+          {simulating ? 'Simulating...' : 'Simulate'}
         </button>
       </div>
     </div>
@@ -142,6 +147,7 @@ function JsonPanel({
       <div>
         <div style={{ fontSize: 12, color: '#888', marginBottom: 4 }}>Import</div>
         <textarea
+          className="metra-input"
           data-testid="json-import"
           value={jsonInput}
           onChange={(e) => setJsonInput(e.target.value)}
@@ -235,6 +241,7 @@ function AddChangeForm({
       <div>
         <label style={labelStyle}>Class</label>
         <select
+          className="metra-input"
           data-testid="class-select"
           value={selectedClass}
           onChange={(e) => { setSelectedClass(e.target.value); setSelectedSkill(''); }}
@@ -249,6 +256,7 @@ function AddChangeForm({
       <div>
         <label style={labelStyle}>Skill</label>
         <select
+          className="metra-input"
           data-testid="skill-select"
           value={selectedSkill}
           onChange={(e) => setSelectedSkill(e.target.value)}
@@ -263,7 +271,7 @@ function AddChangeForm({
       </div>
       <div>
         <label style={labelStyle}>Field</label>
-        <select data-testid="field-select" value={field} onChange={(e) => setField(e.target.value)} style={inputStyle}>
+        <select className="metra-input" data-testid="field-select" value={field} onChange={(e) => setField(e.target.value)} style={inputStyle}>
           <option value="basePower">basePower</option>
           <option value="multiplier">multiplier</option>
           <option value="hitCount">hitCount</option>
@@ -277,6 +285,7 @@ function AddChangeForm({
           )}
         </label>
         <input
+          className="metra-input"
           data-testid="new-value-input"
           type="number"
           value={newValue}
@@ -317,6 +326,7 @@ function Input({
     <div style={{ marginBottom: 8 }}>
       <label style={labelStyle}>{label}</label>
       <input
+        className="metra-input"
         type="text"
         value={value}
         onChange={(e) => onChange(e.target.value)}
