@@ -1,0 +1,28 @@
+{
+  "source": "dmg sheet rows 28-29, range calculator (mastery 0.6)",
+  "className": "Paladin",
+  "mastery": 0.6,
+  "primaryStat": "STR",
+  "secondaryStat": "DEX",
+  "sharpEyesCritRate": 0.15,
+  "sharpEyesCritDamageBonus": 140,
+  "seCritFormula": "addAfterMultiply",
+  "skills": [
+    {
+      "name": "Blast (Holy, Sword)",
+      "basePower": 580,
+      "multiplier": 1.4,
+      "hitCount": 1,
+      "speedCategory": "Blast",
+      "weaponType": "2H Sword"
+    },
+    {
+      "name": "Blast (F/I/L Charge, Sword)",
+      "basePower": 580,
+      "multiplier": 1.3,
+      "hitCount": 1,
+      "speedCategory": "Strafe/Snipe",
+      "weaponType": "2H Sword"
+    }
+  ]
+}

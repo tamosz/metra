@@ -6,7 +6,8 @@
   "scripts": {
     "test": "vitest run",
     "test:watch": "vitest",
-    "dump-sheet": "tsx scripts/dump-sheet.ts"
+    "dump-sheet": "tsx scripts/dump-sheet.ts",
+    "simulate": "tsx src/cli.ts"
   },
   "devDependencies": {
     "typescript": "^5.4.0",

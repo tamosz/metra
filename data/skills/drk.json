@@ -1,0 +1,19 @@
+{
+  "source": "dmg sheet row 27, range calculator (mastery 0.8)",
+  "className": "DrK",
+  "mastery": 0.8,
+  "primaryStat": "STR",
+  "secondaryStat": "DEX",
+  "sharpEyesCritRate": 0.15,
+  "sharpEyesCritDamageBonus": 140,
+  "skills": [
+    {
+      "name": "Spear Crusher",
+      "basePower": 170,
+      "multiplier": 2.0,
+      "hitCount": 3,
+      "speedCategory": "Crusher",
+      "weaponType": "Spear"
+    }
+  ]
+}
