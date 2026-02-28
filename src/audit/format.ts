@@ -1,16 +1,5 @@
 import type { BalanceAudit } from './types.js';
-
-function formatNumber(n: number): string {
-  const str = Math.round(n).toString();
-  const negative = str.startsWith('-');
-  const digits = negative ? str.slice(1) : str;
-  const withCommas = digits.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-  return negative ? '-' + withCommas : withCommas;
-}
-
-function capitalize(s: string): string {
-  return s.charAt(0).toUpperCase() + s.slice(1);
-}
+import { formatNumber, capitalize } from '../report/utils.js';
 
 /**
  * Render a BalanceAudit as a Markdown report.

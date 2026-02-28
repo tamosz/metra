@@ -6,6 +6,12 @@ import type { Proposal } from './types.js';
  * "Brandish (Sword)" → "brandish-sword"
  * "Blast (F/I/L Charge, Sword)" → "blast-f-i-l-charge-sword"
  */
+/** Valid numeric/string fields that a proposal can modify on a SkillEntry. */
+const VALID_SKILL_FIELDS: ReadonlySet<string> = new Set([
+  'basePower', 'multiplier', 'hitCount', 'speedCategory', 'weaponType', 'name',
+  'attackType', 'builtInCritRate', 'builtInCritDamageBonus',
+]);
+
 export function skillSlug(name: string): string {
   return name
     .toLowerCase()
@@ -64,14 +70,9 @@ export function applyProposal(
       );
     }
 
-    // Validate field name
-    const validFields: ReadonlySet<string> = new Set([
-      'basePower', 'multiplier', 'hitCount', 'speedCategory', 'weaponType', 'name',
-      'attackType', 'builtInCritRate', 'builtInCritDamageBonus',
-    ]);
-    if (!validFields.has(change.field)) {
+    if (!VALID_SKILL_FIELDS.has(change.field)) {
       throw new Error(
-        `${prefix}Unknown field "${change.field}" on skill "${slug}". Valid fields: ${[...validFields].join(', ')}`
+        `${prefix}Unknown field "${change.field}" on skill "${slug}". Valid fields: ${[...VALID_SKILL_FIELDS].join(', ')}`
       );
     }
 

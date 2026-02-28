@@ -24,6 +24,9 @@ import {
 /** Default damage cap from dmg sheet B1. */
 const DAMAGE_CAP = 199999;
 
+/** Shadow Partner clone deals 50% of attack damage → 1.5× total. */
+const SHADOW_PARTNER_MULTIPLIER = 1.5;
+
 export interface DpsResult {
   /** Skill name. */
   skillName: string;
@@ -43,6 +46,120 @@ export interface DpsResult {
   averageDamage: number;
   /** DPS (average damage / attack time). */
   dps: number;
+}
+
+/**
+ * Calculate crit damage% and crit rate, merging built-in bonuses with Sharp Eyes.
+ *
+ * Crit damage formula varies by class:
+ * - addBeforeMultiply (default): critDmg% = (basePower + bonus) * multiplier
+ * - addAfterMultiply (Paladin): critDmg% = basePower * multiplier + bonus
+ */
+function calculateCritDamage(
+  skill: SkillEntry,
+  classData: ClassSkillData,
+  sharpEyes: boolean
+): { critDamagePercent: number; totalCritRate: number } {
+  const builtInCritBonus = skill.builtInCritDamageBonus ?? 0;
+  const seCritBonus = sharpEyes ? classData.sharpEyesCritDamageBonus : 0;
+  const totalCritBonus = builtInCritBonus + seCritBonus;
+
+  const seCritFormula = classData.seCritFormula ?? 'addBeforeMultiply';
+  const critDamagePercent =
+    seCritFormula === 'addAfterMultiply'
+      ? skill.basePower * skill.multiplier + totalCritBonus
+      : (skill.basePower + totalCritBonus) * skill.multiplier;
+
+  const builtInCritRate = skill.builtInCritRate ?? 0;
+  const seCritRate = sharpEyes ? classData.sharpEyesCritRate : 0;
+  const totalCritRate = Math.min(builtInCritRate + seCritRate, 1.0);
+
+  return { critDamagePercent, totalCritRate };
+}
+
+/**
+ * Calculate the base damage range using the appropriate formula for the class type.
+ * Dispatches to standard, throwingStar, or magic damage range calculation.
+ */
+function calculateBaseDamageRange(
+  build: CharacterBuild,
+  classData: ClassSkillData,
+  skill: SkillEntry,
+  weaponData: WeaponData,
+  mapleWarriorData: MapleWarriorData
+): DamageRange {
+  const { primary, secondary } = calculateTotalStats(build, classData, mapleWarriorData);
+  const damageFormula = classData.damageFormula ?? 'standard';
+
+  if (damageFormula === 'magic') {
+    // Mage TMA = INT + MATK + potion + mageEcho
+    // Source: range calculator B8 = J31 + L31 + E8 + E10
+    const mageEcho = build.echoActive
+      ? calculateMageEcho(primary, build.totalWeaponAttack, build.attackPotion)
+      : 0;
+    const tma = primary + build.totalWeaponAttack + build.attackPotion + mageEcho;
+    const spellAmp = classData.spellAmplification ?? 1;
+    const weaponAmp = classData.weaponAmplification ?? 1;
+    return calculateMagicDamageRange(tma, primary, classData.mastery, spellAmp, weaponAmp);
+  }
+
+  if (damageFormula === 'throwingStar') {
+    const totalAttack = calculateTotalAttack(build);
+    return calculateThrowingStarRange(primary, totalAttack);
+  }
+
+  const totalAttack = calculateTotalAttack(build);
+  const weaponMultiplier = getWeaponMultiplier(weaponData, skill.weaponType, skill.attackType, skill.attackRatio);
+  return calculateDamageRange(primary, secondary, weaponMultiplier, classData.mastery, totalAttack);
+}
+
+/**
+ * Convert a damage percent to an effective multiplier.
+ * Physical skills use percentage (260 = 260% → ÷100); magic uses raw multiplier.
+ * Source: dmg sheet — physical uses E15%, magic uses E36 directly.
+ */
+function toEffectiveMultiplier(damagePercent: number, isMagic: boolean): number {
+  return isMagic ? damagePercent : damagePercent / 100;
+}
+
+/**
+ * Compute average damage per attack including crit weighting, range caps,
+ * and Shadow Partner.
+ */
+function calculateAverageDamage(
+  damageRange: DamageRange,
+  skillDamagePercent: number,
+  critDamagePercent: number,
+  totalCritRate: number,
+  hitCount: number,
+  isMagic: boolean,
+  shadowPartner: boolean | undefined
+): { adjustedRange: number; adjustedRangeCrit: number; averageDamage: number } {
+  const skillMultiplier = toEffectiveMultiplier(skillDamagePercent, isMagic);
+  const critMultiplier = toEffectiveMultiplier(critDamagePercent, isMagic);
+
+  const rangeCap = DAMAGE_CAP / skillMultiplier;
+  const rangeCapCrit = DAMAGE_CAP / critMultiplier;
+
+  const adjustedRange = calculateAdjustedRange(damageRange, rangeCap);
+  const adjustedRangeCrit = calculateAdjustedRange(damageRange, rangeCapCrit);
+
+  let averageDamage: number;
+  if (totalCritRate > 0) {
+    const normalRate = 1 - totalCritRate;
+    averageDamage =
+      (skillMultiplier * normalRate * adjustedRange +
+        critMultiplier * totalCritRate * adjustedRangeCrit) *
+      hitCount;
+  } else {
+    averageDamage = skillMultiplier * adjustedRange * hitCount;
+  }
+
+  if (shadowPartner) {
+    averageDamage *= SHADOW_PARTNER_MULTIPLIER;
+  }
+
+  return { adjustedRange, adjustedRangeCrit, averageDamage };
 }
 
 /**
@@ -67,20 +184,11 @@ export function calculateSkillDps(
   attackSpeedData: AttackSpeedData,
   mapleWarriorData: MapleWarriorData
 ): DpsResult {
-  // 1. Attack time
-  const effectiveSpeed = resolveEffectiveWeaponSpeed(
-    build.weaponSpeed,
-    build.speedInfusion
-  );
-  const attackTime = lookupAttackTime(
-    attackSpeedData,
-    effectiveSpeed,
-    skill.speedCategory
-  );
+  const effectiveSpeed = resolveEffectiveWeaponSpeed(build.weaponSpeed, build.speedInfusion);
+  const attackTime = lookupAttackTime(attackSpeedData, effectiveSpeed, skill.speedCategory);
 
   // Fixed damage path: bypass damage formula entirely (e.g., Snipe)
   if (skill.fixedDamage != null) {
-    const dps = skill.fixedDamage / attackTime;
     return {
       skillName: skill.name,
       attackTime,
@@ -90,98 +198,18 @@ export function calculateSkillDps(
       adjustedRange: 0,
       adjustedRangeSe: 0,
       averageDamage: skill.fixedDamage,
-      dps,
+      dps: skill.fixedDamage / attackTime,
     };
   }
 
-  // 2-3. Skill damage percentages
   const skillDamagePercent = skill.basePower * skill.multiplier;
-
-  // Crit damage: merge built-in crit bonus (e.g., TT +100) with SE bonus (+140)
-  const builtInCritBonus = skill.builtInCritDamageBonus ?? 0;
-  const seCritBonus = build.sharpEyes ? classData.sharpEyesCritDamageBonus : 0;
-  const totalCritBonus = builtInCritBonus + seCritBonus;
-
-  // Crit damage formula varies by class:
-  // Hero/DrK/NL (addBeforeMultiply, default): critDmg% = (basePower + bonus) * multiplier
-  // Paladin (addAfterMultiply): critDmg% = basePower * multiplier + bonus
-  const seCritFormula = classData.seCritFormula ?? 'addBeforeMultiply';
-  const critDamagePercent =
-    seCritFormula === 'addAfterMultiply'
-      ? skill.basePower * skill.multiplier + totalCritBonus
-      : (skill.basePower + totalCritBonus) * skill.multiplier;
-
-  // Crit rate: built-in (e.g., TT 0.50) + SE (0.15), capped at 1.0
-  const builtInCritRate = skill.builtInCritRate ?? 0;
-  const seCritRate = build.sharpEyes ? classData.sharpEyesCritRate : 0;
-  const totalCritRate = Math.min(builtInCritRate + seCritRate, 1.0);
-
-  // Damage range: formula varies by class type
-  const { primary, secondary } = calculateTotalStats(build, classData, mapleWarriorData);
-  let damageRange: DamageRange;
-  const damageFormula = classData.damageFormula ?? 'standard';
-  const isMagic = damageFormula === 'magic';
-
-  if (isMagic) {
-    // Mage TMA = INT + MATK + potion + mageEcho
-    // Source: range calculator B8 = J31 + L31 + E8 + E10
-    // Mage echo includes INT: E10 = floor((J31 + L31 + E8) * 0.04)
-    const mageEcho = build.echoActive
-      ? calculateMageEcho(primary, build.totalWeaponAttack, build.attackPotion)
-      : 0;
-    const tma = primary + build.totalWeaponAttack + build.attackPotion + mageEcho;
-    const spellAmp = classData.spellAmplification ?? 1;
-    const weaponAmp = classData.weaponAmplification ?? 1;
-    damageRange = calculateMagicDamageRange(tma, primary, classData.mastery, spellAmp, weaponAmp);
-  } else if (damageFormula === 'throwingStar') {
-    const totalAttack = calculateTotalAttack(build);
-    damageRange = calculateThrowingStarRange(primary, totalAttack);
-  } else {
-    const totalAttack = calculateTotalAttack(build);
-    const weaponMultiplier = getWeaponMultiplier(weaponData, skill.weaponType, skill.attackType, skill.attackRatio);
-    damageRange = calculateDamageRange(
-      primary,
-      secondary,
-      weaponMultiplier,
-      classData.mastery,
-      totalAttack
-    );
-  }
-
-  // Skill damage multiplier: physical uses percentage (260 = 260% → ÷100),
-  // magic uses raw multiplier (210 = 210×).
-  // Source: dmg sheet — physical uses E15%, magic uses E36 directly.
-  const skillMultiplier = isMagic ? skillDamagePercent : skillDamagePercent / 100;
-  const critMultiplier = isMagic ? critDamagePercent : critDamagePercent / 100;
-
-  // 4. Range caps = damageCap / multiplier
-  const rangeCap = DAMAGE_CAP / skillMultiplier;
-  const rangeCapCrit = DAMAGE_CAP / critMultiplier;
-
-  // 5. Adjusted ranges
-  const adjustedRange = calculateAdjustedRange(damageRange, rangeCap);
-  const adjustedRangeCrit = calculateAdjustedRange(damageRange, rangeCapCrit);
-
-  // 6. Average damage per attack
-  let averageDamage: number;
-  if (totalCritRate > 0) {
-    const normalRate = 1 - totalCritRate;
-    averageDamage =
-      (skillMultiplier * normalRate * adjustedRange +
-        critMultiplier * totalCritRate * adjustedRangeCrit) *
-      skill.hitCount;
-  } else {
-    averageDamage =
-      skillMultiplier * adjustedRange * skill.hitCount;
-  }
-
-  // Shadow Partner: clone deals 50% of attack damage → 1.5× total
-  if (build.shadowPartner) {
-    averageDamage *= 1.5;
-  }
-
-  // 7. DPS
-  const dps = averageDamage / attackTime;
+  const { critDamagePercent, totalCritRate } = calculateCritDamage(skill, classData, build.sharpEyes);
+  const damageRange = calculateBaseDamageRange(build, classData, skill, weaponData, mapleWarriorData);
+  const isMagic = (classData.damageFormula ?? 'standard') === 'magic';
+  const { adjustedRange, adjustedRangeCrit, averageDamage } = calculateAverageDamage(
+    damageRange, skillDamagePercent, critDamagePercent, totalCritRate,
+    skill.hitCount, isMagic, build.shadowPartner
+  );
 
   return {
     skillName: skill.name,
@@ -192,6 +220,6 @@ export function calculateSkillDps(
     adjustedRange,
     adjustedRangeSe: adjustedRangeCrit,
     averageDamage,
-    dps,
+    dps: averageDamage / attackTime,
   };
 }

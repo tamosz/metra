@@ -6,7 +6,7 @@ import type {
   MapleWarriorData,
   SkillEntry,
 } from '../data/types.js';
-import { calculateSkillDps } from '../engine/dps.js';
+import { calculateSkillDps, type DpsResult } from '../engine/dps.js';
 import type { ScenarioConfig, ScenarioResult } from './types.js';
 
 /** Default scenario: fully buffed, no overrides. */
@@ -34,6 +34,14 @@ function applyScenarioOverrides(
 ): CharacterBuild {
   if (!scenario.overrides) return build;
   return { ...build, ...scenario.overrides };
+}
+
+/**
+ * Apply Physical Damage Reduction to a DPS result.
+ * Returns a new result with DPS and averageDamage scaled by (1 - pdr).
+ */
+function applyPdr(dps: DpsResult, pdr: number): DpsResult {
+  return { ...dps, dps: dps.dps * (1 - pdr), averageDamage: dps.averageDamage * (1 - pdr) };
 }
 
 /**
@@ -83,10 +91,7 @@ export function runSimulation(
             mapleWarriorData
           );
 
-          const effectiveDps =
-            scenario.pdr != null
-              ? { ...dps, dps: dps.dps * (1 - scenario.pdr), averageDamage: dps.averageDamage * (1 - scenario.pdr) }
-              : dps;
+          const effectiveDps = scenario.pdr != null ? applyPdr(dps, scenario.pdr) : dps;
 
           skillResults.push({
             skill,

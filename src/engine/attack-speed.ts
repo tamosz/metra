@@ -27,7 +27,7 @@ export function lookupAttackTime(
   effectiveSpeed: number,
   skillCategory: string
 ): number {
-  const entry = attackSpeedData.entries.find((e) => e.speed === effectiveSpeed);
+  let entry = attackSpeedData.entries.find((e) => e.speed === effectiveSpeed);
   if (!entry) {
     // VLOOKUP with TRUE (approximate match) — find the largest speed <= effectiveSpeed
     const sorted = [...attackSpeedData.entries]
@@ -38,13 +38,16 @@ export function lookupAttackTime(
         `No attack speed entry found for effective speed ${effectiveSpeed}`
       );
     }
-    const time = sorted[0].times[skillCategory];
-    if (time === undefined) {
-      throw new Error(`Unknown skill category: ${skillCategory}`);
-    }
-    return time;
+    entry = sorted[0];
   }
 
+  return getTimeForCategory(entry, skillCategory);
+}
+
+function getTimeForCategory(
+  entry: AttackSpeedData['entries'][number],
+  skillCategory: string
+): number {
   const time = entry.times[skillCategory];
   if (time === undefined) {
     throw new Error(`Unknown skill category: ${skillCategory}`);
