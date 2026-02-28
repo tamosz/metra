@@ -78,8 +78,15 @@ export function calculateSkillDps(
 
   // 2-3. Skill damage percentages
   const skillDamagePercent = skill.basePower * skill.multiplier;
+
+  // SE crit damage formula varies by class:
+  // Hero/DrK (addBeforeMultiply, default): seDmg% = (basePower + bonus) * multiplier
+  // Paladin (addAfterMultiply): seDmg% = basePower * multiplier + bonus
+  const seCritFormula = classData.seCritFormula ?? 'addBeforeMultiply';
   const seDamagePercent =
-    (skill.basePower + classData.sharpEyesCritDamageBonus) * skill.multiplier;
+    seCritFormula === 'addAfterMultiply'
+      ? skill.basePower * skill.multiplier + classData.sharpEyesCritDamageBonus
+      : (skill.basePower + classData.sharpEyesCritDamageBonus) * skill.multiplier;
 
   // Damage range
   const weaponMultiplier = getWeaponMultiplier(weaponData, build.weaponType);

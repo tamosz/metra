@@ -61,6 +61,12 @@ export interface ClassSkillData {
   sharpEyesCritRate: number;
   /** SE critical damage bonus added to base power. */
   sharpEyesCritDamageBonus: number;
+  /**
+   * SE crit damage formula variant.
+   * - "addBeforeMultiply" (default, Hero/DrK): seDmg% = (basePower + bonus) * multiplier
+   * - "addAfterMultiply": seDmg% = basePower * multiplier + bonus  (Paladin G28 formula)
+   */
+  seCritFormula?: 'addBeforeMultiply' | 'addAfterMultiply';
   skills: SkillEntry[];
 }
 

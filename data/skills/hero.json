@@ -6,6 +6,7 @@
   "secondaryStat": "DEX",
   "sharpEyesCritRate": 0.15,
   "sharpEyesCritDamageBonus": 140,
+  "seCritFormula": "addBeforeMultiply",
   "skills": [
     {
       "name": "Brandish (Sword)",
