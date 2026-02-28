@@ -1,4 +1,4 @@
-// Public API for the MapleRoyals Balance Simulator
+// Browser-safe entry point — everything except fs-based data loaders.
 
 // Engine
 export { calculateSkillDps, type DpsResult } from './engine/dps.js';
@@ -19,17 +19,6 @@ export {
   resolveEffectiveWeaponSpeed,
   lookupAttackTime,
 } from './engine/attack-speed.js';
-
-// Data loading
-export {
-  loadWeapons,
-  loadAttackSpeed,
-  loadMapleWarrior,
-  loadClassSkills,
-  loadGearTemplate,
-  discoverClassesAndTiers,
-  type DiscoveryResult,
-} from './data/loader.js';
 
 // Types
 export type {
@@ -57,7 +46,7 @@ export type {
   ComparisonResult,
 } from './proposals/types.js';
 
-// Report
+// Report (renderers are pure functions, no fs)
 export { renderComparisonReport, renderBaselineReport } from './report/markdown.js';
 export { renderAsciiChart } from './report/ascii-chart.js';
 export { renderComparisonBBCode, renderBaselineBBCode } from './report/bbcode.js';
