@@ -122,7 +122,7 @@ function ComparisonChart({ deltas }: { deltas: DeltaEntry[] }) {
   const chartHeight = Math.max(200, chartData.length * barHeight + 60);
 
   return (
-    <div style={{ width: '100%', height: chartHeight, marginBottom: 24 }}>
+    <div data-testid="comparison-chart" style={{ width: '100%', height: chartHeight, marginBottom: 24 }}>
       <ResponsiveContainer>
         <BarChart
           data={chartData}
@@ -202,7 +202,7 @@ function DeltaTable({ deltas }: { deltas: DeltaEntry[] }) {
   const hasRanks = sorted.some((d) => d.rankBefore != null);
 
   return (
-    <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
+    <table data-testid="delta-table" style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
       <thead>
         <tr style={{ borderBottom: '1px solid #1e1e2e' }}>
           {hasRanks && <th style={thStyle}>Rank</th>}
