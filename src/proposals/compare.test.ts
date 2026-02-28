@@ -32,6 +32,7 @@ beforeAll(() => {
     ['hero', loadClassSkills('Hero')],
     ['drk', loadClassSkills('DrK')],
     ['paladin', loadClassSkills('Paladin')],
+    ['nl', loadClassSkills('NL')],
   ]);
 
   gearTemplates = new Map([
@@ -41,10 +42,12 @@ beforeAll(() => {
     ['drk-high', loadGearTemplate('drk-high')],
     ['paladin-low', loadGearTemplate('paladin-low')],
     ['paladin-high', loadGearTemplate('paladin-high')],
+    ['nl-low', loadGearTemplate('nl-low')],
+    ['nl-high', loadGearTemplate('nl-high')],
   ]);
 
   config = {
-    classes: ['hero', 'drk', 'paladin'],
+    classes: ['hero', 'drk', 'paladin', 'nl'],
     tiers: ['low', 'high'],
   };
 });
@@ -112,6 +115,16 @@ describe('compareProposal', () => {
         d.tier === 'high'
     )!;
     expect(paladinBlastHigh.change).toBe(0);
+
+    // NL should be unchanged
+    const nlTtHigh = result.deltas.find(
+      (d) =>
+        d.className === 'NL' &&
+        d.skillName === 'Triple Throw 30' &&
+        d.tier === 'high'
+    )!;
+    expect(nlTtHigh.change).toBe(0);
+    expect(nlTtHigh.changePercent).toBe(0);
   });
 
   it('cross-checks Brandish +20 Low DPS against hero charts scenario 3', () => {
@@ -186,5 +199,11 @@ describe('compareProposal', () => {
       (d) => d.className === 'Paladin' && d.skillName === 'Blast (Holy, Sword)' && d.tier === 'high'
     )!;
     expect(pallyDelta.change).toBe(0);
+
+    // NL unaffected
+    const nlDelta = result.deltas.find(
+      (d) => d.className === 'NL' && d.skillName === 'Triple Throw 30' && d.tier === 'high'
+    )!;
+    expect(nlDelta.change).toBe(0);
   });
 });

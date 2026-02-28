@@ -35,7 +35,7 @@ beforeAll(() => {
   attackSpeedData = loadAttackSpeed();
   mapleWarriorData = loadMapleWarrior();
 
-  const classNames = ['hero', 'drk', 'paladin'];
+  const classNames = ['hero', 'drk', 'paladin', 'nl'];
   classDataMap = new Map<string, ClassSkillData>();
   for (const name of classNames) {
     classDataMap.set(name, loadClassSkills(name));
@@ -82,6 +82,13 @@ describe('End-to-end: brandish-buff-20 proposal', () => {
       (d) => d.className === 'DrK' && d.tier === 'high'
     )!;
     expect(drkDelta.change).toBe(0);
+
+    // NL unchanged (not a warrior skill)
+    const nlDelta = result.deltas.find(
+      (d) => d.className === 'NL' && d.tier === 'high'
+    )!;
+    expect(nlDelta).toBeDefined();
+    expect(nlDelta.change).toBe(0);
   });
 });
 
@@ -121,6 +128,13 @@ describe('End-to-end: warrior-rebalance proposal', () => {
       (d) => d.className === 'Paladin' && d.skillName === 'Blast (F/I/L Charge, Sword)' && d.tier === 'high'
     )!;
     expect(paladinFilDelta.change).toBe(0);
+
+    // NL unchanged (warrior-only proposal)
+    const nlDelta = result.deltas.find(
+      (d) => d.className === 'NL' && d.tier === 'high'
+    )!;
+    expect(nlDelta).toBeDefined();
+    expect(nlDelta.change).toBe(0);
   });
 
   it('produces distinct Markdown reports for different proposals', () => {
