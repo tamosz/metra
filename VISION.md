@@ -21,6 +21,8 @@
 
 - **Deploy static site** on Vercel (free tier, auto-deploys from main)
 - **Gear/build explorer**: hybrid approach — start from templates, let users override individual stats (STR, DEX, WATK, etc.) with sliders/inputs. Power users get full control, casual users get sensible defaults. Real-time DPS recalculation as stats change.
+- **Class comparison view**: side-by-side build comparison ("is my NL better than my Hero at this funding level?"). Natural extension of the explorer.
+- **Custom funding tiers**: mid-tier is where most players actually are, and the low→high jump is large. Let users save custom templates or add a mid tier.
 - **UX polish**: mobile-friendly layout, tooltips explaining game mechanics, class icons, onboarding for first-time visitors
 - **Shareable builds**: extend URL encoding to include custom gear overrides (not just proposals)
 
@@ -32,6 +34,8 @@
   - Row-level security — no custom auth code to maintain
   - Free tier covers expected usage; paid tier is ~$25/mo if needed
 - **Proposal gallery**: browse, search, and filter community proposals
+- **Proposal templates/presets**: curated starting-point proposals for recurring themes ("nerf NL", "buff warriors") that people can fork and tweak. Lowers the barrier to participation.
+- **Diff visualization**: visual chart showing before/after rankings — bar chart overlay, bump chart for rank changes. Makes proposals digestible at a glance beyond tables of numbers.
 - **Voting**: upvote/downvote proposals, sort by popularity
 - **Comments**: threaded discussion on proposals (rendered as BBCode-compatible for cross-posting to forums)
 - **Proposal versioning**: edit proposals without losing history
@@ -40,6 +44,10 @@
 **Goal**: Deepen the simulator's analytical power.
 
 - **Magic classes**: Arch Mage (I/L), Bishop — requires magic damage formula implementation (different from physical)
+- **Party DPS modeling**: MapleRoyals endgame is party play. A Bishop's value isn't personal DPS — it's party buff contribution. Evaluating balance purely on solo DPS misses support/utility classes. Hard to model well, but the biggest analytical blind spot.
+- **Accuracy/miss rate**: the simulator assumes 100% hit rate. Against high-level bosses, accuracy matters and varies by class. Silently inflates some classes' effective bossing DPS.
+- **Buff uptime/sustain**: some skills have downtime (Berserk HP drain, Battleship HP, buff recasting). Sustained DPS over a 5-minute boss fight differs from theoretical peak.
+- **Marginal gain calculator**: "what should I upgrade next?" — show DPS gain per WATK, per primary stat point, per scroll tier. Not a full gear optimizer, but answers the most common question users will have.
 - **Training efficiency**: kills/hr and EXP/hr on reference mobs, comparing classes for grinding scenarios
 - **Balance audit**: automated outlier detection — flag classes significantly over/under-performing across scenarios and tiers
 - **Mob/boss modeling**: model specific bosses (HP thresholds, PDR, phases) for realistic bossing comparisons
@@ -85,6 +93,6 @@ The engine stays client-side — simulation is fast enough in the browser. Supab
 ## Non-Goals
 
 - **Not a game wiki**: don't try to document all MapleStory mechanics. Focus on balance-relevant DPS calculation.
-- **Not a gear optimizer**: the build explorer shows DPS impact of stat changes, but doesn't solve for "best gear given a budget."
+- **Not a gear optimizer**: the build explorer shows DPS impact of stat changes, but doesn't solve for "best gear given a budget." The marginal gain calculator (Phase 4) is a deliberate compromise — it answers "what helps most?" without trying to solve the full optimization problem.
 - **Not real-time multiplayer**: proposals are asynchronous. No live collaboration or WebSocket features.
 - **Not a mobile app**: responsive web is sufficient. No native app.
