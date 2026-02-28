@@ -95,9 +95,10 @@ describe('discoverClassesAndTiers', () => {
   it('discovers all classes with skill files and gear templates', () => {
     const { classNames, tiers, classDataMap, gearTemplates } = discoverClassesAndTiers();
 
-    // Should find at least the 7 implemented classes
-    expect(classNames.length).toBeGreaterThanOrEqual(7);
+    // Should find at least the 9 implemented classes (hero-axe split from hero)
+    expect(classNames.length).toBeGreaterThanOrEqual(9);
     expect(classNames).toContain('hero');
+    expect(classNames).toContain('hero-axe');
     expect(classNames).toContain('drk');
     expect(classNames).toContain('paladin');
     expect(classNames).toContain('nl');

@@ -1,6 +1,6 @@
 {
-  "source": "dmg sheet rows 15-18 (Brandish), range calculator D7 (mastery)",
-  "className": "Hero",
+  "source": "dmg sheet rows 15-18 (Brandish), range calculator D7 (mastery). Split from hero.json for correct weapon speed modeling.",
+  "className": "Hero (Axe)",
   "mastery": 0.6,
   "primaryStat": "STR",
   "secondaryStat": "DEX",
@@ -10,12 +10,12 @@
   "damageFormula": "standard",
   "skills": [
     {
-      "name": "Brandish (Sword)",
+      "name": "Brandish",
       "basePower": 260,
       "multiplier": 1.9,
       "hitCount": 2,
       "speedCategory": "Brandish",
-      "weaponType": "2H Sword"
+      "weaponType": "2H Axe"
     }
   ]
 }

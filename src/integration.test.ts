@@ -35,7 +35,7 @@ beforeAll(() => {
   attackSpeedData = loadAttackSpeed();
   mapleWarriorData = loadMapleWarrior();
 
-  const classNames = ['hero', 'drk', 'paladin', 'nl'];
+  const classNames = ['hero', 'hero-axe', 'drk', 'paladin', 'nl'];
   classDataMap = new Map<string, ClassSkillData>();
   for (const name of classNames) {
     classDataMap.set(name, loadClassSkills(name));
