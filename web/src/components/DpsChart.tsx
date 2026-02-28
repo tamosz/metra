@@ -49,6 +49,7 @@ export function DpsChart({ data }: DpsChartProps) {
             type="category"
             dataKey="label"
             width={260}
+            interval={0}
             tick={({ x, y, payload }) => {
               const entry = chartData.find((d) => d.label === payload.value);
               return (
