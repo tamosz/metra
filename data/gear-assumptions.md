@@ -44,11 +44,12 @@ Cross-referenced against MapleRoyals forum guides:
 
 ### Weapon Speed
 
-All warrior templates use weapon speed 6 ("Normal"). This is correct for Dragon Claymore
-and Sky Ski, but **Stonetooth Sword is speed 5 (Fast)**. If Hero high represents a
-Stonetooth user, weapon speed should be 5, yielding faster attack time.
+Hero high uses weapon speed 5 (Fast), matching Stonetooth Sword — the standard endgame
+Hero weapon per community consensus. With SI active, speed 5 and speed 6 both resolve to
+effective speed 2 (0.63s Brandish), so buffed DPS is identical. Without SI, Stonetooth at
+speed 5 yields 0.69s vs 0.75s for speed 6 — an 8.7% DPS advantage in unbuffed scenarios.
 
-Current templates model speed 6 to match the source spreadsheet.
+DrK/Paladin templates use weapon speed 6 (Normal), correct for Sky Ski and 2H BW/Sword.
 
 ### Gear — Hero & Paladin share identical gear
 
@@ -139,28 +140,108 @@ low tier is genuinely budget.
 
 ---
 
-## 4. Open Questions
+## 4. Research Findings (February 2026)
 
-1. **Warrior high C/G/S at 20/20/20** — Cape/Glove/Shoe all at 20 WATK is near-godly.
-   Forum guides suggest 15+ gloves, 10+ cape, 7+ shoes for "endgame." Our high tier
-   models a top-0.1% character.
+### Resolved: Stonetooth speed (Q3)
 
-2. **Warrior low weapon at 140** — Still very well-scrolled for a "budget" build.
-   Closer to mid-funded. Budget weapons are typically 120-130.
+**Finding:** Stonetooth Sword is the standard endgame Hero weapon. Dragon Claymore is
+theoretically stronger (higher WATK) but extremely rare and only advantageous with SI.
 
-3. **Stonetooth speed** — Stonetooth Sword is speed 5 (Fast), not speed 6 (Normal).
-   If Hero high uses Stonetooth, weapon speed should be 5. Current templates use speed 6
-   to match the source spreadsheet. This is a design decision, not a bug.
+**Action taken:** Hero high `weaponSpeed` changed from 6 → 5. With SI active (default
+scenario), both resolve to effective speed 2 — zero DPS change. Unbuffed scenarios now
+correctly model Stonetooth's faster speed (0.69s vs 0.75s Brandish).
 
-4. **Axe/BW weapon multipliers may be wrong** — The project uses 1H Axe 4.4 / 2H Axe 4.8
-   and 1H BW 4.4 / 2H BW 4.8 (from the source spreadsheet). Standard GMS v62 values are
-   1H 4.0 / 2H 4.2. A forum thread ([The Balancing of Axes & Blunt Weapons](https://royals.ms/forum/threads/the-balancing-of-axes-blunt-weapons-data-included.53212/))
-   proposed buffing these values but noted that "changing calculations is difficult without
-   a custom client," implying server-side implementation may not have happened. **Needs
-   in-game verification.** If the actual values are GMS v62, Axe/BW damage would decrease
-   significantly (Axe 2H: 4.8→4.2 = ~12.5% less primary stat contribution).
+Sources: [Hero Guide](https://royals.ms/forum/threads/hero-guide.57080/),
+[Why is Stonetooth the endgame weapon?](https://royals.ms/forum/threads/for-heros-why-is-stonetooth-the-end-game-weapon.116341/),
+[Claymore vs Stonetooth](https://royals.ms/forum/threads/claymore-vs-stonetooth.58556/),
+[Questions regarding Warriors](https://royals.ms/forum/threads/questions-regarding-warriors-specifically-hero.161467/)
 
-5. **Weapon multipliers distinguish slash/stab** — Spear (3.0 slash / 5.0 stab) and Polearm
-   (5.0 slash / 3.0 stab) now use the correct multiplier based on skill attack type.
-   Crusher stabs (Spear 5.0), Fury slashes (Polearm 5.0). Both get the optimal 5.0
-   multiplier when using their intended weapon.
+### Resolved: Axe/BW weapon multipliers (Q4)
+
+**Finding:** The values 4.4 (1H) and 4.8 (2H) for Axe/BW swing multipliers ARE the
+standard GMS v62 values. The previously cited "GMS v62 values" of 4.0/4.2 were incorrect —
+4.0 is the 1H **Sword** multiplier, not 1H Axe. Multiple authoritative sources confirm:
+StrategyWiki, Ayumilove formula compilation, MapleStory Wiki damage formula page, and the
+MapleRoyals damage range calculator thread. MapleRoyals has not modified these values
+([confirmed by community member Zerato](https://royals.ms/forum/threads/did-mapleroyals-balance-the-damage-between-axe-blunt-weapon-and-sword%EF%BC%9F.125863/)).
+
+**Action taken:** Removed incorrect warning from `weapons.json`. No value changes needed.
+
+Sources: [Axe/BW Balancing Thread](https://royals.ms/forum/threads/the-balancing-of-axes-blunt-weapons-data-included.53212/),
+[MapleRoyals hasn't changed axes](https://royals.ms/forum/threads/did-mapleroyals-balance-the-damage-between-axe-blunt-weapon-and-sword%EF%BC%9F.125863/),
+[Damage Range Calculator](https://royals.ms/forum/threads/damage-range-calculator.17086/),
+[Warrior 2H Weapon Balancing](https://royals.ms/forum/threads/warrior-2h-weapon-balancing.163124/)
+
+### Resolved: Weapon multipliers slash/stab (Q5)
+
+Spear (3.0 slash / 5.0 stab) and Polearm (5.0 slash / 3.0 stab) now use the correct
+multiplier based on skill attack type. Crusher stabs (Spear 5.0), Fury slashes (Polearm
+5.0). Both get the optimal 5.0 multiplier when using their intended weapon.
+
+---
+
+## 5. Open Design Decisions
+
+These are not bugs — they are choices about what "high" and "low" tier represent. The
+current values match the source spreadsheet and model near-theoretical-maximum characters.
+
+### Warrior high C/G/S at 20/20/20 (Q1)
+
+**Research finding:** 20/20/20 WATK on Cape/Glove/Shoe is extreme godly (top ~0.01%).
+
+Forum marketplace data with prices (February 2026):
+
+| Slot | Forum "endgame" | Forum "godly" | Current template | Price at template value |
+|------|----------------|---------------|------------------|----------------------|
+| Gloves | 15 (~1.5b) | 19-21 (10-18b) | 20 | ~18b |
+| Cape | 10-12 (~2-5b) | 17-20 (17-43b) | 20 | ~41b |
+| Shoes | 7-8 (~2-3b) | 12-14 (11-14b) | 20 | No listing found |
+
+Key context: Capes gain WATK only via chaos scrolls (no dedicated ATT scroll), making
+high-WATK capes extremely RNG-dependent. A 20 ATT PGC was listed at 41-43b. No 20 ATT
+Facestompers were found on the forum; the confirmed ceiling is ~13-14 from marketplace.
+
+**Comparison with NL templates:** NL high uses 21/18/17 (total 56) — still godly but with
+a more realistic distribution across slots.
+
+**Options:**
+- **Keep 20/20/20** — models theoretical maximum. Useful for ceiling comparisons.
+- **Reduce to ~17/14/10** (total 41) — models a well-funded endgame character (~15-20b
+  total C/G/S investment). More representative of the population that balance changes
+  actually affect.
+- **Reduce to ~19/17/13** (total 49) — models a top-1% character. Middle ground.
+
+Sources: [Paladin Guide](https://royals.ms/forum/threads/comprehensive-paladin-guide-haplopelma.161247/),
+[Endgame Progression Thread](https://royals.ms/forum/threads/best-%E2%80%9Cdecent%E2%80%9D-gear-progressing-into-end-game.229612/),
+[20 ATT PGC listing](https://royals.ms/forum/threads/s-20-att-cape-pgc-6173-clean-ep.230089/),
+[20 WA SCG listing](https://royals.ms/forum/threads/s-scg-20-wa-c-o-18b.237392/)
+
+### Warrior low weapon at 140 WATK (Q2)
+
+**Research finding:** 140 WATK is solidly mid-funded, not budget.
+
+Forum trading data:
+
+| WATK | Weapon | Price | Tier |
+|------|--------|-------|------|
+| 125 | Dragon Claymore | 500m | Budget |
+| 128 | Stonetooth | ~2b | Budget endgame |
+| 130 | Stonetooth | 1.75-3b | Mid-funded |
+| 140+ | Stonetooth | 8-15b est. | High-mid |
+| 144 | Stonetooth | 25b | Near-godly |
+
+The Paladin guide lists 130 WATK 2H sword as "mid-range." The community recommends
+"a 128 ST for 2b" as the budget entry point. The DK guide describes 120+ Sky Ski as
+"very expensive" for budget players.
+
+**Options:**
+- **Keep 140** — matches source spreadsheet. Models a character with some investment.
+- **Reduce to 125** — matches budget Dragon Claymore pricing (~500m). Genuine "low tier."
+- **Reduce to 130** — matches mid-range per Paladin guide. Compromise between budget
+  and the current value.
+
+Sources: [Paladin Guide](https://royals.ms/forum/threads/comprehensive-paladin-guide-haplopelma.161247/),
+[Help with Choosing Swords](https://royals.ms/forum/threads/help-with-choosing-swords.124072/),
+[DK Guide 2026](https://royals.ms/forum/threads/a-guide-to-dark-knight-2026.230387/),
+[Dragon Claymore 125 listing](https://royals.ms/forum/threads/s-125-dragon-claymore-and-127-dark-neschere.228554/),
+[Stonetooth Price Check](https://royals.ms/forum/threads/p-c-on-various-stonetooth-swords.205623/)
