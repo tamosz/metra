@@ -160,5 +160,7 @@ low tier is genuinely budget.
    If Hero high uses Stonetooth, weapon speed should be 5. Current templates use speed 6
    to match the source spreadsheet. This is a design decision, not a bug.
 
-6. **No Polearm variant for DrK** — Only Spear is modeled. Fury (Polearm) has different
-   speed/damage tradeoffs.
+6. **Weapon multipliers distinguish slash/stab** — Spear (3.0 slash / 5.0 stab) and Polearm
+   (5.0 slash / 3.0 stab) now use the correct multiplier based on skill attack type.
+   Crusher stabs (Spear 5.0), Fury slashes (Polearm 5.0). Both get the optimal 5.0
+   multiplier when using their intended weapon.
