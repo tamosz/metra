@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import {
   calculateDamageRange,
+  calculateThrowingStarRange,
   calculateAdjustedRange,
   calculateRangeCap,
   getWeaponMultiplier,
@@ -38,6 +39,25 @@ describe('calculateDamageRange', () => {
     const range = calculateDamageRange(1272, 127, 5.0, 0.8, 315);
     expect(range.min).toBe(14824);
     expect(range.max).toBe(20434);
+  });
+});
+
+describe('calculateThrowingStarRange', () => {
+  it('computes NL throwing star range correctly', () => {
+    // max = floor(5.0 * 1000 * 300 / 100) = 15000
+    // min = floor(2.5 * 1000 * 300 / 100) = 7500
+    const range = calculateThrowingStarRange(1000, 300);
+    expect(range.max).toBe(15000);
+    expect(range.min).toBe(7500);
+    expect(range.average).toBe(11250);
+  });
+
+  it('floors fractional results', () => {
+    // max = floor(5.0 * 777 * 213 / 100) = floor(8275.05) = 8275
+    // min = floor(2.5 * 777 * 213 / 100) = floor(4137.525) = 4137
+    const range = calculateThrowingStarRange(777, 213);
+    expect(range.max).toBe(8275);
+    expect(range.min).toBe(4137);
   });
 });
 

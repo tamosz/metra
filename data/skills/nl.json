@@ -1,0 +1,32 @@
+{
+  "source": "dmg sheet rows 12-13, range calculator F18/F19 (TT range), mastery 0.6",
+  "className": "NL",
+  "mastery": 0.6,
+  "primaryStat": "LUK",
+  "secondaryStat": "STR",
+  "sharpEyesCritRate": 0.15,
+  "sharpEyesCritDamageBonus": 140,
+  "seCritFormula": "addBeforeMultiply",
+  "skills": [
+    {
+      "name": "Triple Throw 30",
+      "basePower": 150,
+      "multiplier": 1,
+      "hitCount": 3,
+      "speedCategory": "Triple Throw",
+      "weaponType": "Claw",
+      "builtInCritRate": 0.50,
+      "builtInCritDamageBonus": 100
+    },
+    {
+      "name": "Triple Throw 20",
+      "basePower": 140,
+      "multiplier": 1,
+      "hitCount": 3,
+      "speedCategory": "Triple Throw",
+      "weaponType": "Claw",
+      "builtInCritRate": 0.50,
+      "builtInCritDamageBonus": 100
+    }
+  ]
+}

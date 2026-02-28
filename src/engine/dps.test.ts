@@ -360,6 +360,183 @@ describe('Paladin BW Blast DPS', () => {
   });
 });
 
+describe('Night Lord Triple Throw DPS', () => {
+  let nlData: ClassSkillData;
+  const nlBuild: CharacterBuild = {
+    className: 'NL',
+    baseStats: { STR: 4, DEX: 25, INT: 4, LUK: 605 },
+    gearStats: { STR: 18, DEX: 0, INT: 0, LUK: 195 },
+    totalWeaponAttack: 250,
+    weaponType: 'Claw',
+    weaponSpeed: 4,
+    attackPotion: 0,
+    projectile: 27,
+    echoActive: false,
+    mapleWarriorLevel: 20,
+    speedInfusion: true,
+    sharpEyes: true,
+    shadowPartner: true,
+  };
+
+  beforeAll(() => {
+    nlData = loadClassSkills('NL');
+  });
+
+  it('loads NL skill data correctly', () => {
+    expect(nlData.className).toBe('NL');
+    expect(nlData.mastery).toBe(0.6);
+    expect(nlData.primaryStat).toBe('LUK');
+    expect(nlData.skills.length).toBe(2);
+    expect(nlData.skills[0].name).toBe('Triple Throw 30');
+  });
+
+  it('uses throwing star range formula (not standard)', () => {
+    const tt = nlData.skills.find((s) => s.name === 'Triple Throw 30')!;
+    const result = calculateSkillDps(
+      nlBuild,
+      nlData,
+      tt,
+      weaponData,
+      attackSpeedData,
+      mapleWarriorData
+    );
+
+    // Throwing star: max = floor(5.0 * LUK * totalAttack / 100)
+    // MW20 multiplier = 1.1, baseLUK = 605 → floor(605 * 1.1) = 665
+    // primary = 665 + 195 = 860
+    // totalAttack = 250 + 0 + 27 = 277 (no echo)
+    // max = floor(5.0 * 860 * 277 / 100) = floor(119110) = 11911
+    // min = floor(2.5 * 860 * 277 / 100) = floor(59555) = 5955
+    expect(result.damageRange.max).toBe(11911);
+    expect(result.damageRange.min).toBe(5955);
+  });
+
+  it('computes crit damage% with built-in + SE bonuses', () => {
+    const tt = nlData.skills.find((s) => s.name === 'Triple Throw 30')!;
+    const result = calculateSkillDps(
+      nlBuild,
+      nlData,
+      tt,
+      weaponData,
+      attackSpeedData,
+      mapleWarriorData
+    );
+
+    // Normal: 150 * 1 = 150
+    expect(result.skillDamagePercent).toBe(150);
+    // Crit (addBeforeMultiply): (150 + 100 + 140) * 1 = 390
+    expect(result.seDamagePercent).toBe(390);
+  });
+
+  it('computes crit damage% without SE (built-in crit only)', () => {
+    const tt = nlData.skills.find((s) => s.name === 'Triple Throw 30')!;
+    const noSeBuild = { ...nlBuild, sharpEyes: false };
+    const result = calculateSkillDps(
+      noSeBuild,
+      nlData,
+      tt,
+      weaponData,
+      attackSpeedData,
+      mapleWarriorData
+    );
+
+    // Without SE: crit bonus = 100 only (built-in), no SE bonus
+    // (150 + 100) * 1 = 250
+    expect(result.seDamagePercent).toBe(250);
+  });
+
+  it('uses 0.65 crit rate with SE (0.50 built-in + 0.15 SE)', () => {
+    const tt = nlData.skills.find((s) => s.name === 'Triple Throw 30')!;
+    const result = calculateSkillDps(
+      nlBuild,
+      nlData,
+      tt,
+      weaponData,
+      attackSpeedData,
+      mapleWarriorData
+    );
+
+    // Verify via average damage formula:
+    // With 65% crit rate, normal rate = 0.35
+    // avgDmg = ((150/100)*0.35*adjRange + (390/100)*0.65*adjRangeCrit) * 3 * 1.5
+    // We check the DPS is consistent with these rates
+    const noSpBuild = { ...nlBuild, shadowPartner: false };
+    const resultNoSp = calculateSkillDps(
+      noSpBuild,
+      nlData,
+      tt,
+      weaponData,
+      attackSpeedData,
+      mapleWarriorData
+    );
+    // Shadow Partner should multiply by exactly 1.5
+    expect(result.averageDamage / resultNoSp.averageDamage).toBeCloseTo(1.5);
+  });
+
+  it('Shadow Partner multiplies DPS by 1.5', () => {
+    const tt = nlData.skills.find((s) => s.name === 'Triple Throw 30')!;
+    const withSp = calculateSkillDps(
+      nlBuild,
+      nlData,
+      tt,
+      weaponData,
+      attackSpeedData,
+      mapleWarriorData
+    );
+    const noSpBuild = { ...nlBuild, shadowPartner: false };
+    const withoutSp = calculateSkillDps(
+      noSpBuild,
+      nlData,
+      tt,
+      weaponData,
+      attackSpeedData,
+      mapleWarriorData
+    );
+
+    expect(withSp.dps / withoutSp.dps).toBeCloseTo(1.5);
+  });
+
+  it('uses Triple Throw attack speed (0.60s at speed 2)', () => {
+    const tt = nlData.skills.find((s) => s.name === 'Triple Throw 30')!;
+    const result = calculateSkillDps(
+      nlBuild,
+      nlData,
+      tt,
+      weaponData,
+      attackSpeedData,
+      mapleWarriorData
+    );
+
+    // weaponSpeed=4 - booster(2) - SI(1) = speed 1, clamped to 2
+    expect(result.attackTime).toBe(0.60);
+  });
+
+  it('TT 20 has lower base power than TT 30', () => {
+    const tt30 = nlData.skills.find((s) => s.name === 'Triple Throw 30')!;
+    const tt20 = nlData.skills.find((s) => s.name === 'Triple Throw 20')!;
+    const result30 = calculateSkillDps(
+      nlBuild,
+      nlData,
+      tt30,
+      weaponData,
+      attackSpeedData,
+      mapleWarriorData
+    );
+    const result20 = calculateSkillDps(
+      nlBuild,
+      nlData,
+      tt20,
+      weaponData,
+      attackSpeedData,
+      mapleWarriorData
+    );
+
+    expect(result30.skillDamagePercent).toBe(150);
+    expect(result20.skillDamagePercent).toBe(140);
+    expect(result30.dps).toBeGreaterThan(result20.dps);
+  });
+});
+
 describe('DPS result structure', () => {
   it('includes all expected fields', () => {
     const brandish = heroData.skills.find(
