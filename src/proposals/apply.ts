@@ -76,7 +76,7 @@ export function applyProposal(
     }
 
     // Validate "from" if provided
-    const currentValue = (skill as Record<string, unknown>)[change.field];
+    const currentValue = (skill as unknown as Record<string, unknown>)[change.field];
     if (change.from !== undefined && currentValue !== change.from) {
       throw new Error(
         `${prefix}Stale proposal: ${change.target}.${change.field} is ${currentValue}, expected ${change.from}`
@@ -84,7 +84,7 @@ export function applyProposal(
     }
 
     // Apply the change
-    (skill as Record<string, unknown>)[change.field] = change.to;
+    (skill as unknown as Record<string, unknown>)[change.field] = change.to;
   }
 
   return cloned;
