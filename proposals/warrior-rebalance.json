@@ -10,7 +10,7 @@
       "to": 280
     },
     {
-      "target": "hero.brandish-axe-slash",
+      "target": "hero-axe.brandish",
       "field": "basePower",
       "from": 260,
       "to": 280
