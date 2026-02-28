@@ -2,19 +2,28 @@ import { useState, useEffect } from 'react';
 import { Dashboard } from './components/Dashboard.js';
 import { ProposalBuilder } from './components/ProposalBuilder.js';
 import { ProposalResults } from './components/ProposalResults.js';
+import { BuildExplorer } from './components/BuildExplorer.js';
 import { useSimulation } from './hooks/useSimulation.js';
 import { useProposal } from './hooks/useProposal.js';
-import { getProposalFromUrl } from './utils/url-encoding.js';
+import { useBuildExplorer } from './hooks/useBuildExplorer.js';
+import { getProposalFromUrl, getBuildFromUrl } from './utils/url-encoding.js';
 
-type Page = 'dashboard' | 'proposal';
+type Page = 'dashboard' | 'proposal' | 'build';
 
 export function App() {
   const simulation = useSimulation();
   const proposalState = useProposal();
+  const buildState = useBuildExplorer();
   const [page, setPage] = useState<Page>('dashboard');
 
-  // Load proposal from URL hash on mount
+  // Load from URL hash on mount
   useEffect(() => {
+    const urlBuild = getBuildFromUrl();
+    if (urlBuild) {
+      buildState.loadFromUrl(urlBuild.class, urlBuild.tier, urlBuild.overrides);
+      setPage('build');
+      return;
+    }
     const urlProposal = getProposalFromUrl();
     if (urlProposal) {
       proposalState.loadProposal(urlProposal);
@@ -54,6 +63,12 @@ export function App() {
           >
             Proposal Builder
           </NavButton>
+          <NavButton
+            active={page === 'build'}
+            onClick={() => setPage('build')}
+          >
+            Build Explorer
+          </NavButton>
         </nav>
       </header>
 
@@ -70,6 +85,7 @@ export function App() {
             )}
           </>
         )}
+        {page === 'build' && <BuildExplorer state={buildState} />}
       </main>
     </div>
   );
