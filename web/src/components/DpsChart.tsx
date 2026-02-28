@@ -9,6 +9,7 @@ import {
 } from 'recharts';
 import type { ScenarioResult } from '@engine/proposals/types.js';
 import { getClassColor } from '../utils/class-colors.js';
+import { colors } from '../theme.js';
 
 interface DpsChartProps {
   data: ScenarioResult[];
@@ -23,7 +24,7 @@ export function DpsChart({ data }: DpsChartProps) {
   }));
 
   if (chartData.length === 0) {
-    return <div style={{ color: '#666', padding: 40, textAlign: 'center' }}>No data</div>;
+    return <div className="py-10 text-center text-text-dim">No data</div>;
   }
 
   const barHeight = 28;
@@ -40,8 +41,8 @@ export function DpsChart({ data }: DpsChartProps) {
           <XAxis
             type="number"
             tickFormatter={(v: number) => `${(v / 1000).toFixed(0)}k`}
-            tick={{ fill: '#555', fontSize: 11 }}
-            axisLine={{ stroke: '#1e1e2e' }}
+            tick={{ fill: colors.textFaint, fontSize: 11 }}
+            axisLine={{ stroke: colors.border }}
             tickLine={false}
           />
           <YAxis
@@ -57,7 +58,7 @@ export function DpsChart({ data }: DpsChartProps) {
                     y={0}
                     dy={-4}
                     textAnchor="end"
-                    fill="#ccc"
+                    fill={colors.textSecondary}
                     fontSize={12}
                   >
                     {payload.value}
@@ -68,7 +69,7 @@ export function DpsChart({ data }: DpsChartProps) {
                       y={0}
                       dy={10}
                       textAnchor="end"
-                      fill="#555"
+                      fill={colors.textFaint}
                       fontSize={10}
                     >
                       {entry.sublabel}
@@ -85,18 +86,12 @@ export function DpsChart({ data }: DpsChartProps) {
               if (!active || !payload?.[0]) return null;
               const d = payload[0].payload;
               return (
-                <div style={{
-                  background: '#1a1a2e',
-                  border: '1px solid #2a2a4e',
-                  borderRadius: 6,
-                  padding: '8px 12px',
-                  fontSize: 12,
-                }}>
-                  <div style={{ fontWeight: 600, color: getClassColor(d.className) }}>
+                <div className="rounded-md border border-border-active bg-bg-surface p-3 text-xs">
+                  <div className="font-semibold" style={{ color: getClassColor(d.className) }}>
                     {d.className}
                   </div>
-                  <div style={{ color: '#aaa' }}>{d.sublabel}</div>
-                  <div style={{ marginTop: 4, fontVariantNumeric: 'tabular-nums' }}>
+                  <div className="text-text-secondary">{d.sublabel}</div>
+                  <div className="mt-1 tabular-nums">
                     {d.dps.toLocaleString()} DPS
                   </div>
                 </div>
