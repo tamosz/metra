@@ -1,5 +1,7 @@
 export {
   calculateDamageRange,
+  calculateThrowingStarRange,
+  calculateMagicDamageRange,
   calculateAdjustedRange,
   calculateRangeCap,
   getWeaponMultiplier,
@@ -10,6 +12,7 @@ export {
   applyMapleWarrior,
   getMapleWarriorMultiplier,
   calculateEcho,
+  calculateMageEcho,
   calculateTotalAttack,
   calculateTotalStats,
 } from './buffs.js';

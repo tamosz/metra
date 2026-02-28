@@ -9,16 +9,24 @@ import {
 import { compareProposal } from './proposals/compare.js';
 import { runSimulation } from './proposals/simulate.js';
 import type { SimulationConfig } from './proposals/simulate.js';
-import type { Proposal } from './proposals/types.js';
+import type { ScenarioConfig } from './proposals/types.js';
+import { validateProposal, ProposalValidationError } from './proposals/validate.js';
 import { renderComparisonReport, renderBaselineReport } from './report/markdown.js';
 import { renderAsciiChart } from './report/ascii-chart.js';
 import { analyzeBalance } from './audit/analyze.js';
 import { formatAuditReport } from './audit/format.js';
 import { DEFAULT_SCENARIOS } from './scenarios.js';
 
-function loadProposal(path: string): Proposal {
+function loadProposal(path: string) {
   const fullPath = resolve(path);
-  return JSON.parse(readFileSync(fullPath, 'utf-8')) as Proposal;
+  let raw: unknown;
+  try {
+    raw = JSON.parse(readFileSync(fullPath, 'utf-8'));
+  } catch (e) {
+    const msg = e instanceof Error ? e.message : String(e);
+    throw new Error(`Failed to parse ${path}: ${msg}`);
+  }
+  return validateProposal(raw);
 }
 
 function main() {

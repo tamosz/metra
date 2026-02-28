@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest';
 import {
   calculateDamageRange,
   calculateThrowingStarRange,
+  calculateMagicDamageRange,
   calculateAdjustedRange,
   calculateRangeCap,
   getWeaponMultiplier,
@@ -91,6 +92,40 @@ describe('calculateThrowingStarRange', () => {
     const range = calculateThrowingStarRange(777, 213);
     expect(range.max).toBe(8275);
     expect(range.min).toBe(4137);
+  });
+});
+
+describe('calculateMagicDamageRange', () => {
+  it('computes Archmage I/L High tier range (TMA=1656, INT=1348)', () => {
+    // Source: magic formula from range calculator E18/E19
+    // spellAmp=1.4, weaponAmp=1.25, mastery=0.6
+    const range = calculateMagicDamageRange(1656, 1348, 0.6, 1.4, 1.25);
+    expect(range.max).toBe(268);
+    expect(range.min).toBe(223);
+    expect(range.average).toBe(245.5);
+  });
+
+  it('computes Archmage I/L Low tier range (TMA=1086, INT=900)', () => {
+    const range = calculateMagicDamageRange(1086, 900, 0.6, 1.4, 1.25);
+    expect(range.max).toBe(140);
+    expect(range.min).toBe(110);
+    expect(range.average).toBe(125);
+  });
+
+  it('computes Bishop range (no spell/weapon amp)', () => {
+    // Bishop: spellAmp=1, weaponAmp=1
+    const range = calculateMagicDamageRange(1656, 1348, 0.6, 1, 1);
+    // Same TMA but no amp → much lower damage
+    const rangeWithAmp = calculateMagicDamageRange(1656, 1348, 0.6, 1.4, 1.25);
+    expect(range.max).toBeLessThan(rangeWithAmp.max);
+    expect(range.max).toBe(Math.floor(((1656*1656/1000 + 1656)/30 + 1348/200) * 1));
+  });
+
+  it('floors fractional results', () => {
+    // Use values that produce fractional intermediate results
+    const range = calculateMagicDamageRange(1000, 800, 0.6, 1.4, 1.25);
+    expect(range.max).toBe(Math.floor(((1000000/1000 + 1000)/30 + 800/200) * 1.75));
+    expect(range.min).toBe(Math.floor(((1000000/1000 + 1000*0.6*0.9)/30 + 800/200) * 1.75));
   });
 });
 

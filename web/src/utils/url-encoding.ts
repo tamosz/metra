@@ -1,5 +1,6 @@
 import LZString from 'lz-string';
 import type { Proposal } from '@engine/proposals/types.js';
+import { validateProposal } from '@engine/proposals/validate.js';
 import type { BuildOverrides } from '../hooks/useBuildExplorer.js';
 
 /**
@@ -18,7 +19,7 @@ export function decodeProposal(encoded: string): Proposal | null {
   try {
     const json = LZString.decompressFromEncodedURIComponent(encoded);
     if (!json) return null;
-    return JSON.parse(json) as Proposal;
+    return validateProposal(JSON.parse(json));
   } catch {
     return null;
   }

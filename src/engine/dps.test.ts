@@ -912,6 +912,182 @@ describe('Marksman DPS', () => {
   });
 });
 
+describe('Archmage I/L DPS', () => {
+  let amData: ClassSkillData;
+  let amHigh: CharacterBuild;
+  let amLow: CharacterBuild;
+
+  beforeAll(() => {
+    amData = loadClassSkills('Archmage I/L');
+    amHigh = loadGearTemplate('archmage-il-high');
+    amLow = loadGearTemplate('archmage-il-low');
+  });
+
+  it('loads Archmage I/L skill data correctly', () => {
+    expect(amData.className).toBe('Archmage I/L');
+    expect(amData.mastery).toBe(0.6);
+    expect(amData.primaryStat).toBe('INT');
+    expect(amData.damageFormula).toBe('magic');
+    expect(amData.spellAmplification).toBe(1.4);
+    expect(amData.weaponAmplification).toBe(1.25);
+    expect(amData.skills.length).toBe(2);
+  });
+
+  it('Chain Lightning High tier damage range', () => {
+    const cl = amData.skills.find((s) => s.name === 'Chain Lightning')!;
+    const result = calculateSkillDps(
+      amHigh, amData, cl, weaponData, attackSpeedData, mapleWarriorData
+    );
+
+    // Magic formula: max = floor(((TMA²/1000 + TMA)/30 + INT/200) * 1.4 * 1.25)
+    // TMA = 1348 + 145 + 100 + echo(63) = 1656
+    expect(result.damageRange.max).toBe(268);
+    expect(result.damageRange.min).toBe(223);
+    expect(result.damageRange.average).toBe(245.5);
+  });
+
+  it('Chain Lightning High tier DPS ~82,189', () => {
+    const cl = amData.skills.find((s) => s.name === 'Chain Lightning')!;
+    const result = calculateSkillDps(
+      amHigh, amData, cl, weaponData, attackSpeedData, mapleWarriorData
+    );
+
+    expect(result.attackTime).toBe(0.69);
+    expect(result.skillDamagePercent).toBe(210);
+    // SE crit: (210 + 140) * 1 = 350
+    expect(result.seDamagePercent).toBe(350);
+    expect(result.dps).toBeCloseTo(82189, -1);
+  });
+
+  it('Chain Lightning Low tier DPS ~41,848', () => {
+    const cl = amData.skills.find((s) => s.name === 'Chain Lightning')!;
+    const result = calculateSkillDps(
+      amLow, amData, cl, weaponData, attackSpeedData, mapleWarriorData
+    );
+
+    expect(result.attackTime).toBe(0.69);
+    expect(result.damageRange.max).toBe(140);
+    expect(result.damageRange.min).toBe(110);
+    expect(result.dps).toBeCloseTo(41848, -1);
+  });
+
+  it('Blizzard High tier DPS ~47,415', () => {
+    const bliz = amData.skills.find((s) => s.name === 'Blizzard')!;
+    const result = calculateSkillDps(
+      amHigh, amData, bliz, weaponData, attackSpeedData, mapleWarriorData
+    );
+
+    expect(result.attackTime).toBe(3.06);
+    expect(result.skillDamagePercent).toBe(570);
+    // SE crit: (570 + 140) * 1 = 710
+    expect(result.seDamagePercent).toBe(710);
+    expect(result.dps).toBeCloseTo(47415, -1);
+  });
+
+  it('uses magic formula (not standard weapon multiplier)', () => {
+    const cl = amData.skills.find((s) => s.name === 'Chain Lightning')!;
+    const result = calculateSkillDps(
+      amHigh, amData, cl, weaponData, attackSpeedData, mapleWarriorData
+    );
+
+    // Magic range cap uses raw multiplier: 199999/210 = 952.38
+    // This is well above the max damage (268), so no capping occurs
+    // adjustedRange should equal average
+    expect(result.adjustedRange).toBe(245.5);
+  });
+
+  it('High tier DPS is greater than Low tier', () => {
+    for (const skill of amData.skills) {
+      const high = calculateSkillDps(
+        amHigh, amData, skill, weaponData, attackSpeedData, mapleWarriorData
+      );
+      const low = calculateSkillDps(
+        amLow, amData, skill, weaponData, attackSpeedData, mapleWarriorData
+      );
+      expect(high.dps).toBeGreaterThan(low.dps);
+    }
+  });
+
+  it('no Speed Infusion for mages', () => {
+    expect(amHigh.speedInfusion).toBe(false);
+    expect(amLow.speedInfusion).toBe(false);
+  });
+});
+
+describe('Bishop DPS', () => {
+  let bishopData: ClassSkillData;
+  let bishopHigh: CharacterBuild;
+  let bishopLow: CharacterBuild;
+
+  beforeAll(() => {
+    bishopData = loadClassSkills('Bishop');
+    bishopHigh = loadGearTemplate('bishop-high');
+    bishopLow = loadGearTemplate('bishop-low');
+  });
+
+  it('loads Bishop skill data correctly', () => {
+    expect(bishopData.className).toBe('Bishop');
+    expect(bishopData.mastery).toBe(0.6);
+    expect(bishopData.damageFormula).toBe('magic');
+    expect(bishopData.spellAmplification).toBe(1);
+    expect(bishopData.weaponAmplification).toBe(1);
+    expect(bishopData.skills.length).toBe(2);
+  });
+
+  it('Angel Ray High tier DPS ~45,111', () => {
+    const ar = bishopData.skills.find((s) => s.name === 'Angel Ray')!;
+    const result = calculateSkillDps(
+      bishopHigh, bishopData, ar, weaponData, attackSpeedData, mapleWarriorData
+    );
+
+    expect(result.attackTime).toBe(0.81);
+    expect(result.skillDamagePercent).toBe(240);
+    // SE: (240 + 140) * 1 = 380
+    expect(result.seDamagePercent).toBe(380);
+    expect(result.dps).toBeCloseTo(45111, -1);
+  });
+
+  it('Genesis High tier DPS ~35,830', () => {
+    const gen = bishopData.skills.find((s) => s.name === 'Genesis')!;
+    const result = calculateSkillDps(
+      bishopHigh, bishopData, gen, weaponData, attackSpeedData, mapleWarriorData
+    );
+
+    expect(result.attackTime).toBe(2.70);
+    expect(result.skillDamagePercent).toBe(670);
+    expect(result.dps).toBeCloseTo(35830, -1);
+  });
+
+  it('Bishop has lower DPS than Archmage (no amp)', () => {
+    const amData = loadClassSkills('Archmage I/L');
+    const amHigh = loadGearTemplate('archmage-il-high');
+    const cl = amData.skills.find((s) => s.name === 'Chain Lightning')!;
+    const ar = bishopData.skills.find((s) => s.name === 'Angel Ray')!;
+
+    const amDps = calculateSkillDps(
+      amHigh, amData, cl, weaponData, attackSpeedData, mapleWarriorData
+    ).dps;
+    const bishopDps = calculateSkillDps(
+      bishopHigh, bishopData, ar, weaponData, attackSpeedData, mapleWarriorData
+    ).dps;
+
+    // Archmage has 1.4 * 1.25 = 1.75× amp advantage
+    expect(amDps).toBeGreaterThan(bishopDps);
+  });
+
+  it('High tier DPS is greater than Low tier', () => {
+    for (const skill of bishopData.skills) {
+      const high = calculateSkillDps(
+        bishopHigh, bishopData, skill, weaponData, attackSpeedData, mapleWarriorData
+      );
+      const low = calculateSkillDps(
+        bishopLow, bishopData, skill, weaponData, attackSpeedData, mapleWarriorData
+      );
+      expect(high.dps).toBeGreaterThan(low.dps);
+    }
+  });
+});
+
 describe('DPS result structure', () => {
   it('includes all expected fields', () => {
     const brandish = heroData.skills.find(
