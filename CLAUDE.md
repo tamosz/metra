@@ -177,7 +177,7 @@ Two formula variants exist, configured per class via `seCritFormula`:
 - **Paladin** — 2H Sword/2H BW, Blast (4 variants: Holy and F/I/L Charge × Sword and BW)
 - **Night Lord (NL)** — Claw, Triple Throw (3-hit, built-in 50% crit, Shadow Partner)
 - **Bowmaster** — Bow, Hurricane (fixed 0.12s attack time) and Strafe (4-hit), built-in 40% crit from Critical Shot
-- **Marksman (MM)** — Crossbow, Strafe (4-hit) and Snipe (fixed 195,000 damage, bypasses damage formula via `fixedDamage`). DEX primary, Crossbow 3.6× multiplier, 0.9 mastery, 40% crit from Critical Shot. Shares gear with Bowmaster (Crossbow Expert +10 WATK).
+- **Marksman (MM)** — Crossbow, Snipe + Strafe weave rotation (combo via `comboGroup`: 1 Snipe per 5s cycle + N Strafes as filler) and standalone Strafe (4-hit). Snipe has ~5s effective cooldown (4s programmed + ~1s server tick). DEX primary, Crossbow 3.6× multiplier, 0.9 mastery, 40% crit from Critical Shot. Shares gear with Bowmaster (Crossbow Expert +10 WATK).
 - **Corsair (Sair)** — Gun, Battleship Cannon (4-hit, 0.60s) and Rapid Fire (Hurricane-style 0.12s). DEX primary, 3.6× weapon multiplier.
 - **Buccaneer (Bucc)** — Knuckle, Demolition (8-hit, fixed 2.34s cycle) and Barrage + Dragon Strike (multi-part combo via `comboGroup`, fixed 2.34s cycle). STR primary, 4.8× weapon multiplier.
 - **Shadower** — Dagger + Shield, Boomerang Step + Assassinate 30 (combo via `comboGroup`, 2.31s cycle) and Savage Blow (6-hit standalone). LUK primary, STR+DEX secondary (array `secondaryStat`), Dagger 3.6× multiplier, standard damage formula, Shadow Partner, no built-in crit, no Speed Infusion.
