@@ -1,4 +1,4 @@
-import { readFileSync } from 'fs';
+import { readFileSync, readdirSync } from 'fs';
 import { resolve } from 'path';
 import type {
   WeaponData,
@@ -52,4 +52,54 @@ export function loadGearTemplate(templateName: string): CharacterBuild {
     sharpEyes: raw.sharpEyes as boolean,
     shadowPartner: raw.shadowPartner as boolean | undefined,
   };
+}
+
+export interface DiscoveryResult {
+  classNames: string[];
+  tiers: string[];
+  classDataMap: Map<string, ClassSkillData>;
+  gearTemplates: Map<string, CharacterBuild>;
+}
+
+/**
+ * Auto-discover classes and tiers by scanning data/skills/ and data/gear-templates/.
+ * A class is included only if it has both a skill file and at least one gear template.
+ */
+export function discoverClassesAndTiers(): DiscoveryResult {
+  const skillFiles = readdirSync(resolve(DATA_DIR, 'skills'))
+    .filter((f) => f.endsWith('.json'))
+    .map((f) => f.replace('.json', ''));
+  const templateFiles = readdirSync(resolve(DATA_DIR, 'gear-templates'))
+    .filter((f) => f.endsWith('.json'))
+    .map((f) => f.replace('.json', ''));
+
+  const classNames: string[] = [];
+  const tiers = new Set<string>();
+  for (const name of skillFiles) {
+    const classTiers = templateFiles
+      .filter((t) => t.startsWith(name + '-'))
+      .map((t) => t.slice(name.length + 1));
+    if (classTiers.length > 0) {
+      classNames.push(name);
+      for (const tier of classTiers) tiers.add(tier);
+    }
+  }
+
+  const classDataMap = new Map<string, ClassSkillData>();
+  for (const name of classNames) {
+    classDataMap.set(name, loadClassSkills(name));
+  }
+
+  const tierArray = [...tiers];
+  const gearTemplates = new Map<string, CharacterBuild>();
+  for (const name of classNames) {
+    for (const tier of tierArray) {
+      const key = `${name}-${tier}`;
+      if (templateFiles.includes(key)) {
+        gearTemplates.set(key, loadGearTemplate(key));
+      }
+    }
+  }
+
+  return { classNames, tiers: tierArray, classDataMap, gearTemplates };
 }

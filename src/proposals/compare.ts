@@ -60,12 +60,17 @@ function computeDeltas(
     afterMap.set(scenarioKey(r), r);
   }
 
+  // Compute ranks per (scenario, tier) group
+  const beforeRanks = computeRanks(before);
+  const afterRanks = computeRanks(after);
+
   return before.map((b) => {
     const a = afterMap.get(scenarioKey(b));
     const beforeDps = b.dps.dps;
     const afterDps = a ? a.dps.dps : beforeDps;
     const change = afterDps - beforeDps;
     const changePercent = beforeDps === 0 ? 0 : (change / beforeDps) * 100;
+    const key = scenarioKey(b);
 
     return {
       className: b.className,
@@ -76,6 +81,36 @@ function computeDeltas(
       after: afterDps,
       change,
       changePercent,
+      rankBefore: beforeRanks.get(key),
+      rankAfter: afterRanks.get(key),
     };
   });
+}
+
+/**
+ * Compute DPS rank per (scenario, tier) group.
+ * Returns a map of scenarioKey → rank (1-based, highest DPS = rank 1).
+ */
+function computeRanks(results: ScenarioResult[]): Map<string, number> {
+  // Group by (scenario, tier)
+  const groups = new Map<string, ScenarioResult[]>();
+  for (const r of results) {
+    const groupKey = `${r.scenario}|${r.tier}`;
+    const group = groups.get(groupKey);
+    if (group) {
+      group.push(r);
+    } else {
+      groups.set(groupKey, [r]);
+    }
+  }
+
+  const ranks = new Map<string, number>();
+  for (const group of groups.values()) {
+    const sorted = [...group].sort((a, b) => b.dps.dps - a.dps.dps);
+    for (let i = 0; i < sorted.length; i++) {
+      ranks.set(scenarioKey(sorted[i]), i + 1);
+    }
+  }
+
+  return ranks;
 }

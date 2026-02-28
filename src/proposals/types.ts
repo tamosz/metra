@@ -54,6 +54,10 @@ export interface DeltaEntry {
   after: number;
   change: number;
   changePercent: number;
+  /** DPS rank within (scenario, tier) group before the change. */
+  rankBefore?: number;
+  /** DPS rank within (scenario, tier) group after the change. */
+  rankAfter?: number;
 }
 
 /** Full comparison result for a proposal. */
