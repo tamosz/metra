@@ -14,6 +14,7 @@ import { renderComparisonReport } from '@engine/report/markdown.js';
 import { renderComparisonBBCode } from '@engine/report/bbcode.js';
 import { getClassColor } from '../utils/class-colors.js';
 import { setProposalInUrl } from '../utils/url-encoding.js';
+import { SupportClassNote } from './SupportClassNote.js';
 import { colors } from '../theme.js';
 
 interface ProposalResultsProps {
@@ -98,6 +99,8 @@ export function ProposalResults({ result, proposal }: ProposalResultsProps) {
           ))}
         </div>
       )}
+
+      <SupportClassNote classNames={[...new Set(filtered.map((d) => d.className))]} />
 
       {changed.length > 0 && <ComparisonChart deltas={changed} />}
 
