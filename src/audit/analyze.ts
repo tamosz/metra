@@ -1,5 +1,6 @@
 import type { ScenarioResult } from '../proposals/types.js';
 import type { BalanceAudit, GroupSummary, OutlierEntry, TierSensitivity } from './types.js';
+import { TIER_ORDER } from '../data/types.js';
 
 const OUTLIER_THRESHOLD = 1.5;
 
@@ -75,13 +76,16 @@ function computeGroupSummary(scenario: string, tier: string, values: number[]): 
 }
 
 function computeTierSensitivities(results: ScenarioResult[]): TierSensitivity[] {
+  const topTier = TIER_ORDER[TIER_ORDER.length - 1];
+  const bottomTier = TIER_ORDER[0];
+
   // Group by (className, skillName, scenario) using null-byte separated composite keys
   const map = new Map<string, { high?: number; low?: number }>();
   for (const r of results) {
     const key = `${r.className}\0${r.skillName}\0${r.scenario}`;
     const entry = map.get(key) ?? {};
-    if (r.tier === 'high') entry.high = r.dps.dps;
-    if (r.tier === 'low') entry.low = r.dps.dps;
+    if (r.tier === topTier) entry.high = r.dps.dps;
+    if (r.tier === bottomTier) entry.low = r.dps.dps;
     map.set(key, entry);
   }
 

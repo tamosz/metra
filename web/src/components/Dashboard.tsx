@@ -1,6 +1,7 @@
 import { useState, useMemo } from 'react';
 import { DpsChart } from './DpsChart.js';
 import type { SimulationData } from '../hooks/useSimulation.js';
+import { TIER_ORDER } from '@engine/data/types.js';
 
 interface DashboardProps {
   simulation: SimulationData;
@@ -120,7 +121,11 @@ function RankingTable({ data }: { data: { className: string; skillName: string; 
       switch (sortColumn) {
         case 'class': return dir * a.className.localeCompare(b.className);
         case 'skill': return dir * a.skillName.localeCompare(b.skillName);
-        case 'tier': return dir * a.tier.localeCompare(b.tier);
+        case 'tier': {
+          const aTier = TIER_ORDER.indexOf(a.tier as typeof TIER_ORDER[number]);
+          const bTier = TIER_ORDER.indexOf(b.tier as typeof TIER_ORDER[number]);
+          return dir * ((aTier === -1 ? Infinity : aTier) - (bTier === -1 ? Infinity : bTier));
+        }
         case 'dps': return dir * (a.dps.dps - b.dps.dps);
       }
     });

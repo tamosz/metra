@@ -1,11 +1,12 @@
 import { readFileSync, readdirSync } from 'fs';
 import { resolve } from 'path';
-import type {
-  WeaponData,
-  AttackSpeedData,
-  MapleWarriorData,
-  ClassSkillData,
-  CharacterBuild,
+import {
+  TIER_ORDER,
+  type WeaponData,
+  type AttackSpeedData,
+  type MapleWarriorData,
+  type ClassSkillData,
+  type CharacterBuild,
 } from './types.js';
 
 const DATA_DIR = resolve(import.meta.dirname, '../../data');
@@ -118,7 +119,11 @@ export function discoverClassesAndTiers(): DiscoveryResult {
     classDataMap.set(name, loadClassSkills(name));
   }
 
-  const tierArray = [...tiers];
+  const tierArray = [...tiers].sort((a, b) => {
+    const ai = TIER_ORDER.indexOf(a as typeof TIER_ORDER[number]);
+    const bi = TIER_ORDER.indexOf(b as typeof TIER_ORDER[number]);
+    return (ai === -1 ? Infinity : ai) - (bi === -1 ? Infinity : bi);
+  });
   const gearTemplates = new Map<string, CharacterBuild>();
   for (const name of classNames) {
     for (const tier of tierArray) {
