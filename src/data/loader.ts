@@ -50,5 +50,6 @@ export function loadGearTemplate(templateName: string): CharacterBuild {
     mapleWarriorLevel: raw.mapleWarriorLevel as number,
     speedInfusion: raw.speedInfusion as boolean,
     sharpEyes: raw.sharpEyes as boolean,
+    shadowPartner: raw.shadowPartner as boolean | undefined,
   };
 }

@@ -27,6 +27,9 @@ let drkLow: CharacterBuild;
 let paladinData: ClassSkillData;
 let paladinHigh: CharacterBuild;
 let paladinLow: CharacterBuild;
+let nlData: ClassSkillData;
+let nlHigh: CharacterBuild;
+let nlLow: CharacterBuild;
 
 beforeAll(() => {
   weaponData = loadWeapons();
@@ -41,6 +44,9 @@ beforeAll(() => {
   paladinData = loadClassSkills('Paladin');
   paladinHigh = loadGearTemplate('paladin-high');
   paladinLow = loadGearTemplate('paladin-low');
+  nlData = loadClassSkills('NL');
+  nlHigh = loadGearTemplate('nl-high');
+  nlLow = loadGearTemplate('nl-low');
 });
 
 describe('Hero Brandish (Sword) DPS', () => {
@@ -357,6 +363,89 @@ describe('Paladin BW Blast DPS', () => {
     // 2H BW (4.8) > 2H Sword (4.6) → BW should deal more damage
     expect(bwResult.damageRange.max).toBeGreaterThan(swordResult.damageRange.max);
     expect(bwResult.dps).toBeGreaterThan(swordResult.dps);
+  });
+});
+
+describe('NL Gear Template DPS', () => {
+  it('High tier damage range matches computed values', () => {
+    const tt = nlData.skills.find((s) => s.name === 'Triple Throw 30')!;
+    const result = calculateSkillDps(
+      nlHigh,
+      nlData,
+      tt,
+      weaponData,
+      attackSpeedData,
+      mapleWarriorData
+    );
+
+    // totalAttack = 151 + 100 + 30 + echo(floor(281*0.04)=11) = 292
+    // LUK = floor(999*1.1) + 98 = 1098 + 98 = 1196
+    // max = floor(5.0 * 1196 * 292 / 100) = 17461
+    // min = floor(2.5 * 1196 * 292 / 100) = 8730
+    expect(result.damageRange.max).toBe(17461);
+    expect(result.damageRange.min).toBe(8730);
+  });
+
+  it('Low tier damage range matches computed values', () => {
+    const tt = nlData.skills.find((s) => s.name === 'Triple Throw 30')!;
+    const result = calculateSkillDps(
+      nlLow,
+      nlData,
+      tt,
+      weaponData,
+      attackSpeedData,
+      mapleWarriorData
+    );
+
+    // totalAttack = 105 + 60 + 27 + echo(floor(192*0.04)=7) = 199
+    // LUK = floor(700*1.1) + 53 = 770 + 53 = 823
+    // max = floor(5.0 * 823 * 199 / 100) = 8188
+    // min = floor(2.5 * 823 * 199 / 100) = 4094
+    expect(result.damageRange.max).toBe(8188);
+    expect(result.damageRange.min).toBe(4094);
+  });
+
+  it('High tier DPS is greater than Low tier', () => {
+    const tt = nlData.skills.find((s) => s.name === 'Triple Throw 30')!;
+    const highResult = calculateSkillDps(
+      nlHigh,
+      nlData,
+      tt,
+      weaponData,
+      attackSpeedData,
+      mapleWarriorData
+    );
+    const lowResult = calculateSkillDps(
+      nlLow,
+      nlData,
+      tt,
+      weaponData,
+      attackSpeedData,
+      mapleWarriorData
+    );
+
+    expect(highResult.dps).toBeGreaterThan(lowResult.dps);
+    expect(highResult.dps).toBeGreaterThan(0);
+    expect(lowResult.dps).toBeGreaterThan(0);
+  });
+
+  it('uses attack time 0.60s', () => {
+    const tt = nlData.skills.find((s) => s.name === 'Triple Throw 30')!;
+    const result = calculateSkillDps(
+      nlHigh,
+      nlData,
+      tt,
+      weaponData,
+      attackSpeedData,
+      mapleWarriorData
+    );
+
+    expect(result.attackTime).toBe(0.60);
+  });
+
+  it('Shadow Partner is active in both templates', () => {
+    expect(nlHigh.shadowPartner).toBe(true);
+    expect(nlLow.shadowPartner).toBe(true);
   });
 });
 
