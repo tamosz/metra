@@ -56,7 +56,7 @@ Pure functions. No side effects, no I/O. Takes game data + a character build, ou
 - `damage.ts` — raw damage range (min/max), throwing star range (NL/Shad), range cap from damage cap, adjusted range for capped distributions.
 - `buffs.ts` — Maple Warrior stat boost, Echo of Hero WATK bonus, total attack/stat aggregation.
 - `attack-speed.ts` — weapon speed resolution (base speed + booster + SI), attack time lookup by skill category.
-- `dps.ts` — full DPS pipeline: attack time → skill damage% → crit damage% → range caps → adjusted ranges → average damage → DPS. Uses `skill.weaponType` (not build) for weapon multiplier lookup, enabling weapon variants within the same class/tier. Supports built-in crit (additive with SE), throwing star formula (branches on `weaponType === 'Claw'`), and Shadow Partner (1.5× multiplier).
+- `dps.ts` — full DPS pipeline: attack time → skill damage% → crit damage% → range caps → adjusted ranges → average damage → DPS. Uses `skill.weaponType` (not build) for weapon multiplier lookup, enabling weapon variants within the same class/tier. Supports built-in crit (additive with SE), throwing star formula (branches on `weaponType === 'Claw'`), Shadow Partner (1.5× multiplier), and `fixedDamage` (bypasses damage formula for skills like Snipe).
 - `index.ts` — re-exports.
 
 **Simulation features:**
@@ -115,7 +115,7 @@ This is a v62-based MapleStory private server. Key differences from official GMS
 
 ### Damage Formula (verified, from `damage.ts`)
 
-**Standard (warriors, Shadower):**
+**Standard (warriors, archers, Shadower):**
 ```
 MaxDamage = floor((primaryStat * weaponMultiplier + secondaryStat) * totalAttack / 100)
 MinDamage = floor((primaryStat * weaponMultiplier * 0.9 * mastery + secondaryStat) * totalAttack / 100)
@@ -131,19 +131,20 @@ Source: range calculator F18/F19. No weapon multiplier or secondary stat — fla
 
 ### Crit Damage
 Two formula variants exist, configured per class via `seCritFormula`:
-- **`addBeforeMultiply`** (Hero, DrK, NL, Shadower, Corsair, Buccaneer): `critDmg% = (basePower + totalCritBonus) * multiplier`
+- **`addBeforeMultiply`** (Hero, DrK, NL, Bowmaster, Marksman, Shadower, Corsair, Buccaneer): `critDmg% = (basePower + totalCritBonus) * multiplier`
 - **`addAfterMultiply`** (Paladin): `critDmg% = basePower * multiplier + totalCritBonus`
 
 `totalCritBonus` = built-in crit bonus (e.g., TT +100) + SE bonus (+140 if active). Crit rate is also additive: built-in (e.g., TT 0.50) + SE (0.15), capped at 1.0.
 
 ### Key Classes
 
-**Implemented (8 classes):**
+**Implemented (9 classes):**
 - **Hero** — 2H Sword/Axe, Brandish (2-hit)
 - **Dark Knight (DrK)** — Spear/Polearm, Crusher and Fury
 - **Paladin** — 2H Sword/2H BW, Blast (4 variants: Holy and F/I/L Charge × Sword and BW)
 - **Night Lord (NL)** — Claw, Triple Throw (3-hit, built-in 50% crit, Shadow Partner)
 - **Bowmaster** — Bow, Hurricane (fixed 0.12s attack time) and Strafe (4-hit), built-in 40% crit from Critical Shot
+- **Marksman (MM)** — Crossbow, Strafe (4-hit) and Snipe (fixed 195,000 damage, bypasses damage formula via `fixedDamage`). DEX primary, Crossbow 3.6× multiplier, 0.9 mastery, 40% crit from Critical Shot. Shares gear with Bowmaster (Crossbow Expert +10 WATK).
 - **Corsair (Sair)** — Gun, Battleship Cannon (4-hit, 0.60s) and Rapid Fire (Hurricane-style 0.12s). DEX primary, 3.6× weapon multiplier.
 - **Buccaneer (Bucc)** — Knuckle, Demolition (8-hit, fixed 2.34s cycle) and Barrage + Dragon Strike (multi-part combo via `comboGroup`, fixed 2.34s cycle). STR primary, 4.8× weapon multiplier.
 - **Shadower** — Dagger + Shield, Boomerang Step + Assassinate 30 (combo via `comboGroup`, 2.31s cycle) and Savage Blow (6-hit standalone). LUK primary, STR+DEX secondary (array `secondaryStat`), Dagger 3.6× multiplier, standard damage formula, Shadow Partner, no built-in crit, no Speed Infusion.
@@ -220,6 +221,7 @@ metra/
 │   │   ├── paladin.json
 │   │   ├── nl.json
 │   │   ├── bowmaster.json
+│   │   ├── marksman.json
 │   │   ├── sair.json
 │   │   ├── bucc.json
 │   │   └── shadower.json
@@ -230,6 +232,8 @@ metra/
 │       ├── drk-high.json
 │       ├── paladin-low.json
 │       ├── paladin-high.json
+│       ├── marksman-low.json
+│       ├── marksman-high.json
 │       ├── sair-low.json
 │       ├── sair-high.json
 │       ├── bucc-low.json
