@@ -6,7 +6,7 @@
   "gearStats": { "STR": 174, "DEX": 102, "INT": 0, "LUK": 0 },
   "totalWeaponAttack": 214,
   "weaponType": "2H Sword",
-  "weaponSpeed": 6,
+  "weaponSpeed": 5,
   "attackPotion": 100,
   "potionName": "Apple",
   "projectile": 0,
