@@ -188,13 +188,14 @@ Two formula variants exist, configured per class via `seCritFormula`:
 
 ### Funding Tiers
 Balance is evaluated across funding levels. Current tiers:
-- **low** — base/tradeable gear, no scrolling, reasonable potions
-- **high** — well-scrolled endgame gear, Apple potion
+- **low** — base/tradeable gear, no scrolling, Stopper potion (~lv160-170)
+- **mid** — reasonable scrolling, Stopper potion (~lv185). C/G/S 17/14/10.
+- **high** — well-scrolled endgame gear, Apple potion (lv200). C/G/S 19/17/13.
 
 A change that looks balanced at high funding might be wildly unbalanced at low funding, and vice versa. Always evaluate across tiers.
 
 ### Gear Template Assumptions
-All templates assume a fully buffed party scenario: MW20, Sharp Eyes, Speed Infusion, Echo of Hero, and Booster (implicit). Exception: Shadower templates have Speed Infusion disabled to match spreadsheet attack times (weapon speed 5 Dagger, effective speed 3 with Booster only). Low tier uses Heartstopper (60 WATK), high tier uses Onyx Apple (100 WATK). See `data/gear-assumptions.md` for the full per-slot breakdown, forum cross-references, and flagged concerns.
+All templates assume a fully buffed party scenario: MW20, Sharp Eyes, Speed Infusion, Echo of Hero, and Booster (implicit). Exception: Shadower templates have Speed Infusion disabled to match spreadsheet attack times (weapon speed 5 Dagger, effective speed 3 with Booster only). Low and mid tiers use Heartstopper (60 WATK), high tier uses Onyx Apple (100 WATK). Mage low/mid tiers use Lollipop (45 MATK). See `data/gear-assumptions.md` for the full per-slot breakdown, forum cross-references, and flagged concerns.
 
 ### Scenarios
 Standard scenarios for comparison reports (all implemented):
@@ -262,27 +263,19 @@ metra/
 │   │   ├── sair.json
 │   │   ├── bucc.json
 │   │   └── shadower.json
-│   └── gear-templates/
-│       ├── hero-low.json
-│       ├── hero-high.json
-│       ├── hero-axe-low.json
-│       ├── hero-axe-high.json
-│       ├── drk-low.json
-│       ├── drk-high.json
-│       ├── paladin-low.json
-│       ├── paladin-high.json
-│       ├── nl-low.json
-│       ├── nl-high.json
-│       ├── bowmaster-low.json
-│       ├── bowmaster-high.json
-│       ├── marksman-low.json
-│       ├── marksman-high.json
-│       ├── sair-low.json
-│       ├── sair-high.json
-│       ├── bucc-low.json
-│       ├── bucc-high.json
-│       ├── shadower-low.json
-│       └── shadower-high.json
+│   └── gear-templates/          # {class}-{tier}.json — low, mid, high per class
+│       ├── hero-{low,mid,high}.json
+│       ├── hero-axe-{low,mid,high}.json
+│       ├── drk-{low,mid,high}.json
+│       ├── paladin-{low,mid,high}.json
+│       ├── nl-{low,mid,high}.json
+│       ├── bowmaster-{low,mid,high}.json
+│       ├── marksman-{low,mid,high}.json
+│       ├── sair-{low,mid,high}.json
+│       ├── bucc-{low,mid,high}.json
+│       ├── shadower-{low,mid,high}.json
+│       ├── archmage-il-{low,mid,high}.json
+│       └── bishop-{low,mid,high}.json
 ├── proposals/                   # balance change proposals
 │   ├── brandish-buff-20.json
 │   ├── paladin-blast-multiplier.json

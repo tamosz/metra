@@ -1,4 +1,5 @@
 import type { DeltaEntry, ScenarioResult } from '../proposals/types.js';
+import { TIER_ORDER } from '../data/types.js';
 
 /**
  * Format a number with thousands separators (locale-independent).
@@ -53,7 +54,9 @@ export function sortDeltas(deltas: DeltaEntry[]): DeltaEntry[] {
     }
     const classCompare = a.className.localeCompare(b.className);
     if (classCompare !== 0) return classCompare;
-    return a.tier.localeCompare(b.tier);
+    const aTier = TIER_ORDER.indexOf(a.tier as typeof TIER_ORDER[number]);
+    const bTier = TIER_ORDER.indexOf(b.tier as typeof TIER_ORDER[number]);
+    return (aTier === -1 ? Infinity : aTier) - (bTier === -1 ? Infinity : bTier);
   });
 }
 

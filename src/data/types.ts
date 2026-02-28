@@ -1,3 +1,6 @@
+/** Canonical tier ordering for display and sorting. */
+export const TIER_ORDER = ['low', 'mid', 'high'] as const;
+
 /** Weapon type multipliers for the v62 damage formula. */
 export interface WeaponType {
   name: string;
