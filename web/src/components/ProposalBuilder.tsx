@@ -214,7 +214,7 @@ function AddChangeForm({
   const skills = classData?.skills ?? [];
   const skill = skills.find((s) => skillSlug(s.name) === selectedSkill);
 
-  const currentValue = skill && field in skill ? (skill as Record<string, unknown>)[field] : undefined;
+  const currentValue = skill && field in skill ? (skill as unknown as Record<string, unknown>)[field] : undefined;
 
   const handleAdd = () => {
     if (!selectedClass || !selectedSkill || !newValue) return;

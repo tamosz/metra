@@ -23,7 +23,7 @@ function loadProposal(path: string): Proposal {
 
 function main() {
   const auditFlag = process.argv.includes('--audit');
-  const args = process.argv.slice(2).filter((arg) => !arg.startsWith('--'));
+  const args = process.argv.slice(2).filter((arg: string) => !arg.startsWith('--'));
   const proposalPath = args[0];
 
   // Load game data
