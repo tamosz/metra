@@ -9,6 +9,7 @@ import type {
 import { calculateTotalAttack, calculateTotalStats } from './buffs.js';
 import {
   calculateDamageRange,
+  calculateThrowingStarRange,
   calculateAdjustedRange,
   calculateRangeCap,
   getWeaponMultiplier,
@@ -79,47 +80,66 @@ export function calculateSkillDps(
   // 2-3. Skill damage percentages
   const skillDamagePercent = skill.basePower * skill.multiplier;
 
-  // SE crit damage formula varies by class:
-  // Hero/DrK (addBeforeMultiply, default): seDmg% = (basePower + bonus) * multiplier
-  // Paladin (addAfterMultiply): seDmg% = basePower * multiplier + bonus
-  const seCritFormula = classData.seCritFormula ?? 'addBeforeMultiply';
-  const seDamagePercent =
-    seCritFormula === 'addAfterMultiply'
-      ? skill.basePower * skill.multiplier + classData.sharpEyesCritDamageBonus
-      : (skill.basePower + classData.sharpEyesCritDamageBonus) * skill.multiplier;
+  // Crit damage: merge built-in crit bonus (e.g., TT +100) with SE bonus (+140)
+  const builtInCritBonus = skill.builtInCritDamageBonus ?? 0;
+  const seCritBonus = build.sharpEyes ? classData.sharpEyesCritDamageBonus : 0;
+  const totalCritBonus = builtInCritBonus + seCritBonus;
 
-  // Damage range
-  const weaponMultiplier = getWeaponMultiplier(weaponData, skill.weaponType);
+  // Crit damage formula varies by class:
+  // Hero/DrK/NL (addBeforeMultiply, default): critDmg% = (basePower + bonus) * multiplier
+  // Paladin (addAfterMultiply): critDmg% = basePower * multiplier + bonus
+  const seCritFormula = classData.seCritFormula ?? 'addBeforeMultiply';
+  const critDamagePercent =
+    seCritFormula === 'addAfterMultiply'
+      ? skill.basePower * skill.multiplier + totalCritBonus
+      : (skill.basePower + totalCritBonus) * skill.multiplier;
+
+  // Crit rate: built-in (e.g., TT 0.50) + SE (0.15), capped at 1.0
+  const builtInCritRate = skill.builtInCritRate ?? 0;
+  const seCritRate = build.sharpEyes ? classData.sharpEyesCritRate : 0;
+  const totalCritRate = Math.min(builtInCritRate + seCritRate, 1.0);
+
+  // Damage range: throwing stars use a different formula
   const totalAttack = calculateTotalAttack(build);
   const { primary, secondary } = calculateTotalStats(build, mapleWarriorData);
-  const damageRange = calculateDamageRange(
-    primary,
-    secondary,
-    weaponMultiplier,
-    classData.mastery,
-    totalAttack
-  );
+  let damageRange: DamageRange;
+  if (skill.weaponType === 'Claw') {
+    damageRange = calculateThrowingStarRange(primary, totalAttack);
+  } else {
+    const weaponMultiplier = getWeaponMultiplier(weaponData, skill.weaponType);
+    damageRange = calculateDamageRange(
+      primary,
+      secondary,
+      weaponMultiplier,
+      classData.mastery,
+      totalAttack
+    );
+  }
 
   // 4. Range caps
   const rangeCap = calculateRangeCap(DAMAGE_CAP, skillDamagePercent);
-  const rangeCapSe = calculateRangeCap(DAMAGE_CAP, seDamagePercent);
+  const rangeCapCrit = calculateRangeCap(DAMAGE_CAP, critDamagePercent);
 
   // 5. Adjusted ranges
   const adjustedRange = calculateAdjustedRange(damageRange, rangeCap);
-  const adjustedRangeSe = calculateAdjustedRange(damageRange, rangeCapSe);
+  const adjustedRangeCrit = calculateAdjustedRange(damageRange, rangeCapCrit);
 
   // 6. Average damage per attack
   let averageDamage: number;
-  if (build.sharpEyes) {
-    const normalRate = 1 - classData.sharpEyesCritRate;
-    const critRate = classData.sharpEyesCritRate;
+  if (totalCritRate > 0) {
+    const normalRate = 1 - totalCritRate;
     averageDamage =
       ((skillDamagePercent / 100) * normalRate * adjustedRange +
-        (seDamagePercent / 100) * critRate * adjustedRangeSe) *
+        (critDamagePercent / 100) * totalCritRate * adjustedRangeCrit) *
       skill.hitCount;
   } else {
     averageDamage =
       (skillDamagePercent / 100) * adjustedRange * skill.hitCount;
+  }
+
+  // Shadow Partner: clone deals 50% of attack damage → 1.5× total
+  if (build.shadowPartner) {
+    averageDamage *= 1.5;
   }
 
   // 7. DPS
@@ -130,9 +150,9 @@ export function calculateSkillDps(
     attackTime,
     damageRange,
     skillDamagePercent,
-    seDamagePercent,
+    seDamagePercent: critDamagePercent,
     adjustedRange,
-    adjustedRangeSe,
+    adjustedRangeSe: adjustedRangeCrit,
     averageDamage,
     dps,
   };

@@ -51,6 +51,25 @@ export function calculateDamageRange(
 }
 
 /**
+ * Calculate the raw damage range for a throwing star attack (NL/Shad).
+ *
+ * Source: range calculator F18/F19
+ *   MaxDamage = floor(5.0 * LUK * totalAttack / 100)
+ *   MinDamage = floor(2.5 * LUK * totalAttack / 100)
+ *
+ * @param luk          Total LUK after MW and gear
+ * @param totalAttack  Total weapon attack including potion, projectile, echo
+ */
+export function calculateThrowingStarRange(
+  luk: number,
+  totalAttack: number
+): DamageRange {
+  const max = Math.floor((5.0 * luk * totalAttack) / 100);
+  const min = Math.floor((2.5 * luk * totalAttack) / 100);
+  return { min, max, average: (min + max) / 2 };
+}
+
+/**
  * Calculate the adjusted range when a damage cap applies.
  *
  * When the range cap is below the max damage, some portion of the damage

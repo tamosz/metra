@@ -46,6 +46,10 @@ export interface SkillEntry {
   speedCategory: string;
   /** Weapon types this skill variant uses (e.g., "2H Sword"). */
   weaponType: string;
+  /** Built-in crit rate (e.g., TT has 0.50). Additive with SE crit rate. */
+  builtInCritRate?: number;
+  /** Built-in crit damage bonus added to basePower on crit. */
+  builtInCritDamageBonus?: number;
 }
 
 /** All skills for a single class. */
@@ -105,4 +109,6 @@ export interface CharacterBuild {
   speedInfusion: boolean;
   /** Whether Sharp Eyes is active. */
   sharpEyes: boolean;
+  /** Whether Shadow Partner is active (1.5× damage multiplier). */
+  shadowPartner?: boolean;
 }
