@@ -9,6 +9,9 @@
     "test:watch": "vitest",
     "dump-sheet": "tsx scripts/dump-sheet.ts",
     "simulate": "tsx src/cli.ts",
+    "type-check": "tsc --noEmit",
+    "type-check:web": "cd web && tsc --noEmit",
+    "type-check:all": "tsc --noEmit && cd web && tsc --noEmit",
     "setup": "git config core.hooksPath .githooks"
   },
   "devDependencies": {

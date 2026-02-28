@@ -12,4 +12,33 @@ if [ $? -ne 0 ]; then
 fi
 echo ""
 
+echo "==> Web unit tests"
+cd web && npx vitest run
+if [ $? -ne 0 ]; then
+  echo ""
+  echo "Pre-commit hook failed: web unit tests"
+  exit 1
+fi
+cd ..
+echo ""
+
+echo "==> Type-check (engine)"
+npx tsc --noEmit
+if [ $? -ne 0 ]; then
+  echo ""
+  echo "Pre-commit hook failed: engine type-check"
+  exit 1
+fi
+echo ""
+
+echo "==> Type-check (web)"
+cd web && npx tsc --noEmit
+if [ $? -ne 0 ]; then
+  echo ""
+  echo "Pre-commit hook failed: web type-check"
+  exit 1
+fi
+cd ..
+echo ""
+
 echo "All pre-commit checks passed."
