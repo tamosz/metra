@@ -14,7 +14,8 @@
 - CLI with baseline rankings + proposal comparison
 - Web SPA: dashboard, proposal builder, URL sharing, BBCode export
 - 4 scenarios (Buffed, Unbuffed, No-Echo, Bossing 50% PDR)
-- ~500 tests, pre-commit hooks
+- ~350 tests, pre-commit hooks
+- Balance audit: automated outlier detection across scenarios and tiers
 
 ### Phase 2: Public Launch
 **Goal**: Deploy the existing tool publicly and make it approachable for non-technical users.
@@ -41,7 +42,6 @@
 
 - **Magic classes**: Arch Mage (I/L), Bishop — requires magic damage formula implementation (different from physical)
 - **Training efficiency**: kills/hr and EXP/hr on reference mobs, comparing classes for grinding scenarios
-- **Balance audit**: automated outlier detection — flag classes significantly over/under-performing across scenarios and tiers
 - **Mob/boss modeling**: model specific bosses (HP thresholds, PDR, phases) for realistic bossing comparisons
 
 ## Architecture Evolution

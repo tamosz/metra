@@ -37,6 +37,9 @@ npm run simulate -- --audit
 # Dump spreadsheet formulas/values for translation reference
 npm run dump-sheet
 
+# Run the web app locally
+cd web && npm run dev
+
 # Set up git hooks (once, after cloning)
 npm run setup
 ```
@@ -45,13 +48,13 @@ The pre-commit hook runs unit tests, type-checks the engine, and type-checks the
 
 ## Architecture
 
-Four layers. Keep them cleanly separated.
+Five layers. Keep them cleanly separated.
 
 ### 1. Data Layer (`/data`)
 Static game data stored as JSON files, version-controlled, human-readable and human-editable. This is the "current state of MapleRoyals."
 
 Actual files:
-- `skills/` — one file per class (`hero.json`, `drk.json`, `paladin.json`, `nl.json`, `bowmaster.json`, `sair.json`, `bucc.json`, `shadower.json`). Each contains mastery, stat mapping, SE crit config, and a `skills[]` array.
+- `skills/` — one file per class (`hero.json`, `hero-axe.json`, `drk.json`, `paladin.json`, `nl.json`, `bowmaster.json`, `marksman.json`, `sair.json`, `bucc.json`, `shadower.json`). Each contains mastery, stat mapping, SE crit config, and a `skills[]` array.
 - `gear-templates/` — character builds at each funding tier (`hero-low.json`, `hero-high.json`, etc.). Include full gear breakdown, stats, buffs, and weapon info.
 - `weapons.json` — weapon type slash/stab multipliers for the damage formula.
 - `attack-speed.json` — effective speed tier → attack time lookup, keyed by skill category.
@@ -105,7 +108,7 @@ A proposal is a JSON file that describes one or more changes:
 
 **`from` field:** optional but recommended. If present, the system validates that the current value matches, catching stale proposals.
 
-The pipeline: `apply.ts` patches the skill data → `simulate.ts` runs DPS across all classes/tiers/scenarios → `compare.ts` produces before/after deltas with rank tracking → `markdown.ts` renders a Markdown report with per-scenario tables. When no proposal is given, the CLI runs in **baseline mode**: it simulates all classes and renders a ranked DPS table with an ASCII bar chart.
+The pipeline: `apply.ts` patches the skill data → `simulate.ts` runs DPS across all classes/tiers/scenarios → `compare.ts` produces before/after deltas with rank tracking → `markdown.ts` or `bbcode.ts` renders a report. When no proposal is given, the CLI runs in **baseline mode**: it simulates all classes and renders a ranked DPS table with an ASCII bar chart.
 
 **Scenarios:** `ScenarioConfig` defines evaluation conditions (buff overrides, PDR). Proposals say *what changes*; scenarios say *under what conditions to evaluate*. PDR is applied as a post-calculation multiplier: `effectiveDps = dps * (1 - pdr)`.
 
@@ -117,6 +120,16 @@ Analyzes simulation results and flags statistical outliers. Pure functions, no I
 - `types.ts` — `BalanceAudit`, `OutlierEntry`, `TierSensitivity`, `GroupSummary`.
 
 CLI: `npm run simulate -- --audit` appends the audit report after baseline rankings.
+
+### 5. Web Interface (`/web`)
+React + Vite single-page app with its own `package.json`. Consumes the engine via `src/core.ts` (a browser-safe re-export that excludes fs-based loaders).
+
+- Dashboard with baseline DPS rankings
+- Interactive proposal builder (create, edit, simulate)
+- Comparison results view with per-scenario tables
+- URL sharing via lz-string compressed proposals in URL hash (`#p=<compressed>`)
+- BBCode export for royals.ms forum posts (`src/report/bbcode.ts`)
+- Playwright e2e tests in `web/e2e/`
 
 ## MapleRoyals Domain Knowledge
 
@@ -157,8 +170,9 @@ Two formula variants exist, configured per class via `seCritFormula`:
 
 ### Key Classes
 
-**Implemented (9 classes):**
-- **Hero** — 2H Sword/Axe, Brandish (2-hit)
+**Implemented (10 classes):**
+- **Hero** — 2H Sword, Brandish (2-hit)
+- **Hero (Axe)** — 2H Axe, Brandish (2-hit). Separate skill file and gear templates. Weapon speed 6 (no speed-5 2H Axe exists), 4.8× multiplier. Buffed DPS matches Sword (SI resolves both to speed 2); unbuffed Axe is slower.
 - **Dark Knight (DrK)** — Spear/Polearm, Crusher and Fury
 - **Paladin** — 2H Sword/2H BW, Blast (4 variants: Holy and F/I/L Charge × Sword and BW)
 - **Night Lord (NL)** — Claw, Triple Throw (3-hit, built-in 50% crit, Shadow Partner)
@@ -199,7 +213,9 @@ Multi-scenario support: `ScenarioConfig` can override buff flags and apply PDR. 
 - **Testing:** Vitest
 - **Build:** tsx (direct execution, no compile step)
 - **Output format:** Markdown reports (can be rendered anywhere, diffed in git)
-- **No framework.** This is a CLI tool and library first.
+- **Web:** React + Vite SPA (in `web/`, separate package.json)
+- **E2E testing:** Playwright (web app)
+- The engine and CLI are framework-free. The web app is the only layer that uses React.
 
 ## Conventions
 
@@ -216,7 +232,7 @@ Multi-scenario support: `ScenarioConfig` can override buff flags and apply PDR. 
 ## What NOT To Do
 
 - **Don't over-engineer.** No ORMs, no databases, no microservices. This is a calculator, not a platform.
-- **Don't build a web UI yet.** Get the engine right first. Reports as Markdown files are fine.
+- **Don't over-complicate the web app.** Keep it a thin presentation layer over the engine. Business logic belongs in `src/engine/`, not in React components.
 - **Don't try to model every class at once.** Start with 2-3 and expand.
 - **Don't guess at game mechanics.** If something is unclear, ask the user or leave a TODO. Wrong formulas are worse than missing ones.
 - **Don't abstract prematurely.** If only warriors use a mechanic, it's okay to have warrior-specific code. Generalize when a second class needs the same thing.
@@ -225,6 +241,7 @@ Multi-scenario support: `ScenarioConfig` can override buff flags and apply PDR. 
 ```
 metra/
 ├── CLAUDE.md
+├── VISION.md
 ├── package.json
 ├── tsconfig.json
 ├── vitest.config.ts
@@ -236,6 +253,7 @@ metra/
 │   ├── maple-warrior.json       # MW level → stat multiplier
 │   ├── skills/
 │   │   ├── hero.json
+│   │   ├── hero-axe.json
 │   │   ├── drk.json
 │   │   ├── paladin.json
 │   │   ├── nl.json
@@ -247,10 +265,16 @@ metra/
 │   └── gear-templates/
 │       ├── hero-low.json
 │       ├── hero-high.json
+│       ├── hero-axe-low.json
+│       ├── hero-axe-high.json
 │       ├── drk-low.json
 │       ├── drk-high.json
 │       ├── paladin-low.json
 │       ├── paladin-high.json
+│       ├── nl-low.json
+│       ├── nl-high.json
+│       ├── bowmaster-low.json
+│       ├── bowmaster-high.json
 │       ├── marksman-low.json
 │       ├── marksman-high.json
 │       ├── sair-low.json
@@ -261,46 +285,57 @@ metra/
 │       └── shadower-high.json
 ├── proposals/                   # balance change proposals
 │   ├── brandish-buff-20.json
+│   ├── paladin-blast-multiplier.json
 │   └── warrior-rebalance.json
 ├── scripts/
 │   └── dump-sheet.ts            # spreadsheet extraction utility
-└── src/
-    ├── index.ts                 # library entry point
-    ├── cli.ts                   # CLI entry: baseline rankings or proposal comparison
-    ├── integration.test.ts      # end-to-end pipeline tests
-    ├── audit/
-    │   ├── index.ts             # re-exports
-    │   ├── types.ts             # BalanceAudit, OutlierEntry, TierSensitivity, GroupSummary
-    │   ├── analyze.ts           # analyzeBalance() — outlier detection + tier sensitivity
-    │   ├── analyze.test.ts
-    │   └── format.ts            # formatAuditReport() — Markdown rendering
-    ├── data/
-    │   ├── types.ts             # WeaponData, AttackSpeedData, ClassSkillData, CharacterBuild, etc.
-    │   ├── loader.ts            # JSON data loaders + discoverClassesAndTiers()
-    │   └── loader.test.ts
-    ├── engine/
-    │   ├── index.ts             # re-exports
-    │   ├── damage.ts            # raw damage range, range cap, adjusted range
-    │   ├── damage.test.ts
-    │   ├── buffs.ts             # MW, Echo, total attack/stat calculation
-    │   ├── buffs.test.ts
-    │   ├── attack-speed.ts      # weapon speed resolution, attack time lookup
-    │   ├── attack-speed.test.ts
-    │   ├── dps.ts               # full DPS pipeline
-    │   └── dps.test.ts
-    ├── proposals/
-    │   ├── types.ts             # Proposal, ProposalChange, ScenarioResult, DeltaEntry (with ranks), ComparisonResult
-    │   ├── apply.ts             # apply proposal changes to skill data
-    │   ├── apply.test.ts
-    │   ├── simulate.ts          # run DPS across all classes × tiers × skills, comboGroup aggregation
-    │   ├── compare.ts           # before/after comparison with deltas and rank tracking
-    │   └── compare.test.ts
-    ├── report/
-    │   ├── markdown.ts          # render comparison and baseline reports as Markdown
-    │   ├── markdown.test.ts
-    │   ├── ascii-chart.ts       # horizontal ASCII bar chart for terminal output
-    │   └── ascii-chart.test.ts
-    └── sheets/
-        ├── extract.ts           # read formulas/values from xlsx
-        └── extract.test.ts
+├── src/
+│   ├── index.ts                 # library entry point
+│   ├── core.ts                  # browser-safe re-exports (no fs loaders)
+│   ├── cli.ts                   # CLI entry: baseline rankings or proposal comparison
+│   ├── integration.test.ts      # end-to-end pipeline tests
+│   ├── audit/
+│   │   ├── index.ts             # re-exports
+│   │   ├── types.ts             # BalanceAudit, OutlierEntry, TierSensitivity, GroupSummary
+│   │   ├── analyze.ts           # analyzeBalance() — outlier detection + tier sensitivity
+│   │   ├── analyze.test.ts
+│   │   └── format.ts            # formatAuditReport() — Markdown rendering
+│   ├── data/
+│   │   ├── types.ts             # WeaponData, AttackSpeedData, ClassSkillData, CharacterBuild, etc.
+│   │   ├── loader.ts            # JSON data loaders + discoverClassesAndTiers()
+│   │   └── loader.test.ts
+│   ├── engine/
+│   │   ├── index.ts             # re-exports
+│   │   ├── damage.ts            # raw damage range, range cap, adjusted range
+│   │   ├── damage.test.ts
+│   │   ├── buffs.ts             # MW, Echo, total attack/stat calculation
+│   │   ├── buffs.test.ts
+│   │   ├── attack-speed.ts      # weapon speed resolution, attack time lookup
+│   │   ├── attack-speed.test.ts
+│   │   ├── dps.ts               # full DPS pipeline
+│   │   └── dps.test.ts
+│   ├── proposals/
+│   │   ├── types.ts             # Proposal, ProposalChange, ScenarioResult, DeltaEntry (with ranks), ComparisonResult
+│   │   ├── apply.ts             # apply proposal changes to skill data
+│   │   ├── apply.test.ts
+│   │   ├── simulate.ts          # run DPS across all classes × tiers × skills, comboGroup aggregation
+│   │   ├── compare.ts           # before/after comparison with deltas and rank tracking
+│   │   └── compare.test.ts
+│   ├── report/
+│   │   ├── markdown.ts          # render comparison and baseline reports as Markdown
+│   │   ├── markdown.test.ts
+│   │   ├── bbcode.ts            # render reports as BBCode for royals.ms forum
+│   │   ├── bbcode.test.ts
+│   │   ├── ascii-chart.ts       # horizontal ASCII bar chart for terminal output
+│   │   └── ascii-chart.test.ts
+│   └── sheets/
+│       ├── extract.ts           # read formulas/values from xlsx
+│       └── extract.test.ts
+└── web/                         # React + Vite SPA (separate package.json)
+    ├── package.json
+    ├── vite.config.ts
+    ├── playwright.config.ts
+    ├── index.html
+    ├── src/                     # React components, data bundle, styles
+    └── e2e/                     # Playwright end-to-end tests
 ```
