@@ -73,6 +73,13 @@ export interface ClassSkillData {
    * - "addAfterMultiply": seDmg% = basePower * multiplier + bonus  (Paladin G28 formula)
    */
   seCritFormula?: 'addBeforeMultiply' | 'addAfterMultiply';
+  /**
+   * Which damage formula to use.
+   * - "standard" (default): warrior-style (primary * weapMult + secondary) * totalAtk / 100
+   * - "throwingStar": NL-style 5.0 * LUK * totalAtk / 100
+   * Future: "bow", "magic"
+   */
+  damageFormula?: 'standard' | 'throwingStar';
   skills: SkillEntry[];
 }
 

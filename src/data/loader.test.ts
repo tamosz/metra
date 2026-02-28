@@ -62,6 +62,14 @@ describe('loadClassSkills', () => {
     expect(brandishSword!.multiplier).toBe(1.9);
     expect(brandishSword!.hitCount).toBe(2);
   });
+
+  it('loads damageFormula for each class', () => {
+    const hero = loadClassSkills('Hero');
+    expect(hero.damageFormula).toBe('standard');
+
+    const nl = loadClassSkills('NL');
+    expect(nl.damageFormula).toBe('throwingStar');
+  });
 });
 
 describe('loadGearTemplate', () => {

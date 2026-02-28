@@ -134,6 +134,37 @@ describe('applyProposal', () => {
     );
   });
 
+  it('accepts builtInCritRate and builtInCritDamageBonus fields', () => {
+    const nlDataMap = new Map([['nl', loadClassSkills('NL')]]);
+    const proposal: Proposal = {
+      name: 'TT crit nerf',
+      author: 'test',
+      changes: [
+        { target: 'nl.triple-throw-30', field: 'builtInCritRate', from: 0.50, to: 0.40 },
+        { target: 'nl.triple-throw-30', field: 'builtInCritDamageBonus', from: 100, to: 80 },
+      ],
+    };
+
+    const modified = applyProposal(nlDataMap, proposal);
+    const tt = modified.get('nl')!.skills.find((s) => s.name === 'Triple Throw 30')!;
+    expect(tt.builtInCritRate).toBe(0.40);
+    expect(tt.builtInCritDamageBonus).toBe(80);
+  });
+
+  it('accepts attackType field', () => {
+    const proposal: Proposal = {
+      name: 'Change attack type',
+      author: 'test',
+      changes: [
+        { target: 'hero.brandish-sword', field: 'attackType', to: 'stab' },
+      ],
+    };
+
+    const modified = applyProposal(classDataMap, proposal);
+    const brandish = modified.get('hero')!.skills.find((s) => s.name === 'Brandish (Sword)')!;
+    expect(brandish.attackType).toBe('stab');
+  });
+
   it('applies multiple changes across classes', () => {
     const proposal: Proposal = {
       name: 'Multi-class rebalance',
