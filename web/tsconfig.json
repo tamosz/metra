@@ -17,5 +17,12 @@
     "baseUrl": "."
   },
   "include": ["src/**/*", "../src/**/*"],
-  "exclude": ["node_modules"]
+  "exclude": [
+    "node_modules",
+    "../src/cli.ts",
+    "../src/sheets/**",
+    "../src/data/loader.ts",
+    "../src/data/loader.test.ts",
+    "../src/integration.test.ts"
+  ]
 }
