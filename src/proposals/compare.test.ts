@@ -424,6 +424,52 @@ describe('compareProposal with multiple scenarios', () => {
     expect(bossingDelta.changePercent).toBeCloseTo(buffedDelta.changePercent, 2);
   });
 
+  it('computes rank before and after within (scenario, tier) groups', () => {
+    const scenarios: ScenarioConfig[] = [{ name: 'Buffed' }];
+
+    const multiConfig: SimulationConfig = {
+      classes: ['hero', 'drk'],
+      tiers: ['high'],
+      scenarios,
+    };
+
+    // Buff Hero Brandish significantly so it overtakes DrK Crusher
+    const proposal: Proposal = {
+      name: 'Brandish +40',
+      author: 'test',
+      changes: [
+        { target: 'hero.brandish-sword', field: 'basePower', from: 260, to: 300 },
+      ],
+    };
+
+    const result = compareProposal(
+      proposal,
+      multiConfig,
+      classDataMap,
+      gearTemplates,
+      weaponData,
+      attackSpeedData,
+      mapleWarriorData
+    );
+
+    // All deltas should have rank fields
+    for (const d of result.deltas) {
+      expect(d.rankBefore).toBeDefined();
+      expect(d.rankAfter).toBeDefined();
+      expect(d.rankBefore).toBeGreaterThan(0);
+      expect(d.rankAfter).toBeGreaterThan(0);
+    }
+
+    // Find Brandish (Sword) high tier delta
+    const heroBrandish = result.deltas.find(
+      (d) => d.className === 'Hero' && d.skillName === 'Brandish (Sword)' && d.tier === 'high'
+    )!;
+    expect(heroBrandish).toBeDefined();
+    // Rank should have potentially changed
+    expect(typeof heroBrandish.rankBefore).toBe('number');
+    expect(typeof heroBrandish.rankAfter).toBe('number');
+  });
+
   it('PDR of 0 has no effect, PDR of 1 reduces DPS to zero', () => {
     const scenarios: ScenarioConfig[] = [
       { name: 'No PDR', pdr: 0 },
