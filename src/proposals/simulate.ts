@@ -4,6 +4,7 @@ import type {
   WeaponData,
   AttackSpeedData,
   MapleWarriorData,
+  SkillEntry,
 } from '../data/types.js';
 import { calculateSkillDps } from '../engine/dps.js';
 import type { ScenarioConfig, ScenarioResult } from './types.js';
@@ -70,6 +71,8 @@ export function runSimulation(
 
         const effectiveBuild = applyScenarioOverrides(build, scenario);
 
+        // Compute DPS for each individual skill
+        const skillResults: { skill: SkillEntry; result: ScenarioResult }[] = [];
         for (const skill of classData.skills) {
           const dps = calculateSkillDps(
             effectiveBuild,
@@ -85,17 +88,73 @@ export function runSimulation(
               ? { ...dps, dps: dps.dps * (1 - scenario.pdr), averageDamage: dps.averageDamage * (1 - scenario.pdr) }
               : dps;
 
-          results.push({
-            className: classData.className,
-            skillName: skill.name,
-            tier,
-            scenario: scenario.name,
-            dps: effectiveDps,
+          skillResults.push({
+            skill,
+            result: {
+              className: classData.className,
+              skillName: skill.name,
+              tier,
+              scenario: scenario.name,
+              dps: effectiveDps,
+            },
           });
         }
+
+        // Aggregate comboGroup skills: sum DPS for skills sharing the same group
+        const grouped = aggregateComboGroups(skillResults);
+        results.push(...grouped);
       }
     }
   }
 
   return results;
+}
+
+/**
+ * Aggregate skills that share a comboGroup into a single result.
+ * Non-grouped skills pass through unchanged.
+ * Grouped skills have their DPS and averageDamage summed; the group name
+ * becomes the skillName. Other DpsResult fields are taken from the first
+ * skill in the group (attackTime, damageRange, etc. are not meaningful
+ * for the aggregate but kept for structural compatibility).
+ */
+function aggregateComboGroups(
+  skillResults: { skill: SkillEntry; result: ScenarioResult }[]
+): ScenarioResult[] {
+  const output: ScenarioResult[] = [];
+  const comboMap = new Map<string, ScenarioResult[]>();
+
+  for (const { skill, result } of skillResults) {
+    if (skill.comboGroup) {
+      const existing = comboMap.get(skill.comboGroup);
+      if (existing) {
+        existing.push(result);
+      } else {
+        comboMap.set(skill.comboGroup, [result]);
+      }
+    } else {
+      output.push(result);
+    }
+  }
+
+  for (const [groupName, groupResults] of comboMap) {
+    const first = groupResults[0];
+    const totalDps = groupResults.reduce((sum, r) => sum + r.dps.dps, 0);
+    const totalAvgDamage = groupResults.reduce((sum, r) => sum + r.dps.averageDamage, 0);
+
+    output.push({
+      className: first.className,
+      skillName: groupName,
+      tier: first.tier,
+      scenario: first.scenario,
+      dps: {
+        ...first.dps,
+        skillName: groupName,
+        dps: totalDps,
+        averageDamage: totalAvgDamage,
+      },
+    });
+  }
+
+  return output;
 }

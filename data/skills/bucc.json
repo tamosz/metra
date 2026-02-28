@@ -1,0 +1,62 @@
+{
+  "source": "dmg sheet rows 21-26, range calculator E18 (Bucc: H31*4.8), D7 mastery default 0.6",
+  "className": "Buccaneer",
+  "mastery": 0.6,
+  "primaryStat": "STR",
+  "secondaryStat": "DEX",
+  "sharpEyesCritRate": 0.15,
+  "sharpEyesCritDamageBonus": 140,
+  "seCritFormula": "addBeforeMultiply",
+  "damageFormula": "standard",
+  "skills": [
+    {
+      "name": "Demolition",
+      "basePower": 500,
+      "multiplier": 1.0,
+      "hitCount": 8,
+      "speedCategory": "Demolition",
+      "weaponType": "Knuckle",
+      "source": "dmg D21=500, E21=500*1.0, N21 hitCount=8, O21=N21/2.34"
+    },
+    {
+      "name": "Barrage + Dragon Strike (Normal Hits)",
+      "basePower": 330,
+      "multiplier": 1.0,
+      "hitCount": 4,
+      "speedCategory": "Barrage + Dragon Strike",
+      "weaponType": "Knuckle",
+      "comboGroup": "Barrage + Dragon Strike",
+      "source": "dmg D22=330, E22=330*1.0, 4 normal hits of 6-hit Barrage"
+    },
+    {
+      "name": "Barrage + Dragon Strike (5th Hit)",
+      "basePower": 330,
+      "multiplier": 2.0,
+      "hitCount": 1,
+      "speedCategory": "Barrage + Dragon Strike",
+      "weaponType": "Knuckle",
+      "comboGroup": "Barrage + Dragon Strike",
+      "source": "dmg D23=330, E23=330*2.0=660, 5th hit double damage"
+    },
+    {
+      "name": "Barrage + Dragon Strike (6th Hit)",
+      "basePower": 330,
+      "multiplier": 4.0,
+      "hitCount": 1,
+      "speedCategory": "Barrage + Dragon Strike",
+      "weaponType": "Knuckle",
+      "comboGroup": "Barrage + Dragon Strike",
+      "source": "dmg D24=330, E24=330*4.0=1320, 6th hit quad damage"
+    },
+    {
+      "name": "Barrage + Dragon Strike (Dragon Strike)",
+      "basePower": 900,
+      "multiplier": 1.0,
+      "hitCount": 1,
+      "speedCategory": "Barrage + Dragon Strike",
+      "weaponType": "Knuckle",
+      "comboGroup": "Barrage + Dragon Strike",
+      "source": "dmg D25=900, E25=900*1.0, final hit of combo"
+    }
+  ]
+}
