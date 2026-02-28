@@ -1,0 +1,11 @@
+{
+  "source": "Attack Speed sheet A1:F8",
+  "categories": ["Battleship Cannon", "Strafe/Snipe", "Crusher", "Brandish", "Blast"],
+  "entries": [
+    { "speed": 2, "times": { "Battleship Cannon": 0.60, "Strafe/Snipe": 0.60, "Crusher": 0.81, "Brandish": 0.63, "Blast": 0.63 } },
+    { "speed": 3, "times": { "Battleship Cannon": 0.63, "Strafe/Snipe": 0.69, "Crusher": 0.87, "Brandish": 0.69, "Blast": 0.69 } },
+    { "speed": 4, "times": { "Battleship Cannon": 0.69, "Strafe/Snipe": 0.72, "Crusher": 0.93, "Brandish": 0.75, "Blast": 0.75 } },
+    { "speed": 5, "times": { "Battleship Cannon": 0.75, "Strafe/Snipe": 0.78, "Crusher": 0.99, "Brandish": 0.81, "Blast": 0.81 } },
+    { "speed": 6, "times": { "Battleship Cannon": 0.78, "Strafe/Snipe": 0.87, "Crusher": 1.05, "Brandish": 0.84, "Blast": 0.84 } }
+  ]
+}
