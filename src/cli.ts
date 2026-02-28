@@ -12,6 +12,8 @@ import type { SimulationConfig } from './proposals/simulate.js';
 import type { Proposal, ScenarioConfig } from './proposals/types.js';
 import { renderComparisonReport, renderBaselineReport } from './report/markdown.js';
 import { renderAsciiChart } from './report/ascii-chart.js';
+import { analyzeBalance } from './audit/analyze.js';
+import { formatAuditReport } from './audit/format.js';
 
 function loadProposal(path: string): Proposal {
   const fullPath = resolve(path);
@@ -41,7 +43,9 @@ const DEFAULT_SCENARIOS: ScenarioConfig[] = [
 ];
 
 function main() {
-  const proposalPath = process.argv[2];
+  const auditFlag = process.argv.includes('--audit');
+  const args = process.argv.slice(2).filter((arg) => !arg.startsWith('--'));
+  const proposalPath = args[0];
 
   // Load game data
   const weaponData = loadWeapons();
@@ -78,6 +82,11 @@ function main() {
           value: r.dps.dps,
         }))
       ));
+    }
+
+    if (auditFlag) {
+      const audit = analyzeBalance(results);
+      console.log(formatAuditReport(audit));
     }
     return;
   }

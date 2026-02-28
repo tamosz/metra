@@ -61,3 +61,8 @@ export type {
 export { renderComparisonReport, renderBaselineReport } from './report/markdown.js';
 export { renderAsciiChart } from './report/ascii-chart.js';
 export { renderComparisonBBCode, renderBaselineBBCode } from './report/bbcode.js';
+
+// Audit
+export { analyzeBalance } from './audit/analyze.js';
+export { formatAuditReport } from './audit/format.js';
+export type { BalanceAudit, OutlierEntry, TierSensitivity, GroupSummary } from './audit/types.js';
