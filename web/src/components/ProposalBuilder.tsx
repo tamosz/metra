@@ -14,10 +14,6 @@ interface ProposalBuilderProps {
   simulation: SimulationData;
 }
 
-const focusStyleTag = `
-  .metra-input:focus { border-color: ${colors.borderButton} !important; }
-`;
-
 export function ProposalBuilder({ proposalState, simulation }: ProposalBuilderProps) {
   const { proposal, simulating, setName, setAuthor, setDescription, addChange, removeChange, simulate } = proposalState;
   const [showJson, setShowJson] = useState(false);
@@ -46,14 +42,15 @@ export function ProposalBuilder({ proposalState, simulation }: ProposalBuilderPr
     }
   };
 
+  const disabled = proposal.changes.length === 0 || !proposal.name || simulating;
+
   return (
     <div>
-      <style>{focusStyleTag}</style>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
-        <h2 style={{ margin: 0, fontSize: 16, fontWeight: 600 }}>Proposal Builder</h2>
+      <div className="mb-4 flex items-center justify-between">
+        <h2 className="m-0 text-base font-semibold">Proposal Builder</h2>
         <button
           onClick={() => setShowJson(!showJson)}
-          style={linkButtonStyle}
+          className="cursor-pointer border-none bg-transparent p-0 text-xs text-accent hover:text-blue-400 transition-colors"
         >
           {showJson ? 'Close JSON' : 'Import/Export JSON'}
         </button>
@@ -69,7 +66,7 @@ export function ProposalBuilder({ proposalState, simulation }: ProposalBuilderPr
         />
       )}
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 16 }}>
+      <div className="mb-4 grid grid-cols-2 gap-3">
         <Input label="Name" value={proposal.name} onChange={setName} placeholder="e.g. Brandish Buff" />
         <Input label="Author" value={proposal.author} onChange={setAuthor} placeholder="Your name" />
       </div>
@@ -80,8 +77,8 @@ export function ProposalBuilder({ proposalState, simulation }: ProposalBuilderPr
         placeholder="What does this change do and why?"
       />
 
-      <div style={{ marginTop: 20, marginBottom: 8, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <h3 style={{ margin: 0, fontSize: 13, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: colors.textMuted }}>
+      <div className="mt-5 mb-2 flex items-center justify-between">
+        <h3 className="m-0 text-[13px] font-semibold uppercase tracking-wide text-text-muted">
           Changes
         </h3>
       </div>
@@ -92,15 +89,13 @@ export function ProposalBuilder({ proposalState, simulation }: ProposalBuilderPr
 
       <AddChangeForm simulation={simulation} onAdd={addChange} />
 
-      <div style={{ marginTop: 24, display: 'flex', gap: 12 }}>
+      <div className="mt-6 flex gap-3">
         <button
           onClick={handleSimulate}
-          disabled={proposal.changes.length === 0 || !proposal.name || simulating}
-          style={{
-            ...buttonStyle,
-            opacity: proposal.changes.length === 0 || !proposal.name || simulating ? 0.4 : 1,
-            cursor: proposal.changes.length === 0 || !proposal.name || simulating ? 'not-allowed' : 'pointer',
-          }}
+          disabled={disabled}
+          className={`rounded-md border border-border-active bg-bg-active px-5 py-2 text-sm font-medium text-text-primary transition-colors ${
+            disabled ? 'cursor-not-allowed opacity-40' : 'cursor-pointer hover:bg-zinc-700'
+          }`}
         >
           {simulating ? 'Simulating...' : 'Simulate'}
         </button>
@@ -123,46 +118,25 @@ function JsonPanel({
   onImport: () => void;
 }) {
   return (
-    <div style={{
-      background: colors.bgRaised,
-      border: `1px solid ${colors.border}`,
-      borderRadius: 8,
-      padding: 16,
-      marginBottom: 16,
-    }}>
-      <div style={{ marginBottom: 12 }}>
-        <div style={{ fontSize: 12, color: colors.textMuted, marginBottom: 4 }}>Export (current proposal)</div>
-        <pre data-testid="json-export" style={{
-          background: colors.bg,
-          padding: 12,
-          borderRadius: 4,
-          fontSize: 12,
-          overflow: 'auto',
-          maxHeight: 200,
-          color: colors.textSecondary,
-          margin: 0,
-        }}>
+    <div className="mb-4 rounded-lg border border-border-default bg-bg-raised p-4">
+      <div className="mb-3">
+        <div className="mb-1 text-xs text-text-muted">Export (current proposal)</div>
+        <pre data-testid="json-export" className="m-0 max-h-[200px] overflow-auto rounded bg-bg p-3 text-xs text-text-secondary">
           {JSON.stringify(proposal, null, 2)}
         </pre>
       </div>
       <div>
-        <div style={{ fontSize: 12, color: colors.textMuted, marginBottom: 4 }}>Import</div>
+        <div className="mb-1 text-xs text-text-muted">Import</div>
         <textarea
-          className="metra-input"
           data-testid="json-import"
           value={jsonInput}
           onChange={(e) => setJsonInput(e.target.value)}
           placeholder="Paste proposal JSON here..."
-          style={{
-            ...inputStyle,
-            height: 100,
-            resize: 'vertical',
-            fontFamily: 'monospace',
-            fontSize: 12,
-          }}
+          className="w-full resize-y rounded border border-border-default bg-bg-raised px-2.5 py-1.5 font-mono text-xs text-text-primary focus:border-border-active transition-colors"
+          style={{ height: 100, boxSizing: 'border-box' }}
         />
-        {jsonError && <div style={{ color: colors.negative, fontSize: 12, marginTop: 4 }}>{jsonError}</div>}
-        <button onClick={onImport} style={{ ...linkButtonStyle, marginTop: 8 }}>
+        {jsonError && <div className="mt-1 text-xs text-negative">{jsonError}</div>}
+        <button onClick={onImport} className="mt-2 cursor-pointer border-none bg-transparent p-0 text-xs text-accent hover:text-blue-400 transition-colors">
           Import
         </button>
       </div>
@@ -172,25 +146,16 @@ function JsonPanel({
 
 function ChangeRow({ change, onRemove }: { change: ProposalChange; onRemove: () => void }) {
   return (
-    <div style={{
-      display: 'flex',
-      alignItems: 'center',
-      gap: 12,
-      padding: '8px 12px',
-      background: colors.bgRaised,
-      borderRadius: 6,
-      marginBottom: 6,
-      fontSize: 13,
-    }}>
-      <span style={{ color: colors.textMuted }}>{change.target}</span>
-      <span style={{ color: colors.textDim }}>.</span>
-      <span style={{ color: colors.textSecondary }}>{change.field}</span>
+    <div className="mb-1.5 flex items-center gap-3 rounded-md bg-bg-raised px-3 py-2 text-sm">
+      <span className="text-text-muted">{change.target}</span>
+      <span className="text-text-dim">.</span>
+      <span className="text-text-secondary">{change.field}</span>
       {change.from !== undefined && (
-        <span style={{ color: colors.textDim }}>{change.from}</span>
+        <span className="text-text-dim">{change.from}</span>
       )}
-      <span style={{ color: colors.textFaint }}>&rarr;</span>
-      <span style={{ fontWeight: 600, color: colors.accent }}>{change.to}</span>
-      <button onClick={onRemove} style={{ ...linkButtonStyle, color: colors.negative, marginLeft: 'auto' }}>
+      <span className="text-text-faint">&rarr;</span>
+      <span className="font-semibold text-accent">{change.to}</span>
+      <button onClick={onRemove} className="ml-auto cursor-pointer border-none bg-transparent p-0 text-xs text-negative hover:text-red-400 transition-colors">
         Remove
       </button>
     </div>
@@ -231,22 +196,19 @@ function AddChangeForm({
     setNewValue('');
   };
 
+  const addDisabled = !selectedClass || !selectedSkill || !newValue;
+  const selectClass = 'w-full rounded border border-border-default bg-bg-raised px-2.5 py-1.5 text-sm text-text-primary focus:border-border-active transition-colors';
+  const labelClass = 'mb-1 block text-[11px] font-medium uppercase tracking-wide text-text-muted';
+
   return (
-    <div style={{
-      display: 'grid',
-      gridTemplateColumns: '1fr 1fr 120px 100px 80px',
-      gap: 8,
-      marginTop: 8,
-      alignItems: 'end',
-    }}>
+    <div className="mt-2 grid items-end gap-2" style={{ gridTemplateColumns: '1fr 1fr 120px 100px 80px' }}>
       <div>
-        <label style={labelStyle}>Class</label>
+        <label className={labelClass}>Class</label>
         <select
-          className="metra-input"
           data-testid="class-select"
           value={selectedClass}
           onChange={(e) => { setSelectedClass(e.target.value); setSelectedSkill(''); }}
-          style={inputStyle}
+          className={selectClass}
         >
           <option value="">Select class...</option>
           {simulation.classNames.map((name) => (
@@ -255,13 +217,12 @@ function AddChangeForm({
         </select>
       </div>
       <div>
-        <label style={labelStyle}>Skill</label>
+        <label className={labelClass}>Skill</label>
         <select
-          className="metra-input"
           data-testid="skill-select"
           value={selectedSkill}
           onChange={(e) => setSelectedSkill(e.target.value)}
-          style={inputStyle}
+          className={selectClass}
           disabled={!selectedClass}
         >
           <option value="">Select skill...</option>
@@ -271,40 +232,35 @@ function AddChangeForm({
         </select>
       </div>
       <div>
-        <label style={labelStyle}>Field</label>
-        <select className="metra-input" data-testid="field-select" value={field} onChange={(e) => setField(e.target.value)} style={inputStyle}>
+        <label className={labelClass}>Field</label>
+        <select data-testid="field-select" value={field} onChange={(e) => setField(e.target.value)} className={selectClass}>
           <option value="basePower">basePower</option>
           <option value="multiplier">multiplier</option>
           <option value="hitCount">hitCount</option>
         </select>
       </div>
       <div>
-        <label style={labelStyle}>
+        <label className={labelClass}>
           New value
           {currentValue !== undefined && (
             <span style={{ color: colors.textDim, fontWeight: 400 }}> (was {String(currentValue)})</span>
           )}
         </label>
         <input
-          className="metra-input"
           data-testid="new-value-input"
           type="number"
           value={newValue}
           onChange={(e) => setNewValue(e.target.value)}
-          style={inputStyle}
+          className={selectClass}
           placeholder={currentValue !== undefined ? String(currentValue) : ''}
         />
       </div>
       <button
         onClick={handleAdd}
-        disabled={!selectedClass || !selectedSkill || !newValue}
-        style={{
-          ...buttonStyle,
-          padding: '6px 12px',
-          fontSize: 12,
-          opacity: !selectedClass || !selectedSkill || !newValue ? 0.4 : 1,
-          cursor: !selectedClass || !selectedSkill || !newValue ? 'not-allowed' : 'pointer',
-        }}
+        disabled={addDisabled}
+        className={`rounded-md border border-border-active bg-bg-active px-3 py-1.5 text-xs font-medium text-text-primary transition-colors ${
+          addDisabled ? 'cursor-not-allowed opacity-40' : 'cursor-pointer hover:bg-zinc-700'
+        }`}
       >
         Add
       </button>
@@ -324,58 +280,16 @@ function Input({
   placeholder?: string;
 }) {
   return (
-    <div style={{ marginBottom: 8 }}>
-      <label style={labelStyle}>{label}</label>
+    <div className="mb-2">
+      <label className="mb-1 block text-[11px] font-medium uppercase tracking-wide text-text-muted">{label}</label>
       <input
-        className="metra-input"
         type="text"
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
-        style={inputStyle}
+        className="w-full rounded border border-border-default bg-bg-raised px-2.5 py-1.5 text-sm text-text-primary focus:border-border-active transition-colors"
+        style={{ boxSizing: 'border-box' }}
       />
     </div>
   );
 }
-
-const labelStyle: React.CSSProperties = {
-  display: 'block',
-  fontSize: 11,
-  color: colors.textMuted,
-  textTransform: 'uppercase',
-  letterSpacing: '0.05em',
-  marginBottom: 4,
-  fontWeight: 500,
-};
-
-const inputStyle: React.CSSProperties = {
-  width: '100%',
-  background: colors.bgRaised,
-  border: `1px solid ${colors.border}`,
-  borderRadius: 4,
-  padding: '6px 10px',
-  color: colors.text,
-  fontSize: 13,
-  outline: 'none',
-  boxSizing: 'border-box',
-};
-
-const buttonStyle: React.CSSProperties = {
-  background: colors.bgButton,
-  color: colors.text,
-  border: `1px solid ${colors.borderButton}`,
-  borderRadius: 6,
-  padding: '8px 20px',
-  fontSize: 13,
-  fontWeight: 500,
-  cursor: 'pointer',
-};
-
-const linkButtonStyle: React.CSSProperties = {
-  background: 'transparent',
-  border: 'none',
-  color: colors.accent,
-  fontSize: 12,
-  cursor: 'pointer',
-  padding: 0,
-};

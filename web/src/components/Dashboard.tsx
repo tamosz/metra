@@ -1,7 +1,6 @@
 import { useState, useMemo } from 'react';
 import { DpsChart } from './DpsChart.js';
 import type { SimulationData } from '../hooks/useSimulation.js';
-import { colors } from '../theme.js';
 
 interface DashboardProps {
   simulation: SimulationData;
@@ -32,7 +31,7 @@ export function Dashboard({ simulation }: DashboardProps) {
 
   return (
     <div>
-      <div style={{ display: 'flex', gap: 16, marginBottom: 24, flexWrap: 'wrap' }}>
+      <div className="mb-6 flex flex-wrap gap-4">
         <FilterGroup
           label="Scenario"
           value={selectedScenario}
@@ -52,7 +51,7 @@ export function Dashboard({ simulation }: DashboardProps) {
 
       <DpsChart data={filtered} />
 
-      <div style={{ marginTop: 24 }}>
+      <div className="mt-6">
         <RankingTable data={filtered} />
       </div>
     </div>
@@ -71,25 +70,20 @@ function FilterGroup({
   onChange: (value: string) => void;
 }) {
   return (
-    <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-      <span style={{ fontSize: 12, color: colors.textMuted, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+    <div className="flex items-center gap-2">
+      <span className="text-xs uppercase tracking-wide text-text-muted">
         {label}
       </span>
-      <div style={{ display: 'flex', gap: 2 }}>
+      <div className="flex gap-0.5">
         {options.map((opt) => (
           <button
             key={opt.value}
             onClick={() => onChange(opt.value)}
-            style={{
-              background: value === opt.value ? colors.filterBg : 'transparent',
-              color: value === opt.value ? colors.textBright : colors.textDim,
-              border: value === opt.value ? `1px solid ${colors.borderActive}` : '1px solid transparent',
-              padding: '4px 10px',
-              borderRadius: 4,
-              fontSize: 12,
-              cursor: 'pointer',
-              transition: 'all 0.15s',
-            }}
+            className={`cursor-pointer rounded px-2.5 py-1 text-xs transition-colors ${
+              value === opt.value
+                ? 'border border-border-active bg-bg-active text-text-bright'
+                : 'border border-transparent bg-transparent text-text-dim hover:text-text-muted'
+            }`}
           >
             {opt.label}
           </button>
@@ -104,7 +98,7 @@ function formatDps(n: number): string {
 }
 
 function SortArrow({ direction }: { direction: SortDirection }) {
-  return <span style={{ marginLeft: 4, fontSize: 10 }}>{direction === 'asc' ? '\u25B2' : '\u25BC'}</span>;
+  return <span className="ml-1 text-[10px]">{direction === 'asc' ? '\u25B2' : '\u25BC'}</span>;
 }
 
 function RankingTable({ data }: { data: { className: string; skillName: string; tier: string; dps: { dps: number } }[] }) {
@@ -132,29 +126,25 @@ function RankingTable({ data }: { data: { className: string; skillName: string; 
     });
   }, [data, sortColumn, sortDirection]);
 
-  const sortableThStyle = (column: SortColumn): React.CSSProperties => ({
-    ...thStyle,
-    cursor: 'pointer',
-    userSelect: 'none',
-    textAlign: column === 'dps' ? 'right' : 'left',
-  });
+  const thBase = 'px-3 py-2 text-[11px] uppercase tracking-wide text-text-dim font-medium';
+  const thSortable = `${thBase} cursor-pointer select-none`;
 
   return (
     <>
-      <table data-testid="ranking-table" style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
+      <table data-testid="ranking-table" className="w-full border-collapse text-sm">
         <thead>
-          <tr style={{ borderBottom: `1px solid ${colors.border}` }}>
-            <th style={thStyle}>#</th>
-            <th style={sortableThStyle('class')} onClick={() => handleSort('class')}>
+          <tr className="border-b border-border-default">
+            <th className={thBase}>#</th>
+            <th className={`${thSortable} text-left`} onClick={() => handleSort('class')}>
               Class{sortColumn === 'class' && <SortArrow direction={sortDirection} />}
             </th>
-            <th style={sortableThStyle('skill')} onClick={() => handleSort('skill')}>
+            <th className={`${thSortable} text-left`} onClick={() => handleSort('skill')}>
               Skill{sortColumn === 'skill' && <SortArrow direction={sortDirection} />}
             </th>
-            <th style={sortableThStyle('tier')} onClick={() => handleSort('tier')}>
+            <th className={`${thSortable} text-left`} onClick={() => handleSort('tier')}>
               Tier{sortColumn === 'tier' && <SortArrow direction={sortDirection} />}
             </th>
-            <th style={sortableThStyle('dps')} onClick={() => handleSort('dps')}>
+            <th className={`${thSortable} text-right`} onClick={() => handleSort('dps')}>
               DPS{sortColumn === 'dps' && <SortArrow direction={sortDirection} />}
             </th>
           </tr>
@@ -162,7 +152,7 @@ function RankingTable({ data }: { data: { className: string; skillName: string; 
         <tbody>
           {sorted.length === 0 ? (
             <tr>
-              <td colSpan={5} style={{ padding: '24px 12px', textAlign: 'center', color: colors.textDim, fontSize: 13 }}>
+              <td colSpan={5} className="px-3 py-6 text-center text-sm text-text-dim">
                 No results for this filter combination
               </td>
             </tr>
@@ -170,15 +160,13 @@ function RankingTable({ data }: { data: { className: string; skillName: string; 
             sorted.map((r, i) => (
               <tr
                 key={`${r.className}-${r.skillName}-${r.tier}`}
-                style={{ borderBottom: `1px solid ${colors.borderSubtle}` }}
-                onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,0.03)'; }}
-                onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = ''; }}
+                className="border-b border-border-subtle hover:bg-white/[0.03]"
               >
-                <td style={{ ...tdStyle, color: colors.textFaint, width: 32 }}>{i + 1}</td>
-                <td style={tdStyle}>{r.className}</td>
-                <td style={{ ...tdStyle, color: colors.textSecondary }}>{r.skillName}</td>
-                <td style={{ ...tdStyle, color: colors.textMuted }}>{r.tier.charAt(0).toUpperCase() + r.tier.slice(1)}</td>
-                <td style={{ ...tdStyle, textAlign: 'right', fontVariantNumeric: 'tabular-nums' }}>
+                <td className="px-3 py-2 w-8 text-text-faint">{i + 1}</td>
+                <td className="px-3 py-2">{r.className}</td>
+                <td className="px-3 py-2 text-text-secondary">{r.skillName}</td>
+                <td className="px-3 py-2 text-text-muted">{r.tier.charAt(0).toUpperCase() + r.tier.slice(1)}</td>
+                <td className="px-3 py-2 text-right tabular-nums">
                   {formatDps(r.dps.dps)}
                 </td>
               </tr>
@@ -187,23 +175,10 @@ function RankingTable({ data }: { data: { className: string; skillName: string; 
         </tbody>
       </table>
       {sorted.length > 0 && (
-        <div style={{ fontSize: 12, color: colors.textFaint, marginTop: 8, textAlign: 'right' }}>
+        <div className="mt-2 text-right text-xs text-text-faint">
           Showing {sorted.length} {sorted.length === 1 ? 'entry' : 'entries'}
         </div>
       )}
     </>
   );
 }
-
-const thStyle: React.CSSProperties = {
-  padding: '8px 12px',
-  fontSize: 11,
-  textTransform: 'uppercase',
-  letterSpacing: '0.05em',
-  color: colors.textDim,
-  fontWeight: 500,
-};
-
-const tdStyle: React.CSSProperties = {
-  padding: '8px 12px',
-};

@@ -1,5 +1,6 @@
 import type { BuildExplorerState } from '../hooks/useBuildExplorer.js';
 import { encodeBuild } from '../utils/url-encoding.js';
+import { colors } from '../theme.js';
 
 interface BuildDpsResultsProps {
   state: BuildExplorerState;
@@ -15,53 +16,31 @@ export function BuildDpsResults({ state }: BuildDpsResultsProps) {
   };
 
   const hasOverrides = Object.keys(overrides).length > 0;
+  const th = 'px-3 py-2 text-[11px] uppercase tracking-wide text-text-dim font-medium text-left';
 
   return (
     <div>
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
-        <div style={{
-          fontSize: 11,
-          color: '#666',
-          textTransform: 'uppercase',
-          letterSpacing: '0.05em',
-          fontWeight: 500,
-        }}>
+      <div className="mb-2 flex items-center justify-between">
+        <div className="text-[11px] font-medium uppercase tracking-wide text-text-dim">
           DPS Results
         </div>
         <button
           onClick={handleShare}
-          style={{
-            background: 'transparent',
-            color: '#888',
-            border: '1px solid #2a2a3e',
-            padding: '3px 10px',
-            borderRadius: 4,
-            fontSize: 11,
-            cursor: 'pointer',
-            transition: 'all 0.15s',
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.color = '#e0e0e8';
-            e.currentTarget.style.borderColor = '#3a3a5e';
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.color = '#888';
-            e.currentTarget.style.borderColor = '#2a2a3e';
-          }}
+          className="cursor-pointer rounded border border-border-default bg-transparent px-2.5 py-0.5 text-[11px] text-text-muted transition-colors hover:border-border-active hover:text-text-bright"
         >
           Copy Link
         </button>
       </div>
 
-      <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
+      <table className="w-full border-collapse text-sm">
         <thead>
-          <tr style={{ borderBottom: '1px solid #1e1e2e' }}>
-            <th style={thStyle}>Skill</th>
-            <th style={{ ...thStyle, textAlign: 'right' }}>Your DPS</th>
+          <tr className="border-b border-border-default">
+            <th className={th}>Skill</th>
+            <th className={`${th} text-right`}>Your DPS</th>
             {hasOverrides && (
               <>
-                <th style={{ ...thStyle, textAlign: 'right' }}>Template</th>
-                <th style={{ ...thStyle, textAlign: 'right' }}>Change</th>
+                <th className={`${th} text-right`}>Template</th>
+                <th className={`${th} text-right`}>Change</th>
               </>
             )}
           </tr>
@@ -70,25 +49,18 @@ export function BuildDpsResults({ state }: BuildDpsResultsProps) {
           {results.map((row) => (
             <tr
               key={row.skillName}
-              style={{ borderBottom: '1px solid #12121a' }}
-              onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,0.03)'; }}
-              onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = ''; }}
+              className="border-b border-border-subtle hover:bg-white/[0.03]"
             >
-              <td style={{ ...tdStyle, color: '#ccc' }}>{row.skillName}</td>
-              <td style={{ ...tdStyle, textAlign: 'right', fontVariantNumeric: 'tabular-nums' }}>
+              <td className="px-3 py-2 text-text-secondary">{row.skillName}</td>
+              <td className="px-3 py-2 text-right tabular-nums">
                 {formatDps(row.dps)}
               </td>
               {hasOverrides && (
                 <>
-                  <td style={{ ...tdStyle, textAlign: 'right', color: '#666', fontVariantNumeric: 'tabular-nums' }}>
+                  <td className="px-3 py-2 text-right tabular-nums text-text-dim">
                     {formatDps(row.baselineDps)}
                   </td>
-                  <td style={{
-                    ...tdStyle,
-                    textAlign: 'right',
-                    fontVariantNumeric: 'tabular-nums',
-                    color: changeColor(row.changePercent),
-                  }}>
+                  <td className="px-3 py-2 text-right tabular-nums" style={{ color: changeColor(row.changePercent) }}>
                     {formatChange(row.changePercent)}
                   </td>
                 </>
@@ -99,7 +71,7 @@ export function BuildDpsResults({ state }: BuildDpsResultsProps) {
       </table>
 
       {results.length === 0 && (
-        <div style={{ color: '#555', fontSize: 13, padding: '16px 0', textAlign: 'center' }}>
+        <div className="py-4 text-center text-sm text-text-faint">
           No skills found for this class.
         </div>
       )}
@@ -118,20 +90,6 @@ function formatChange(percent: number): string {
 }
 
 function changeColor(percent: number): string {
-  if (Math.abs(percent) < 0.01) return '#555';
-  return percent > 0 ? '#4ade80' : '#f87171';
+  if (Math.abs(percent) < 0.01) return colors.textFaint;
+  return percent > 0 ? colors.positive : colors.negative;
 }
-
-const thStyle: React.CSSProperties = {
-  padding: '8px 12px',
-  fontSize: 11,
-  textTransform: 'uppercase',
-  letterSpacing: '0.05em',
-  color: '#666',
-  fontWeight: 500,
-  textAlign: 'left',
-};
-
-const tdStyle: React.CSSProperties = {
-  padding: '8px 12px',
-};
