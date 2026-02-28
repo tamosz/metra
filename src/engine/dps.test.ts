@@ -14,6 +14,7 @@ import type {
   CharacterBuild,
 } from '../data/types.js';
 import { calculateSkillDps } from './dps.js';
+import type { SkillEntry } from '../data/types.js';
 
 let weaponData: WeaponData;
 let attackSpeedData: AttackSpeedData;
@@ -1098,6 +1099,96 @@ describe('Bishop DPS', () => {
       );
       expect(high.dps).toBeGreaterThan(low.dps);
     }
+  });
+});
+
+describe('damage cap behavior', () => {
+  // Synthetic skill with extreme basePower to trigger the 199,999 damage cap.
+  const capSkill: SkillEntry = {
+    name: 'Cap Test Skill',
+    basePower: 1000,
+    multiplier: 5,
+    hitCount: 1,
+    speedCategory: 'Brandish',
+    weaponType: '2H Sword',
+  };
+
+  const capClassData: ClassSkillData = {
+    className: 'CapTest',
+    mastery: 0.6,
+    primaryStat: 'STR',
+    secondaryStat: 'DEX',
+    sharpEyesCritRate: 0.15,
+    sharpEyesCritDamageBonus: 140,
+    seCritFormula: 'addBeforeMultiply',
+    skills: [capSkill],
+  };
+
+  const capBuild: CharacterBuild = {
+    className: 'CapTest',
+    baseStats: { STR: 999, DEX: 135, INT: 4, LUK: 4 },
+    gearStats: { STR: 1001, DEX: 65, INT: 0, LUK: 0 },
+    totalWeaponAttack: 300,
+    weaponType: '2H Sword',
+    weaponSpeed: 6,
+    attackPotion: 100,
+    projectile: 0,
+    echoActive: true,
+    mapleWarriorLevel: 20,
+    speedInfusion: true,
+    sharpEyes: true,
+    shadowPartner: false,
+  };
+
+  it('triggers adjusted range when skill damage exceeds cap', () => {
+    // skillDamagePercent = 1000 * 5 = 5000 → skillMultiplier = 50.0
+    // rangeCap = 199999 / 50 = 3999.98
+    // With these stats, max damage range should far exceed 3999, so adjusted < average
+    const result = calculateSkillDps(
+      capBuild, capClassData, capSkill, weaponData, attackSpeedData, mapleWarriorData
+    );
+    expect(result.skillDamagePercent).toBe(5000);
+    expect(result.adjustedRange).toBeLessThan(result.damageRange.average);
+  });
+
+  it('does not trigger cap with low skill damage percent', () => {
+    const lowSkill: SkillEntry = {
+      ...capSkill,
+      name: 'Low Test Skill',
+      basePower: 100,
+      multiplier: 1,
+    };
+    // skillDamagePercent = 100 → skillMultiplier = 1.0 → rangeCap = 199999
+    // Max damage with these stats should be well below 199999
+    const result = calculateSkillDps(
+      capBuild, capClassData, lowSkill, weaponData, attackSpeedData, mapleWarriorData
+    );
+    expect(result.skillDamagePercent).toBe(100);
+    expect(result.adjustedRange).toBe(result.damageRange.average);
+  });
+});
+
+describe('zero crit rate', () => {
+  it('uses the no-crit path when totalCritRate is 0', () => {
+    // Hero Brandish has no builtInCritRate. With sharpEyes: false, totalCritRate = 0.
+    const noCritBuild: CharacterBuild = {
+      ...heroHigh,
+      sharpEyes: false,
+    };
+    const brandish = heroData.skills.find(
+      (s) => s.name === 'Brandish (Sword)'
+    )!;
+    const result = calculateSkillDps(
+      noCritBuild, heroData, brandish, weaponData, attackSpeedData, mapleWarriorData
+    );
+
+    // With no crit: averageDamage = skillMultiplier * adjustedRange * hitCount
+    const skillMultiplier = result.skillDamagePercent / 100;
+    const expectedAvgDmg = skillMultiplier * result.adjustedRange * brandish.hitCount;
+    expect(result.averageDamage).toBeCloseTo(expectedAvgDmg, 0);
+
+    // And DPS = averageDamage / attackTime
+    expect(result.dps).toBeCloseTo(expectedAvgDmg / result.attackTime, 0);
   });
 });
 
