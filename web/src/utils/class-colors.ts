@@ -13,6 +13,8 @@ const CLASS_COLORS: Record<string, string> = {
   Corsair: '#e07855',
   Buccaneer: '#e055b8',
   Shadower: '#8855e0',
+  Bishop: '#f0e070',
+  'Archmage I/L': '#60b0f0',
 };
 
 const DEFAULT_COLOR = '#888888';

@@ -2,6 +2,7 @@ import type { BuildExplorerState } from '../hooks/useBuildExplorer.js';
 import { BuildStatEditor } from './BuildStatEditor.js';
 import { BuildBuffToggles } from './BuildBuffToggles.js';
 import { BuildDpsResults } from './BuildDpsResults.js';
+import { SupportClassNote } from './SupportClassNote.js';
 import { formatClassName } from '../utils/format.js';
 
 interface BuildExplorerProps {
@@ -41,6 +42,8 @@ export function BuildExplorer({ state }: BuildExplorerProps) {
           </button>
         )}
       </div>
+
+      <SupportClassNote classNames={[selectedClass]} />
 
       {template && (
         <div className="mb-6 flex gap-4 text-xs text-text-dim">
