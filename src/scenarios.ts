@@ -1,0 +1,23 @@
+import type { ScenarioConfig } from './proposals/types.js';
+
+export const DEFAULT_SCENARIOS: ScenarioConfig[] = [
+  { name: 'Buffed' },
+  {
+    name: 'Unbuffed',
+    overrides: {
+      sharpEyes: false,
+      echoActive: false,
+      speedInfusion: false,
+      mapleWarriorLevel: 0,
+      attackPotion: 0,
+    },
+  },
+  {
+    name: 'No-Echo',
+    overrides: { echoActive: false },
+  },
+  {
+    name: 'Bossing (50% PDR)',
+    pdr: 0.5,
+  },
+];

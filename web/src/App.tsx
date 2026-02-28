@@ -7,6 +7,7 @@ import { useSimulation } from './hooks/useSimulation.js';
 import { useProposal } from './hooks/useProposal.js';
 import { useBuildExplorer } from './hooks/useBuildExplorer.js';
 import { getProposalFromUrl, getBuildFromUrl } from './utils/url-encoding.js';
+import { colors } from './theme.js';
 
 type Page = 'dashboard' | 'proposal' | 'build';
 
@@ -33,10 +34,10 @@ export function App() {
   }, []);
 
   return (
-    <div style={{ minHeight: '100vh', background: '#0a0a0f', color: '#e0e0e8' }}>
+    <div style={{ minHeight: '100vh', background: colors.bg, color: colors.text }}>
       <header style={{
         padding: '16px 32px',
-        borderBottom: '1px solid #1e1e2e',
+        borderBottom: `1px solid ${colors.border}`,
         display: 'flex',
         alignItems: 'center',
         gap: 24,
@@ -45,7 +46,7 @@ export function App() {
           margin: 0,
           fontSize: 18,
           fontWeight: 700,
-          color: '#f0f0f8',
+          color: colors.textBright,
           letterSpacing: '-0.02em',
         }}>
           MapleRoyals Balance Simulator
@@ -104,8 +105,8 @@ function NavButton({
     <button
       onClick={onClick}
       style={{
-        background: active ? '#1e1e2e' : 'transparent',
-        color: active ? '#f0f0f8' : '#888',
+        background: active ? colors.bgActive : 'transparent',
+        color: active ? colors.textBright : colors.textMuted,
         border: 'none',
         padding: '6px 14px',
         borderRadius: 6,
@@ -115,10 +116,10 @@ function NavButton({
         transition: 'all 0.15s',
       }}
       onMouseEnter={(e) => {
-        if (!active) e.currentTarget.style.color = '#c0c0c8';
+        if (!active) e.currentTarget.style.color = '#c0c0c8'; // hover
       }}
       onMouseLeave={(e) => {
-        if (!active) e.currentTarget.style.color = '#888';
+        if (!active) e.currentTarget.style.color = colors.textMuted;
       }}
     >
       {children}

@@ -8,10 +8,9 @@ export interface ProposalChange {
   /** Field to change on the SkillEntry, e.g. "basePower". */
   field: string;
   /** Optional: expected current value (throws on mismatch to catch stale proposals). */
-  from?: number;
+  from?: number | string;
   /** New value to set. */
-  // TODO: widen to `number | string` if string fields (e.g. name, weaponType) need changing
-  to: number;
+  to: number | string;
 }
 
 /** A balance change proposal. */
