@@ -1,0 +1,28 @@
+/**
+ * Color palette for MapleStory classes.
+ * Designed for dark backgrounds with good contrast and class identity.
+ */
+const CLASS_COLORS: Record<string, string> = {
+  Hero: '#e05555',
+  DrK: '#7855e0',
+  Paladin: '#e0b855',
+  NL: '#55b8e0',
+  Bowmaster: '#55e068',
+  Corsair: '#e07855',
+  Buccaneer: '#e055b8',
+  Shadower: '#8855e0',
+};
+
+const DEFAULT_COLOR = '#888888';
+
+export function getClassColor(className: string): string {
+  return CLASS_COLORS[className] ?? DEFAULT_COLOR;
+}
+
+export function getClassColorWithOpacity(className: string, opacity: number): string {
+  const hex = getClassColor(className);
+  const r = parseInt(hex.slice(1, 3), 16);
+  const g = parseInt(hex.slice(3, 5), 16);
+  const b = parseInt(hex.slice(5, 7), 16);
+  return `rgba(${r}, ${g}, ${b}, ${opacity})`;
+}

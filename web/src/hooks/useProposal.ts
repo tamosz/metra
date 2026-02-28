@@ -1,0 +1,136 @@
+import { useState, useMemo, useCallback } from 'react';
+import { compareProposal } from '@engine/proposals/compare.js';
+import type { SimulationConfig } from '@engine/proposals/simulate.js';
+import type { Proposal, ProposalChange, ScenarioConfig, ComparisonResult } from '@engine/proposals/types.js';
+import {
+  discoverClassesAndTiers,
+  weaponData,
+  attackSpeedData,
+  mapleWarriorData,
+} from '../data/bundle.js';
+
+const DEFAULT_SCENARIOS: ScenarioConfig[] = [
+  { name: 'Buffed' },
+  {
+    name: 'Unbuffed',
+    overrides: {
+      sharpEyes: false,
+      echoActive: false,
+      speedInfusion: false,
+      mapleWarriorLevel: 0,
+      attackPotion: 0,
+    },
+  },
+  {
+    name: 'No-Echo',
+    overrides: { echoActive: false },
+  },
+  {
+    name: 'Bossing (50% PDR)',
+    pdr: 0.5,
+  },
+];
+
+export interface ProposalState {
+  proposal: Proposal;
+  result: ComparisonResult | null;
+  setName: (name: string) => void;
+  setAuthor: (author: string) => void;
+  setDescription: (description: string) => void;
+  addChange: (change: ProposalChange) => void;
+  removeChange: (index: number) => void;
+  updateChange: (index: number, change: ProposalChange) => void;
+  simulate: () => void;
+  loadProposal: (proposal: Proposal) => void;
+  clearResult: () => void;
+}
+
+export function useProposal(): ProposalState {
+  const [proposal, setProposal] = useState<Proposal>({
+    name: '',
+    author: '',
+    description: '',
+    changes: [],
+  });
+  const [result, setResult] = useState<ComparisonResult | null>(null);
+
+  const setName = useCallback((name: string) => {
+    setProposal((p) => ({ ...p, name }));
+    setResult(null);
+  }, []);
+
+  const setAuthor = useCallback((author: string) => {
+    setProposal((p) => ({ ...p, author }));
+  }, []);
+
+  const setDescription = useCallback((description: string) => {
+    setProposal((p) => ({ ...p, description }));
+  }, []);
+
+  const addChange = useCallback((change: ProposalChange) => {
+    setProposal((p) => ({ ...p, changes: [...p.changes, change] }));
+    setResult(null);
+  }, []);
+
+  const removeChange = useCallback((index: number) => {
+    setProposal((p) => ({
+      ...p,
+      changes: p.changes.filter((_, i) => i !== index),
+    }));
+    setResult(null);
+  }, []);
+
+  const updateChange = useCallback((index: number, change: ProposalChange) => {
+    setProposal((p) => ({
+      ...p,
+      changes: p.changes.map((c, i) => (i === index ? change : c)),
+    }));
+    setResult(null);
+  }, []);
+
+  const simulate = useCallback(() => {
+    if (proposal.changes.length === 0) return;
+
+    const { classNames, tiers, classDataMap, gearTemplates } = discoverClassesAndTiers();
+    const config: SimulationConfig = {
+      classes: classNames,
+      tiers,
+      scenarios: DEFAULT_SCENARIOS,
+    };
+
+    const comparisonResult = compareProposal(
+      proposal,
+      config,
+      classDataMap,
+      gearTemplates,
+      weaponData,
+      attackSpeedData,
+      mapleWarriorData
+    );
+
+    setResult(comparisonResult);
+  }, [proposal]);
+
+  const loadProposal = useCallback((p: Proposal) => {
+    setProposal(p);
+    setResult(null);
+  }, []);
+
+  const clearResult = useCallback(() => {
+    setResult(null);
+  }, []);
+
+  return {
+    proposal,
+    result,
+    setName,
+    setAuthor,
+    setDescription,
+    addChange,
+    removeChange,
+    updateChange,
+    simulate,
+    loadProposal,
+    clearResult,
+  };
+}
