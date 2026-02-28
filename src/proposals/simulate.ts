@@ -79,12 +79,18 @@ export function runSimulation(
             attackSpeedData,
             mapleWarriorData
           );
+
+          const effectiveDps =
+            scenario.pdr != null
+              ? { ...dps, dps: dps.dps * (1 - scenario.pdr), averageDamage: dps.averageDamage * (1 - scenario.pdr) }
+              : dps;
+
           results.push({
             className: classData.className,
             skillName: skill.name,
             tier,
             scenario: scenario.name,
-            dps,
+            dps: effectiveDps,
           });
         }
       }

@@ -375,4 +375,95 @@ describe('compareProposal with multiple scenarios', () => {
     // But not drastically lower — within ~10%
     expect(noEchoBrandish.before).toBeGreaterThan(buffedBrandish.before * 0.9);
   });
+
+  it('bossing scenario applies PDR to DPS', () => {
+    const scenarios: ScenarioConfig[] = [
+      { name: 'Buffed' },
+      { name: 'Bossing (50% PDR)', pdr: 0.5 },
+    ];
+
+    const multiConfig: SimulationConfig = {
+      classes: ['hero'],
+      tiers: ['high'],
+      scenarios,
+    };
+
+    const proposal: Proposal = {
+      name: 'Brandish +20',
+      author: 'test',
+      changes: [
+        { target: 'hero.brandish-sword', field: 'basePower', from: 260, to: 280 },
+      ],
+    };
+
+    const result = compareProposal(
+      proposal,
+      multiConfig,
+      classDataMap,
+      gearTemplates,
+      weaponData,
+      attackSpeedData,
+      mapleWarriorData
+    );
+
+    const buffedDelta = result.deltas.find(
+      (d) => d.skillName === 'Brandish (Sword)' && d.scenario === 'Buffed'
+    )!;
+    const bossingDelta = result.deltas.find(
+      (d) => d.skillName === 'Brandish (Sword)' && d.scenario === 'Bossing (50% PDR)'
+    )!;
+
+    // Bossing DPS should be exactly 50% of buffed DPS
+    expect(bossingDelta.before).toBeCloseTo(buffedDelta.before * 0.5, 0);
+    expect(bossingDelta.after).toBeCloseTo(buffedDelta.after * 0.5, 0);
+
+    // Change should also be 50% of buffed change
+    expect(bossingDelta.change).toBeCloseTo(buffedDelta.change * 0.5, 0);
+
+    // Percent change should be the same regardless of PDR
+    expect(bossingDelta.changePercent).toBeCloseTo(buffedDelta.changePercent, 2);
+  });
+
+  it('PDR of 0 has no effect, PDR of 1 reduces DPS to zero', () => {
+    const scenarios: ScenarioConfig[] = [
+      { name: 'No PDR', pdr: 0 },
+      { name: 'Full PDR', pdr: 1 },
+    ];
+
+    const multiConfig: SimulationConfig = {
+      classes: ['hero'],
+      tiers: ['high'],
+      scenarios,
+    };
+
+    const proposal: Proposal = {
+      name: 'No change',
+      author: 'test',
+      changes: [],
+    };
+
+    const result = compareProposal(
+      proposal,
+      multiConfig,
+      classDataMap,
+      gearTemplates,
+      weaponData,
+      attackSpeedData,
+      mapleWarriorData
+    );
+
+    const noPdrDelta = result.deltas.find(
+      (d) => d.skillName === 'Brandish (Sword)' && d.scenario === 'No PDR'
+    )!;
+    const fullPdrDelta = result.deltas.find(
+      (d) => d.skillName === 'Brandish (Sword)' && d.scenario === 'Full PDR'
+    )!;
+
+    // No PDR → same as buffed
+    expect(noPdrDelta.before).toBeGreaterThan(0);
+
+    // Full PDR → zero DPS
+    expect(fullPdrDelta.before).toBe(0);
+    expect(fullPdrDelta.after).toBe(0);
+  });
 });
