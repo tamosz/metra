@@ -4,6 +4,7 @@ import type { MapleWarriorData, ClassSkillData, CharacterBuild } from '../data/t
 import {
   applyMapleWarrior,
   calculateEcho,
+  calculateMageEcho,
   calculateTotalAttack,
   calculateTotalStats,
 } from './buffs.js';
@@ -102,6 +103,27 @@ describe('calculateTotalStats with array secondaryStat', () => {
     // secondary = STR: (floor(4 * 1.1) + 78) + DEX: (floor(14 * 1.1) + 135)
     //           = (4 + 78) + (15 + 135) = 82 + 150 = 232
     expect(stats.secondary).toBe(232);
+  });
+});
+
+describe('calculateMageEcho', () => {
+  it('computes 4% of (INT + MATK + potion) with floor', () => {
+    // floor((1000 + 500 + 100) * 0.04) = floor(1600 * 0.04) = floor(64) = 64
+    expect(calculateMageEcho(1000, 500, 100)).toBe(64);
+  });
+
+  it('computes correctly for high stats', () => {
+    // floor((1500 + 800 + 100) * 0.04) = floor(2400 * 0.04) = floor(96) = 96
+    expect(calculateMageEcho(1500, 800, 100)).toBe(96);
+  });
+
+  it('floors the result for non-integer outputs', () => {
+    // floor((1000 + 500 + 1) * 0.04) = floor(1501 * 0.04) = floor(60.04) = 60
+    expect(calculateMageEcho(1000, 500, 1)).toBe(60);
+  });
+
+  it('returns 0 for zero inputs', () => {
+    expect(calculateMageEcho(0, 0, 0)).toBe(0);
   });
 });
 

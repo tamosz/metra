@@ -257,4 +257,45 @@ describe('analyzeBalance', () => {
     // Deviations = 1.0 for each, below threshold
     expect(audit.outliers).toHaveLength(0);
   });
+
+  it('produces no false outliers in a very tight cluster', () => {
+    // Three values differing by 1 each — stdDev ≈ 0.82, max deviation < 1.5σ
+    const results = [
+      makeResult({ className: 'A', skillName: 'S1', dps: 100000 }),
+      makeResult({ className: 'B', skillName: 'S2', dps: 100001 }),
+      makeResult({ className: 'C', skillName: 'S3', dps: 100002 }),
+    ];
+    const audit = analyzeBalance(results);
+    expect(audit.outliers).toHaveLength(0);
+    expect(audit.groups[0].stdDev).toBeLessThan(1);
+  });
+
+  it('flags symmetric outliers on both sides', () => {
+    // 4 entries at 100k and one extreme on each side
+    const results = [
+      makeResult({ className: 'A', skillName: 'S1', dps: 100000 }),
+      makeResult({ className: 'B', skillName: 'S2', dps: 100000 }),
+      makeResult({ className: 'C', skillName: 'S3', dps: 100000 }),
+      makeResult({ className: 'D', skillName: 'S4', dps: 100000 }),
+      makeResult({ className: 'Low', skillName: 'Weak', dps: 30000 }),
+      makeResult({ className: 'High', skillName: 'Strong', dps: 170000 }),
+    ];
+    const audit = analyzeBalance(results);
+    const lowOutlier = audit.outliers.find((o) => o.className === 'Low');
+    const highOutlier = audit.outliers.find((o) => o.className === 'High');
+    expect(lowOutlier).toBeDefined();
+    expect(lowOutlier!.direction).toBe('under');
+    expect(highOutlier).toBeDefined();
+    expect(highOutlier!.direction).toBe('over');
+  });
+
+  it('returns empty tier sensitivities when all entries are in one tier', () => {
+    const results = [
+      makeResult({ className: 'A', skillName: 'S1', tier: 'high', dps: 200000 }),
+      makeResult({ className: 'B', skillName: 'S2', tier: 'high', dps: 150000 }),
+      makeResult({ className: 'C', skillName: 'S3', tier: 'high', dps: 300000 }),
+    ];
+    const audit = analyzeBalance(results);
+    expect(audit.tierSensitivities).toHaveLength(0);
+  });
 });
