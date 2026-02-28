@@ -10,6 +10,12 @@
       "to": 280
     },
     {
+      "target": "hero.brandish-axe-slash",
+      "field": "basePower",
+      "from": 260,
+      "to": 280
+    },
+    {
       "target": "paladin.blast-holy-sword",
       "field": "basePower",
       "from": 580,
