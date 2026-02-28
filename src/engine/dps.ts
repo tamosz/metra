@@ -194,6 +194,7 @@ export function calculateSkillDps(
   // Fixed damage bypasses the normal formula. Fields like skillDamagePercent and
   // adjustedRangeNormal are set to 0 because they don't apply — only averageDamage and dps are meaningful.
   if (skill.fixedDamage != null) {
+    const totalDamage = skill.fixedDamage * skill.hitCount;
     return {
       skillName: skill.name,
       attackTime,
@@ -202,8 +203,8 @@ export function calculateSkillDps(
       seDamagePercent: 0,
       adjustedRangeNormal: 0,
       adjustedRangeSe: 0,
-      averageDamage: skill.fixedDamage,
-      dps: skill.fixedDamage / attackTime,
+      averageDamage: totalDamage,
+      dps: totalDamage / attackTime,
     };
   }
 

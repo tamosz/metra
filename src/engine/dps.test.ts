@@ -887,6 +887,23 @@ describe('Marksman DPS', () => {
     expect(result.dps).toBe(39000);
   });
 
+  it('fixedDamage scales with hitCount', () => {
+    const snipe = mmData.skills.find((s) => s.name === 'Snipe')!;
+    const doubleHitSnipe = { ...snipe, hitCount: 2 };
+
+    const single = calculateSkillDps(
+      mmHigh, mmData, snipe, weaponData, attackSpeedData, mapleWarriorData
+    );
+    const double = calculateSkillDps(
+      mmHigh, mmData, doubleHitSnipe, weaponData, attackSpeedData, mapleWarriorData
+    );
+
+    expect(double.averageDamage).toBe(single.averageDamage * 2);
+    expect(double.dps).toBe(single.dps * 2);
+    // damageRange stays per-hit
+    expect(double.damageRange.max).toBe(single.damageRange.max);
+  });
+
   it('Snipe DPS is gear-independent (same at low and high tier)', () => {
     const snipe = mmData.skills.find((s) => s.name === 'Snipe')!;
     const highResult = calculateSkillDps(
