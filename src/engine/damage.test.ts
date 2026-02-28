@@ -25,11 +25,12 @@ describe('calculateDamageRange', () => {
   });
 
   it('computes Hero Low tier range (2H Sword)', () => {
-    // STR=877, DEX=120, weapMult=4.6, mastery=0.6, totalAttack=247
-    const range = calculateDamageRange(877, 120, 4.6, 0.6, 247);
-    expect(range.max).toBe(10260);
-    expect(range.min).toBe(5677);
-    expect(range.average).toBe(7968.5);
+    // STR=865, DEX=107, weapMult=4.6, mastery=0.6, totalAttack=247
+    // (pendant reduced from STR22/DEX23 to STR10/DEX10)
+    const range = calculateDamageRange(865, 107, 4.6, 0.6, 247);
+    expect(range.max).toBe(10092);
+    expect(range.min).toBe(5571);
+    expect(range.average).toBe(7831.5);
   });
 
   it('matches DrK range calculator values', () => {

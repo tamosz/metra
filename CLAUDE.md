@@ -43,6 +43,7 @@ Actual files:
 - `weapons.json` — weapon type slash/stab multipliers for the damage formula.
 - `attack-speed.json` — effective speed tier → attack time lookup, keyed by skill category.
 - `maple-warrior.json` — MW level → stat multiplier table.
+- `gear-assumptions.md` — documents all baked-in assumptions in gear templates (buff availability, stat choices, funding philosophy, per-slot WATK breakdowns validated against forum guides).
 - `source-sheet.xlsx` — original spreadsheet (read-only reference).
 
 ### 2. Simulation Engine (`/src/engine`)
@@ -143,6 +144,9 @@ Balance is evaluated across funding levels. Current tiers:
 
 A change that looks balanced at high funding might be wildly unbalanced at low funding, and vice versa. Always evaluate across tiers.
 
+### Gear Template Assumptions
+All templates assume a fully buffed party scenario: MW20, Sharp Eyes, Speed Infusion, Echo of Hero, and Booster (implicit). Low tier uses Heartstopper (60 WATK), high tier uses Onyx Apple (100 WATK). See `data/gear-assumptions.md` for the full per-slot breakdown, forum cross-references, and flagged concerns.
+
 ### Scenarios
 Standard scenarios for comparison reports:
 - **Buffed DPS** (implemented) — with MW, SE, SI, Echo, attack potions. This is the primary comparison metric.
@@ -187,6 +191,7 @@ metra/
 ├── vitest.config.ts
 ├── data/
 │   ├── source-sheet.xlsx        # original spreadsheet (read-only reference)
+│   ├── gear-assumptions.md      # gear template assumptions documentation
 │   ├── weapons.json             # weapon type multipliers
 │   ├── attack-speed.json        # speed tier → attack time table
 │   ├── maple-warrior.json       # MW level → stat multiplier
