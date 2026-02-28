@@ -28,10 +28,6 @@ describe('applyMapleWarrior', () => {
     expect(applyMapleWarrior(23, mwData, 20)).toBe(25);
   });
 
-  it('MW30 applies 1.15 multiplier with floor', () => {
-    // floor(999 * 1.15) = floor(1148.85) = 1148
-    expect(applyMapleWarrior(999, mwData, 30)).toBe(1148);
-  });
 });
 
 describe('calculateEcho', () => {

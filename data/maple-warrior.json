@@ -1,5 +1,5 @@
 {
-  "source": "maple warrior sheet A1:B32",
+  "source": "maple warrior sheet A1:B22 (MW caps at level 20 in MapleRoyals)",
   "entries": [
     { "level": 0,  "multiplier": 1.00 },
     { "level": 1,  "multiplier": 1.01 },
@@ -21,16 +21,6 @@
     { "level": 17, "multiplier": 1.09 },
     { "level": 18, "multiplier": 1.09 },
     { "level": 19, "multiplier": 1.10 },
-    { "level": 20, "multiplier": 1.10 },
-    { "level": 21, "multiplier": 1.11 },
-    { "level": 22, "multiplier": 1.11 },
-    { "level": 23, "multiplier": 1.12 },
-    { "level": 24, "multiplier": 1.12 },
-    { "level": 25, "multiplier": 1.13 },
-    { "level": 26, "multiplier": 1.13 },
-    { "level": 27, "multiplier": 1.14 },
-    { "level": 28, "multiplier": 1.14 },
-    { "level": 29, "multiplier": 1.15 },
-    { "level": 30, "multiplier": 1.15 }
+    { "level": 20, "multiplier": 1.10 }
   ]
 }
