@@ -8,7 +8,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "dump-sheet": "tsx scripts/dump-sheet.ts",
-    "simulate": "tsx src/cli.ts"
+    "simulate": "tsx src/cli.ts",
+    "setup": "git config core.hooksPath .githooks"
   },
   "devDependencies": {
     "typescript": "^5.4.0",

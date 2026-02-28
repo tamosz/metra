@@ -1,0 +1,15 @@
+#!/bin/sh
+
+echo "Running pre-commit checks..."
+echo ""
+
+echo "==> Unit tests"
+npx vitest run
+if [ $? -ne 0 ]; then
+  echo ""
+  echo "Pre-commit hook failed: unit tests"
+  exit 1
+fi
+echo ""
+
+echo "All pre-commit checks passed."
