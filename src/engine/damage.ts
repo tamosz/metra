@@ -7,16 +7,17 @@ export interface DamageRange {
 }
 
 /**
- * Look up the weapon multiplier for a given weapon type.
- * Uses the slash multiplier (slash = stab for swords).
+ * Look up the weapon multiplier for a given weapon type and attack type.
+ * Slash is the default (most skills slash). Stab uses stabMultiplier.
  */
 export function getWeaponMultiplier(
   weaponData: WeaponData,
-  weaponType: string
+  weaponType: string,
+  attackType: 'slash' | 'stab' = 'slash'
 ): number {
   const weapon = weaponData.types.find((w) => w.name === weaponType);
   if (!weapon) throw new Error(`Unknown weapon type: ${weaponType}`);
-  return weapon.slashMultiplier;
+  return attackType === 'stab' ? weapon.stabMultiplier : weapon.slashMultiplier;
 }
 
 /**

@@ -46,6 +46,8 @@ export interface SkillEntry {
   speedCategory: string;
   /** Weapon types this skill variant uses (e.g., "2H Sword"). */
   weaponType: string;
+  /** Attack type: 'slash' (default) or 'stab'. Determines which weapon multiplier is used. */
+  attackType?: 'slash' | 'stab';
   /** Built-in crit rate (e.g., TT has 0.50). Additive with SE crit rate. */
   builtInCritRate?: number;
   /** Built-in crit damage bonus added to basePower on crit. */

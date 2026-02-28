@@ -106,7 +106,7 @@ export function calculateSkillDps(
   if (skill.weaponType === 'Claw') {
     damageRange = calculateThrowingStarRange(primary, totalAttack);
   } else {
-    const weaponMultiplier = getWeaponMultiplier(weaponData, skill.weaponType);
+    const weaponMultiplier = getWeaponMultiplier(weaponData, skill.weaponType, skill.attackType);
     damageRange = calculateDamageRange(
       primary,
       secondary,

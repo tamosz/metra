@@ -13,6 +13,24 @@ describe('getWeaponMultiplier', () => {
     const weapons = loadWeapons();
     expect(getWeaponMultiplier(weapons, '2H Sword')).toBe(4.6);
   });
+
+  it('returns slash multiplier by default', () => {
+    const weapons = loadWeapons();
+    expect(getWeaponMultiplier(weapons, 'Spear')).toBe(3.0);
+    expect(getWeaponMultiplier(weapons, 'Polearm')).toBe(5.0);
+  });
+
+  it('returns stab multiplier when attackType is stab', () => {
+    const weapons = loadWeapons();
+    expect(getWeaponMultiplier(weapons, 'Spear', 'stab')).toBe(5.0);
+    expect(getWeaponMultiplier(weapons, 'Polearm', 'stab')).toBe(3.0);
+  });
+
+  it('slash and stab are equal for swords', () => {
+    const weapons = loadWeapons();
+    expect(getWeaponMultiplier(weapons, '2H Sword', 'slash')).toBe(4.6);
+    expect(getWeaponMultiplier(weapons, '2H Sword', 'stab')).toBe(4.6);
+  });
 });
 
 describe('calculateDamageRange', () => {
