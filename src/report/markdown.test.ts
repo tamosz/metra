@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
-import { renderComparisonReport } from './markdown.js';
-import type { ComparisonResult } from '../proposals/types.js';
+import { renderComparisonReport, renderBaselineReport } from './markdown.js';
+import type { ComparisonResult, ScenarioResult } from '../proposals/types.js';
+import type { DpsResult } from '../engine/dps.js';
 
 describe('renderComparisonReport', () => {
   it('renders a Markdown table with changes and unchanged rows', () => {
@@ -229,5 +230,169 @@ describe('renderComparisonReport with multiple scenarios', () => {
 
     expect(buffedIndex).toBeLessThan(unbuffedIndex);
     expect(unbuffedIndex).toBeLessThan(noEchoIndex);
+  });
+});
+
+function mockDpsResult(dps: number): DpsResult {
+  return {
+    skillName: 'Test',
+    attackTime: 0.63,
+    damageRange: { min: 1000, max: 2000, average: 1500 },
+    skillDamagePercent: 494,
+    seDamagePercent: 600,
+    adjustedRange: 1500,
+    adjustedRangeSe: 1800,
+    averageDamage: dps * 0.63,
+    dps,
+  };
+}
+
+describe('renderBaselineReport', () => {
+  it('renders a ranked DPS table grouped by scenario', () => {
+    const results: ScenarioResult[] = [
+      { className: 'Hero', skillName: 'Brandish', tier: 'high', scenario: 'Buffed', dps: mockDpsResult(300000) },
+      { className: 'DrK', skillName: 'Crusher', tier: 'high', scenario: 'Buffed', dps: mockDpsResult(250000) },
+      { className: 'Paladin', skillName: 'Blast', tier: 'high', scenario: 'Buffed', dps: mockDpsResult(200000) },
+    ];
+
+    const report = renderBaselineReport(results);
+
+    expect(report).toContain('# DPS Rankings');
+    expect(report).toContain('## Buffed');
+    expect(report).toContain('| Rank | Class | Skill | Tier | DPS |');
+
+    // Rank 1 should be Hero (highest DPS)
+    expect(report).toContain('| 1 | Hero');
+    expect(report).toContain('| 2 | DrK');
+    expect(report).toContain('| 3 | Paladin');
+  });
+
+  it('sorts by DPS descending within each scenario', () => {
+    const results: ScenarioResult[] = [
+      { className: 'Paladin', skillName: 'Blast', tier: 'high', scenario: 'Buffed', dps: mockDpsResult(100000) },
+      { className: 'Hero', skillName: 'Brandish', tier: 'high', scenario: 'Buffed', dps: mockDpsResult(300000) },
+    ];
+
+    const report = renderBaselineReport(results);
+    const heroIndex = report.indexOf('Hero');
+    const paladinIndex = report.indexOf('Paladin');
+    expect(heroIndex).toBeLessThan(paladinIndex);
+  });
+
+  it('groups multiple scenarios into separate sections', () => {
+    const results: ScenarioResult[] = [
+      { className: 'Hero', skillName: 'Brandish', tier: 'high', scenario: 'Buffed', dps: mockDpsResult(300000) },
+      { className: 'Hero', skillName: 'Brandish', tier: 'high', scenario: 'Unbuffed', dps: mockDpsResult(150000) },
+    ];
+
+    const report = renderBaselineReport(results);
+
+    expect(report).toContain('## Buffed');
+    expect(report).toContain('## Unbuffed');
+    const tableHeaders = report.match(/\| Rank \| Class \| Skill \| Tier \| DPS \|/g);
+    expect(tableHeaders).toHaveLength(2);
+  });
+
+  it('formats DPS with thousands separators', () => {
+    const results: ScenarioResult[] = [
+      { className: 'Hero', skillName: 'Brandish', tier: 'high', scenario: 'Buffed', dps: mockDpsResult(255950) },
+    ];
+
+    const report = renderBaselineReport(results);
+    expect(report).toContain('255,950');
+  });
+});
+
+describe('renderComparisonReport with rank columns', () => {
+  it('shows rank column when ranks are present', () => {
+    const result: ComparisonResult = {
+      proposal: { name: 'Test', author: 'test', changes: [] },
+      before: [],
+      after: [],
+      deltas: [
+        {
+          className: 'Hero',
+          skillName: 'Brandish',
+          tier: 'high',
+          scenario: 'Buffed',
+          before: 250000,
+          after: 270000,
+          change: 20000,
+          changePercent: 8,
+          rankBefore: 2,
+          rankAfter: 1,
+        },
+        {
+          className: 'DrK',
+          skillName: 'Crusher',
+          tier: 'high',
+          scenario: 'Buffed',
+          before: 260000,
+          after: 260000,
+          change: 0,
+          changePercent: 0,
+          rankBefore: 1,
+          rankAfter: 2,
+        },
+      ],
+    };
+
+    const report = renderComparisonReport(result);
+
+    expect(report).toContain('| Rank | Class | Skill | Tier |');
+    // Hero moved from rank 2 to 1
+    expect(report).toContain('2\u21921');
+    // DrK moved from rank 1 to 2
+    expect(report).toContain('1\u21922');
+  });
+
+  it('shows static rank when position unchanged', () => {
+    const result: ComparisonResult = {
+      proposal: { name: 'Test', author: 'test', changes: [] },
+      before: [],
+      after: [],
+      deltas: [
+        {
+          className: 'Hero',
+          skillName: 'Brandish',
+          tier: 'high',
+          scenario: 'Buffed',
+          before: 250000,
+          after: 250000,
+          change: 0,
+          changePercent: 0,
+          rankBefore: 1,
+          rankAfter: 1,
+        },
+      ],
+    };
+
+    const report = renderComparisonReport(result);
+    // Should show just "1" without arrow
+    expect(report).toMatch(/\| 1 \|/);
+    expect(report).not.toContain('\u2192');
+  });
+
+  it('omits rank column when no ranks present', () => {
+    const result: ComparisonResult = {
+      proposal: { name: 'Test', author: 'test', changes: [] },
+      before: [],
+      after: [],
+      deltas: [
+        {
+          className: 'Hero',
+          skillName: 'Brandish',
+          tier: 'high',
+          scenario: 'Buffed',
+          before: 250000,
+          after: 260000,
+          change: 10000,
+          changePercent: 4,
+        },
+      ],
+    };
+
+    const report = renderComparisonReport(result);
+    expect(report).not.toContain('| Rank |');
   });
 });
