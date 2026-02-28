@@ -24,7 +24,6 @@ export function BuildStatEditor({ state }: BuildStatEditorProps) {
   const { classData, template, overrides, setOverride, resetField } = state;
   if (!classData || !template) return null;
 
-  // Determine which stats to show based on class
   const primary = classData.primaryStat;
   const secondary = classData.secondaryStat;
   const secondaryStats: StatKey[] = Array.isArray(secondary) ? secondary : [secondary];
@@ -33,8 +32,7 @@ export function BuildStatEditor({ state }: BuildStatEditorProps) {
   return (
     <div>
       <SectionLabel>Stats</SectionLabel>
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
-        {/* Base Stats */}
+      <div className="grid grid-cols-2 gap-3">
         <div>
           <SubLabel>Base Stats</SubLabel>
           {relevantStats.map((stat) => {
@@ -53,7 +51,6 @@ export function BuildStatEditor({ state }: BuildStatEditorProps) {
           })}
         </div>
 
-        {/* Gear Stats */}
         <div>
           <SubLabel>Gear Stats</SubLabel>
           {relevantStats.map((stat) => {
@@ -73,9 +70,9 @@ export function BuildStatEditor({ state }: BuildStatEditorProps) {
         </div>
       </div>
 
-      <div style={{ marginTop: 12 }}>
+      <div className="mt-3">
         <SectionLabel>Attack</SectionLabel>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+        <div className="flex flex-col gap-1">
           <StatInput
             label="Weapon ATK"
             value={overrides.totalWeaponAttack}
@@ -126,15 +123,8 @@ function StatInput({
   const displayValue = value ?? templateValue;
 
   return (
-    <div style={{
-      display: 'flex',
-      alignItems: 'center',
-      gap: 8,
-      padding: '3px 0',
-      borderLeft: isOverridden ? '2px solid #60a5fa' : '2px solid transparent',
-      paddingLeft: 8,
-    }}>
-      <span style={{ fontSize: 12, color: '#888', width: 80, flexShrink: 0 }}>{label}</span>
+    <div className={`flex items-center gap-2 py-0.5 pl-2 ${isOverridden ? 'border-l-2 border-blue-400' : 'border-l-2 border-transparent'}`}>
+      <span className="w-20 shrink-0 text-xs text-text-muted">{label}</span>
       <input
         type="number"
         value={displayValue}
@@ -142,30 +132,15 @@ function StatInput({
           const v = parseInt(e.target.value, 10);
           if (!isNaN(v)) onChange(v);
         }}
-        style={{
-          background: '#12121a',
-          color: isOverridden ? '#60a5fa' : '#e0e0e8',
-          border: '1px solid #2a2a3e',
-          padding: '4px 8px',
-          borderRadius: 3,
-          fontSize: 13,
-          width: 72,
-          textAlign: 'right',
-          fontVariantNumeric: 'tabular-nums',
-          outline: 'none',
-        }}
-        onFocus={(e) => { e.currentTarget.style.borderColor = '#3a3a5e'; }}
-        onBlur={(e) => { e.currentTarget.style.borderColor = '#2a2a3e'; }}
+        className={`w-[72px] rounded border border-border-default bg-bg-raised px-2 py-1 text-right text-sm tabular-nums focus:border-border-active transition-colors ${
+          isOverridden ? 'text-blue-400' : 'text-text-primary'
+        }`}
       />
       <span
         onClick={isOverridden ? onReset : undefined}
-        style={{
-          fontSize: 11,
-          color: isOverridden ? '#60a5fa' : '#555',
-          cursor: isOverridden ? 'pointer' : 'default',
-          fontVariantNumeric: 'tabular-nums',
-          userSelect: 'none',
-        }}
+        className={`text-[11px] tabular-nums select-none ${
+          isOverridden ? 'cursor-pointer text-blue-400' : 'cursor-default text-text-faint'
+        }`}
         title={isOverridden ? 'Click to reset' : 'Template value'}
       >
         ({templateValue.toLocaleString()})
@@ -176,14 +151,7 @@ function StatInput({
 
 function SectionLabel({ children }: { children: React.ReactNode }) {
   return (
-    <div style={{
-      fontSize: 11,
-      color: '#666',
-      textTransform: 'uppercase',
-      letterSpacing: '0.05em',
-      marginBottom: 8,
-      fontWeight: 500,
-    }}>
+    <div className="mb-2 text-[11px] font-medium uppercase tracking-wide text-text-dim">
       {children}
     </div>
   );
@@ -191,7 +159,7 @@ function SectionLabel({ children }: { children: React.ReactNode }) {
 
 function SubLabel({ children }: { children: React.ReactNode }) {
   return (
-    <div style={{ fontSize: 11, color: '#555', marginBottom: 4 }}>
+    <div className="mb-1 text-[11px] text-text-faint">
       {children}
     </div>
   );
