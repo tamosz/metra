@@ -6,6 +6,8 @@ This project makes MapleStory class balance *legible*. It translates a sprawling
 
 The north star: anyone should be able to write a small change file ("buff Brandish from 260 to 280"), run a command, and get a clear before/after comparison across classes and scenarios.
 
+For the long-term roadmap (public launch, community features, advanced analysis), see `VISION.md`.
+
 ## Source Spreadsheet
 
 The project is being translated from an existing Google Sheets calculator (exported as `.xlsx` in `/data/source-sheet.xlsx`).
