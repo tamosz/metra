@@ -77,6 +77,22 @@ export function calculateSkillDps(
     skill.speedCategory
   );
 
+  // Fixed damage path: bypass damage formula entirely (e.g., Snipe)
+  if (skill.fixedDamage != null) {
+    const dps = skill.fixedDamage / attackTime;
+    return {
+      skillName: skill.name,
+      attackTime,
+      damageRange: { min: skill.fixedDamage, max: skill.fixedDamage, average: skill.fixedDamage },
+      skillDamagePercent: 0,
+      seDamagePercent: 0,
+      adjustedRange: 0,
+      adjustedRangeSe: 0,
+      averageDamage: skill.fixedDamage,
+      dps,
+    };
+  }
+
   // 2-3. Skill damage percentages
   const skillDamagePercent = skill.basePower * skill.multiplier;
 
