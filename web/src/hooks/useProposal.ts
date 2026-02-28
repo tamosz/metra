@@ -34,6 +34,7 @@ const DEFAULT_SCENARIOS: ScenarioConfig[] = [
 export interface ProposalState {
   proposal: Proposal;
   result: ComparisonResult | null;
+  simulating: boolean;
   setName: (name: string) => void;
   setAuthor: (author: string) => void;
   setDescription: (description: string) => void;
@@ -53,6 +54,7 @@ export function useProposal(): ProposalState {
     changes: [],
   });
   const [result, setResult] = useState<ComparisonResult | null>(null);
+  const [simulating, setSimulating] = useState(false);
 
   const setName = useCallback((name: string) => {
     setProposal((p) => ({ ...p, name }));
@@ -92,24 +94,28 @@ export function useProposal(): ProposalState {
     const p = proposalOverride ?? proposal;
     if (p.changes.length === 0) return;
 
-    const { classNames, tiers, classDataMap, gearTemplates } = discoverClassesAndTiers();
-    const config: SimulationConfig = {
-      classes: classNames,
-      tiers,
-      scenarios: DEFAULT_SCENARIOS,
-    };
+    setSimulating(true);
+    setTimeout(() => {
+      const { classNames, tiers, classDataMap, gearTemplates } = discoverClassesAndTiers();
+      const config: SimulationConfig = {
+        classes: classNames,
+        tiers,
+        scenarios: DEFAULT_SCENARIOS,
+      };
 
-    const comparisonResult = compareProposal(
-      p,
-      config,
-      classDataMap,
-      gearTemplates,
-      weaponData,
-      attackSpeedData,
-      mapleWarriorData
-    );
+      const comparisonResult = compareProposal(
+        p,
+        config,
+        classDataMap,
+        gearTemplates,
+        weaponData,
+        attackSpeedData,
+        mapleWarriorData
+      );
 
-    setResult(comparisonResult);
+      setResult(comparisonResult);
+      setSimulating(false);
+    }, 0);
   }, [proposal]);
 
   const loadProposal = useCallback((p: Proposal) => {
@@ -124,6 +130,7 @@ export function useProposal(): ProposalState {
   return {
     proposal,
     result,
+    simulating,
     setName,
     setAuthor,
     setDescription,

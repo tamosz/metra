@@ -4,10 +4,12 @@
  */
 const CLASS_COLORS: Record<string, string> = {
   Hero: '#e05555',
+  'Hero (Axe)': '#c04030',
   DrK: '#7855e0',
   Paladin: '#e0b855',
   NL: '#55b8e0',
   Bowmaster: '#55e068',
+  Marksman: '#40c8b0',
   Corsair: '#e07855',
   Buccaneer: '#e055b8',
   Shadower: '#8855e0',
