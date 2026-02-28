@@ -4,9 +4,10 @@ import { colors } from '../theme.js';
 
 interface BuildDpsResultsProps {
   state: BuildExplorerState;
+  showCopyLink?: boolean;
 }
 
-export function BuildDpsResults({ state }: BuildDpsResultsProps) {
+export function BuildDpsResults({ state, showCopyLink = true }: BuildDpsResultsProps) {
   const { results, selectedClass, selectedTier, overrides } = state;
 
   const handleShare = () => {
@@ -24,12 +25,14 @@ export function BuildDpsResults({ state }: BuildDpsResultsProps) {
         <div className="text-[11px] font-medium uppercase tracking-wide text-text-dim">
           DPS Results
         </div>
-        <button
-          onClick={handleShare}
-          className="cursor-pointer rounded border border-border-default bg-transparent px-2.5 py-0.5 text-[11px] text-text-muted transition-colors hover:border-border-active hover:text-text-bright"
-        >
-          Copy Link
-        </button>
+        {showCopyLink && (
+          <button
+            onClick={handleShare}
+            className="cursor-pointer rounded border border-border-default bg-transparent px-2.5 py-0.5 text-[11px] text-text-muted transition-colors hover:border-border-active hover:text-text-bright"
+          >
+            Copy Link
+          </button>
+        )}
       </div>
 
       <table className="w-full border-collapse text-sm">
