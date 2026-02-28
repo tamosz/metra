@@ -8,6 +8,7 @@
     { "name": "1H Sword", "slashMultiplier": 4.0, "stabMultiplier": 4.0 },
     { "name": "2H Sword", "slashMultiplier": 4.6, "stabMultiplier": 4.6 },
     { "name": "Spear",    "slashMultiplier": 3.0, "stabMultiplier": 5.0 },
-    { "name": "Polearm",  "slashMultiplier": 5.0, "stabMultiplier": 3.0 }
+    { "name": "Polearm",  "slashMultiplier": 5.0, "stabMultiplier": 3.0 },
+    { "name": "Bow",     "slashMultiplier": 3.4, "stabMultiplier": 3.4 }
   ]
 }

@@ -1,0 +1,35 @@
+{
+  "source": "dmg sheet row 14 (Hurricane), row 19 (Strafe), range calculator E18 (BM: I31*3.4), D7 (mastery 0.9), N14 crit rates (0.40 built-in + 0.15 SE = 0.55)",
+  "className": "Bowmaster",
+  "mastery": 0.9,
+  "primaryStat": "DEX",
+  "secondaryStat": "STR",
+  "sharpEyesCritRate": 0.15,
+  "sharpEyesCritDamageBonus": 140,
+  "seCritFormula": "addBeforeMultiply",
+  "damageFormula": "standard",
+  "skills": [
+    {
+      "name": "Hurricane",
+      "basePower": 100,
+      "multiplier": 1,
+      "hitCount": 1,
+      "speedCategory": "Hurricane",
+      "weaponType": "Bow",
+      "builtInCritRate": 0.40,
+      "builtInCritDamageBonus": 100,
+      "source": "dmg sheet D14=100, E14=100 (100*1), C14=0.12s fixed, N14 crit: 0.40 built-in from Critical Shot"
+    },
+    {
+      "name": "Strafe",
+      "basePower": 125,
+      "multiplier": 1,
+      "hitCount": 4,
+      "speedCategory": "Strafe/Snipe",
+      "weaponType": "Bow",
+      "builtInCritRate": 0.40,
+      "builtInCritDamageBonus": 100,
+      "source": "dmg sheet D19=125, E19=125 (125*1), N19 hitCount=4, crit: 0.40 built-in from Critical Shot"
+    }
+  ]
+}
