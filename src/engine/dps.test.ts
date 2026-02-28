@@ -1006,8 +1006,8 @@ describe('Archmage I/L DPS', () => {
 
     // Magic range cap uses raw multiplier: 199999/210 = 952.38
     // This is well above the max damage (268), so no capping occurs
-    // adjustedRange should equal average
-    expect(result.adjustedRange).toBe(245.5);
+    // adjustedRangeNormal should equal average
+    expect(result.adjustedRangeNormal).toBe(245.5);
   });
 
   it('High tier DPS is greater than Low tier', () => {

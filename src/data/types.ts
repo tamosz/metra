@@ -65,15 +65,18 @@ export interface SkillEntry {
   fixedDamage?: number;
 }
 
+/** The four primary stats in MapleStory. */
+export type StatName = 'STR' | 'DEX' | 'INT' | 'LUK';
+
 /** All skills for a single class. */
 export interface ClassSkillData {
   className: string;
   /** Skill mastery value (0-1). Hero sword mastery = 0.6. */
   mastery: number;
   /** Primary stat name. */
-  primaryStat: 'STR' | 'DEX' | 'INT' | 'LUK';
+  primaryStat: StatName;
   /** Secondary stat name(s). Array when multiple stats contribute (e.g., Shadower uses STR + DEX). */
-  secondaryStat: 'STR' | 'DEX' | 'INT' | 'LUK' | Array<'STR' | 'DEX' | 'INT' | 'LUK'>;
+  secondaryStat: StatName | StatName[];
   /** SE crit rate (fraction of attacks that crit with SE). */
   sharpEyesCritRate: number;
   /** SE critical damage bonus added to base power. */

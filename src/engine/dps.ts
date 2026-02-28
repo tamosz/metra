@@ -38,8 +38,8 @@ export interface DpsResult {
   skillDamagePercent: number;
   /** Skill damage% with SE crit. */
   seDamagePercent: number;
-  /** Adjusted range for normal hits. */
-  adjustedRange: number;
+  /** Adjusted range for normal (non-crit) hits. */
+  adjustedRangeNormal: number;
   /** Adjusted range for SE crit hits. */
   adjustedRangeSe: number;
   /** Average damage per attack (all lines). */
@@ -108,6 +108,10 @@ function calculateBaseDamageRange(
     return calculateThrowingStarRange(primary, totalAttack);
   }
 
+  if (damageFormula !== 'standard') {
+    throw new Error(`Unknown damage formula: ${damageFormula}`);
+  }
+
   const totalAttack = calculateTotalAttack(build);
   const weaponMultiplier = getWeaponMultiplier(weaponData, skill.weaponType, skill.attackType, skill.attackRatio);
   return calculateDamageRange(primary, secondary, weaponMultiplier, classData.mastery, totalAttack);
@@ -134,32 +138,32 @@ function calculateAverageDamage(
   hitCount: number,
   isMagic: boolean,
   shadowPartner: boolean | undefined
-): { adjustedRange: number; adjustedRangeCrit: number; averageDamage: number } {
+): { adjustedRangeNormal: number; adjustedRangeCrit: number; averageDamage: number } {
   const skillMultiplier = toEffectiveMultiplier(skillDamagePercent, isMagic);
   const critMultiplier = toEffectiveMultiplier(critDamagePercent, isMagic);
 
   const rangeCap = DAMAGE_CAP / skillMultiplier;
   const rangeCapCrit = DAMAGE_CAP / critMultiplier;
 
-  const adjustedRange = calculateAdjustedRange(damageRange, rangeCap);
+  const adjustedRangeNormal = calculateAdjustedRange(damageRange, rangeCap);
   const adjustedRangeCrit = calculateAdjustedRange(damageRange, rangeCapCrit);
 
   let averageDamage: number;
   if (totalCritRate > 0) {
     const normalRate = 1 - totalCritRate;
     averageDamage =
-      (skillMultiplier * normalRate * adjustedRange +
+      (skillMultiplier * normalRate * adjustedRangeNormal +
         critMultiplier * totalCritRate * adjustedRangeCrit) *
       hitCount;
   } else {
-    averageDamage = skillMultiplier * adjustedRange * hitCount;
+    averageDamage = skillMultiplier * adjustedRangeNormal * hitCount;
   }
 
   if (shadowPartner) {
     averageDamage *= SHADOW_PARTNER_MULTIPLIER;
   }
 
-  return { adjustedRange, adjustedRangeCrit, averageDamage };
+  return { adjustedRangeNormal, adjustedRangeCrit, averageDamage };
 }
 
 /**
@@ -187,7 +191,8 @@ export function calculateSkillDps(
   const effectiveSpeed = resolveEffectiveWeaponSpeed(build.weaponSpeed, build.speedInfusion);
   const attackTime = lookupAttackTime(attackSpeedData, effectiveSpeed, skill.speedCategory);
 
-  // Fixed damage path: bypass damage formula entirely (e.g., Snipe)
+  // Fixed damage bypasses the normal formula. Fields like skillDamagePercent and
+  // adjustedRangeNormal are set to 0 because they don't apply — only averageDamage and dps are meaningful.
   if (skill.fixedDamage != null) {
     return {
       skillName: skill.name,
@@ -195,7 +200,7 @@ export function calculateSkillDps(
       damageRange: { min: skill.fixedDamage, max: skill.fixedDamage, average: skill.fixedDamage },
       skillDamagePercent: 0,
       seDamagePercent: 0,
-      adjustedRange: 0,
+      adjustedRangeNormal: 0,
       adjustedRangeSe: 0,
       averageDamage: skill.fixedDamage,
       dps: skill.fixedDamage / attackTime,
@@ -206,7 +211,7 @@ export function calculateSkillDps(
   const { critDamagePercent, totalCritRate } = calculateCritDamage(skill, classData, build.sharpEyes);
   const damageRange = calculateBaseDamageRange(build, classData, skill, weaponData, mapleWarriorData);
   const isMagic = (classData.damageFormula ?? 'standard') === 'magic';
-  const { adjustedRange, adjustedRangeCrit, averageDamage } = calculateAverageDamage(
+  const { adjustedRangeNormal, adjustedRangeCrit, averageDamage } = calculateAverageDamage(
     damageRange, skillDamagePercent, critDamagePercent, totalCritRate,
     skill.hitCount, isMagic, build.shadowPartner
   );
@@ -217,7 +222,7 @@ export function calculateSkillDps(
     damageRange,
     skillDamagePercent,
     seDamagePercent: critDamagePercent,
-    adjustedRange,
+    adjustedRangeNormal,
     adjustedRangeSe: adjustedRangeCrit,
     averageDamage,
     dps: averageDamage / attackTime,

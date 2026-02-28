@@ -1,17 +1,17 @@
 import type { ClassSkillData } from '../data/types.js';
 import type { Proposal } from './types.js';
 
-/**
- * Derive a slug from a skill name: lowercase, spaces→hyphens, strip parens and commas.
- * "Brandish (Sword)" → "brandish-sword"
- * "Blast (F/I/L Charge, Sword)" → "blast-f-i-l-charge-sword"
- */
 /** Valid numeric/string fields that a proposal can modify on a SkillEntry. */
 const VALID_SKILL_FIELDS: ReadonlySet<string> = new Set([
   'basePower', 'multiplier', 'hitCount', 'speedCategory', 'weaponType', 'name',
   'attackType', 'builtInCritRate', 'builtInCritDamageBonus',
 ]);
 
+/**
+ * Derive a URL-safe slug from a skill name.
+ * Steps: lowercase → strip parens/commas/slashes → spaces to hyphens → collapse runs of hyphens → trim edge hyphens.
+ * "Brandish (Sword)" → "brandish-sword"
+ */
 export function skillSlug(name: string): string {
   return name
     .toLowerCase()

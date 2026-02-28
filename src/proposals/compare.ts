@@ -47,6 +47,7 @@ export function compareProposal(
   return { proposal, before, after, deltas };
 }
 
+/** Null-byte separated composite key — uniquely identifies a result across scenario/class/skill/tier. */
 function scenarioKey(r: ScenarioResult): string {
   return `${r.scenario}\0${r.className}\0${r.skillName}\0${r.tier}`;
 }
@@ -92,7 +93,7 @@ function computeDeltas(
  * Returns a map of scenarioKey → rank (1-based, highest DPS = rank 1).
  */
 function computeRanks(results: ScenarioResult[]): Map<string, number> {
-  // Group by (scenario, tier)
+  // Group by (scenario, tier) using null-byte separated composite keys
   const groups = new Map<string, ScenarioResult[]>();
   for (const r of results) {
     const groupKey = `${r.scenario}\0${r.tier}`;
