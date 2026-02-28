@@ -1,4 +1,4 @@
-import { readFileSync } from 'fs';
+import { readFileSync, readdirSync } from 'fs';
 import { resolve } from 'path';
 import {
   loadWeapons,
@@ -34,21 +34,43 @@ function main() {
   const attackSpeedData = loadAttackSpeed();
   const mapleWarriorData = loadMapleWarrior();
 
-  const classNames = ['hero', 'drk', 'paladin'];
+  // Auto-discover classes from data files
+  const skillFiles = readdirSync(resolve('data/skills'))
+    .filter((f) => f.endsWith('.json'))
+    .map((f) => f.replace('.json', ''));
+  const templateFiles = readdirSync(resolve('data/gear-templates'))
+    .filter((f) => f.endsWith('.json'))
+    .map((f) => f.replace('.json', ''));
+
+  const classNames: string[] = [];
+  const tiers = new Set<string>();
+  for (const name of skillFiles) {
+    const classTiers = templateFiles
+      .filter((t) => t.startsWith(name + '-'))
+      .map((t) => t.slice(name.length + 1));
+    if (classTiers.length > 0) {
+      classNames.push(name);
+      for (const tier of classTiers) tiers.add(tier);
+    }
+  }
+
   const classDataMap = new Map<string, ClassSkillData>();
   for (const name of classNames) {
     classDataMap.set(name, loadClassSkills(name));
   }
 
-  const tiers = ['low', 'high'];
+  const tierArray = [...tiers];
   const gearTemplates: GearTemplateMap = new Map();
   for (const name of classNames) {
-    for (const tier of tiers) {
-      gearTemplates.set(`${name}-${tier}`, loadGearTemplate(`${name}-${tier}`));
+    for (const tier of tierArray) {
+      const key = `${name}-${tier}`;
+      if (templateFiles.includes(key)) {
+        gearTemplates.set(key, loadGearTemplate(key));
+      }
     }
   }
 
-  const config: SimulationConfig = { classes: classNames, tiers };
+  const config: SimulationConfig = { classes: classNames, tiers: tierArray };
 
   // Run comparison
   const result = compareProposal(

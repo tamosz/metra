@@ -1,10 +1,14 @@
 import type { ComparisonResult, DeltaEntry } from '../proposals/types.js';
 
 /**
- * Format a number with thousands separators.
+ * Format a number with thousands separators (locale-independent).
  */
 function formatNumber(n: number): string {
-  return Math.round(n).toLocaleString('en-US');
+  const str = Math.round(n).toString();
+  const negative = str.startsWith('-');
+  const digits = negative ? str.slice(1) : str;
+  const withCommas = digits.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  return negative ? '-' + withCommas : withCommas;
 }
 
 /**

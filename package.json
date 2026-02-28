@@ -2,6 +2,7 @@
   "name": "maple-balance",
   "version": "0.1.0",
   "type": "module",
+  "main": "src/index.ts",
   "description": "MapleRoyals class balance simulator",
   "scripts": {
     "test": "vitest run",

@@ -54,9 +54,19 @@ export function applyProposal(
 
     const skill = classData.skills.find((s) => skillSlug(s.name) === slug);
     if (!skill) {
-      const available = classData.skills.map((s) => `${skillSlug(s.name)}`).join(', ');
+      const available = classData.skills.map((s) => skillSlug(s.name)).join(', ');
       throw new Error(
         `Skill "${slug}" not found in ${className}. Available: ${available}`
+      );
+    }
+
+    // Validate field name
+    const validFields: ReadonlySet<string> = new Set([
+      'basePower', 'multiplier', 'hitCount', 'speedCategory', 'weaponType', 'name',
+    ]);
+    if (!validFields.has(change.field)) {
+      throw new Error(
+        `Unknown field "${change.field}" on skill "${slug}". Valid fields: ${[...validFields].join(', ')}`
       );
     }
 
