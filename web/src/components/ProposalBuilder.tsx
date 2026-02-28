@@ -126,7 +126,7 @@ function JsonPanel({
     }}>
       <div style={{ marginBottom: 12 }}>
         <div style={{ fontSize: 12, color: '#888', marginBottom: 4 }}>Export (current proposal)</div>
-        <pre style={{
+        <pre data-testid="json-export" style={{
           background: '#0a0a0f',
           padding: 12,
           borderRadius: 4,
@@ -142,6 +142,7 @@ function JsonPanel({
       <div>
         <div style={{ fontSize: 12, color: '#888', marginBottom: 4 }}>Import</div>
         <textarea
+          data-testid="json-import"
           value={jsonInput}
           onChange={(e) => setJsonInput(e.target.value)}
           placeholder="Paste proposal JSON here..."
@@ -234,6 +235,7 @@ function AddChangeForm({
       <div>
         <label style={labelStyle}>Class</label>
         <select
+          data-testid="class-select"
           value={selectedClass}
           onChange={(e) => { setSelectedClass(e.target.value); setSelectedSkill(''); }}
           style={inputStyle}
@@ -247,6 +249,7 @@ function AddChangeForm({
       <div>
         <label style={labelStyle}>Skill</label>
         <select
+          data-testid="skill-select"
           value={selectedSkill}
           onChange={(e) => setSelectedSkill(e.target.value)}
           style={inputStyle}
@@ -260,7 +263,7 @@ function AddChangeForm({
       </div>
       <div>
         <label style={labelStyle}>Field</label>
-        <select value={field} onChange={(e) => setField(e.target.value)} style={inputStyle}>
+        <select data-testid="field-select" value={field} onChange={(e) => setField(e.target.value)} style={inputStyle}>
           <option value="basePower">basePower</option>
           <option value="multiplier">multiplier</option>
           <option value="hitCount">hitCount</option>
@@ -274,6 +277,7 @@ function AddChangeForm({
           )}
         </label>
         <input
+          data-testid="new-value-input"
           type="number"
           value={newValue}
           onChange={(e) => setNewValue(e.target.value)}

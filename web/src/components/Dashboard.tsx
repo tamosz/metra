@@ -94,7 +94,7 @@ function formatDps(n: number): string {
 
 function RankingTable({ data }: { data: { className: string; skillName: string; tier: string; dps: { dps: number } }[] }) {
   return (
-    <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
+    <table data-testid="ranking-table" style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
       <thead>
         <tr style={{ borderBottom: '1px solid #1e1e2e' }}>
           <th style={thStyle}>#</th>

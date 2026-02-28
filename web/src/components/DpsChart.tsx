@@ -30,7 +30,7 @@ export function DpsChart({ data }: DpsChartProps) {
   const chartHeight = Math.max(300, chartData.length * barHeight + 60);
 
   return (
-    <div style={{ width: '100%', height: chartHeight }}>
+    <div data-testid="dps-chart" style={{ width: '100%', height: chartHeight }}>
       <ResponsiveContainer>
         <BarChart
           data={chartData}
