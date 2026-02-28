@@ -160,7 +160,15 @@ low tier is genuinely budget.
    If Hero high uses Stonetooth, weapon speed should be 5. Current templates use speed 6
    to match the source spreadsheet. This is a design decision, not a bug.
 
-6. **Weapon multipliers distinguish slash/stab** — Spear (3.0 slash / 5.0 stab) and Polearm
+6. **Axe/BW weapon multipliers may be wrong** — The project uses 1H Axe 4.4 / 2H Axe 4.8
+   and 1H BW 4.4 / 2H BW 4.8 (from the source spreadsheet). Standard GMS v62 values are
+   1H 4.0 / 2H 4.2. A forum thread ([The Balancing of Axes & Blunt Weapons](https://royals.ms/forum/threads/the-balancing-of-axes-blunt-weapons-data-included.53212/))
+   proposed buffing these values but noted that "changing calculations is difficult without
+   a custom client," implying server-side implementation may not have happened. **Needs
+   in-game verification.** If the actual values are GMS v62, Axe/BW damage would decrease
+   significantly (Axe 2H: 4.8→4.2 = ~12.5% less primary stat contribution).
+
+7. **Weapon multipliers distinguish slash/stab** — Spear (3.0 slash / 5.0 stab) and Polearm
    (5.0 slash / 3.0 stab) now use the correct multiplier based on skill attack type.
    Crusher stabs (Spear 5.0), Fury slashes (Polearm 5.0). Both get the optimal 5.0
    multiplier when using their intended weapon.
