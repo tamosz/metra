@@ -38,7 +38,7 @@ Three layers. Keep them cleanly separated.
 Static game data stored as JSON files, version-controlled, human-readable and human-editable. This is the "current state of MapleRoyals."
 
 Actual files:
-- `skills/` — one file per class (`hero.json`, `drk.json`, `paladin.json`, `nl.json`, `bowmaster.json`, `sair.json`, `bucc.json`). Each contains mastery, stat mapping, SE crit config, and a `skills[]` array.
+- `skills/` — one file per class (`hero.json`, `drk.json`, `paladin.json`, `nl.json`, `bowmaster.json`, `sair.json`, `bucc.json`, `shadower.json`). Each contains mastery, stat mapping, SE crit config, and a `skills[]` array.
 - `gear-templates/` — character builds at each funding tier (`hero-low.json`, `hero-high.json`, etc.). Include full gear breakdown, stats, buffs, and weapon info.
 - `weapons.json` — weapon type slash/stab multipliers for the damage formula.
 - `attack-speed.json` — effective speed tier → attack time lookup, keyed by skill category.
@@ -57,7 +57,7 @@ Pure functions. No side effects, no I/O. Takes game data + a character build, ou
 - `index.ts` — re-exports.
 
 **Simulation features:**
-- **comboGroup**: skills sharing a `comboGroup` string on `SkillEntry` have their DPS summed into a single row in simulation output (used for Buccaneer's Barrage + Dragon Strike multi-part rotation).
+- **comboGroup**: skills sharing a `comboGroup` string on `SkillEntry` have their DPS summed into a single row in simulation output (used for Buccaneer's Barrage + Dragon Strike and Shadower's BStep + Assassinate). All sub-skills in a combo use the total cycle time as their speed category so that sum-of-DPS equals rotation DPS.
 
 **Not yet implemented:**
 - Training efficiency (kills/hr, EXP/hr on a given mob).
@@ -112,14 +112,14 @@ This is a v62-based MapleStory private server. Key differences from official GMS
 
 ### Damage Formula (verified, from `damage.ts`)
 
-**Standard (warriors):**
+**Standard (warriors, Shadower):**
 ```
 MaxDamage = floor((primaryStat * weaponMultiplier + secondaryStat) * totalAttack / 100)
 MinDamage = floor((primaryStat * weaponMultiplier * 0.9 * mastery + secondaryStat) * totalAttack / 100)
 ```
-Source: range calculator E18/E19. Weapon multipliers come from `weapons.json` (e.g., 4.6 for 2H Sword slash). Mastery is per-class (e.g., 0.6 for Hero).
+Source: range calculator E18/E19. Weapon multipliers come from `weapons.json` (e.g., 4.6 for 2H Sword slash, 3.6 for Dagger). Mastery is per-class (e.g., 0.6 for Hero). `secondaryStat` can be an array (e.g., Shadower uses `["STR", "DEX"]` — both are summed).
 
-**Throwing stars (NL/Shad):**
+**Throwing stars (NL):**
 ```
 MaxDamage = floor(5.0 * LUK * totalAttack / 100)
 MinDamage = floor(2.5 * LUK * totalAttack / 100)
@@ -128,14 +128,14 @@ Source: range calculator F18/F19. No weapon multiplier or secondary stat — fla
 
 ### Crit Damage
 Two formula variants exist, configured per class via `seCritFormula`:
-- **`addBeforeMultiply`** (Hero, DrK, NL, Corsair, Buccaneer): `critDmg% = (basePower + totalCritBonus) * multiplier`
+- **`addBeforeMultiply`** (Hero, DrK, NL, Shadower, Corsair, Buccaneer): `critDmg% = (basePower + totalCritBonus) * multiplier`
 - **`addAfterMultiply`** (Paladin): `critDmg% = basePower * multiplier + totalCritBonus`
 
 `totalCritBonus` = built-in crit bonus (e.g., TT +100) + SE bonus (+140 if active). Crit rate is also additive: built-in (e.g., TT 0.50) + SE (0.15), capped at 1.0.
 
 ### Key Classes
 
-**Implemented (7 classes):**
+**Implemented (8 classes):**
 - **Hero** — 2H Sword/Axe, Brandish (2-hit)
 - **Dark Knight (DrK)** — Spear/Polearm, Crusher and Fury
 - **Paladin** — 2H Sword/2H BW, Blast (4 variants: Holy and F/I/L Charge × Sword and BW)
@@ -143,6 +143,7 @@ Two formula variants exist, configured per class via `seCritFormula`:
 - **Bowmaster** — Bow, Hurricane (fixed 0.12s attack time) and Strafe (4-hit), built-in 40% crit from Critical Shot
 - **Corsair (Sair)** — Gun, Battleship Cannon (4-hit, 0.60s) and Rapid Fire (Hurricane-style 0.12s). DEX primary, 3.6× weapon multiplier.
 - **Buccaneer (Bucc)** — Knuckle, Demolition (8-hit, fixed 2.34s cycle) and Barrage + Dragon Strike (multi-part combo via `comboGroup`, fixed 2.34s cycle). STR primary, 4.8× weapon multiplier.
+- **Shadower** — Dagger + Shield, Boomerang Step + Assassinate 30 (combo via `comboGroup`, 2.31s cycle) and Savage Blow (6-hit standalone). LUK primary, STR+DEX secondary (array `secondaryStat`), Dagger 3.6× multiplier, standard damage formula, Shadow Partner, no built-in crit, no Speed Infusion.
 
 **Future expansion targets:**
 - Arch Mage (Ice/Lightning) (magic)
@@ -156,7 +157,7 @@ Balance is evaluated across funding levels. Current tiers:
 A change that looks balanced at high funding might be wildly unbalanced at low funding, and vice versa. Always evaluate across tiers.
 
 ### Gear Template Assumptions
-All templates assume a fully buffed party scenario: MW20, Sharp Eyes, Speed Infusion, Echo of Hero, and Booster (implicit). Low tier uses Heartstopper (60 WATK), high tier uses Onyx Apple (100 WATK). See `data/gear-assumptions.md` for the full per-slot breakdown, forum cross-references, and flagged concerns.
+All templates assume a fully buffed party scenario: MW20, Sharp Eyes, Speed Infusion, Echo of Hero, and Booster (implicit). Exception: Shadower templates have Speed Infusion disabled to match spreadsheet attack times (weapon speed 5 Dagger, effective speed 3 with Booster only). Low tier uses Heartstopper (60 WATK), high tier uses Onyx Apple (100 WATK). See `data/gear-assumptions.md` for the full per-slot breakdown, forum cross-references, and flagged concerns.
 
 ### Scenarios
 Standard scenarios for comparison reports (all implemented):
@@ -217,7 +218,8 @@ metra/
 │   │   ├── nl.json
 │   │   ├── bowmaster.json
 │   │   ├── sair.json
-│   │   └── bucc.json
+│   │   ├── bucc.json
+│   │   └── shadower.json
 │   └── gear-templates/
 │       ├── hero-low.json
 │       ├── hero-high.json
@@ -228,7 +230,9 @@ metra/
 │       ├── sair-low.json
 │       ├── sair-high.json
 │       ├── bucc-low.json
-│       └── bucc-high.json
+│       ├── bucc-high.json
+│       ├── shadower-low.json
+│       └── shadower-high.json
 ├── proposals/                   # balance change proposals
 │   ├── brandish-buff-20.json
 │   └── warrior-rebalance.json
