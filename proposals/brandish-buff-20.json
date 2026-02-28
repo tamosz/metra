@@ -1,0 +1,13 @@
+{
+  "name": "Brandish +20 Base Power",
+  "author": "ExampleUser",
+  "description": "Increase Hero Brandish base power from 260 to 280 (+20 flat). Matches hero charts scenario 3.",
+  "changes": [
+    {
+      "target": "hero.brandish-sword",
+      "field": "basePower",
+      "from": 260,
+      "to": 280
+    }
+  ]
+}

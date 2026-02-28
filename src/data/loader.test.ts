@@ -10,7 +10,7 @@ import {
 describe('loadWeapons', () => {
   it('loads weapon types with correct multipliers', () => {
     const weapons = loadWeapons();
-    expect(weapons.types).toHaveLength(6);
+    expect(weapons.types).toHaveLength(7);
 
     const twoHandedSword = weapons.types.find((w) => w.name === '2H Sword');
     expect(twoHandedSword).toBeDefined();

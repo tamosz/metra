@@ -1,0 +1,17 @@
+{
+  "source": "gear templates sheet, Hero & Paladin rows 3-25, High (identical to Hero)",
+  "label": "Paladin High",
+  "className": "Paladin",
+  "baseStats": { "STR": 999, "DEX": 23, "INT": 4, "LUK": 4 },
+  "gearStats": { "STR": 174, "DEX": 102, "INT": 0, "LUK": 0 },
+  "totalWeaponAttack": 214,
+  "weaponType": "2H Sword",
+  "weaponSpeed": 6,
+  "attackPotion": 100,
+  "potionName": "Apple",
+  "projectile": 0,
+  "echoActive": true,
+  "mapleWarriorLevel": 20,
+  "speedInfusion": true,
+  "sharpEyes": true
+}
