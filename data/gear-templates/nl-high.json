@@ -4,7 +4,7 @@
   "className": "NL",
   "baseStats": { "STR": 4, "DEX": 25, "INT": 4, "LUK": 999 },
   "gearStats": { "STR": 26, "DEX": 125, "INT": 0, "LUK": 98 },
-  "totalWeaponAttack": 151,
+  "totalWeaponAttack": 144,
   "weaponType": "Claw",
   "weaponSpeed": 4,
   "attackPotion": 100,
@@ -30,8 +30,8 @@
     "ring2":     { "LUK": 5,  "DEX": 5,  "WATK": 0 },
     "ring3":     { "LUK": 2,  "DEX": 2,  "WATK": 0 },
     "ring4":     { "LUK": 0,  "DEX": 0,  "WATK": 1 },
-    "cape":      { "LUK": 0,  "DEX": 0,  "WATK": 18 },
-    "shoe":      { "LUK": 0,  "DEX": 0,  "WATK": 17 },
-    "glove":     { "LUK": 0,  "DEX": 0,  "WATK": 21 }
+    "cape":      { "LUK": 0,  "DEX": 0,  "WATK": 17 },
+    "shoe":      { "LUK": 0,  "DEX": 0,  "WATK": 13 },
+    "glove":     { "LUK": 0,  "DEX": 0,  "WATK": 19 }
   }
 }

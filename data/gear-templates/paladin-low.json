@@ -4,7 +4,7 @@
   "className": "Paladin",
   "baseStats": { "STR": 700, "DEX": 22, "INT": 4, "LUK": 4 },
   "gearStats": { "STR": 95, "DEX": 83, "INT": 0, "LUK": 0 },
-  "totalWeaponAttack": 178,
+  "totalWeaponAttack": 168,
   "weaponType": "2H Sword",
   "weaponSpeed": 6,
   "attackPotion": 60,
@@ -16,7 +16,7 @@
   "sharpEyes": true,
   "note": "gearBreakdown copied from hero-low.json — Hero & Paladin share identical gear per source sheet",
   "gearBreakdown": {
-    "weapon":    { "STR": 18, "DEX": 0,  "WATK": 140 },
+    "weapon":    { "STR": 18, "DEX": 0,  "WATK": 130 },
     "helmet":    { "STR": 17, "DEX": 31, "WATK": 0 },
     "top":       { "STR": 23, "DEX": 7,  "WATK": 0 },
     "bottom":    { "STR": 8,  "DEX": 12, "WATK": 0 },

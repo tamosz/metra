@@ -101,9 +101,8 @@ describe('compareProposal', () => {
     expect(heroBrandishHigh.change).toBeGreaterThan(0);
     expect(heroBrandishHigh.changePercent).toBeGreaterThan(0);
 
-    // Verify Hero Brandish +20% High DPS matches hero charts scenario 3
-    // Hero charts E5: 274167.0444444445
-    expect(heroBrandishHigh.after).toBeCloseTo(274167, -1);
+    // After C/G/S standardization: Brandish +20 High DPS
+    expect(heroBrandishHigh.after).toBeCloseTo(264917, -1);
 
     // DrK should be unchanged
     const drkCrusherHigh = result.deltas.find(
@@ -166,8 +165,8 @@ describe('compareProposal', () => {
         d.tier === 'low'
     )!;
 
-    // After pendant fix (STR22/DEX23 → STR10/DEX10): 142185.23
-    expect(heroBrandishLow.after).toBeCloseTo(142185, -1);
+    // After weapon WATK reduction (178→168): Brandish +20 Low DPS
+    expect(heroBrandishLow.after).toBeCloseTo(136421, -1);
   });
 
   it('computes multi-class changes independently', () => {

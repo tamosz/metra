@@ -74,7 +74,7 @@ describe('End-to-end: brandish-buff-20 proposal', () => {
     const heroDelta = result.deltas.find(
       (d) => d.className === 'Hero' && d.skillName === 'Brandish (Sword)' && d.tier === 'high'
     )!;
-    expect(Math.abs(heroDelta.after - 274167.04444)).toBeLessThan(1);
+    expect(Math.abs(heroDelta.after - 264916.78889)).toBeLessThan(1);
     expect(heroDelta.changePercent).toBeCloseTo(7.1, 0);
 
     // DrK unchanged

@@ -67,12 +67,12 @@ describe('Hero Brandish (Sword) DPS', () => {
     expect(result.attackTime).toBe(0.63);
     expect(result.skillDamagePercent).toBe(494);
     expect(result.seDamagePercent).toBe(760);
-    expect(result.damageRange.max).toBe(19488);
-    expect(result.damageRange.min).toBe(10714);
-    expect(result.damageRange.average).toBe(15101);
+    expect(result.damageRange.max).toBe(18831);
+    expect(result.damageRange.min).toBe(10352);
+    expect(result.damageRange.average).toBe(14591.5);
 
-    // Target from hero charts sheet G3: 255949.9650793651
-    expect(result.dps).toBeCloseTo(255950, -1);
+    // After C/G/S standardization (214→203 WATK)
+    expect(result.dps).toBeCloseTo(247314, -1);
   });
 
   it('matches hero charts Low tier DPS (~135,060)', () => {
@@ -88,13 +88,13 @@ describe('Hero Brandish (Sword) DPS', () => {
       mapleWarriorData
     );
 
-    // Verify intermediate values (pendant reduced from STR22/DEX23 to STR10/DEX10)
+    // After weapon WATK reduction (178→168 WATK)
     expect(result.attackTime).toBe(0.63);
-    expect(result.damageRange.max).toBe(10092);
-    expect(result.damageRange.min).toBe(5571);
-    expect(result.damageRange.average).toBe(7831.5);
+    expect(result.damageRange.max).toBe(9683);
+    expect(result.damageRange.min).toBe(5345);
+    expect(result.damageRange.average).toBe(7514);
 
-    expect(result.dps).toBeCloseTo(132738, -1);
+    expect(result.dps).toBeCloseTo(127356, -1);
   });
 
   it('produces exact High tier DPS value', () => {
@@ -110,10 +110,8 @@ describe('Hero Brandish (Sword) DPS', () => {
       mapleWarriorData
     );
 
-    // Exact value from spreadsheet: 255949.9650793651
-    // Our calculation: 161248.478 / 0.63
-    // Small floating-point differences are acceptable
-    expect(Math.abs(result.dps - 255949.9650793651)).toBeLessThan(1);
+    // After C/G/S standardization (214→203 WATK)
+    expect(Math.abs(result.dps - 247314.34444444446)).toBeLessThan(1);
   });
 
   it('produces exact Low tier DPS value', () => {
@@ -129,8 +127,8 @@ describe('Hero Brandish (Sword) DPS', () => {
       mapleWarriorData
     );
 
-    // Value after pendant fix (STR22/DEX23 → STR10/DEX10): 132737.7095238095
-    expect(Math.abs(result.dps - 132737.7095238095)).toBeLessThan(1);
+    // After weapon WATK reduction (178→168 WATK)
+    expect(Math.abs(result.dps - 127356.3365079365)).toBeLessThan(1);
   });
 });
 
@@ -150,12 +148,12 @@ describe('DrK Spear Crusher DPS', () => {
     expect(result.attackTime).toBe(0.81);
     expect(result.skillDamagePercent).toBe(357);
     expect(result.seDamagePercent).toBe(651);
-    expect(result.damageRange.max).toBe(20434);
-    expect(result.damageRange.min).toBe(14824);
-    expect(result.damageRange.average).toBe(17629);
-    // DPS increased ~5% from Berserk 2.0→2.1
-    expect(result.dps).toBeGreaterThan(261000);
-    expect(result.dps).toBeLessThan(263000);
+    expect(result.damageRange.max).toBe(19655);
+    expect(result.damageRange.min).toBe(14259);
+    expect(result.damageRange.average).toBe(16957);
+    // After C/G/S standardization (203→192 WATK)
+    expect(result.dps).toBeGreaterThan(251000);
+    expect(result.dps).toBeLessThan(253000);
   });
 
   it('computes Low tier DPS from gear template', () => {
@@ -267,14 +265,11 @@ describe('Paladin Blast DPS', () => {
     );
 
     // Paladin uses Hero-identical gear (gear templates sheet row 3: "Hero & Paladin")
-    // Same damage range as Hero High: max=19488, min=10714, avg=15101
-    // Note: hero charts J15 shows 276,092 — likely computed with different gear setup
-    expect(result.damageRange.max).toBe(19488);
-    expect(result.damageRange.min).toBe(10714);
-    // TODO: loose assertion — hero charts J15 (276,092) uses different gear values;
-    // tighten once Paladin High gear template is verified against the sheet
-    expect(result.dps).toBeGreaterThan(199000);
-    expect(result.dps).toBeLessThan(200000);
+    // Same damage range as Hero High after C/G/S standardization (214→203 WATK)
+    expect(result.damageRange.max).toBe(18831);
+    expect(result.damageRange.min).toBe(10352);
+    expect(result.dps).toBeGreaterThan(192000);
+    expect(result.dps).toBeLessThan(193000);
   });
 
   it('computes Low tier DPS from gear template', () => {
@@ -290,11 +285,11 @@ describe('Paladin Blast DPS', () => {
       mapleWarriorData
     );
 
-    // Same damage range as Hero Low (pendant reduced from STR22/DEX23 to STR10/DEX10)
-    expect(result.damageRange.max).toBe(10092);
-    expect(result.damageRange.min).toBe(5571);
-    expect(result.dps).toBeGreaterThan(103000);
-    expect(result.dps).toBeLessThan(104000);
+    // Same damage range as Hero Low after weapon WATK reduction (178→168 WATK)
+    expect(result.damageRange.max).toBe(9683);
+    expect(result.damageRange.min).toBe(5345);
+    expect(result.dps).toBeGreaterThan(99000);
+    expect(result.dps).toBeLessThan(100000);
   });
 
   it('Blast (F/I/L Charge) uses Strafe/Snipe speed category', () => {
@@ -339,10 +334,10 @@ describe('Paladin BW Blast DPS', () => {
     // SE: 580 * 1.4 + 140 = 952 (addAfterMultiply)
     expect(result.seDamagePercent).toBe(952);
     // 2H BW weighted: 4.8*0.6 + 3.4*0.4 = 4.24 (3:2 swing/stab ratio)
-    // max = floor((1272 * 4.24 + 127) * 326 / 100) = 17996
-    // min = floor((1272 * 4.24 * 0.9 * 0.6 + 127) * 326 / 100) = 9908
-    expect(result.damageRange.max).toBe(17996);
-    expect(result.damageRange.min).toBe(9908);
+    // max = floor((1272 * 4.24 + 127) * 315 / 100) = 17388
+    // min = floor((1272 * 4.24 * 0.9 * 0.6 + 127) * 315 / 100) = 9574
+    expect(result.damageRange.max).toBe(17388);
+    expect(result.damageRange.min).toBe(9574);
   });
 
   it('Blast (F/I/L Charge, BW) uses Blast speed category', () => {
@@ -364,8 +359,8 @@ describe('Paladin BW Blast DPS', () => {
     // SE: 580 * 1.3 + 140 = 894
     expect(result.seDamagePercent).toBe(894);
     // Same damage range as Holy BW (same weapon type, same gear, same attackRatio)
-    expect(result.damageRange.max).toBe(17996);
-    expect(result.damageRange.min).toBe(9908);
+    expect(result.damageRange.max).toBe(17388);
+    expect(result.damageRange.min).toBe(9574);
   });
 
   it('BW variant has lower DPS than Sword variant (weighted swing/stab multiplier)', () => {
@@ -410,12 +405,12 @@ describe('NL Gear Template DPS', () => {
       mapleWarriorData
     );
 
-    // totalAttack = 151 + 100 + 30 + echo(floor(281*0.04)=11) = 292
+    // totalAttack = 144 + 100 + 30 + echo(floor(274*0.04)=10) = 284
     // LUK = floor(999*1.1) + 98 = 1098 + 98 = 1196
-    // max = floor(5.0 * 1196 * 292 / 100) = 17461
-    // min = floor(2.5 * 1196 * 292 / 100) = 8730
-    expect(result.damageRange.max).toBe(17461);
-    expect(result.damageRange.min).toBe(8730);
+    // max = floor(5.0 * 1196 * 284 / 100) = 16983
+    // min = floor(2.5 * 1196 * 284 / 100) = 8491
+    expect(result.damageRange.max).toBe(16983);
+    expect(result.damageRange.min).toBe(8491);
   });
 
   it('Low tier damage range matches computed values', () => {
@@ -689,11 +684,11 @@ describe('Shadower DPS', () => {
     // STR: floor(4 * 1.1) + 78 = 4 + 78 = 82
     // DEX: floor(14 * 1.1) + 135 = 15 + 135 = 150
     // secondary = 82 + 150 = 232
-    // totalAttack = 247 + 100 + 0 + floor((247+100+0)*0.04) = 347 + 13 = 360
-    // max = floor((1161 * 3.6 + 232) * 360 / 100) = floor(4411.6 * 3.6) = 15881
-    // min = floor((1161 * 3.6 * 0.9 * 0.6 + 232) * 360 / 100) = 8960
-    expect(result.damageRange.max).toBe(15881);
-    expect(result.damageRange.min).toBe(8960);
+    // totalAttack = 238 + 100 + 0 + floor((238+100+0)*0.04) = 338 + 13 = 351
+    // max = floor((1161 * 3.6 + 232) * 351 / 100) = 15484
+    // min = floor((1161 * 3.6 * 0.9 * 0.6 + 232) * 351 / 100) = 8736
+    expect(result.damageRange.max).toBe(15484);
+    expect(result.damageRange.min).toBe(8736);
   });
 
   it('BStep + Assn30 use combo cycle time (2.31s)', () => {
@@ -759,7 +754,7 @@ describe('Shadower DPS', () => {
     // Combo DPS = sum of individual DPS (both share 2.31s cycle)
     // = (bstepAvg + assnAvg) / 2.31
     const comboDps = bstepDps + assnDps;
-    expect(comboDps).toBeCloseTo(335112, -1);
+    expect(comboDps).toBeCloseTo(326734, -1);
   });
 
   it('High tier Savage Blow DPS', () => {
@@ -768,7 +763,7 @@ describe('Shadower DPS', () => {
       shadHigh, shadData, sb, weaponData, attackSpeedData, mapleWarriorData
     );
 
-    expect(result.dps).toBeCloseTo(163627, -1);
+    expect(result.dps).toBeCloseTo(159536, -1);
   });
 
   it('Low tier BStep + Assn30 combo DPS', () => {

@@ -4,7 +4,7 @@
   "className": "Bowmaster",
   "baseStats": { "STR": 4, "DEX": 999, "INT": 4, "LUK": 4 },
   "gearStats": { "STR": 97, "DEX": 158, "INT": 0, "LUK": 0 },
-  "totalWeaponAttack": 184,
+  "totalWeaponAttack": 183,
   "weaponType": "Bow",
   "weaponSpeed": 6,
   "attackPotion": 100,
@@ -29,8 +29,8 @@
     "ring2":     { "DEX": 5,  "STR": 5,  "WATK": 0 },
     "ring3":     { "DEX": 3,  "STR": 2,  "WATK": 0 },
     "ring4":     { "DEX": 3,  "STR": 3,  "WATK": 1 },
-    "cape":      { "DEX": 0,  "STR": 0,  "WATK": 20,  "notes": "Godly WATK cape." },
-    "shoe":      { "DEX": 0,  "STR": 0,  "WATK": 10,  "notes": "WATK shoes." },
-    "glove":     { "DEX": 0,  "STR": 0,  "WATK": 20,  "notes": "Endgame WATK gloves." }
+    "cape":      { "DEX": 0,  "STR": 0,  "WATK": 17,  "notes": "Standardized WATK cape." },
+    "shoe":      { "DEX": 0,  "STR": 0,  "WATK": 13,  "notes": "Standardized WATK shoes." },
+    "glove":     { "DEX": 0,  "STR": 0,  "WATK": 19,  "notes": "Standardized WATK gloves." }
   }
 }
