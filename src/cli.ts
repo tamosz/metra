@@ -13,6 +13,7 @@ import type { ScenarioConfig } from './proposals/types.js';
 import { validateProposal, ProposalValidationError } from './proposals/validate.js';
 import { renderComparisonReport, renderBaselineReport } from './report/markdown.js';
 import { renderAsciiChart } from './report/ascii-chart.js';
+import { capitalize } from './report/utils.js';
 import { analyzeBalance } from './audit/analyze.js';
 import { formatAuditReport } from './audit/format.js';
 import { DEFAULT_SCENARIOS } from './scenarios.js';
@@ -65,7 +66,7 @@ function main() {
     if (buffedResults.length > 0) {
       console.log(renderAsciiChart(
         buffedResults.map((r) => ({
-          label: `${r.className} ${r.skillName} (${r.tier.charAt(0).toUpperCase() + r.tier.slice(1)})`,
+          label: `${r.className} ${r.skillName} (${capitalize(r.tier)})`,
           value: r.dps.dps,
         }))
       ));

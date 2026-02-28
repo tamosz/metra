@@ -10,7 +10,7 @@ function makeDpsResult(dps: number): DpsResult {
     attackTime: 0.6,
     skillDamagePercent: 100,
     seDamagePercent: 0,
-    adjustedRange: 1500,
+    adjustedRangeNormal: 1500,
     adjustedRangeSe: 0,
     averageDamage: dps,
     dps,
