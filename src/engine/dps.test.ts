@@ -658,6 +658,155 @@ describe('Night Lord Triple Throw DPS', () => {
   });
 });
 
+describe('Shadower DPS', () => {
+  let shadData: ClassSkillData;
+  let shadHigh: CharacterBuild;
+  let shadLow: CharacterBuild;
+
+  beforeAll(() => {
+    shadData = loadClassSkills('Shadower');
+    shadHigh = loadGearTemplate('shadower-high');
+    shadLow = loadGearTemplate('shadower-low');
+  });
+
+  it('loads Shadower skill data correctly', () => {
+    expect(shadData.className).toBe('Shadower');
+    expect(shadData.mastery).toBe(0.6);
+    expect(shadData.primaryStat).toBe('LUK');
+    expect(shadData.secondaryStat).toEqual(['STR', 'DEX']);
+    expect(shadData.damageFormula).toBe('standard');
+    expect(shadData.skills.length).toBe(3);
+  });
+
+  it('uses standard damage formula with Dagger 3.6x multiplier', () => {
+    const bstep = shadData.skills.find((s) => s.name === 'Boomerang Step')!;
+    const result = calculateSkillDps(
+      shadHigh, shadData, bstep, weaponData, attackSpeedData, mapleWarriorData
+    );
+
+    // Standard formula: max = floor((LUK * 3.6 + STR + DEX) * totalAttack / 100)
+    // LUK: floor(933 * 1.1) + 135 = 1026 + 135 = 1161
+    // STR: floor(4 * 1.1) + 78 = 4 + 78 = 82
+    // DEX: floor(14 * 1.1) + 135 = 15 + 135 = 150
+    // secondary = 82 + 150 = 232
+    // totalAttack = 247 + 100 + 0 + floor((247+100+0)*0.04) = 347 + 13 = 360
+    // max = floor((1161 * 3.6 + 232) * 360 / 100) = floor(4411.6 * 3.6) = 15881
+    // min = floor((1161 * 3.6 * 0.9 * 0.6 + 232) * 360 / 100) = 8960
+    expect(result.damageRange.max).toBe(15881);
+    expect(result.damageRange.min).toBe(8960);
+  });
+
+  it('BStep + Assn30 use combo cycle time (2.31s)', () => {
+    const bstep = shadData.skills.find((s) => s.name === 'Boomerang Step')!;
+    const assn = shadData.skills.find((s) => s.name === 'Assassinate 30')!;
+    const bstepResult = calculateSkillDps(
+      shadHigh, shadData, bstep, weaponData, attackSpeedData, mapleWarriorData
+    );
+    const assnResult = calculateSkillDps(
+      shadHigh, shadData, assn, weaponData, attackSpeedData, mapleWarriorData
+    );
+
+    // Both share the combo cycle time
+    expect(bstepResult.attackTime).toBe(2.31);
+    expect(assnResult.attackTime).toBe(2.31);
+  });
+
+  it('Savage Blow uses Strafe/Snipe speed (0.69s at speed 3)', () => {
+    const sb = shadData.skills.find((s) => s.name === 'Savage Blow')!;
+    const result = calculateSkillDps(
+      shadHigh, shadData, sb, weaponData, attackSpeedData, mapleWarriorData
+    );
+
+    // weaponSpeed 5 - booster 2 = speed 3 (no SI)
+    expect(result.attackTime).toBe(0.69);
+  });
+
+  it('has no built-in crit (SE only at 15%)', () => {
+    const bstep = shadData.skills.find((s) => s.name === 'Boomerang Step')!;
+    const result = calculateSkillDps(
+      shadHigh, shadData, bstep, weaponData, attackSpeedData, mapleWarriorData
+    );
+
+    // Normal: 600 * 1 = 600
+    expect(result.skillDamagePercent).toBe(600);
+    // SE (addBeforeMultiply): (600 + 140) * 1 = 740
+    expect(result.seDamagePercent).toBe(740);
+  });
+
+  it('Shadow Partner multiplies DPS by 1.5', () => {
+    const bstep = shadData.skills.find((s) => s.name === 'Boomerang Step')!;
+    const withSp = calculateSkillDps(
+      shadHigh, shadData, bstep, weaponData, attackSpeedData, mapleWarriorData
+    );
+    const noSpBuild = { ...shadHigh, shadowPartner: false };
+    const withoutSp = calculateSkillDps(
+      noSpBuild, shadData, bstep, weaponData, attackSpeedData, mapleWarriorData
+    );
+
+    expect(withSp.dps / withoutSp.dps).toBeCloseTo(1.5);
+  });
+
+  it('High tier BStep + Assn30 combo DPS', () => {
+    const bstep = shadData.skills.find((s) => s.name === 'Boomerang Step')!;
+    const assn = shadData.skills.find((s) => s.name === 'Assassinate 30')!;
+    const bstepDps = calculateSkillDps(
+      shadHigh, shadData, bstep, weaponData, attackSpeedData, mapleWarriorData
+    ).dps;
+    const assnDps = calculateSkillDps(
+      shadHigh, shadData, assn, weaponData, attackSpeedData, mapleWarriorData
+    ).dps;
+
+    // Combo DPS = sum of individual DPS (both share 2.31s cycle)
+    // = (bstepAvg + assnAvg) / 2.31
+    const comboDps = bstepDps + assnDps;
+    expect(comboDps).toBeCloseTo(335112, -1);
+  });
+
+  it('High tier Savage Blow DPS', () => {
+    const sb = shadData.skills.find((s) => s.name === 'Savage Blow')!;
+    const result = calculateSkillDps(
+      shadHigh, shadData, sb, weaponData, attackSpeedData, mapleWarriorData
+    );
+
+    expect(result.dps).toBeCloseTo(163627, -1);
+  });
+
+  it('Low tier BStep + Assn30 combo DPS', () => {
+    const bstep = shadData.skills.find((s) => s.name === 'Boomerang Step')!;
+    const assn = shadData.skills.find((s) => s.name === 'Assassinate 30')!;
+    const bstepDps = calculateSkillDps(
+      shadLow, shadData, bstep, weaponData, attackSpeedData, mapleWarriorData
+    ).dps;
+    const assnDps = calculateSkillDps(
+      shadLow, shadData, assn, weaponData, attackSpeedData, mapleWarriorData
+    ).dps;
+
+    const comboDps = bstepDps + assnDps;
+    expect(comboDps).toBeCloseTo(198577, -1);
+  });
+
+  it('Low tier Savage Blow DPS', () => {
+    const sb = shadData.skills.find((s) => s.name === 'Savage Blow')!;
+    const result = calculateSkillDps(
+      shadLow, shadData, sb, weaponData, attackSpeedData, mapleWarriorData
+    );
+
+    expect(result.dps).toBeCloseTo(96960, -1);
+  });
+
+  it('High tier DPS is greater than Low tier for all skills', () => {
+    for (const skill of shadData.skills) {
+      const high = calculateSkillDps(
+        shadHigh, shadData, skill, weaponData, attackSpeedData, mapleWarriorData
+      );
+      const low = calculateSkillDps(
+        shadLow, shadData, skill, weaponData, attackSpeedData, mapleWarriorData
+      );
+      expect(high.dps).toBeGreaterThan(low.dps);
+    }
+  });
+});
+
 describe('DPS result structure', () => {
   it('includes all expected fields', () => {
     const brandish = heroData.skills.find(
