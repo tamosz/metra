@@ -819,7 +819,7 @@ describe('Marksman DPS', () => {
     expect(mmData.primaryStat).toBe('DEX');
     expect(mmData.secondaryStat).toBe('STR');
     expect(mmData.damageFormula).toBe('standard');
-    expect(mmData.skills.length).toBe(2);
+    expect(mmData.skills.length).toBe(3);
   });
 
   it('Strafe (MM) uses Crossbow 3.6x multiplier', () => {
@@ -876,14 +876,14 @@ describe('Marksman DPS', () => {
     expect(result.seDamagePercent).toBe(0);
   });
 
-  it('Snipe DPS = 325,000 (195000 / 0.6s)', () => {
+  it('Snipe DPS = 39,000 (195000 / 5.0s rotation cycle)', () => {
     const snipe = mmData.skills.find((s) => s.name === 'Snipe')!;
     const result = calculateSkillDps(
       mmHigh, mmData, snipe, weaponData, attackSpeedData, mapleWarriorData
     );
 
-    expect(result.attackTime).toBe(0.60);
-    expect(result.dps).toBe(325000);
+    expect(result.attackTime).toBe(5.00);
+    expect(result.dps).toBe(39000);
   });
 
   it('Snipe DPS is gear-independent (same at low and high tier)', () => {
@@ -896,7 +896,20 @@ describe('Marksman DPS', () => {
     );
 
     expect(highResult.dps).toBe(lowResult.dps);
-    expect(highResult.dps).toBe(325000);
+    expect(highResult.dps).toBe(39000);
+  });
+
+  it('Strafe (in Snipe Rotation) uses 0.714s attack time at speed 2', () => {
+    const strafeRotation = mmData.skills.find((s) => s.name === 'Strafe (in Snipe Rotation)')!;
+    const result = calculateSkillDps(
+      mmHigh, mmData, strafeRotation, weaponData, attackSpeedData, mapleWarriorData
+    );
+
+    // 7 Strafes per 5s cycle → effective attack time = 5.0/7 = 0.714s
+    expect(result.attackTime).toBe(0.714);
+    // Same damage range as standalone Strafe (MM) — same basePower, crit, weapon
+    expect(result.damageRange.max).toBe(13590);
+    expect(result.damageRange.min).toBe(11064);
   });
 
   it('Strafe (MM) High tier DPS > Low tier', () => {

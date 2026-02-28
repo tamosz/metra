@@ -204,7 +204,7 @@ describe('Baseline mode', () => {
     expect(find('Bowmaster', 'Hurricane').dps.dps).toBeCloseTo(225398, -2);
     expect(find('Bowmaster', 'Strafe').dps.dps).toBeCloseTo(199749, -2);
     expect(find('Marksman', 'Strafe (MM)').dps.dps).toBeCloseTo(211203, -2);
-    expect(find('Marksman', 'Snipe').dps.dps).toBeCloseTo(325000, -2);
+    expect(find('Marksman', 'Snipe + Strafe').dps.dps).toBeCloseTo(216482, -2);
     expect(find('Corsair', 'Battleship Cannon').dps.dps).toBeCloseTo(331354, -2);
     expect(find('Corsair', 'Rapid Fire').dps.dps).toBeCloseTo(228271, -2);
     expect(find('Buccaneer', 'Demolition').dps.dps).toBeCloseTo(233453, -2);
@@ -224,7 +224,7 @@ describe('Baseline mode', () => {
     expect(find('Paladin', 'Blast (Holy, Sword)').dps.dps).toBeCloseTo(99352, -2);
     expect(find('Bowmaster', 'Hurricane').dps.dps).toBeCloseTo(113332, -2);
     expect(find('Marksman', 'Strafe (MM)').dps.dps).toBeCloseTo(106175, -2);
-    expect(find('Marksman', 'Snipe').dps.dps).toBeCloseTo(325000, -2);
+    expect(find('Marksman', 'Snipe + Strafe').dps.dps).toBeCloseTo(128223, -2);
     expect(find('Corsair', 'Battleship Cannon').dps.dps).toBeCloseTo(202986, -2);
     expect(find('Corsair', 'Rapid Fire').dps.dps).toBeCloseTo(139838, -2);
     expect(find('Buccaneer', 'Demolition').dps.dps).toBeCloseTo(135843, -2);
@@ -252,15 +252,15 @@ describe('Special mechanics', () => {
     );
   });
 
-  it('Snipe fixedDamage produces identical DPS at both tiers', () => {
-    const snipeHigh = buffedResults.find(
-      (r) => r.className === 'Marksman' && r.skillName === 'Snipe' && r.tier === 'high'
-    )!;
-    const snipeLow = buffedResults.find(
-      (r) => r.className === 'Marksman' && r.skillName === 'Snipe' && r.tier === 'low'
-    )!;
-    expect(snipeHigh.dps.dps).toBe(snipeLow.dps.dps);
-    expect(snipeHigh.dps.dps).toBeCloseTo(325000, -2);
+  it('comboGroup aggregates Marksman Snipe + Strafe to 2 results per tier', () => {
+    const mmResults = buffedResults.filter((r) => r.className === 'Marksman');
+    const mmHigh = mmResults.filter((r) => r.tier === 'high');
+    const mmLow = mmResults.filter((r) => r.tier === 'low');
+    expect(mmHigh).toHaveLength(2);
+    expect(mmLow).toHaveLength(2);
+    expect(mmHigh.map((r) => r.skillName).sort()).toEqual(
+      ['Snipe + Strafe', 'Strafe (MM)']
+    );
   });
 
   it('comboGroup aggregates Buccaneer to 2 results per tier', () => {
@@ -329,17 +329,17 @@ describe('Multi-scenario baseline', () => {
     expect(report).toContain('## Unbuffed');
     expect(report).toContain('## Bossing (50% PDR)');
 
-    // Snipe DPS is 325,000 in non-PDR scenarios
-    const snipeBuffed = results.find(
-      (r) => r.className === 'Marksman' && r.skillName === 'Snipe' && r.scenario === 'Buffed' && r.tier === 'high'
+    // Snipe + Strafe combo DPS in buffed scenario
+    const comboBuffed = results.find(
+      (r) => r.className === 'Marksman' && r.skillName === 'Snipe + Strafe' && r.scenario === 'Buffed' && r.tier === 'high'
     )!;
-    expect(snipeBuffed.dps.dps).toBeCloseTo(325000, -2);
+    expect(comboBuffed.dps.dps).toBeCloseTo(216482, -2);
 
-    // Snipe DPS is halved with 50% PDR
-    const snipePdr = results.find(
-      (r) => r.className === 'Marksman' && r.skillName === 'Snipe' && r.scenario === 'Bossing (50% PDR)' && r.tier === 'high'
+    // Combo DPS is halved with 50% PDR
+    const comboPdr = results.find(
+      (r) => r.className === 'Marksman' && r.skillName === 'Snipe + Strafe' && r.scenario === 'Bossing (50% PDR)' && r.tier === 'high'
     )!;
-    expect(snipePdr.dps.dps).toBeCloseTo(162500, -2);
+    expect(comboPdr.dps.dps).toBeCloseTo(108241, -2);
   });
 });
 
