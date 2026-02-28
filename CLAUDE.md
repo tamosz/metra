@@ -23,6 +23,9 @@ The project is being translated from an existing Google Sheets calculator (expor
 # Run all tests
 npx vitest run
 
+# Show current DPS rankings (baseline, no proposal)
+npm run simulate
+
 # Run a proposal and print the Markdown comparison report
 npm run simulate -- proposals/brandish-buff-20.json
 
@@ -92,7 +95,7 @@ A proposal is a JSON file that describes one or more changes:
 
 **`from` field:** optional but recommended. If present, the system validates that the current value matches, catching stale proposals.
 
-The pipeline: `apply.ts` patches the skill data → `simulate.ts` runs DPS across all classes/tiers/scenarios → `compare.ts` produces before/after deltas → `markdown.ts` renders a Markdown report with per-scenario tables.
+The pipeline: `apply.ts` patches the skill data → `simulate.ts` runs DPS across all classes/tiers/scenarios → `compare.ts` produces before/after deltas with rank tracking → `markdown.ts` renders a Markdown report with per-scenario tables. When no proposal is given, the CLI runs in **baseline mode**: it simulates all classes and renders a ranked DPS table with an ASCII bar chart.
 
 **Scenarios:** `ScenarioConfig` defines evaluation conditions (buff overrides, PDR). Proposals say *what changes*; scenarios say *under what conditions to evaluate*. PDR is applied as a post-calculation multiplier: `effectiveDps = dps * (1 - pdr)`.
 
@@ -240,11 +243,11 @@ metra/
 │   └── dump-sheet.ts            # spreadsheet extraction utility
 └── src/
     ├── index.ts                 # library entry point
-    ├── cli.ts                   # CLI entry: load proposal → simulate → report
+    ├── cli.ts                   # CLI entry: baseline rankings or proposal comparison
     ├── integration.test.ts      # end-to-end pipeline tests
     ├── data/
     │   ├── types.ts             # WeaponData, AttackSpeedData, ClassSkillData, CharacterBuild, etc.
-    │   ├── loader.ts            # JSON data loaders (weapons, skills, gear templates)
+    │   ├── loader.ts            # JSON data loaders + discoverClassesAndTiers()
     │   └── loader.test.ts
     ├── engine/
     │   ├── index.ts             # re-exports
@@ -257,15 +260,17 @@ metra/
     │   ├── dps.ts               # full DPS pipeline
     │   └── dps.test.ts
     ├── proposals/
-    │   ├── types.ts             # Proposal, ProposalChange, ScenarioResult, DeltaEntry, ComparisonResult
+    │   ├── types.ts             # Proposal, ProposalChange, ScenarioResult, DeltaEntry (with ranks), ComparisonResult
     │   ├── apply.ts             # apply proposal changes to skill data
     │   ├── apply.test.ts
     │   ├── simulate.ts          # run DPS across all classes × tiers × skills, comboGroup aggregation
-    │   ├── compare.ts           # before/after comparison with deltas
+    │   ├── compare.ts           # before/after comparison with deltas and rank tracking
     │   └── compare.test.ts
     ├── report/
-    │   ├── markdown.ts          # render ComparisonResult as Markdown table
-    │   └── markdown.test.ts
+    │   ├── markdown.ts          # render comparison and baseline reports as Markdown
+    │   ├── markdown.test.ts
+    │   ├── ascii-chart.ts       # horizontal ASCII bar chart for terminal output
+    │   └── ascii-chart.test.ts
     └── sheets/
         ├── extract.ts           # read formulas/values from xlsx
         └── extract.test.ts
