@@ -60,6 +60,9 @@ export interface SkillEntry {
    *  Skills sharing a comboGroup have their DPS summed in simulation output.
    *  e.g., Barrage hits + Dragon Strike form one combo with a shared attack cycle. */
   comboGroup?: string;
+  /** Fixed average damage per attack, bypassing the normal damage formula.
+   *  Used for skills like Snipe that deal set damage regardless of stats. */
+  fixedDamage?: number;
 }
 
 /** All skills for a single class. */
