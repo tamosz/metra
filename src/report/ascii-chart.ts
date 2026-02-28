@@ -1,3 +1,5 @@
+import { formatNumber } from './utils.js';
+
 export interface ChartEntry {
   label: string;
   value: number;
@@ -24,14 +26,9 @@ export function renderAsciiChart(
       : 0;
     const bar = '\u2588'.repeat(barLength);
     const label = entry.label.padEnd(maxLabelLength);
-    const valueStr = formatChartValue(entry.value);
+    const valueStr = formatNumber(entry.value);
     lines.push(`  ${label}  ${bar} ${valueStr}`);
   }
 
   return lines.join('\n') + '\n';
-}
-
-function formatChartValue(n: number): string {
-  const str = Math.round(n).toString();
-  return str.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 }
