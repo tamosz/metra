@@ -12,7 +12,13 @@ const DATA_DIR = resolve(import.meta.dirname, '../../data');
 
 function loadJson<T>(relativePath: string): T {
   const fullPath = resolve(DATA_DIR, relativePath);
-  return JSON.parse(readFileSync(fullPath, 'utf-8')) as T;
+  try {
+    return JSON.parse(readFileSync(fullPath, 'utf-8')) as T;
+  } catch (err) {
+    throw new Error(
+      `Failed to load data from ${relativePath}: ${err instanceof Error ? err.message : String(err)}`
+    );
+  }
 }
 
 export function loadWeapons(): WeaponData {
@@ -72,6 +78,13 @@ export function discoverClassesAndTiers(): DiscoveryResult {
   const templateFiles = readdirSync(resolve(DATA_DIR, 'gear-templates'))
     .filter((f) => f.endsWith('.json'))
     .map((f) => f.replace('.json', ''));
+
+  if (skillFiles.length === 0) {
+    throw new Error(`No skill files found in data/skills/. Expected .json files defining class skills.`);
+  }
+  if (templateFiles.length === 0) {
+    throw new Error(`No gear template files found in data/gear-templates/. Expected .json files defining character builds.`);
+  }
 
   // Sort skill file names longest-first to handle prefix overlaps
   // (e.g., "hero-axe" must match before "hero" for template "hero-axe-high")
