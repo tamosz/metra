@@ -31,7 +31,12 @@ npm run simulate -- proposals/brandish-buff-20.json
 
 # Dump spreadsheet formulas/values for translation reference
 npm run dump-sheet
+
+# Set up git hooks (once, after cloning)
+npm run setup
 ```
+
+The pre-commit hook runs unit tests, type-checks the engine, and type-checks the web app. To bypass it in an emergency: `git commit --no-verify`.
 
 ## Architecture
 
