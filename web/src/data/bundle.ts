@@ -1,9 +1,10 @@
-import type {
-  WeaponData,
-  AttackSpeedData,
-  MapleWarriorData,
-  ClassSkillData,
-  CharacterBuild,
+import {
+  TIER_ORDER,
+  type WeaponData,
+  type AttackSpeedData,
+  type MapleWarriorData,
+  type ClassSkillData,
+  type CharacterBuild,
 } from '@engine/data/types.js';
 
 // Static imports — bundled at build time, no fetch latency
@@ -100,7 +101,11 @@ export function discoverClassesAndTiers(): DiscoveryResult {
     }
   }
 
-  const tierArray = [...tiers];
+  const tierArray = [...tiers].sort((a, b) => {
+    const ai = TIER_ORDER.indexOf(a as typeof TIER_ORDER[number]);
+    const bi = TIER_ORDER.indexOf(b as typeof TIER_ORDER[number]);
+    return (ai === -1 ? Infinity : ai) - (bi === -1 ? Infinity : bi);
+  });
   for (const name of classNames) {
     for (const tier of tierArray) {
       const key = `${name}-${tier}`;

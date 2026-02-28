@@ -20,6 +20,9 @@ export {
   lookupAttackTime,
 } from './engine/attack-speed.js';
 
+// Constants
+export { TIER_ORDER } from './data/types.js';
+
 // Types
 export type {
   WeaponData,

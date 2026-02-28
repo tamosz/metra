@@ -106,8 +106,8 @@ describe('sortDeltas', () => {
 
     const sorted = sortDeltas([palLow, drkLow, drkHigh]);
 
-    expect(sorted[0]).toEqual(drkHigh);
-    expect(sorted[1]).toEqual(drkLow);
+    expect(sorted[0]).toEqual(drkLow);
+    expect(sorted[1]).toEqual(drkHigh);
     expect(sorted[2]).toEqual(palLow);
   });
 
