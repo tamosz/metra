@@ -14,7 +14,7 @@ export const colors = {
   borderMuted: '#27272a',
 
   // Filter/tab active state
-  filterBg: '#27272a',
+  bgFilter: '#27272a',
 
   // Text
   text: '#d4d4d8',

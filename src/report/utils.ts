@@ -27,10 +27,12 @@ export function formatPercent(n: number): string {
   return prefix + n.toFixed(1) + '%';
 }
 
+const ARROW = '\u2192';
+
 export function formatRank(before?: number, after?: number): string {
   if (before == null || after == null) return '-';
   if (before === after) return String(before);
-  return `${before}\u2192${after}`;
+  return `${before}${ARROW}${after}`;
 }
 
 export function capitalize(s: string): string {

@@ -47,6 +47,7 @@ export function analyzeBalance(results: ScenarioResult[]): BalanceAudit {
   return { groups, outliers, tierSensitivities };
 }
 
+/** Group results by (scenario, tier) using null-byte separated composite keys. */
 function groupByScenarioTier(results: ScenarioResult[]): Map<string, ScenarioResult[]> {
   const map = new Map<string, ScenarioResult[]>();
   for (const r of results) {
@@ -74,7 +75,7 @@ function computeGroupSummary(scenario: string, tier: string, values: number[]): 
 }
 
 function computeTierSensitivities(results: ScenarioResult[]): TierSensitivity[] {
-  // Group by (className, skillName, scenario)
+  // Group by (className, skillName, scenario) using null-byte separated composite keys
   const map = new Map<string, { high?: number; low?: number }>();
   for (const r of results) {
     const key = `${r.className}\0${r.skillName}\0${r.scenario}`;
