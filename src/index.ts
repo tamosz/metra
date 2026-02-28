@@ -27,6 +27,8 @@ export {
   loadMapleWarrior,
   loadClassSkills,
   loadGearTemplate,
+  discoverClassesAndTiers,
+  type DiscoveryResult,
 } from './data/loader.js';
 
 // Types
@@ -56,4 +58,5 @@ export type {
 } from './proposals/types.js';
 
 // Report
-export { renderComparisonReport } from './report/markdown.js';
+export { renderComparisonReport, renderBaselineReport } from './report/markdown.js';
+export { renderAsciiChart } from './report/ascii-chart.js';

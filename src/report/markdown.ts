@@ -1,4 +1,4 @@
-import type { ComparisonResult, DeltaEntry } from '../proposals/types.js';
+import type { ComparisonResult, DeltaEntry, ScenarioResult } from '../proposals/types.js';
 
 /**
  * Format a number with thousands separators (locale-independent).
@@ -103,16 +103,31 @@ function groupDeltasByScenario(
  * Render a sorted DPS comparison table into the lines array.
  */
 function renderDeltaTable(lines: string[], deltas: DeltaEntry[]): void {
-  lines.push(
-    '| Class | Skill | Tier | Before | After | Change | % |'
-  );
-  lines.push(
-    '|-------|-------|------|-------:|------:|-------:|--:|'
-  );
+  const hasRanks = deltas.some((d) => d.rankBefore != null);
+
+  if (hasRanks) {
+    lines.push(
+      '| Rank | Class | Skill | Tier | Before | After | Change | % |'
+    );
+    lines.push(
+      '|------|-------|-------|------|-------:|------:|-------:|--:|'
+    );
+  } else {
+    lines.push(
+      '| Class | Skill | Tier | Before | After | Change | % |'
+    );
+    lines.push(
+      '|-------|-------|------|-------:|------:|-------:|--:|'
+    );
+  }
 
   const sorted = sortDeltas(deltas);
   for (const d of sorted) {
-    const row = [
+    const row: string[] = [];
+    if (hasRanks) {
+      row.push(formatRank(d.rankBefore, d.rankAfter));
+    }
+    row.push(
       d.className,
       d.skillName,
       capitalize(d.tier),
@@ -120,9 +135,15 @@ function renderDeltaTable(lines: string[], deltas: DeltaEntry[]): void {
       formatNumber(d.after),
       formatChange(d.change),
       formatPercent(d.changePercent),
-    ];
+    );
     lines.push('| ' + row.join(' | ') + ' |');
   }
+}
+
+function formatRank(before?: number, after?: number): string {
+  if (before == null || after == null) return '-';
+  if (before === after) return String(before);
+  return `${before}\u2192${after}`;
 }
 
 function capitalize(s: string): string {
@@ -147,4 +168,61 @@ function sortDeltas(deltas: DeltaEntry[]): DeltaEntry[] {
     if (classCompare !== 0) return classCompare;
     return a.tier.localeCompare(b.tier);
   });
+}
+
+/**
+ * Render a baseline DPS ranking report (no proposal).
+ * Groups by scenario, sorts by DPS descending, adds rank column.
+ */
+export function renderBaselineReport(results: ScenarioResult[]): string {
+  const lines: string[] = [];
+
+  lines.push('# DPS Rankings');
+  lines.push('');
+
+  const scenarioGroups = groupResultsByScenario(results);
+
+  for (const group of scenarioGroups) {
+    lines.push(`## ${group.scenario}`);
+    lines.push('');
+    renderBaselineTable(lines, group.results);
+    lines.push('');
+  }
+
+  return lines.join('\n');
+}
+
+function groupResultsByScenario(
+  results: ScenarioResult[]
+): { scenario: string; results: ScenarioResult[] }[] {
+  const groups: { scenario: string; results: ScenarioResult[] }[] = [];
+  const indexMap = new Map<string, number>();
+
+  for (const r of results) {
+    if (!indexMap.has(r.scenario)) {
+      indexMap.set(r.scenario, groups.length);
+      groups.push({ scenario: r.scenario, results: [] });
+    }
+    groups[indexMap.get(r.scenario)!].results.push(r);
+  }
+
+  return groups;
+}
+
+function renderBaselineTable(lines: string[], results: ScenarioResult[]): void {
+  lines.push('| Rank | Class | Skill | Tier | DPS |');
+  lines.push('|-----:|-------|-------|------|----:|');
+
+  const sorted = [...results].sort((a, b) => b.dps.dps - a.dps.dps);
+  for (let i = 0; i < sorted.length; i++) {
+    const r = sorted[i];
+    const row = [
+      String(i + 1),
+      r.className,
+      r.skillName,
+      capitalize(r.tier),
+      formatNumber(r.dps.dps),
+    ];
+    lines.push('| ' + row.join(' | ') + ' |');
+  }
 }

@@ -5,6 +5,7 @@ import {
   loadMapleWarrior,
   loadClassSkills,
   loadGearTemplate,
+  discoverClassesAndTiers,
 } from './loader.js';
 
 describe('loadWeapons', () => {
@@ -87,5 +88,40 @@ describe('loadGearTemplate', () => {
     expect(build.baseStats.STR).toBe(700);
     expect(build.totalWeaponAttack).toBe(178);
     expect(build.attackPotion).toBe(60);
+  });
+});
+
+describe('discoverClassesAndTiers', () => {
+  it('discovers all classes with skill files and gear templates', () => {
+    const { classNames, tiers, classDataMap, gearTemplates } = discoverClassesAndTiers();
+
+    // Should find at least the 7 implemented classes
+    expect(classNames.length).toBeGreaterThanOrEqual(7);
+    expect(classNames).toContain('hero');
+    expect(classNames).toContain('drk');
+    expect(classNames).toContain('paladin');
+    expect(classNames).toContain('nl');
+    expect(classNames).toContain('bowmaster');
+    expect(classNames).toContain('sair');
+    expect(classNames).toContain('bucc');
+
+    // Should find low and high tiers
+    expect(tiers).toContain('low');
+    expect(tiers).toContain('high');
+
+    // classDataMap should have entries for each class
+    for (const name of classNames) {
+      expect(classDataMap.has(name)).toBe(true);
+    }
+
+    // gearTemplates should have entries for each class-tier combo
+    expect(gearTemplates.size).toBeGreaterThanOrEqual(classNames.length * tiers.length);
+  });
+
+  it('loads correct class data', () => {
+    const { classDataMap } = discoverClassesAndTiers();
+    const hero = classDataMap.get('hero')!;
+    expect(hero.className).toBe('Hero');
+    expect(hero.mastery).toBe(0.6);
   });
 });
