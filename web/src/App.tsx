@@ -18,7 +18,7 @@ export function App() {
     const urlProposal = getProposalFromUrl();
     if (urlProposal) {
       proposalState.loadProposal(urlProposal);
-      proposalState.simulate();
+      proposalState.simulate(urlProposal);
       setPage('proposal');
     }
   }, []);

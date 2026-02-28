@@ -7,7 +7,7 @@ test.describe('navigation', () => {
     await expect(page.getByTestId('ranking-table')).toBeVisible();
 
     await navigateToProposalBuilder(page);
-    await expect(page.getByText('Proposal Builder')).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Proposal Builder' })).toBeVisible();
     await expect(page.getByTestId('ranking-table')).not.toBeVisible();
 
     await navigateToDashboard(page);

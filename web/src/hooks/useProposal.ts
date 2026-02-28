@@ -40,7 +40,7 @@ export interface ProposalState {
   addChange: (change: ProposalChange) => void;
   removeChange: (index: number) => void;
   updateChange: (index: number, change: ProposalChange) => void;
-  simulate: () => void;
+  simulate: (proposalOverride?: Proposal) => void;
   loadProposal: (proposal: Proposal) => void;
   clearResult: () => void;
 }
@@ -88,8 +88,9 @@ export function useProposal(): ProposalState {
     setResult(null);
   }, []);
 
-  const simulate = useCallback(() => {
-    if (proposal.changes.length === 0) return;
+  const simulate = useCallback((proposalOverride?: Proposal) => {
+    const p = proposalOverride ?? proposal;
+    if (p.changes.length === 0) return;
 
     const { classNames, tiers, classDataMap, gearTemplates } = discoverClassesAndTiers();
     const config: SimulationConfig = {
@@ -99,7 +100,7 @@ export function useProposal(): ProposalState {
     };
 
     const comparisonResult = compareProposal(
-      proposal,
+      p,
       config,
       classDataMap,
       gearTemplates,

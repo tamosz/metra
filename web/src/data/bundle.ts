@@ -73,11 +73,26 @@ export function discoverClassesAndTiers(): DiscoveryResult {
     }
   }
 
+  // Sort skill names longest-first to handle prefix overlaps
+  // (e.g., "hero-axe" must match before "hero" for template "hero-axe-high")
+  const sortedSkillNames = [...skillNames].sort((a, b) => b.length - a.length);
+
+  // Assign each template to the longest matching class name
+  const templateToClass = new Map<string, string>();
+  for (const t of templateNames) {
+    for (const name of sortedSkillNames) {
+      if (t.startsWith(name + '-')) {
+        templateToClass.set(t, name);
+        break;
+      }
+    }
+  }
+
   const classNames: string[] = [];
   const tiers = new Set<string>();
   for (const name of skillNames) {
     const classTiers = templateNames
-      .filter((t) => t.startsWith(name + '-'))
+      .filter((t) => templateToClass.get(t) === name)
       .map((t) => t.slice(name.length + 1));
     if (classTiers.length > 0) {
       classNames.push(name);
