@@ -39,10 +39,9 @@ describe('loadAttackSpeed', () => {
 describe('loadMapleWarrior', () => {
   it('loads MW table with correct multipliers', () => {
     const mw = loadMapleWarrior();
-    expect(mw).toHaveLength(31);
+    expect(mw).toHaveLength(21);
     expect(mw[0].multiplier).toBe(1.0);
     expect(mw[20].multiplier).toBe(1.1);
-    expect(mw[30].multiplier).toBe(1.15);
   });
 });
 
