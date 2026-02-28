@@ -20,7 +20,7 @@ The project is being translated from an existing Google Sheets calculator (expor
 ## Running the Project
 
 ```bash
-# Run all tests (95 tests across 10 files)
+# Run all tests (100 tests across 10 files)
 npx vitest run
 
 # Run a proposal and print the Markdown comparison report
@@ -101,6 +101,11 @@ This is a v62-based MapleStory private server. Key differences from official GMS
 - Attack speed is capped and the soft cap matters enormously for DPS
 - Weapon Attack (WATK) and primary stat scaling differ by class
 
+### Sources of Truth
+1. **royals.ms forum** — primary source for MapleRoyals-specific mechanics, balance changes, and community-verified formulas. Treat forum-confirmed values as authoritative when they differ from generic v62 references.
+2. **Source spreadsheet** (`data/source-sheet.xlsx`) — reference implementation being translated. Cross-check against forum when values seem uncertain.
+3. **In-game verification** — ultimate authority when forum and spreadsheet disagree.
+
 ### Damage Formula (verified, from `damage.ts`)
 
 **Standard (warriors):**
@@ -166,7 +171,7 @@ Standard scenarios for comparison reports:
 
 - Use descriptive variable names. `weaponAttack` not `wa`, `damagePercent` not `dmg`.
 - No abbreviations in code that wouldn't be obvious to someone unfamiliar with MapleStory.
-- All game data values must cite their source (spreadsheet cell, wiki, or in-game verification). Use a `"source"` field in JSON data files.
+- All game data values must cite their source (spreadsheet cell, royals.ms forum thread, wiki, or in-game verification). Use a `"source"` field in JSON data files.
 - Tests go next to the code they test (`damage.ts` → `damage.test.ts`).
 - Keep functions small. If a function needs a comment explaining what a section does, that section should be its own function.
 - **Gear templates** are named `{class}-{tier}.json` (e.g., `hero-low.json`, `drk-high.json`).

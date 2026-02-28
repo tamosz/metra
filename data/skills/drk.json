@@ -1,5 +1,5 @@
 {
-  "source": "dmg sheet row 27, range calculator (mastery 0.8)",
+  "source": "dmg sheet row 27, range calculator (mastery 0.8). Berserk 2.1x from royals.ms Update #68 (https://royals.ms/forum/threads/comprehensive-list-of-changes-since-the-new-source.183746/)",
   "className": "DrK",
   "mastery": 0.8,
   "primaryStat": "STR",
@@ -12,7 +12,7 @@
     {
       "name": "Spear Crusher",
       "basePower": 170,
-      "multiplier": 2.0,
+      "multiplier": 2.1,
       "hitCount": 3,
       "speedCategory": "Crusher",
       "weaponType": "Spear",
@@ -21,7 +21,7 @@
     {
       "name": "Fury (Polearm)",
       "basePower": 170,
-      "multiplier": 2.0,
+      "multiplier": 2.1,
       "hitCount": 3,
       "speedCategory": "Crusher",
       "weaponType": "Polearm"

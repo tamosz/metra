@@ -107,7 +107,7 @@ export function calculateSkillDps(
   if (damageFormula === 'throwingStar') {
     damageRange = calculateThrowingStarRange(primary, totalAttack);
   } else {
-    const weaponMultiplier = getWeaponMultiplier(weaponData, skill.weaponType, skill.attackType);
+    const weaponMultiplier = getWeaponMultiplier(weaponData, skill.weaponType, skill.attackType, skill.attackRatio);
     damageRange = calculateDamageRange(
       primary,
       secondary,
