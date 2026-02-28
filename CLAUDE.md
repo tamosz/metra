@@ -20,7 +20,7 @@ The project is being translated from an existing Google Sheets calculator (expor
 ## Running the Project
 
 ```bash
-# Run all tests (100 tests across 10 files)
+# Run all tests (111 tests across 10 files)
 npx vitest run
 
 # Run a proposal and print the Markdown comparison report
@@ -38,7 +38,7 @@ Three layers. Keep them cleanly separated.
 Static game data stored as JSON files, version-controlled, human-readable and human-editable. This is the "current state of MapleRoyals."
 
 Actual files:
-- `skills/` — one file per class (`hero.json`, `drk.json`, `paladin.json`, `nl.json`). Each contains mastery, stat mapping, SE crit config, and a `skills[]` array.
+- `skills/` — one file per class (`hero.json`, `drk.json`, `paladin.json`, `nl.json`, `bowmaster.json`). Each contains mastery, stat mapping, SE crit config, and a `skills[]` array.
 - `gear-templates/` — character builds at each funding tier (`hero-low.json`, `hero-high.json`, etc.). Include full gear breakdown, stats, buffs, and weapon info.
 - `weapons.json` — weapon type slash/stab multipliers for the damage formula.
 - `attack-speed.json` — effective speed tier → attack time lookup, keyed by skill category.
@@ -58,7 +58,6 @@ Pure functions. No side effects, no I/O. Takes game data + a character build, ou
 
 **Not yet implemented:**
 - Training efficiency (kills/hr, EXP/hr on a given mob).
-- Bossing DPS (sustained damage against a boss with PDR).
 
 **Every function must be testable in isolation.** If you can't write a unit test for it, the function is doing too much.
 
@@ -90,7 +89,9 @@ A proposal is a JSON file that describes one or more changes:
 
 **`from` field:** optional but recommended. If present, the system validates that the current value matches, catching stale proposals.
 
-The pipeline: `apply.ts` patches the skill data → `simulate.ts` runs DPS across all classes/tiers → `compare.ts` produces before/after deltas → `markdown.ts` renders a Markdown report.
+The pipeline: `apply.ts` patches the skill data → `simulate.ts` runs DPS across all classes/tiers/scenarios → `compare.ts` produces before/after deltas → `markdown.ts` renders a Markdown report with per-scenario tables.
+
+**Scenarios:** `ScenarioConfig` defines evaluation conditions (buff overrides, PDR). Proposals say *what changes*; scenarios say *under what conditions to evaluate*. PDR is applied as a post-calculation multiplier: `effectiveDps = dps * (1 - pdr)`.
 
 ## MapleRoyals Domain Knowledge
 
@@ -131,14 +132,14 @@ Two formula variants exist, configured per class via `seCritFormula`:
 
 ### Key Classes
 
-**Implemented (4 classes):**
+**Implemented (5 classes):**
 - **Hero** — 2H Sword/Axe, Brandish (2-hit)
 - **Dark Knight (DrK)** — Spear/Polearm, Crusher and Fury
 - **Paladin** — 2H Sword/2H BW, Blast (4 variants: Holy and F/I/L Charge × Sword and BW)
-- **Night Lord (NL)** — Claw, Triple Throw (3-hit, built-in 50% crit, Shadow Partner). Engine + skill data complete; gear templates pending.
+- **Night Lord (NL)** — Claw, Triple Throw (3-hit, built-in 50% crit, Shadow Partner)
+- **Bowmaster** — Bow, Hurricane (fixed 0.12s attack time) and Strafe (4-hit), built-in 40% crit from Critical Shot
 
 **Future expansion targets:**
-- Bowmaster (ranged physical, bow)
 - Arch Mage (Ice/Lightning) (magic)
 - Bishop (magic, party utility)
 
@@ -153,10 +154,14 @@ A change that looks balanced at high funding might be wildly unbalanced at low f
 All templates assume a fully buffed party scenario: MW20, Sharp Eyes, Speed Infusion, Echo of Hero, and Booster (implicit). Low tier uses Heartstopper (60 WATK), high tier uses Onyx Apple (100 WATK). See `data/gear-assumptions.md` for the full per-slot breakdown, forum cross-references, and flagged concerns.
 
 ### Scenarios
-Standard scenarios for comparison reports:
-- **Buffed DPS** (implemented) — with MW, SE, SI, Echo, attack potions. This is the primary comparison metric.
+Standard scenarios for comparison reports (all implemented):
+- **Buffed** — all buffs on (MW, SE, SI, Echo, attack potions). Primary comparison metric.
+- **Unbuffed** — no SE, Echo, SI, MW, or attack potion. Shows raw class power.
+- **No-Echo** — all buffs except Echo of Hero. Shows impact of event-gated buff.
+- **Bossing (50% PDR)** — fully buffed with 50% Physical Damage Reduction applied. Shows sustained bossing DPS.
 - **Training** (planned) — kills/hr and EXP/hr at a reference map/mob.
-- **Bossing** (planned) — sustained DPS against a tanky boss with PDR.
+
+Multi-scenario support: `ScenarioConfig` can override buff flags and apply PDR. The CLI runs all 4 default scenarios. Reports render separate tables per scenario.
 
 ## Tech Stack
 
@@ -204,7 +209,8 @@ metra/
 │   │   ├── hero.json
 │   │   ├── drk.json
 │   │   ├── paladin.json
-│   │   └── nl.json
+│   │   ├── nl.json
+│   │   └── bowmaster.json
 │   └── gear-templates/
 │       ├── hero-low.json
 │       ├── hero-high.json
