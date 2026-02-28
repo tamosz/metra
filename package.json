@@ -1,0 +1,19 @@
+{
+  "name": "maple-balance",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "MapleRoyals class balance simulator",
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "dump-sheet": "tsx scripts/dump-sheet.ts"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.0",
+    "vitest": "^2.0.0",
+    "tsx": "^4.7.0"
+  },
+  "dependencies": {
+    "xlsx": "^0.18.5"
+  }
+}

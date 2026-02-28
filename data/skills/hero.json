@@ -1,0 +1,27 @@
+{
+  "source": "dmg sheet rows 15-18 (Brandish), range calculator D7 (mastery)",
+  "className": "Hero",
+  "mastery": 0.6,
+  "primaryStat": "STR",
+  "secondaryStat": "DEX",
+  "sharpEyesCritRate": 0.15,
+  "sharpEyesCritDamageBonus": 140,
+  "skills": [
+    {
+      "name": "Brandish (Sword)",
+      "basePower": 260,
+      "multiplier": 1.9,
+      "hitCount": 2,
+      "speedCategory": "Brandish",
+      "weaponType": "2H Sword"
+    },
+    {
+      "name": "Brandish (Axe, Slash)",
+      "basePower": 260,
+      "multiplier": 1.9,
+      "hitCount": 2,
+      "speedCategory": "Brandish",
+      "weaponType": "2H Axe"
+    }
+  ]
+}

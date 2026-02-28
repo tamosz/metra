@@ -1,0 +1,11 @@
+{
+  "source": "Weapons sheet D7:F13",
+  "types": [
+    { "name": "1H Axe",   "slashMultiplier": 4.4, "stabMultiplier": 3.2 },
+    { "name": "2H Axe",   "slashMultiplier": 4.8, "stabMultiplier": 3.4 },
+    { "name": "1H BW",    "slashMultiplier": 4.4, "stabMultiplier": 3.2 },
+    { "name": "2H BW",    "slashMultiplier": 4.8, "stabMultiplier": 3.4 },
+    { "name": "1H Sword", "slashMultiplier": 4.0, "stabMultiplier": 4.0 },
+    { "name": "2H Sword", "slashMultiplier": 4.6, "stabMultiplier": 4.6 }
+  ]
+}
