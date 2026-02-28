@@ -1,1 +1,42 @@
 @import "tailwindcss";
+
+@theme {
+  --color-bg: #09090b;
+  --color-bg-raised: #111113;
+  --color-bg-surface: #18181b;
+  --color-bg-active: #27272a;
+
+  --color-border-default: #27272a;
+  --color-border-subtle: #18181b;
+  --color-border-active: #3f3f46;
+
+  --color-text-primary: #d4d4d8;
+  --color-text-bright: #fafafa;
+  --color-text-secondary: #a1a1aa;
+  --color-text-muted: #71717a;
+  --color-text-dim: #52525b;
+  --color-text-faint: #3f3f46;
+
+  --color-accent: #3b82f6;
+  --color-positive: #22c55e;
+  --color-negative: #ef4444;
+}
+
+@layer base {
+  html {
+    font-family: "Inter", system-ui, -apple-system, sans-serif;
+  }
+
+  body {
+    margin: 0;
+    background: var(--color-bg);
+    color: var(--color-text-primary);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Remove default focus outlines, replaced by Tailwind focus: classes */
+  :focus {
+    outline: none;
+  }
+}
