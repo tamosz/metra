@@ -23,9 +23,11 @@ Cross-referenced against MapleRoyals forum guides:
 | Speed Infusion | Always active | SI from Buccaneer. |
 | Echo of Hero | Always active | Nearly universal buff (4% WATK). Both tiers assume it. |
 | Booster | Always active (implicit) | No field in CharacterBuild; hardcoded as -2 weapon speed in engine. |
-| Tiers | Only "low" and "high" | No mid tier. |
+| Tiers | Low, Mid, High | Budget → mid-funded → endgame. |
 | Low potion | 60 WATK (Heartstopper) | 1 min duration. Standard for bossing comparisons. |
+| Mid potion | 60 WATK (Heartstopper) | Same as low — mid-tier players don't regularly Apple. |
 | High potion | 100 WATK (Onyx Apple) | 10 min. Standard endgame bossing potion. |
+| Mid mage potion | 45 MATK (Lollipop) | Same as low — Stopper gives 0 MATK for mages. |
 
 **Implications:**
 - Booster cannot be toggled off — unboosted scenarios are not modeled.
@@ -37,10 +39,10 @@ Cross-referenced against MapleRoyals forum guides:
 
 ### Base Stats
 
-| Stat | High | Low | Notes |
-|------|------|-----|-------|
-| STR | 999 | 700 | High = effective cap at lv200. Low = mid-progression (~lv160-170). |
-| DEX | 23 | 22 | Natural DEX from leveling (dexless build). Confirmed by DrK guide. |
+| Stat | High | Mid | Low | Notes |
+|------|------|-----|-----|-------|
+| STR | 999 | 850 | 700 | High = lv200 cap. Mid = ~lv185. Low = ~lv160-170. |
+| DEX | 23 | 22 | 22 | Natural DEX from leveling (dexless build). |
 
 ### Weapon Speed
 
@@ -84,11 +86,25 @@ all classes (warriors, thieves, archers, pirates) for consistent cross-class com
 | Ring | 1 | 0-1 | Reasonable. |
 | **Total** | **168** | | |
 
+### Mid Tier WATK Breakdown
+
+| Slot | Hero/Paladin | DrK | Notes |
+|------|-------------|-----|-------|
+| Weapon | 140 | 133 | Mid-range scrolled. Hero/Pal share gear. |
+| Gloves | 17 | 17 | Standardized mid-tier C/G/S. |
+| Cape | 14 | 14 | Standardized mid-tier C/G/S. |
+| Shoes | 10 | 10 | Same as low — shoes are hardest to scroll. |
+| Medal | 2 | 2 | Between low (0) and high (3). |
+| Ring | 1 | 1 | Same across all tiers. |
+| **Total** | **184** | **177** | |
+
+Mid tier C/G/S standardized to Glove 17 / Cape 14 / Shoe 10 (total 41 WATK) across all
+physical classes. Between low (~37) and high (49).
+
 ### Pendant Stats
 
-High and low tiers both use STR 10 / DEX 10 pendant. Low tier represents a basic HT
-Necklace or Deputy Star level. High tier uses STR 22 / DEX 23, representing a near-perfect
-Horntail Pendant.
+Low tier uses STR 10 / DEX 10 pendant (basic HTP or Deputy Star). Mid tier uses ~16/16
+(partially scrolled HTP). High tier uses STR 22 / DEX 23 (near-perfect HTP).
 
 ---
 
@@ -120,10 +136,10 @@ Modeled without cooldown (sustained DPS ceiling). At 0.6s attack time, Snipe DPS
 
 ### Base Stats
 
-| Stat | High | Low | Notes |
-|------|------|-----|-------|
-| LUK | 999 | 700 | Same pattern as warriors. |
-| DEX | 25 | 25 | Standard NL build. |
+| Stat | High | Mid | Low | Notes |
+|------|------|-----|-----|-------|
+| LUK | 999 | 850 | 700 | Same pattern as warriors. |
+| DEX | 25 | 25 | 25 | Standard NL build. |
 
 ### Weapon Speed
 
