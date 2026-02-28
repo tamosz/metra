@@ -20,7 +20,7 @@ The project is being translated from an existing Google Sheets calculator (expor
 ## Running the Project
 
 ```bash
-# Run all tests (88 tests across 10 files)
+# Run all tests (95 tests across 10 files)
 npx vitest run
 
 # Run a proposal and print the Markdown comparison report
