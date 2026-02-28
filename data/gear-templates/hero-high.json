@@ -4,7 +4,7 @@
   "className": "Hero",
   "baseStats": { "STR": 999, "DEX": 23, "INT": 4, "LUK": 4 },
   "gearStats": { "STR": 174, "DEX": 102, "INT": 0, "LUK": 0 },
-  "totalWeaponAttack": 214,
+  "totalWeaponAttack": 203,
   "weaponType": "2H Sword",
   "weaponSpeed": 5,
   "attackPotion": 100,
@@ -28,8 +28,8 @@
     "ring2":     { "STR": 5,  "DEX": 5,  "WATK": 0 },
     "ring3":     { "STR": 3,  "DEX": 2,  "WATK": 0 },
     "ring4":     { "STR": 3,  "DEX": 3,  "WATK": 1 },
-    "cape":      { "STR": 0,  "DEX": 0,  "WATK": 20 },
-    "shoe":      { "STR": 0,  "DEX": 0,  "WATK": 20 },
-    "glove":     { "STR": 0,  "DEX": 0,  "WATK": 20 }
+    "cape":      { "STR": 0,  "DEX": 0,  "WATK": 17 },
+    "shoe":      { "STR": 0,  "DEX": 0,  "WATK": 13 },
+    "glove":     { "STR": 0,  "DEX": 0,  "WATK": 19 }
   }
 }

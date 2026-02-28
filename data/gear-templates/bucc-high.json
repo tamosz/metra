@@ -4,7 +4,7 @@
   "className": "Buccaneer",
   "baseStats": { "STR": 938, "DEX": 4, "INT": 4, "LUK": 4 },
   "gearStats": { "STR": 151, "DEX": 116, "INT": 0, "LUK": 0 },
-  "totalWeaponAttack": 182,
+  "totalWeaponAttack": 181,
   "weaponType": "Knuckle",
   "weaponSpeed": 6,
   "attackPotion": 100,
@@ -30,8 +30,8 @@
     "ring2":     { "STR": 5,  "DEX": 5,  "WATK": 0 },
     "ring3":     { "STR": 1,  "DEX": 2,  "WATK": 0 },
     "ring4":     { "STR": 3,  "DEX": 3,  "WATK": 1 },
-    "cape":      { "STR": 0,  "DEX": 0,  "WATK": 18 },
-    "shoe":      { "STR": 0,  "DEX": 0,  "WATK": 15 },
-    "glove":     { "STR": 0,  "DEX": 0,  "WATK": 17 }
+    "cape":      { "STR": 0,  "DEX": 0,  "WATK": 17 },
+    "shoe":      { "STR": 0,  "DEX": 0,  "WATK": 13 },
+    "glove":     { "STR": 0,  "DEX": 0,  "WATK": 19 }
   }
 }

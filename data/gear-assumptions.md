@@ -62,27 +62,27 @@ weapon.
 | Slot | Hero/Paladin | DrK | Forum "endgame" range | Assessment |
 |------|-------------|-----|----------------------|------------|
 | Weapon | 150 | 139 | ST Sword ~145-150; Sky Ski ~120+ | Hero near-perfect. DrK reasonable. |
-| Gloves | 20 | 20 | 15-16+ late-game, 21 godly | Very high (near-godly). |
-| Cape | 20 | 20 | 10+ late-game, 18-20 godly | Very high. Guides say "billions" for high WATK capes. |
-| Shoes | 20 | 20 | 7+ late-game, 17 is high | Very high. Facestompers at 20 WATK is near-max. |
+| Gloves | 19 | 19 | 15-16+ late-game, 21 godly | Top-1%. Standardized across all classes. |
+| Cape | 17 | 17 | 10+ late-game, 18-20 godly | Top-1%. Standardized across all classes. |
+| Shoes | 13 | 13 | 7+ late-game, 17 is high | Top-1%. Standardized across all classes. |
 | Medal | 3 | 3 | 2-3 typical | Reasonable. |
 | Ring | 1 | 1 | 0-1 | Reasonable. |
-| **Total** | **214** | **203** | | |
+| **Total** | **203** | **192** | | |
 
-High tier models a top-0.1% character. Cape/Glove/Shoe all at 20 WATK is near-godly
-across the board.
+High tier models a top-1% character. Cape/Glove/Shoe standardized to 19/17/13 across
+all classes (warriors, thieves, archers, pirates) for consistent cross-class comparison.
 
 ### Low Tier WATK Breakdown
 
 | Slot | Value | Forum range | Assessment |
 |------|-------|------------|------------|
-| Weapon | 140 | Budget ~120-130 | Still well-scrolled for "low" tier. Closer to mid-funded. |
+| Weapon | 130 | Budget ~120-130 | Mid-range per Paladin guide. Genuine budget. |
 | Gloves | 15 | 10-15 mid-game | Reasonable. |
 | Cape | 12 | 6-10 budget | Slightly high but plausible. |
 | Shoes | 10 | 6-7 budget | Slightly high. |
 | Medal | 0 | 0-1 | Reasonable. |
 | Ring | 1 | 0-1 | Reasonable. |
-| **Total** | **178** | | |
+| **Total** | **168** | | |
 
 ### Pendant Stats
 
@@ -114,13 +114,13 @@ Always active. Reasonable — NL always uses SP for DPS (1.5x multiplier).
 | Slot | Value | Forum range | Assessment |
 |------|-------|------------|------------|
 | Weapon (RC) | 91 | 77 clean + 14 scrolling = 91 perf | Perfect Raven's Claw. Confirmed. |
-| Gloves | 21 | 21 ATT SCG endgame | Matches forum target exactly. |
-| Cape | 18 | 10+ Blackfist endgame | High but achievable on Pink Gaia. |
-| Shoes | 17 | 17 ATT Facestompers endgame | Matches forum target exactly. |
+| Gloves | 19 | 21 ATT SCG endgame | Top-1%. Standardized across all classes. |
+| Cape | 17 | 10+ Blackfist endgame | Top-1%. Standardized across all classes. |
+| Shoes | 13 | 17 ATT Facestompers endgame | Top-1%. Standardized across all classes. |
 | Medal | 3 | 2-3 typical | Reasonable. |
 | Ring | 1 | 0-1 | Reasonable. |
 | Stars | 30 (Balanced Fury) | 29 Crystal Ilbi / 30 BFury | Confirmed. BFury is correct endgame. |
-| **Total WATK** | **151** | | |
+| **Total WATK** | **144** | | |
 
 ### Low Tier WATK Breakdown
 
@@ -135,8 +135,8 @@ Always active. Reasonable — NL always uses SP for DPS (1.5x multiplier).
 | Stars | 27 (Hwabi) | Hwabi standard mid/late | Confirmed. |
 | **Total WATK** | **105** | | |
 
-NL templates align well with forum guides overall. High tier is genuinely endgame,
-low tier is genuinely budget.
+NL high tier C/G/S standardized from 21/18/17 to 19/17/13, aligning with all other
+classes. Low tier unchanged.
 
 ---
 
@@ -180,65 +180,32 @@ multiplier based on skill attack type. Crusher stabs (Spear 5.0), Fury slashes (
 
 ---
 
-## 5. Open Design Decisions
+## 5. Resolved Design Decisions
 
-These are not bugs — they are choices about what "high" and "low" tier represent. The
-current values match the source spreadsheet and model near-theoretical-maximum characters.
+### Resolved: C/G/S standardized to 19/17/13 (Q1, February 2026)
 
-### Warrior high C/G/S at 20/20/20 (Q1)
+**Finding:** Original templates had inconsistent C/G/S WATK across classes (warriors at
+20/20/20, NL at 21/18/17, Corsair at 20/20/18, etc.). 20/20/20 was extreme godly
+(top ~0.01%), with 20 ATT shoes not even found on the marketplace.
 
-**Research finding:** 20/20/20 WATK on Cape/Glove/Shoe is extreme godly (top ~0.01%).
-
-Forum marketplace data with prices (February 2026):
-
-| Slot | Forum "endgame" | Forum "godly" | Current template | Price at template value |
-|------|----------------|---------------|------------------|----------------------|
-| Gloves | 15 (~1.5b) | 19-21 (10-18b) | 20 | ~18b |
-| Cape | 10-12 (~2-5b) | 17-20 (17-43b) | 20 | ~41b |
-| Shoes | 7-8 (~2-3b) | 12-14 (11-14b) | 20 | No listing found |
-
-Key context: Capes gain WATK only via chaos scrolls (no dedicated ATT scroll), making
-high-WATK capes extremely RNG-dependent. A 20 ATT PGC was listed at 41-43b. No 20 ATT
-Facestompers were found on the forum; the confirmed ceiling is ~13-14 from marketplace.
-
-**Comparison with NL templates:** NL high uses 21/18/17 (total 56) — still godly but with
-a more realistic distribution across slots.
-
-**Options:**
-- **Keep 20/20/20** — models theoretical maximum. Useful for ceiling comparisons.
-- **Reduce to ~17/14/10** (total 41) — models a well-funded endgame character (~15-20b
-  total C/G/S investment). More representative of the population that balance changes
-  actually affect.
-- **Reduce to ~19/17/13** (total 49) — models a top-1% character. Middle ground.
+**Decision:** Standardize all classes to Glove 19 / Cape 17 / Shoe 13 (total 49 WATK).
+This models a top-1% character — achievable endgame gear without being theoretical maximum.
+Consistent C/G/S across classes ensures cross-class DPS comparisons reflect skill/weapon
+differences, not arbitrary gear assumptions.
 
 Sources: [Paladin Guide](https://royals.ms/forum/threads/comprehensive-paladin-guide-haplopelma.161247/),
 [Endgame Progression Thread](https://royals.ms/forum/threads/best-%E2%80%9Cdecent%E2%80%9D-gear-progressing-into-end-game.229612/),
 [20 ATT PGC listing](https://royals.ms/forum/threads/s-20-att-cape-pgc-6173-clean-ep.230089/),
 [20 WA SCG listing](https://royals.ms/forum/threads/s-scg-20-wa-c-o-18b.237392/)
 
-### Warrior low weapon at 140 WATK (Q2)
+### Resolved: Warrior low weapon reduced to 130 WATK (Q2, February 2026)
 
-**Research finding:** 140 WATK is solidly mid-funded, not budget.
+**Finding:** 140 WATK was solidly mid-funded (8-15b est.), not budget. The Paladin guide
+lists 130 WATK 2H sword as "mid-range." Community recommends "a 128 ST for 2b" as
+budget entry point.
 
-Forum trading data:
-
-| WATK | Weapon | Price | Tier |
-|------|--------|-------|------|
-| 125 | Dragon Claymore | 500m | Budget |
-| 128 | Stonetooth | ~2b | Budget endgame |
-| 130 | Stonetooth | 1.75-3b | Mid-funded |
-| 140+ | Stonetooth | 8-15b est. | High-mid |
-| 144 | Stonetooth | 25b | Near-godly |
-
-The Paladin guide lists 130 WATK 2H sword as "mid-range." The community recommends
-"a 128 ST for 2b" as the budget entry point. The DK guide describes 120+ Sky Ski as
-"very expensive" for budget players.
-
-**Options:**
-- **Keep 140** — matches source spreadsheet. Models a character with some investment.
-- **Reduce to 125** — matches budget Dragon Claymore pricing (~500m). Genuine "low tier."
-- **Reduce to 130** — matches mid-range per Paladin guide. Compromise between budget
-  and the current value.
+**Decision:** Reduce Hero and Paladin low-tier weapon from 140 → 130 WATK. DrK low
+already at 127 — no change needed. 130 represents a genuine budget-to-mid funded character.
 
 Sources: [Paladin Guide](https://royals.ms/forum/threads/comprehensive-paladin-guide-haplopelma.161247/),
 [Help with Choosing Swords](https://royals.ms/forum/threads/help-with-choosing-swords.124072/),

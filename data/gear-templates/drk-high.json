@@ -4,7 +4,7 @@
   "className": "DrK",
   "baseStats": { "STR": 999, "DEX": 23, "INT": 4, "LUK": 4 },
   "gearStats": { "STR": 174, "DEX": 102, "INT": 0, "LUK": 0 },
-  "totalWeaponAttack": 203,
+  "totalWeaponAttack": 192,
   "weaponType": "Spear",
   "weaponSpeed": 6,
   "attackPotion": 100,
@@ -16,11 +16,11 @@
   "sharpEyes": true,
   "gearBreakdown": {
     "weapon":    { "STR": 21, "DEX": 0,  "WATK": 139 },
-    "cape":      { "WATK": 20 },
-    "shoe":      { "WATK": 20 },
-    "glove":     { "WATK": 20 },
+    "cape":      { "WATK": 17 },
+    "shoe":      { "WATK": 13 },
+    "glove":     { "WATK": 19 },
     "medal":     { "WATK": 3 },
     "ring4":     { "WATK": 1 },
-    "comment": "139+20+20+20+3+1 = 203. Glove/cape/shoe match Hero high. Original spreadsheet had glove=3 + scrolls=20 catch-all; redistributed to per-slot."
+    "comment": "139+17+13+19+3+1 = 192. C/G/S standardized to 19/17/13 across all classes."
   }
 }

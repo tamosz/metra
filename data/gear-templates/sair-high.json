@@ -4,7 +4,7 @@
   "className": "Corsair",
   "baseStats": { "STR": 11, "DEX": 931, "INT": 4, "LUK": 4 },
   "gearStats": { "STR": 90, "DEX": 165, "INT": 0, "LUK": 0 },
-  "totalWeaponAttack": 182,
+  "totalWeaponAttack": 173,
   "weaponType": "Gun",
   "weaponSpeed": 6,
   "attackPotion": 100,
@@ -31,8 +31,8 @@
     "ring2":     { "DEX": 5,  "STR": 0,  "WATK": 0 },
     "ring3":     { "DEX": 3,  "STR": 0,  "WATK": 0 },
     "ring4":     { "DEX": 3,  "STR": 3,  "WATK": 1 },
-    "cape":      { "DEX": 2,  "STR": 0,  "WATK": 18,  "notes": "Godly WATK cape." },
-    "shoe":      { "DEX": 5,  "STR": 0,  "WATK": 20,  "notes": "Endgame WATK shoes." },
-    "glove":     { "DEX": 0,  "STR": 0,  "WATK": 20,  "notes": "Endgame WATK gloves." }
+    "cape":      { "DEX": 2,  "STR": 0,  "WATK": 17,  "notes": "Standardized WATK cape." },
+    "shoe":      { "DEX": 5,  "STR": 0,  "WATK": 13,  "notes": "Standardized WATK shoes." },
+    "glove":     { "DEX": 0,  "STR": 0,  "WATK": 19,  "notes": "Standardized WATK gloves." }
   }
 }

@@ -77,7 +77,7 @@ describe('loadGearTemplate', () => {
     const build = loadGearTemplate('hero-high');
     expect(build.className).toBe('Hero');
     expect(build.baseStats.STR).toBe(999);
-    expect(build.totalWeaponAttack).toBe(214);
+    expect(build.totalWeaponAttack).toBe(203);
     expect(build.attackPotion).toBe(100);
     expect(build.mapleWarriorLevel).toBe(20);
   });
@@ -86,7 +86,7 @@ describe('loadGearTemplate', () => {
     const build = loadGearTemplate('hero-low');
     expect(build.className).toBe('Hero');
     expect(build.baseStats.STR).toBe(700);
-    expect(build.totalWeaponAttack).toBe(178);
+    expect(build.totalWeaponAttack).toBe(168);
     expect(build.attackPotion).toBe(60);
   });
 });
