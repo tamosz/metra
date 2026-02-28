@@ -2,6 +2,7 @@ import type { BuildExplorerState } from '../hooks/useBuildExplorer.js';
 import { BuildStatEditor } from './BuildStatEditor.js';
 import { BuildBuffToggles } from './BuildBuffToggles.js';
 import { BuildDpsResults } from './BuildDpsResults.js';
+import { formatClassName } from '../utils/format.js';
 
 interface BuildExplorerProps {
   state: BuildExplorerState;
@@ -67,19 +68,6 @@ export function BuildExplorer({ state }: BuildExplorerProps) {
       )}
     </div>
   );
-}
-
-function formatClassName(name: string): string {
-  const special: Record<string, string> = {
-    'drk': 'DrK',
-    'nl': 'NL',
-    'sair': 'Corsair',
-    'bucc': 'Buccaneer',
-    'hero-axe': 'Hero (Axe)',
-    'mm': 'Marksman',
-  };
-  if (special[name]) return special[name];
-  return name.split('-').map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
 }
 
 function Select({

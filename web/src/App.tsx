@@ -3,21 +3,30 @@ import { Dashboard } from './components/Dashboard.js';
 import { ProposalBuilder } from './components/ProposalBuilder.js';
 import { ProposalResults } from './components/ProposalResults.js';
 import { BuildExplorer } from './components/BuildExplorer.js';
+import { BuildComparison } from './components/BuildComparison.js';
 import { useSimulation } from './hooks/useSimulation.js';
 import { useProposal } from './hooks/useProposal.js';
 import { useBuildExplorer } from './hooks/useBuildExplorer.js';
-import { getProposalFromUrl, getBuildFromUrl } from './utils/url-encoding.js';
+import { useBuildComparison } from './hooks/useBuildComparison.js';
+import { getProposalFromUrl, getBuildFromUrl, getComparisonFromUrl } from './utils/url-encoding.js';
 
-type Page = 'dashboard' | 'proposal' | 'build';
+type Page = 'dashboard' | 'proposal' | 'build' | 'compare';
 
 export function App() {
   const simulation = useSimulation();
   const proposalState = useProposal();
   const buildState = useBuildExplorer();
+  const comparisonState = useBuildComparison();
   const [page, setPage] = useState<Page>('dashboard');
 
   // Load from URL hash on mount
   useEffect(() => {
+    const urlComparison = getComparisonFromUrl();
+    if (urlComparison) {
+      comparisonState.loadFromUrl(urlComparison.a, urlComparison.b);
+      setPage('compare');
+      return;
+    }
     const urlBuild = getBuildFromUrl();
     if (urlBuild) {
       buildState.loadFromUrl(urlBuild.class, urlBuild.tier, urlBuild.overrides);
@@ -48,6 +57,12 @@ export function App() {
           <NavButton active={page === 'build'} onClick={() => setPage('build')}>
             Build Explorer
           </NavButton>
+          <NavButton
+            active={page === 'compare'}
+            onClick={() => setPage('compare')}
+          >
+            Compare
+          </NavButton>
         </nav>
       </header>
 
@@ -65,6 +80,7 @@ export function App() {
           </>
         )}
         {page === 'build' && <BuildExplorer state={buildState} />}
+        {page === 'compare' && <BuildComparison state={comparisonState} />}
       </main>
     </div>
   );

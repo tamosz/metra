@@ -84,3 +84,37 @@ export function setBuildInUrl(payload: BuildUrlPayload): void {
   const encoded = encodeBuild(payload);
   window.history.replaceState(null, '', `#b=${encoded}`);
 }
+
+// --- Comparison URL encoding ---
+
+export interface ComparisonUrlPayload {
+  a: BuildUrlPayload;
+  b: BuildUrlPayload;
+}
+
+export function encodeComparison(payload: ComparisonUrlPayload): string {
+  const json = JSON.stringify(payload);
+  return LZString.compressToEncodedURIComponent(json);
+}
+
+export function decodeComparison(encoded: string): ComparisonUrlPayload | null {
+  try {
+    const json = LZString.decompressFromEncodedURIComponent(encoded);
+    if (!json) return null;
+    return JSON.parse(json) as ComparisonUrlPayload;
+  } catch {
+    return null;
+  }
+}
+
+export function getComparisonFromUrl(): ComparisonUrlPayload | null {
+  const hash = window.location.hash;
+  if (!hash.startsWith('#c=')) return null;
+  const encoded = hash.slice(3);
+  return decodeComparison(encoded);
+}
+
+export function setComparisonInUrl(payload: ComparisonUrlPayload): void {
+  const encoded = encodeComparison(payload);
+  window.history.replaceState(null, '', `#c=${encoded}`);
+}
