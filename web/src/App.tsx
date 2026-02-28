@@ -7,7 +7,6 @@ import { useSimulation } from './hooks/useSimulation.js';
 import { useProposal } from './hooks/useProposal.js';
 import { useBuildExplorer } from './hooks/useBuildExplorer.js';
 import { getProposalFromUrl, getBuildFromUrl } from './utils/url-encoding.js';
-import { colors } from './theme.js';
 
 type Page = 'dashboard' | 'proposal' | 'build';
 
@@ -34,46 +33,25 @@ export function App() {
   }, []);
 
   return (
-    <div style={{ minHeight: '100vh', background: colors.bg, color: colors.text }}>
-      <header style={{
-        padding: '16px 32px',
-        borderBottom: `1px solid ${colors.border}`,
-        display: 'flex',
-        alignItems: 'center',
-        gap: 24,
-      }}>
-        <h1 style={{
-          margin: 0,
-          fontSize: 18,
-          fontWeight: 700,
-          color: colors.textBright,
-          letterSpacing: '-0.02em',
-        }}>
+    <div className="min-h-screen bg-bg text-text-primary">
+      <header className="flex items-center gap-6 border-b border-border-default px-8 py-4">
+        <h1 className="m-0 text-lg font-bold tracking-tight text-text-bright">
           MapleRoyals Balance Simulator
         </h1>
-        <nav style={{ display: 'flex', gap: 4 }}>
-          <NavButton
-            active={page === 'dashboard'}
-            onClick={() => setPage('dashboard')}
-          >
+        <nav className="flex gap-1">
+          <NavButton active={page === 'dashboard'} onClick={() => setPage('dashboard')}>
             Rankings
           </NavButton>
-          <NavButton
-            active={page === 'proposal'}
-            onClick={() => setPage('proposal')}
-          >
+          <NavButton active={page === 'proposal'} onClick={() => setPage('proposal')}>
             Proposal Builder
           </NavButton>
-          <NavButton
-            active={page === 'build'}
-            onClick={() => setPage('build')}
-          >
+          <NavButton active={page === 'build'} onClick={() => setPage('build')}>
             Build Explorer
           </NavButton>
         </nav>
       </header>
 
-      <main style={{ maxWidth: 1200, margin: '0 auto', padding: '24px 32px' }}>
+      <main className="mx-auto max-w-[1200px] px-8 py-6">
         {page === 'dashboard' && <Dashboard simulation={simulation} />}
         {page === 'proposal' && (
           <>
@@ -104,23 +82,11 @@ function NavButton({
   return (
     <button
       onClick={onClick}
-      style={{
-        background: active ? colors.bgActive : 'transparent',
-        color: active ? colors.textBright : colors.textMuted,
-        border: 'none',
-        padding: '6px 14px',
-        borderRadius: 6,
-        fontSize: 13,
-        fontWeight: 500,
-        cursor: 'pointer',
-        transition: 'all 0.15s',
-      }}
-      onMouseEnter={(e) => {
-        if (!active) e.currentTarget.style.color = '#c0c0c8'; // hover
-      }}
-      onMouseLeave={(e) => {
-        if (!active) e.currentTarget.style.color = colors.textMuted;
-      }}
+      className={`rounded-md border-none px-3.5 py-1.5 text-sm font-medium transition-colors cursor-pointer ${
+        active
+          ? 'bg-bg-active text-text-bright'
+          : 'bg-transparent text-text-muted hover:text-zinc-400'
+      }`}
     >
       {children}
     </button>
