@@ -1,0 +1,31 @@
+{
+  "source": "dmg sheet rows 9-10, range calculator E18 (Sair: I31*3.6), D7 mastery default 0.6",
+  "className": "Corsair",
+  "mastery": 0.6,
+  "primaryStat": "DEX",
+  "secondaryStat": "STR",
+  "sharpEyesCritRate": 0.15,
+  "sharpEyesCritDamageBonus": 140,
+  "seCritFormula": "addBeforeMultiply",
+  "damageFormula": "standard",
+  "skills": [
+    {
+      "name": "Battleship Cannon",
+      "basePower": 380,
+      "multiplier": 1.2,
+      "hitCount": 4,
+      "speedCategory": "Battleship Cannon",
+      "weaponType": "Gun",
+      "source": "dmg D9=380, E9=D9*1.2=456, N9 hitCount=4, speed 2 → 0.60s"
+    },
+    {
+      "name": "Rapid Fire",
+      "basePower": 200,
+      "multiplier": 1.2,
+      "hitCount": 1,
+      "speedCategory": "Hurricane",
+      "weaponType": "Gun",
+      "source": "dmg D10=200, E10=D10*1.2=240, Hurricane fixed 0.12s"
+    }
+  ]
+}

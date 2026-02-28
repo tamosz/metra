@@ -56,6 +56,10 @@ export interface SkillEntry {
   builtInCritRate?: number;
   /** Built-in crit damage bonus added to basePower on crit. */
   builtInCritDamageBonus?: number;
+  /** Group name for skills that combine into a single rotation.
+   *  Skills sharing a comboGroup have their DPS summed in simulation output.
+   *  e.g., Barrage hits + Dragon Strike form one combo with a shared attack cycle. */
+  comboGroup?: string;
 }
 
 /** All skills for a single class. */
