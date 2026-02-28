@@ -92,7 +92,31 @@ Horntail Pendant.
 
 ---
 
-## 3. Night Lord Assumptions
+## 3. Archer Assumptions (Bowmaster, Marksman)
+
+### Shared Gear
+
+Bowmaster and Marksman share identical gear templates — same stats, same WATK values,
+same scrolling tier. The only difference is weapon type (Bow vs Crossbow) and the
+corresponding mastery passive (Bow Expert vs Crossbow Expert, both +10 WATK).
+
+### Weapon Multiplier
+
+| Weapon | Multiplier | Source |
+|--------|-----------|--------|
+| Bow | 3.4 | range calculator E18 |
+| Crossbow | 3.6 | range calculator E18: I31*3.6 |
+
+### Marksman-Specific: Snipe
+
+Snipe deals fixed 195,000 damage per hit regardless of stats or gear. It uses the
+`fixedDamage` field on SkillEntry, bypassing the normal damage formula entirely.
+Modeled without cooldown (sustained DPS ceiling). At 0.6s attack time, Snipe DPS =
+325,000 at both funding tiers.
+
+---
+
+## 4. Night Lord Assumptions
 
 ### Base Stats
 
@@ -140,7 +164,7 @@ classes. Low tier unchanged.
 
 ---
 
-## 4. Research Findings (February 2026)
+## 5. Research Findings (February 2026)
 
 ### Resolved: Stonetooth speed (Q3)
 
@@ -180,7 +204,7 @@ multiplier based on skill attack type. Crusher stabs (Spear 5.0), Fury slashes (
 
 ---
 
-## 5. Resolved Design Decisions
+## 6. Resolved Design Decisions
 
 ### Resolved: C/G/S standardized to 19/17/13 (Q1, February 2026)
 

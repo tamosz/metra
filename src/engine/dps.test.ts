@@ -802,6 +802,116 @@ describe('Shadower DPS', () => {
   });
 });
 
+describe('Marksman DPS', () => {
+  let mmData: ClassSkillData;
+  let mmHigh: CharacterBuild;
+  let mmLow: CharacterBuild;
+
+  beforeAll(() => {
+    mmData = loadClassSkills('Marksman');
+    mmHigh = loadGearTemplate('marksman-high');
+    mmLow = loadGearTemplate('marksman-low');
+  });
+
+  it('loads Marksman skill data correctly', () => {
+    expect(mmData.className).toBe('Marksman');
+    expect(mmData.mastery).toBe(0.9);
+    expect(mmData.primaryStat).toBe('DEX');
+    expect(mmData.secondaryStat).toBe('STR');
+    expect(mmData.damageFormula).toBe('standard');
+    expect(mmData.skills.length).toBe(2);
+  });
+
+  it('Strafe (MM) uses Crossbow 3.6x multiplier', () => {
+    const strafe = mmData.skills.find((s) => s.name === 'Strafe (MM)')!;
+    const result = calculateSkillDps(
+      mmHigh, mmData, strafe, weaponData, attackSpeedData, mapleWarriorData
+    );
+
+    // Standard formula with Crossbow 3.6x
+    // DEX: floor(999 * 1.1) + 158 = 1256, STR: floor(4 * 1.1) + 97 = 101
+    // max = floor((1256 * 3.6 + 101) * 294 / 100) = 13590
+    // min = floor((1256 * 3.6 * 0.9 * 0.9 + 101) * 294 / 100) = 11064
+    expect(result.damageRange.max).toBe(13590);
+    expect(result.damageRange.min).toBe(11064);
+  });
+
+  it('Strafe (MM) High tier DPS ~211,203', () => {
+    const strafe = mmData.skills.find((s) => s.name === 'Strafe (MM)')!;
+    const result = calculateSkillDps(
+      mmHigh, mmData, strafe, weaponData, attackSpeedData, mapleWarriorData
+    );
+
+    // 4-hit, 0.6s attack time, 55% crit (40% Critical Shot + 15% SE)
+    expect(result.attackTime).toBe(0.60);
+    expect(result.skillDamagePercent).toBe(125);
+    // SE: (125 + 100 + 140) * 1 = 365
+    expect(result.seDamagePercent).toBe(365);
+    expect(result.dps).toBeCloseTo(211203, -1);
+  });
+
+  it('Strafe (MM) Low tier DPS ~106,175', () => {
+    const strafe = mmData.skills.find((s) => s.name === 'Strafe (MM)')!;
+    const result = calculateSkillDps(
+      mmLow, mmData, strafe, weaponData, attackSpeedData, mapleWarriorData
+    );
+
+    expect(result.attackTime).toBe(0.60);
+    expect(result.dps).toBeCloseTo(106175, -1);
+  });
+
+  it('Snipe uses fixedDamage path (195,000 per hit)', () => {
+    const snipe = mmData.skills.find((s) => s.name === 'Snipe')!;
+    expect(snipe.fixedDamage).toBe(195000);
+
+    const result = calculateSkillDps(
+      mmHigh, mmData, snipe, weaponData, attackSpeedData, mapleWarriorData
+    );
+
+    // Fixed damage: bypasses damage formula entirely
+    expect(result.damageRange.max).toBe(195000);
+    expect(result.damageRange.min).toBe(195000);
+    expect(result.averageDamage).toBe(195000);
+    expect(result.skillDamagePercent).toBe(0);
+    expect(result.seDamagePercent).toBe(0);
+  });
+
+  it('Snipe DPS = 325,000 (195000 / 0.6s)', () => {
+    const snipe = mmData.skills.find((s) => s.name === 'Snipe')!;
+    const result = calculateSkillDps(
+      mmHigh, mmData, snipe, weaponData, attackSpeedData, mapleWarriorData
+    );
+
+    expect(result.attackTime).toBe(0.60);
+    expect(result.dps).toBe(325000);
+  });
+
+  it('Snipe DPS is gear-independent (same at low and high tier)', () => {
+    const snipe = mmData.skills.find((s) => s.name === 'Snipe')!;
+    const highResult = calculateSkillDps(
+      mmHigh, mmData, snipe, weaponData, attackSpeedData, mapleWarriorData
+    );
+    const lowResult = calculateSkillDps(
+      mmLow, mmData, snipe, weaponData, attackSpeedData, mapleWarriorData
+    );
+
+    expect(highResult.dps).toBe(lowResult.dps);
+    expect(highResult.dps).toBe(325000);
+  });
+
+  it('Strafe (MM) High tier DPS > Low tier', () => {
+    const strafe = mmData.skills.find((s) => s.name === 'Strafe (MM)')!;
+    const highResult = calculateSkillDps(
+      mmHigh, mmData, strafe, weaponData, attackSpeedData, mapleWarriorData
+    );
+    const lowResult = calculateSkillDps(
+      mmLow, mmData, strafe, weaponData, attackSpeedData, mapleWarriorData
+    );
+
+    expect(highResult.dps).toBeGreaterThan(lowResult.dps);
+  });
+});
+
 describe('DPS result structure', () => {
   it('includes all expected fields', () => {
     const brandish = heroData.skills.find(
