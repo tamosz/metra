@@ -86,6 +86,10 @@ function main() {
       name: 'No-Echo',
       overrides: { echoActive: false },
     },
+    {
+      name: 'Bossing (50% PDR)',
+      pdr: 0.5,
+    },
   ];
 
   const config: SimulationConfig = { classes: classNames, tiers: tierArray, scenarios };

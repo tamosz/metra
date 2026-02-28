@@ -31,6 +31,8 @@ export interface ScenarioConfig {
   overrides?: Partial<Pick<CharacterBuild,
     'sharpEyes' | 'echoActive' | 'speedInfusion' |
     'mapleWarriorLevel' | 'attackPotion' | 'shadowPartner'>>;
+  /** Physical Damage Reduction (0–1). Applied as a multiplier: effectiveDps = dps * (1 - pdr). */
+  pdr?: number;
 }
 
 /** DPS result for a single class/skill/tier combination. */
