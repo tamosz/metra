@@ -18,8 +18,7 @@ export function BuildExplorer({ state }: BuildExplorerProps) {
 
   return (
     <div>
-      {/* Class / Tier selectors */}
-      <div style={{ display: 'flex', gap: 12, alignItems: 'center', marginBottom: 20, flexWrap: 'wrap' }}>
+      <div className="mb-5 flex flex-wrap items-center gap-3">
         <Select
           label="Class"
           value={selectedClass}
@@ -35,45 +34,26 @@ export function BuildExplorer({ state }: BuildExplorerProps) {
         {hasOverrides && (
           <button
             onClick={resetOverrides}
-            style={{
-              background: 'transparent',
-              color: '#f87171',
-              border: '1px solid rgba(248,113,113,0.3)',
-              padding: '5px 12px',
-              borderRadius: 4,
-              fontSize: 12,
-              cursor: 'pointer',
-              transition: 'all 0.15s',
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.background = 'rgba(248,113,113,0.1)';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.background = 'transparent';
-            }}
+            className="cursor-pointer rounded border border-red-500/30 bg-transparent px-3 py-1.5 text-xs text-red-400 transition-colors hover:bg-red-500/10"
           >
             Reset All
           </button>
         )}
       </div>
 
-      {/* Weapon info */}
       {template && (
-        <div style={{ fontSize: 12, color: '#666', marginBottom: 24, display: 'flex', gap: 16 }}>
+        <div className="mb-6 flex gap-4 text-xs text-text-dim">
           <span>Weapon: {template.weaponType}</span>
           <span>Base Speed: {template.weaponSpeed}</span>
         </div>
       )}
 
       {template && classData && (
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24 }}>
-          {/* Left column: stats + buffs */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+        <div className="grid grid-cols-2 gap-6">
+          <div className="flex flex-col gap-5">
             <BuildStatEditor state={state} />
             <BuildBuffToggles state={state} />
           </div>
-
-          {/* Right column: results */}
           <div>
             <BuildDpsResults state={state} />
           </div>
@@ -81,7 +61,7 @@ export function BuildExplorer({ state }: BuildExplorerProps) {
       )}
 
       {!template && selectedClass && (
-        <div style={{ color: '#666', fontSize: 13, padding: '24px 0' }}>
+        <div className="py-6 text-sm text-text-dim">
           No gear template found for {formatClassName(selectedClass)} ({selectedTier}).
         </div>
       )}
@@ -90,7 +70,6 @@ export function BuildExplorer({ state }: BuildExplorerProps) {
 }
 
 function formatClassName(name: string): string {
-  // hero-axe → Hero (Axe), drk → DrK, nl → NL, sair → Corsair, bucc → Buccaneer
   const special: Record<string, string> = {
     'drk': 'DrK',
     'nl': 'NL',
@@ -115,23 +94,14 @@ function Select({
   onChange: (value: string) => void;
 }) {
   return (
-    <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-      <span style={{ fontSize: 11, color: '#666', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+    <div className="flex items-center gap-1.5">
+      <span className="text-[11px] uppercase tracking-wide text-text-dim">
         {label}
       </span>
       <select
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        style={{
-          background: '#1a1a2a',
-          color: '#e0e0e8',
-          border: '1px solid #2a2a3e',
-          padding: '5px 10px',
-          borderRadius: 4,
-          fontSize: 13,
-          cursor: 'pointer',
-          outline: 'none',
-        }}
+        className="cursor-pointer rounded border border-border-default bg-bg-surface px-2.5 py-1.5 text-sm text-text-primary focus:border-border-active transition-colors"
       >
         {options.map((opt) => (
           <option key={opt.value} value={opt.value}>

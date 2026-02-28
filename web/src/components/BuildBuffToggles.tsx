@@ -12,21 +12,15 @@ export function BuildBuffToggles({ state }: BuildBuffTogglesProps) {
   if (!template || !classData) return null;
 
   const showShadowPartner = template.shadowPartner !== undefined;
+  const mwOverridden = 'mapleWarriorLevel' in overrides;
 
   return (
     <div>
-      <div style={{
-        fontSize: 11,
-        color: '#666',
-        textTransform: 'uppercase',
-        letterSpacing: '0.05em',
-        marginBottom: 8,
-        fontWeight: 500,
-      }}>
+      <div className="mb-2 text-[11px] font-medium uppercase tracking-wide text-text-dim">
         Buffs
       </div>
 
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+      <div className="flex flex-col gap-1.5">
         <BuffCheckbox
           label="Echo of Hero"
           overrideKey="echoActive"
@@ -63,15 +57,8 @@ export function BuildBuffToggles({ state }: BuildBuffTogglesProps) {
         )}
 
         {/* MW Level */}
-        <div style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: 8,
-          borderLeft: 'mapleWarriorLevel' in overrides ? '2px solid #60a5fa' : '2px solid transparent',
-          paddingLeft: 8,
-          padding: '3px 0 3px 8px',
-        }}>
-          <span style={{ fontSize: 12, color: '#ccc', width: 120 }}>MW Level</span>
+        <div className={`flex items-center gap-2 py-0.5 pl-2 ${mwOverridden ? 'border-l-2 border-blue-400' : 'border-l-2 border-transparent'}`}>
+          <span className="w-[120px] text-xs text-text-secondary">MW Level</span>
           <select
             value={overrides.mapleWarriorLevel ?? template.mapleWarriorLevel}
             onChange={(e) => {
@@ -82,16 +69,9 @@ export function BuildBuffToggles({ state }: BuildBuffTogglesProps) {
                 setOverride('mapleWarriorLevel', v);
               }
             }}
-            style={{
-              background: '#12121a',
-              color: 'mapleWarriorLevel' in overrides ? '#60a5fa' : '#e0e0e8',
-              border: '1px solid #2a2a3e',
-              padding: '3px 6px',
-              borderRadius: 3,
-              fontSize: 13,
-              cursor: 'pointer',
-              outline: 'none',
-            }}
+            className={`cursor-pointer rounded border border-border-default bg-bg-raised px-1.5 py-0.5 text-sm focus:border-border-active transition-colors ${
+              mwOverridden ? 'text-blue-400' : 'text-text-primary'
+            }`}
           >
             {MW_LEVELS.map((level) => (
               <option key={level} value={level}>
@@ -99,10 +79,10 @@ export function BuildBuffToggles({ state }: BuildBuffTogglesProps) {
               </option>
             ))}
           </select>
-          {'mapleWarriorLevel' in overrides && (
+          {mwOverridden && (
             <span
               onClick={() => resetField('mapleWarriorLevel')}
-              style={{ fontSize: 11, color: '#60a5fa', cursor: 'pointer', userSelect: 'none' }}
+              className="cursor-pointer select-none text-[11px] text-blue-400"
               title="Click to reset"
             >
               ({template.mapleWarriorLevel})
@@ -136,15 +116,7 @@ function BuffCheckbox({
   const currentValue = (overrides[overrideKey] as boolean | undefined) ?? templateValue;
 
   return (
-    <label style={{
-      display: 'flex',
-      alignItems: 'center',
-      gap: 8,
-      cursor: 'pointer',
-      borderLeft: isOverridden ? '2px solid #60a5fa' : '2px solid transparent',
-      paddingLeft: 8,
-      padding: '3px 0 3px 8px',
-    }}>
+    <label className={`flex cursor-pointer items-center gap-2 py-0.5 pl-2 ${isOverridden ? 'border-l-2 border-blue-400' : 'border-l-2 border-transparent'}`}>
       <input
         type="checkbox"
         checked={currentValue}
@@ -156,9 +128,9 @@ function BuffCheckbox({
             setOverride(overrideKey, newValue);
           }
         }}
-        style={{ accentColor: '#60a5fa' }}
+        className="accent-blue-400"
       />
-      <span style={{ fontSize: 12, color: isOverridden ? '#60a5fa' : '#ccc' }}>
+      <span className={`text-xs ${isOverridden ? 'text-blue-400' : 'text-text-secondary'}`}>
         {label}
       </span>
     </label>

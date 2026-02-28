@@ -1,33 +1,33 @@
 export const colors = {
   // Backgrounds
-  bg: '#0a0a0f',
-  bgRaised: '#12121a',
-  bgSurface: '#1a1a2e',
-  bgActive: '#1e1e2e',
-  bgButton: '#2a2a4e',
+  bg: '#09090b',
+  bgRaised: '#111113',
+  bgSurface: '#18181b',
+  bgActive: '#27272a',
+  bgButton: '#27272a',
 
   // Borders
-  border: '#1e1e2e',
-  borderSubtle: '#12121a',
-  borderActive: '#3a3a5e',
-  borderButton: '#3a3a6e',
-  borderMuted: '#2a2a3e',
+  border: '#27272a',
+  borderSubtle: '#18181b',
+  borderActive: '#3f3f46',
+  borderButton: '#3f3f46',
+  borderMuted: '#27272a',
 
   // Filter/tab active state
-  filterBg: '#2a2a3e',
+  filterBg: '#27272a',
 
   // Text
-  text: '#e0e0e8',
-  textBright: '#f0f0f8',
-  textSecondary: '#aaa',
-  textMuted: '#888',
-  textDim: '#666',
-  textFaint: '#555',
+  text: '#d4d4d8',
+  textBright: '#fafafa',
+  textSecondary: '#a1a1aa',
+  textMuted: '#71717a',
+  textDim: '#52525b',
+  textFaint: '#3f3f46',
 
   // Accent
-  accent: '#55b8e0',
+  accent: '#3b82f6',
 
   // Semantic
-  positive: '#55e068',
-  negative: '#e05555',
+  positive: '#22c55e',
+  negative: '#ef4444',
 } as const;
