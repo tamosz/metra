@@ -9,38 +9,17 @@ import {
 import { compareProposal } from './proposals/compare.js';
 import { runSimulation } from './proposals/simulate.js';
 import type { SimulationConfig } from './proposals/simulate.js';
-import type { Proposal, ScenarioConfig } from './proposals/types.js';
+import type { Proposal } from './proposals/types.js';
 import { renderComparisonReport, renderBaselineReport } from './report/markdown.js';
 import { renderAsciiChart } from './report/ascii-chart.js';
 import { analyzeBalance } from './audit/analyze.js';
 import { formatAuditReport } from './audit/format.js';
+import { DEFAULT_SCENARIOS } from './scenarios.js';
 
 function loadProposal(path: string): Proposal {
   const fullPath = resolve(path);
   return JSON.parse(readFileSync(fullPath, 'utf-8')) as Proposal;
 }
-
-const DEFAULT_SCENARIOS: ScenarioConfig[] = [
-  { name: 'Buffed' },
-  {
-    name: 'Unbuffed',
-    overrides: {
-      sharpEyes: false,
-      echoActive: false,
-      speedInfusion: false,
-      mapleWarriorLevel: 0,
-      attackPotion: 0,
-    },
-  },
-  {
-    name: 'No-Echo',
-    overrides: { echoActive: false },
-  },
-  {
-    name: 'Bossing (50% PDR)',
-    pdr: 0.5,
-  },
-];
 
 function main() {
   const auditFlag = process.argv.includes('--audit');
