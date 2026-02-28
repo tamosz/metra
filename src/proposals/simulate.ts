@@ -35,12 +35,20 @@ export function runSimulation(
 
   for (const className of config.classes) {
     const classData = classDataMap.get(className);
-    if (!classData) continue;
+    if (!classData) {
+      throw new Error(
+        `Class "${className}" not found in classDataMap. Available: ${[...classDataMap.keys()].join(', ')}`
+      );
+    }
 
     for (const tier of config.tiers) {
       const templateKey = `${className}-${tier}`;
       const build = gearTemplates.get(templateKey);
-      if (!build) continue;
+      if (!build) {
+        throw new Error(
+          `Gear template "${templateKey}" not found. Available: ${[...gearTemplates.keys()].join(', ')}`
+        );
+      }
 
       for (const skill of classData.skills) {
         const dps = calculateSkillDps(

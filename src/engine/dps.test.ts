@@ -168,6 +168,8 @@ describe('DrK Spear Crusher DPS', () => {
     expect(result.damageRange.max).toBe(10541);
     expect(result.damageRange.min).toBe(7668);
     expect(result.damageRange.average).toBe(9104.5);
+    // TODO: loose assertion — hero charts I14 (145,882) uses different gear values;
+    // tighten once DrK Low gear template is verified against the sheet
     expect(result.dps).toBeGreaterThan(128000);
     expect(result.dps).toBeLessThan(129000);
   });
@@ -228,6 +230,8 @@ describe('Paladin Blast DPS', () => {
     // Note: hero charts J15 shows 276,092 — likely computed with different gear setup
     expect(result.damageRange.max).toBe(19488);
     expect(result.damageRange.min).toBe(10714);
+    // TODO: loose assertion — hero charts J15 (276,092) uses different gear values;
+    // tighten once Paladin High gear template is verified against the sheet
     expect(result.dps).toBeGreaterThan(199000);
     expect(result.dps).toBeLessThan(200000);
   });
@@ -249,6 +253,8 @@ describe('Paladin Blast DPS', () => {
     // Note: hero charts J14 shows 150,339 — likely computed with different gear setup
     expect(result.damageRange.max).toBe(10260);
     expect(result.damageRange.min).toBe(5677);
+    // TODO: loose assertion — hero charts J14 (150,339) uses different gear values;
+    // tighten once Paladin Low gear template is verified against the sheet
     expect(result.dps).toBeGreaterThan(105000);
     expect(result.dps).toBeLessThan(106000);
   });

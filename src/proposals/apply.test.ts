@@ -120,6 +120,20 @@ describe('applyProposal', () => {
     );
   });
 
+  it('throws on unknown field', () => {
+    const proposal: Proposal = {
+      name: 'Bad field',
+      author: 'test',
+      changes: [
+        { target: 'hero.brandish-sword', field: 'madeUpField', to: 100 },
+      ],
+    };
+
+    expect(() => applyProposal(classDataMap, proposal)).toThrow(
+      /Unknown field "madeUpField"/
+    );
+  });
+
   it('applies multiple changes across classes', () => {
     const proposal: Proposal = {
       name: 'Multi-class rebalance',

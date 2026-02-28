@@ -9,6 +9,7 @@ export interface ProposalChange {
   /** Optional: expected current value (throws on mismatch to catch stale proposals). */
   from?: number;
   /** New value to set. */
+  // TODO: widen to `number | string` if string fields (e.g. name, weaponType) need changing
   to: number;
 }
 
