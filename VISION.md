@@ -9,12 +9,13 @@
 ## Phased Roadmap
 
 ### Phase 1: Foundation (COMPLETE)
-- 10 physical classes with verified DPS
+- 12 classes with verified DPS (10 physical + Archmage I/L, Bishop)
+- Standard and magic damage formulas (spell/weapon amplification)
 - Proposal pipeline (JSON → simulate → compare → report)
 - CLI with baseline rankings + proposal comparison
-- Web SPA: dashboard, proposal builder, URL sharing, BBCode export
+- Web SPA: dashboard, proposal builder, class comparison view, URL sharing, BBCode export
 - 4 scenarios (Buffed, Unbuffed, No-Echo, Bossing 50% PDR)
-- ~350 tests, pre-commit hooks
+- ~227 tests, pre-commit hooks
 - Balance audit: automated outlier detection across scenarios and tiers
 
 ### Phase 2: Public Launch
@@ -22,7 +23,7 @@
 
 - **Deploy static site** on Vercel (free tier, auto-deploys from main)
 - **Gear/build explorer**: hybrid approach — start from templates, let users override individual stats (STR, DEX, WATK, etc.) with sliders/inputs. Power users get full control, casual users get sensible defaults. Real-time DPS recalculation as stats change.
-- **Class comparison view**: side-by-side build comparison ("is my NL better than my Hero at this funding level?"). Natural extension of the explorer.
+- **Class comparison view**: side-by-side build comparison (done — in Phase 1 web SPA)
 - **Custom funding tiers**: mid-tier is where most players actually are, and the low→high jump is large. Let users save custom templates or add a mid tier.
 - **UX polish**: mobile-friendly layout, tooltips explaining game mechanics, class icons, onboarding for first-time visitors
 - **Shareable builds**: extend URL encoding to include custom gear overrides (not just proposals)
@@ -44,7 +45,6 @@
 ### Phase 4: Advanced Analysis
 **Goal**: Deepen the simulator's analytical power.
 
-- **Magic classes**: Arch Mage (I/L), Bishop — requires magic damage formula implementation (different from physical)
 - **Party DPS modeling**: MapleRoyals endgame is party play. A Bishop's value isn't personal DPS — it's party buff contribution. Evaluating balance purely on solo DPS misses support/utility classes. Hard to model well, but the biggest analytical blind spot.
 - **Accuracy/miss rate**: the simulator assumes 100% hit rate. Against high-level bosses, accuracy matters and varies by class. Silently inflates some classes' effective bossing DPS.
 - **Buff uptime/sustain**: some skills have downtime (Berserk HP drain, Battleship HP, buff recasting). Sustained DPS over a 5-minute boss fight differs from theoretical peak.
@@ -80,7 +80,7 @@ The engine stays client-side — simulation is fast enough in the browser. Supab
 | Auth | Discord OAuth via Supabase | MapleRoyals community already on Discord |
 | Simulation execution | Client-side | Fast enough in browser, no server costs |
 | Build explorer state | URL-encoded | Shareable like proposals, no backend needed |
-| Magic classes | Deferred | Different formula, lower priority than community features |
+| Magic classes | Done (Phase 1) | Archmage I/L and Bishop implemented with magic damage formula |
 
 ## Design Principles
 
