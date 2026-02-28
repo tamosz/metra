@@ -20,7 +20,7 @@ The project is being translated from an existing Google Sheets calculator (expor
 ## Running the Project
 
 ```bash
-# Run all tests (78 tests across 10 files)
+# Run all tests (88 tests across 10 files)
 npx vitest run
 
 # Run a proposal and print the Markdown comparison report
@@ -38,7 +38,7 @@ Three layers. Keep them cleanly separated.
 Static game data stored as JSON files, version-controlled, human-readable and human-editable. This is the "current state of MapleRoyals."
 
 Actual files:
-- `skills/` — one file per class (`hero.json`, `drk.json`, `paladin.json`). Each contains mastery, stat mapping, SE crit config, and a `skills[]` array.
+- `skills/` — one file per class (`hero.json`, `drk.json`, `paladin.json`, `nl.json`). Each contains mastery, stat mapping, SE crit config, and a `skills[]` array.
 - `gear-templates/` — character builds at each funding tier (`hero-low.json`, `hero-high.json`, etc.). Include full gear breakdown, stats, buffs, and weapon info.
 - `weapons.json` — weapon type slash/stab multipliers for the damage formula.
 - `attack-speed.json` — effective speed tier → attack time lookup, keyed by skill category.
@@ -49,10 +49,10 @@ Actual files:
 Pure functions. No side effects, no I/O. Takes game data + a character build, outputs damage ranges and DPS.
 
 **Implemented:**
-- `damage.ts` — raw damage range (min/max), range cap from damage cap, adjusted range for capped distributions.
+- `damage.ts` — raw damage range (min/max), throwing star range (NL/Shad), range cap from damage cap, adjusted range for capped distributions.
 - `buffs.ts` — Maple Warrior stat boost, Echo of Hero WATK bonus, total attack/stat aggregation.
 - `attack-speed.ts` — weapon speed resolution (base speed + booster + SI), attack time lookup by skill category.
-- `dps.ts` — full DPS pipeline: attack time → skill damage% → SE crit damage% → range caps → adjusted ranges → average damage → DPS. Uses `skill.weaponType` (not build) for weapon multiplier lookup, enabling weapon variants within the same class/tier.
+- `dps.ts` — full DPS pipeline: attack time → skill damage% → crit damage% → range caps → adjusted ranges → average damage → DPS. Uses `skill.weaponType` (not build) for weapon multiplier lookup, enabling weapon variants within the same class/tier. Supports built-in crit (additive with SE), throwing star formula (branches on `weaponType === 'Claw'`), and Shadow Partner (1.5× multiplier).
 - `index.ts` — re-exports.
 
 **Not yet implemented:**
@@ -101,26 +101,37 @@ This is a v62-based MapleStory private server. Key differences from official GMS
 - Weapon Attack (WATK) and primary stat scaling differ by class
 
 ### Damage Formula (verified, from `damage.ts`)
+
+**Standard (warriors):**
 ```
 MaxDamage = floor((primaryStat * weaponMultiplier + secondaryStat) * totalAttack / 100)
 MinDamage = floor((primaryStat * weaponMultiplier * 0.9 * mastery + secondaryStat) * totalAttack / 100)
 ```
 Source: range calculator E18/E19. Weapon multipliers come from `weapons.json` (e.g., 4.6 for 2H Sword slash). Mastery is per-class (e.g., 0.6 for Hero).
 
-### SE Crit Damage
+**Throwing stars (NL/Shad):**
+```
+MaxDamage = floor(5.0 * LUK * totalAttack / 100)
+MinDamage = floor(2.5 * LUK * totalAttack / 100)
+```
+Source: range calculator F18/F19. No weapon multiplier or secondary stat — flat LUK scaling.
+
+### Crit Damage
 Two formula variants exist, configured per class via `seCritFormula`:
-- **`addBeforeMultiply`** (Hero, DrK): `seDmg% = (basePower + bonus) * multiplier`
-- **`addAfterMultiply`** (Paladin): `seDmg% = basePower * multiplier + bonus`
+- **`addBeforeMultiply`** (Hero, DrK, NL): `critDmg% = (basePower + totalCritBonus) * multiplier`
+- **`addAfterMultiply`** (Paladin): `critDmg% = basePower * multiplier + totalCritBonus`
+
+`totalCritBonus` = built-in crit bonus (e.g., TT +100) + SE bonus (+140 if active). Crit rate is also additive: built-in (e.g., TT 0.50) + SE (0.15), capped at 1.0.
 
 ### Key Classes
 
-**Implemented (3 warrior classes):**
+**Implemented (4 classes):**
 - **Hero** — 2H Sword/Axe, Brandish (2-hit)
 - **Dark Knight (DrK)** — Spear/Polearm, Crusher and Fury
 - **Paladin** — 2H Sword/2H BW, Blast (4 variants: Holy and F/I/L Charge × Sword and BW)
+- **Night Lord (NL)** — Claw, Triple Throw (3-hit, built-in 50% crit, Shadow Partner). Engine + skill data complete; gear templates pending.
 
 **Future expansion targets:**
-- Night Lord (ranged physical, stars)
 - Bowmaster (ranged physical, bow)
 - Arch Mage (Ice/Lightning) (magic)
 - Bishop (magic, party utility)
@@ -182,7 +193,8 @@ metra/
 │   ├── skills/
 │   │   ├── hero.json
 │   │   ├── drk.json
-│   │   └── paladin.json
+│   │   ├── paladin.json
+│   │   └── nl.json
 │   └── gear-templates/
 │       ├── hero-low.json
 │       ├── hero-high.json
