@@ -37,6 +37,7 @@ export type {
 export { applyProposal, skillSlug } from './proposals/apply.js';
 export { compareProposal } from './proposals/compare.js';
 export { runSimulation, type SimulationConfig, type GearTemplateMap } from './proposals/simulate.js';
+export { validateProposal, ProposalValidationError } from './proposals/validate.js';
 export type {
   Proposal,
   ProposalChange,

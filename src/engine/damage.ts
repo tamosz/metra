@@ -78,6 +78,38 @@ export function calculateThrowingStarRange(
 }
 
 /**
+ * Calculate the raw magic damage range.
+ *
+ * Source: range calculator E18/E19 (Archmage/Bishop branch)
+ *   MaxDamage = floor(((TMA²/1000 + TMA)/30 + INT/200) * spellAmp * weaponAmp)
+ *   MinDamage = floor(((TMA²/1000 + TMA * mastery * 0.9)/30 + INT/200) * spellAmp * weaponAmp)
+ *
+ * Where TMA = total magic attack = INT + MATK + potion + echo.
+ *
+ * @param tma        Total Magic Attack (INT + MATK gear + potion + echo)
+ * @param int        Total INT after MW and gear (used in +INT/200 term)
+ * @param mastery    Spell mastery (e.g., 0.6 for mages in the spreadsheet)
+ * @param spellAmp   Element Amplification multiplier (1.4 for Archmage, 1 for Bishop)
+ * @param weaponAmp  Elemental Staff/Wand bonus (1.25 for Archmage, 1 for Bishop)
+ */
+export function calculateMagicDamageRange(
+  tma: number,
+  int: number,
+  mastery: number,
+  spellAmp: number = 1,
+  weaponAmp: number = 1
+): DamageRange {
+  const amp = spellAmp * weaponAmp;
+  const max = Math.floor(
+    ((tma * tma / 1000 + tma) / 30 + int / 200) * amp
+  );
+  const min = Math.floor(
+    ((tma * tma / 1000 + tma * mastery * 0.9) / 30 + int / 200) * amp
+  );
+  return { min, max, average: (min + max) / 2 };
+}
+
+/**
  * Calculate the adjusted range when a damage cap applies.
  *
  * When the range cap is below the max damage, some portion of the damage

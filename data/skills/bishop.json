@@ -1,0 +1,32 @@
+{
+  "source": "dmg sheet rows 41-42 (Genesis, Angel Ray). No spell/weapon amplification (B6=1, B5=1 for Bishop from range calculator SWITCH formulas). Mastery 0.6, SE 15%/+140 same as Archmage.",
+  "className": "Bishop",
+  "mastery": 0.6,
+  "primaryStat": "INT",
+  "secondaryStat": "LUK",
+  "sharpEyesCritRate": 0.15,
+  "sharpEyesCritDamageBonus": 140,
+  "damageFormula": "magic",
+  "spellAmplification": 1,
+  "weaponAmplification": 1,
+  "skills": [
+    {
+      "name": "Angel Ray",
+      "source": "dmg sheet B42: basePower 240, C42: 0.81s. Single-target healing/damage skill.",
+      "basePower": 240,
+      "multiplier": 1,
+      "hitCount": 1,
+      "speedCategory": "Angel Ray",
+      "weaponType": "Staff"
+    },
+    {
+      "name": "Genesis",
+      "source": "dmg sheet B41: basePower 670, C41: 2.7s. Map-wide AoE ultimate.",
+      "basePower": 670,
+      "multiplier": 1,
+      "hitCount": 1,
+      "speedCategory": "Genesis",
+      "weaponType": "Staff"
+    }
+  ]
+}

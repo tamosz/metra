@@ -1,0 +1,32 @@
+{
+  "source": "dmg sheet rows 37-38 (Chain Lightning), row 40 (Blizzard). Spell amp 1.4 (Element Amplification), weapon amp 1.25 (Elemental Staff) from range calculator B6/B5. Mastery 0.6 from range calculator D7 default. SE crit +140/15% from dmg sheet G37/G40 formulas.",
+  "className": "Archmage I/L",
+  "mastery": 0.6,
+  "primaryStat": "INT",
+  "secondaryStat": "LUK",
+  "sharpEyesCritRate": 0.15,
+  "sharpEyesCritDamageBonus": 140,
+  "damageFormula": "magic",
+  "spellAmplification": 1.4,
+  "weaponAmplification": 1.25,
+  "skills": [
+    {
+      "name": "Chain Lightning",
+      "source": "dmg sheet B37: basePower 210, C37: 0.69s. Single-target DPS skill.",
+      "basePower": 210,
+      "multiplier": 1,
+      "hitCount": 1,
+      "speedCategory": "Chain Lightning",
+      "weaponType": "Staff"
+    },
+    {
+      "name": "Blizzard",
+      "source": "dmg sheet B40: basePower 570, C40: 3.06s. Map-wide AoE ultimate.",
+      "basePower": 570,
+      "multiplier": 1,
+      "hitCount": 1,
+      "speedCategory": "Blizzard",
+      "weaponType": "Staff"
+    }
+  ]
+}

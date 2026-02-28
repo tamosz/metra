@@ -6,10 +6,11 @@ import type {
   AttackSpeedData,
   MapleWarriorData,
 } from '../data/types.js';
-import { calculateTotalAttack, calculateTotalStats } from './buffs.js';
+import { calculateTotalAttack, calculateTotalStats, calculateMageEcho } from './buffs.js';
 import {
   calculateDamageRange,
   calculateThrowingStarRange,
+  calculateMagicDamageRange,
   calculateAdjustedRange,
   calculateRangeCap,
   getWeaponMultiplier,
@@ -115,14 +116,28 @@ export function calculateSkillDps(
   const seCritRate = build.sharpEyes ? classData.sharpEyesCritRate : 0;
   const totalCritRate = Math.min(builtInCritRate + seCritRate, 1.0);
 
-  // Damage range: throwing stars use a different formula
-  const totalAttack = calculateTotalAttack(build);
+  // Damage range: formula varies by class type
   const { primary, secondary } = calculateTotalStats(build, classData, mapleWarriorData);
   let damageRange: DamageRange;
   const damageFormula = classData.damageFormula ?? 'standard';
-  if (damageFormula === 'throwingStar') {
+  const isMagic = damageFormula === 'magic';
+
+  if (isMagic) {
+    // Mage TMA = INT + MATK + potion + mageEcho
+    // Source: range calculator B8 = J31 + L31 + E8 + E10
+    // Mage echo includes INT: E10 = floor((J31 + L31 + E8) * 0.04)
+    const mageEcho = build.echoActive
+      ? calculateMageEcho(primary, build.totalWeaponAttack, build.attackPotion)
+      : 0;
+    const tma = primary + build.totalWeaponAttack + build.attackPotion + mageEcho;
+    const spellAmp = classData.spellAmplification ?? 1;
+    const weaponAmp = classData.weaponAmplification ?? 1;
+    damageRange = calculateMagicDamageRange(tma, primary, classData.mastery, spellAmp, weaponAmp);
+  } else if (damageFormula === 'throwingStar') {
+    const totalAttack = calculateTotalAttack(build);
     damageRange = calculateThrowingStarRange(primary, totalAttack);
   } else {
+    const totalAttack = calculateTotalAttack(build);
     const weaponMultiplier = getWeaponMultiplier(weaponData, skill.weaponType, skill.attackType, skill.attackRatio);
     damageRange = calculateDamageRange(
       primary,
@@ -133,9 +148,15 @@ export function calculateSkillDps(
     );
   }
 
-  // 4. Range caps
-  const rangeCap = calculateRangeCap(DAMAGE_CAP, skillDamagePercent);
-  const rangeCapCrit = calculateRangeCap(DAMAGE_CAP, critDamagePercent);
+  // Skill damage multiplier: physical uses percentage (260 = 260% → ÷100),
+  // magic uses raw multiplier (210 = 210×).
+  // Source: dmg sheet — physical uses E15%, magic uses E36 directly.
+  const skillMultiplier = isMagic ? skillDamagePercent : skillDamagePercent / 100;
+  const critMultiplier = isMagic ? critDamagePercent : critDamagePercent / 100;
+
+  // 4. Range caps = damageCap / multiplier
+  const rangeCap = DAMAGE_CAP / skillMultiplier;
+  const rangeCapCrit = DAMAGE_CAP / critMultiplier;
 
   // 5. Adjusted ranges
   const adjustedRange = calculateAdjustedRange(damageRange, rangeCap);
@@ -146,12 +167,12 @@ export function calculateSkillDps(
   if (totalCritRate > 0) {
     const normalRate = 1 - totalCritRate;
     averageDamage =
-      ((skillDamagePercent / 100) * normalRate * adjustedRange +
-        (critDamagePercent / 100) * totalCritRate * adjustedRangeCrit) *
+      (skillMultiplier * normalRate * adjustedRange +
+        critMultiplier * totalCritRate * adjustedRangeCrit) *
       skill.hitCount;
   } else {
     averageDamage =
-      (skillDamagePercent / 100) * adjustedRange * skill.hitCount;
+      skillMultiplier * adjustedRange * skill.hitCount;
   }
 
   // Shadow Partner: clone deals 50% of attack damage → 1.5× total
