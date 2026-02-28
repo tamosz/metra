@@ -16,11 +16,11 @@
   "sharpEyes": true,
   "gearBreakdown": {
     "weapon":    { "STR": 21, "DEX": 0,  "WATK": 139 },
-    "scrolls":   { "WATK": 20 },
     "cape":      { "WATK": 20 },
     "shoe":      { "WATK": 20 },
-    "glove":     { "WATK": 3 },
-    "medal":     { "WATK": 1 },
-    "comment": "139+20+20+20+3+1 = 203"
+    "glove":     { "WATK": 20 },
+    "medal":     { "WATK": 3 },
+    "ring4":     { "WATK": 1 },
+    "comment": "139+20+20+20+3+1 = 203. Glove/cape/shoe match Hero high. Original spreadsheet had glove=3 + scrolls=20 catch-all; redistributed to per-slot."
   }
 }

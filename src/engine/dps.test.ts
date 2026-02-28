@@ -88,14 +88,13 @@ describe('Hero Brandish (Sword) DPS', () => {
       mapleWarriorData
     );
 
-    // Verify intermediate values
+    // Verify intermediate values (pendant reduced from STR22/DEX23 to STR10/DEX10)
     expect(result.attackTime).toBe(0.63);
-    expect(result.damageRange.max).toBe(10260);
-    expect(result.damageRange.min).toBe(5677);
-    expect(result.damageRange.average).toBe(7968.5);
+    expect(result.damageRange.max).toBe(10092);
+    expect(result.damageRange.min).toBe(5571);
+    expect(result.damageRange.average).toBe(7831.5);
 
-    // Target from hero charts sheet F3: 135059.75079365078
-    expect(result.dps).toBeCloseTo(135060, -1);
+    expect(result.dps).toBeCloseTo(132738, -1);
   });
 
   it('produces exact High tier DPS value', () => {
@@ -130,8 +129,8 @@ describe('Hero Brandish (Sword) DPS', () => {
       mapleWarriorData
     );
 
-    // Exact value from spreadsheet: 135059.75079365078
-    expect(Math.abs(result.dps - 135059.75079365078)).toBeLessThan(1);
+    // Value after pendant fix (STR22/DEX23 → STR10/DEX10): 132737.7095238095
+    expect(Math.abs(result.dps - 132737.7095238095)).toBeLessThan(1);
   });
 });
 
@@ -169,15 +168,13 @@ describe('DrK Spear Crusher DPS', () => {
     );
 
     // Computed from gear template (WATK=165, Spear, mastery 0.8)
-    // Note: hero charts I14 shows 145,882 — likely computed with different WATK
+    // Pendant reduced from STR22/DEX23 to STR10/DEX10
     expect(result.attackTime).toBe(0.81);
-    expect(result.damageRange.max).toBe(10541);
-    expect(result.damageRange.min).toBe(7668);
-    expect(result.damageRange.average).toBe(9104.5);
-    // TODO: loose assertion — hero charts I14 (145,882) uses different gear values;
-    // tighten once DrK Low gear template is verified against the sheet
-    expect(result.dps).toBeGreaterThan(128000);
-    expect(result.dps).toBeLessThan(129000);
+    expect(result.damageRange.max).toBe(10370);
+    expect(result.damageRange.min).toBe(7537);
+    expect(result.damageRange.average).toBe(8953.5);
+    expect(result.dps).toBeGreaterThan(126000);
+    expect(result.dps).toBeLessThan(127000);
   });
 
   it('uses addBeforeMultiply SE formula (default)', () => {
@@ -255,14 +252,11 @@ describe('Paladin Blast DPS', () => {
       mapleWarriorData
     );
 
-    // Same damage range as Hero Low: max=10260, min=5677, avg=7968.5
-    // Note: hero charts J14 shows 150,339 — likely computed with different gear setup
-    expect(result.damageRange.max).toBe(10260);
-    expect(result.damageRange.min).toBe(5677);
-    // TODO: loose assertion — hero charts J14 (150,339) uses different gear values;
-    // tighten once Paladin Low gear template is verified against the sheet
-    expect(result.dps).toBeGreaterThan(105000);
-    expect(result.dps).toBeLessThan(106000);
+    // Same damage range as Hero Low (pendant reduced from STR22/DEX23 to STR10/DEX10)
+    expect(result.damageRange.max).toBe(10092);
+    expect(result.damageRange.min).toBe(5571);
+    expect(result.dps).toBeGreaterThan(103000);
+    expect(result.dps).toBeLessThan(104000);
   });
 
   it('Blast (F/I/L Charge) uses Strafe/Snipe speed category', () => {

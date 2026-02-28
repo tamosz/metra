@@ -145,8 +145,8 @@ describe('compareProposal', () => {
         d.tier === 'low'
     )!;
 
-    // Hero charts F5: 144672.54444444444
-    expect(heroBrandishLow.after).toBeCloseTo(144673, -1);
+    // After pendant fix (STR22/DEX23 → STR10/DEX10): 142185.23
+    expect(heroBrandishLow.after).toBeCloseTo(142185, -1);
   });
 
   it('computes multi-class changes independently', () => {

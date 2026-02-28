@@ -3,7 +3,7 @@
   "label": "DrK Low",
   "className": "DrK",
   "baseStats": { "STR": 700, "DEX": 22, "INT": 4, "LUK": 4 },
-  "gearStats": { "STR": 107, "DEX": 96, "INT": 0, "LUK": 0 },
+  "gearStats": { "STR": 95, "DEX": 83, "INT": 0, "LUK": 0 },
   "totalWeaponAttack": 165,
   "weaponType": "Spear",
   "weaponSpeed": 6,
@@ -16,10 +16,10 @@
   "sharpEyes": true,
   "gearBreakdown": {
     "weapon":    { "STR": 18, "DEX": 0,  "WATK": 127 },
-    "scrolls":   { "WATK": 12 },
+    "cape":      { "WATK": 12 },
     "shoe":      { "WATK": 10 },
     "glove":     { "WATK": 15 },
     "medal":     { "WATK": 1 },
-    "comment": "127+12+10+15+1 = 165"
+    "comment": "127+12+10+15+1 = 165. Moved scrolls catch-all to cape (was missing). Total unchanged."
   }
 }
