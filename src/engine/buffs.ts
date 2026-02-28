@@ -78,17 +78,21 @@ export function calculateTotalStats(
   );
 
   const primaryStatKey = classData.primaryStat;
-  const secondaryStatKey = classData.secondaryStat;
+  const secondaryStatKeys = Array.isArray(classData.secondaryStat)
+    ? classData.secondaryStat
+    : [classData.secondaryStat];
 
   const primaryBase = Math.floor(
     build.baseStats[primaryStatKey] * mwMultiplier
   );
-  const secondaryBase = Math.floor(
-    build.baseStats[secondaryStatKey] * mwMultiplier
-  );
+
+  const secondary = secondaryStatKeys.reduce((sum, key) => {
+    const base = Math.floor(build.baseStats[key] * mwMultiplier);
+    return sum + build.gearStats[key] + base;
+  }, 0);
 
   return {
     primary: build.gearStats[primaryStatKey] + primaryBase,
-    secondary: build.gearStats[secondaryStatKey] + secondaryBase,
+    secondary,
   };
 }

@@ -11,6 +11,7 @@
     { "name": "Polearm",  "slashMultiplier": 5.0, "stabMultiplier": 3.0 },
     { "name": "Bow",     "slashMultiplier": 3.4, "stabMultiplier": 3.4 },
     { "name": "Gun",     "slashMultiplier": 3.6, "stabMultiplier": 3.6 },
-    { "name": "Knuckle", "slashMultiplier": 4.8, "stabMultiplier": 4.8 }
+    { "name": "Knuckle", "slashMultiplier": 4.8, "stabMultiplier": 4.8 },
+    { "name": "Dagger",  "slashMultiplier": 3.6, "stabMultiplier": 3.6 }
   ]
 }

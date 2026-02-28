@@ -1,0 +1,42 @@
+{
+  "source": "dmg sheet rows 43-50, range calculator E18/E19 (Shad: K31*3.6), D7 mastery default 0.6",
+  "className": "Shadower",
+  "mastery": 0.6,
+  "primaryStat": "LUK",
+  "secondaryStat": ["STR", "DEX"],
+  "sharpEyesCritRate": 0.15,
+  "sharpEyesCritDamageBonus": 140,
+  "seCritFormula": "addBeforeMultiply",
+  "damageFormula": "standard",
+  "skills": [
+    {
+      "name": "Boomerang Step",
+      "basePower": 600,
+      "multiplier": 1,
+      "hitCount": 2,
+      "speedCategory": "BStep + Assassinate 30",
+      "weaponType": "Dagger",
+      "comboGroup": "BStep + Assassinate 30",
+      "source": "dmg D43=600, E43=600*1.0, N43 hitCount=2, C43=0.69 (combo cycle 2.31s)"
+    },
+    {
+      "name": "Assassinate 30",
+      "basePower": 950,
+      "multiplier": 1,
+      "hitCount": 3,
+      "speedCategory": "BStep + Assassinate 30",
+      "weaponType": "Dagger",
+      "comboGroup": "BStep + Assassinate 30",
+      "source": "dmg D44=950, E44=950*1.0, N44 hitCount=3, C44=1.62 (combo cycle 2.31s)"
+    },
+    {
+      "name": "Savage Blow",
+      "basePower": 80,
+      "multiplier": 1,
+      "hitCount": 6,
+      "speedCategory": "Strafe/Snipe",
+      "weaponType": "Dagger",
+      "source": "dmg D46=80, E46=80*1.0, N46 hitCount=6, C46=0.72"
+    }
+  ]
+}

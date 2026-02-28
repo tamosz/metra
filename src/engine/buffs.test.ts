@@ -82,6 +82,29 @@ describe('calculateTotalStats', () => {
   });
 });
 
+describe('calculateTotalStats with array secondaryStat', () => {
+  let shadData: ClassSkillData;
+
+  beforeAll(() => {
+    shadData = loadClassSkills('Shadower');
+  });
+
+  it('sums multiple secondary stats (STR + DEX) for Shadower', () => {
+    const build = makeBuild({
+      className: 'Shadower',
+      baseStats: { STR: 4, DEX: 14, INT: 4, LUK: 933 },
+      gearStats: { STR: 78, DEX: 135, INT: 0, LUK: 135 },
+    });
+    const stats = calculateTotalStats(build, shadData, mwData);
+
+    // primary = LUK: floor(933 * 1.1) + 135 = 1026 + 135 = 1161
+    expect(stats.primary).toBe(1161);
+    // secondary = STR: (floor(4 * 1.1) + 78) + DEX: (floor(14 * 1.1) + 135)
+    //           = (4 + 78) + (15 + 135) = 82 + 150 = 232
+    expect(stats.secondary).toBe(232);
+  });
+});
+
 function makeBuild(overrides: Partial<CharacterBuild> = {}): CharacterBuild {
   return {
     className: 'Hero',

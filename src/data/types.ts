@@ -69,8 +69,8 @@ export interface ClassSkillData {
   mastery: number;
   /** Primary stat name. */
   primaryStat: 'STR' | 'DEX' | 'INT' | 'LUK';
-  /** Secondary stat name. */
-  secondaryStat: 'STR' | 'DEX' | 'INT' | 'LUK';
+  /** Secondary stat name(s). Array when multiple stats contribute (e.g., Shadower uses STR + DEX). */
+  secondaryStat: 'STR' | 'DEX' | 'INT' | 'LUK' | Array<'STR' | 'DEX' | 'INT' | 'LUK'>;
   /** SE crit rate (fraction of attacks that crit with SE). */
   sharpEyesCritRate: number;
   /** SE critical damage bonus added to base power. */
