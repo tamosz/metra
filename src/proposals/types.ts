@@ -1,3 +1,4 @@
+import type { CharacterBuild } from '../data/types.js';
 import type { DpsResult } from '../engine/dps.js';
 
 /** A single change within a proposal. */
@@ -21,11 +22,23 @@ export interface Proposal {
   changes: ProposalChange[];
 }
 
+/**
+ * A scenario defines conditions under which to evaluate DPS.
+ * Overrides are applied to each CharacterBuild before simulation.
+ */
+export interface ScenarioConfig {
+  name: string;
+  overrides?: Partial<Pick<CharacterBuild,
+    'sharpEyes' | 'echoActive' | 'speedInfusion' |
+    'mapleWarriorLevel' | 'attackPotion' | 'shadowPartner'>>;
+}
+
 /** DPS result for a single class/skill/tier combination. */
 export interface ScenarioResult {
   className: string;
   skillName: string;
   tier: string;
+  scenario: string;
   dps: DpsResult;
 }
 
@@ -34,6 +47,7 @@ export interface DeltaEntry {
   className: string;
   skillName: string;
   tier: string;
+  scenario: string;
   before: number;
   after: number;
   change: number;

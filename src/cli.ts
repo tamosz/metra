@@ -10,7 +10,7 @@ import {
 import type { ClassSkillData } from './data/types.js';
 import { compareProposal } from './proposals/compare.js';
 import type { SimulationConfig, GearTemplateMap } from './proposals/simulate.js';
-import type { Proposal } from './proposals/types.js';
+import type { Proposal, ScenarioConfig } from './proposals/types.js';
 import { renderComparisonReport } from './report/markdown.js';
 
 function loadProposal(path: string): Proposal {
@@ -70,7 +70,25 @@ function main() {
     }
   }
 
-  const config: SimulationConfig = { classes: classNames, tiers: tierArray };
+  const scenarios: ScenarioConfig[] = [
+    { name: 'Buffed' },
+    {
+      name: 'Unbuffed',
+      overrides: {
+        sharpEyes: false,
+        echoActive: false,
+        speedInfusion: false,
+        mapleWarriorLevel: 0,
+        attackPotion: 0,
+      },
+    },
+    {
+      name: 'No-Echo',
+      overrides: { echoActive: false },
+    },
+  ];
+
+  const config: SimulationConfig = { classes: classNames, tiers: tierArray, scenarios };
 
   // Run comparison
   const result = compareProposal(

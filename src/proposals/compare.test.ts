@@ -14,7 +14,7 @@ import type {
 } from '../data/types.js';
 import { compareProposal } from './compare.js';
 import type { SimulationConfig, GearTemplateMap } from './simulate.js';
-import type { Proposal } from './types.js';
+import type { Proposal, ScenarioConfig } from './types.js';
 
 let weaponData: WeaponData;
 let attackSpeedData: AttackSpeedData;
@@ -82,6 +82,14 @@ describe('compareProposal', () => {
     expect(result.before.length).toBeGreaterThan(0);
     expect(result.after.length).toBe(result.before.length);
     expect(result.deltas.length).toBe(result.before.length);
+
+    // All results should have scenario = 'Buffed' (default)
+    for (const r of result.before) {
+      expect(r.scenario).toBe('Buffed');
+    }
+    for (const d of result.deltas) {
+      expect(d.scenario).toBe('Buffed');
+    }
 
     // Hero Brandish (Sword) should change
     const heroBrandishHigh = result.deltas.find(
@@ -205,5 +213,166 @@ describe('compareProposal', () => {
       (d) => d.className === 'NL' && d.skillName === 'Triple Throw 30' && d.tier === 'high'
     )!;
     expect(nlDelta.change).toBe(0);
+  });
+});
+
+describe('compareProposal with multiple scenarios', () => {
+  it('produces deltas for each scenario independently', () => {
+    const scenarios: ScenarioConfig[] = [
+      { name: 'Buffed' },
+      {
+        name: 'Unbuffed',
+        overrides: {
+          sharpEyes: false,
+          echoActive: false,
+          speedInfusion: false,
+          mapleWarriorLevel: 0,
+          attackPotion: 0,
+        },
+      },
+    ];
+
+    const multiConfig: SimulationConfig = {
+      classes: ['hero'],
+      tiers: ['high'],
+      scenarios,
+    };
+
+    const proposal: Proposal = {
+      name: 'Brandish +20',
+      author: 'test',
+      changes: [
+        { target: 'hero.brandish-sword', field: 'basePower', from: 260, to: 280 },
+      ],
+    };
+
+    const result = compareProposal(
+      proposal,
+      multiConfig,
+      classDataMap,
+      gearTemplates,
+      weaponData,
+      attackSpeedData,
+      mapleWarriorData
+    );
+
+    // Should have results for both scenarios × skills
+    const heroSkillCount = classDataMap.get('hero')!.skills.length;
+    expect(result.deltas.length).toBe(heroSkillCount * 2);
+
+    // Find Brandish deltas for each scenario
+    const buffedDelta = result.deltas.find(
+      (d) => d.skillName === 'Brandish (Sword)' && d.scenario === 'Buffed'
+    )!;
+    const unbuffedDelta = result.deltas.find(
+      (d) => d.skillName === 'Brandish (Sword)' && d.scenario === 'Unbuffed'
+    )!;
+
+    expect(buffedDelta).toBeDefined();
+    expect(unbuffedDelta).toBeDefined();
+
+    // Both should show positive change
+    expect(buffedDelta.change).toBeGreaterThan(0);
+    expect(unbuffedDelta.change).toBeGreaterThan(0);
+
+    // Buffed DPS should be higher than unbuffed DPS (before and after)
+    expect(buffedDelta.before).toBeGreaterThan(unbuffedDelta.before);
+    expect(buffedDelta.after).toBeGreaterThan(unbuffedDelta.after);
+  });
+
+  it('unbuffed scenario removes SE, Echo, MW, SI, and attack potion effects', () => {
+    const scenarios: ScenarioConfig[] = [
+      { name: 'Buffed' },
+      {
+        name: 'Unbuffed',
+        overrides: {
+          sharpEyes: false,
+          echoActive: false,
+          speedInfusion: false,
+          mapleWarriorLevel: 0,
+          attackPotion: 0,
+        },
+      },
+    ];
+
+    const multiConfig: SimulationConfig = {
+      classes: ['hero'],
+      tiers: ['high'],
+      scenarios,
+    };
+
+    // No-change proposal to isolate scenario effects
+    const proposal: Proposal = {
+      name: 'No change',
+      author: 'test',
+      changes: [],
+    };
+
+    const result = compareProposal(
+      proposal,
+      multiConfig,
+      classDataMap,
+      gearTemplates,
+      weaponData,
+      attackSpeedData,
+      mapleWarriorData
+    );
+
+    const buffedBrandish = result.deltas.find(
+      (d) => d.skillName === 'Brandish (Sword)' && d.scenario === 'Buffed'
+    )!;
+    const unbuffedBrandish = result.deltas.find(
+      (d) => d.skillName === 'Brandish (Sword)' && d.scenario === 'Unbuffed'
+    )!;
+
+    // No changes applied, so before === after for both
+    expect(buffedBrandish.change).toBe(0);
+    expect(unbuffedBrandish.change).toBe(0);
+
+    // Unbuffed DPS should be significantly lower (no SE, Echo, MW, SI, potion)
+    expect(unbuffedBrandish.before).toBeLessThan(buffedBrandish.before);
+    // Rough sanity check: unbuffed should be at least 20% lower
+    expect(unbuffedBrandish.before).toBeLessThan(buffedBrandish.before * 0.8);
+  });
+
+  it('no-echo scenario only removes Echo effect', () => {
+    const scenarios: ScenarioConfig[] = [
+      { name: 'Buffed' },
+      { name: 'No-Echo', overrides: { echoActive: false } },
+    ];
+
+    const multiConfig: SimulationConfig = {
+      classes: ['hero'],
+      tiers: ['high'],
+      scenarios,
+    };
+
+    const proposal: Proposal = {
+      name: 'No change',
+      author: 'test',
+      changes: [],
+    };
+
+    const result = compareProposal(
+      proposal,
+      multiConfig,
+      classDataMap,
+      gearTemplates,
+      weaponData,
+      attackSpeedData,
+      mapleWarriorData
+    );
+
+    const buffedBrandish = result.deltas.find(
+      (d) => d.skillName === 'Brandish (Sword)' && d.scenario === 'Buffed'
+    )!;
+    const noEchoBrandish = result.deltas.find(
+      (d) => d.skillName === 'Brandish (Sword)' && d.scenario === 'No-Echo'
+    )!;
+
+    // No-Echo should be slightly lower (Echo is 4% WATK)
+    expect(noEchoBrandish.before).toBeLessThan(buffedBrandish.before);
+    // But not drastically lower — within ~10%
+    expect(noEchoBrandish.before).toBeGreaterThan(buffedBrandish.before * 0.9);
   });
 });

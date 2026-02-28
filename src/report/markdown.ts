@@ -29,6 +29,9 @@ function formatPercent(n: number): string {
 
 /**
  * Render a ComparisonResult as a Markdown report.
+ *
+ * When multiple scenarios are present, renders a separate table section per scenario.
+ * When only one scenario exists, output is identical to the original single-table format.
  */
 export function renderComparisonReport(result: ComparisonResult): string {
   const lines: string[] = [];
@@ -52,9 +55,54 @@ export function renderComparisonReport(result: ComparisonResult): string {
   }
   lines.push('');
 
-  // DPS comparison table
-  lines.push('## DPS Comparison');
-  lines.push('');
+  // Group deltas by scenario, preserving order
+  const scenarioGroups = groupDeltasByScenario(result.deltas);
+  const multiScenario = scenarioGroups.length > 1;
+
+  if (multiScenario) {
+    for (const group of scenarioGroups) {
+      lines.push(`## ${group.scenario}`);
+      lines.push('');
+      renderDeltaTable(lines, group.deltas);
+      lines.push('');
+    }
+  } else {
+    // Single scenario: backward-compatible output (no scenario name in heading)
+    lines.push('## DPS Comparison');
+    lines.push('');
+    const deltas = scenarioGroups.length > 0 ? scenarioGroups[0].deltas : result.deltas;
+    renderDeltaTable(lines, deltas);
+    lines.push('');
+  }
+
+  return lines.join('\n');
+}
+
+/**
+ * Group deltas by scenario name, preserving insertion order.
+ */
+function groupDeltasByScenario(
+  deltas: DeltaEntry[]
+): { scenario: string; deltas: DeltaEntry[] }[] {
+  const groups: { scenario: string; deltas: DeltaEntry[] }[] = [];
+  const indexMap = new Map<string, number>();
+
+  for (const d of deltas) {
+    const scenario = d.scenario ?? 'Buffed';
+    if (!indexMap.has(scenario)) {
+      indexMap.set(scenario, groups.length);
+      groups.push({ scenario, deltas: [] });
+    }
+    groups[indexMap.get(scenario)!].deltas.push(d);
+  }
+
+  return groups;
+}
+
+/**
+ * Render a sorted DPS comparison table into the lines array.
+ */
+function renderDeltaTable(lines: string[], deltas: DeltaEntry[]): void {
   lines.push(
     '| Class | Skill | Tier | Before | After | Change | % |'
   );
@@ -62,7 +110,7 @@ export function renderComparisonReport(result: ComparisonResult): string {
     '|-------|-------|------|-------:|------:|-------:|--:|'
   );
 
-  const sorted = sortDeltas(result.deltas);
+  const sorted = sortDeltas(deltas);
   for (const d of sorted) {
     const row = [
       d.className,
@@ -75,9 +123,6 @@ export function renderComparisonReport(result: ComparisonResult): string {
     ];
     lines.push('| ' + row.join(' | ') + ' |');
   }
-
-  lines.push('');
-  return lines.join('\n');
 }
 
 function capitalize(s: string): string {
