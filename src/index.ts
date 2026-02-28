@@ -49,6 +49,7 @@ export { runSimulation, type SimulationConfig, type GearTemplateMap } from './pr
 export type {
   Proposal,
   ProposalChange,
+  ScenarioConfig,
   ScenarioResult,
   DeltaEntry,
   ComparisonResult,

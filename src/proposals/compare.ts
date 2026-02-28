@@ -48,7 +48,7 @@ export function compareProposal(
 }
 
 function scenarioKey(r: ScenarioResult): string {
-  return `${r.className}|${r.skillName}|${r.tier}`;
+  return `${r.scenario}|${r.className}|${r.skillName}|${r.tier}`;
 }
 
 function computeDeltas(
@@ -71,6 +71,7 @@ function computeDeltas(
       className: b.className,
       skillName: b.skillName,
       tier: b.tier,
+      scenario: b.scenario,
       before: beforeDps,
       after: afterDps,
       change,
