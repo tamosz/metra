@@ -43,12 +43,16 @@ export function applyProposal(
     cloned.set(key, JSON.parse(JSON.stringify(value)));
   }
 
-  for (const change of proposal.changes) {
+  const total = proposal.changes.length;
+  for (let i = 0; i < total; i++) {
+    const change = proposal.changes[i];
+    const prefix = total > 1 ? `Change ${i + 1}/${total} (${change.target}.${change.field}): ` : '';
+
     const { className, slug } = parseTarget(change.target);
     const classData = cloned.get(className.toLowerCase());
     if (!classData) {
       throw new Error(
-        `Class "${className}" not found. Available: ${[...cloned.keys()].join(', ')}`
+        `${prefix}Class "${className}" not found. Available: ${[...cloned.keys()].join(', ')}`
       );
     }
 
@@ -56,7 +60,7 @@ export function applyProposal(
     if (!skill) {
       const available = classData.skills.map((s) => skillSlug(s.name)).join(', ');
       throw new Error(
-        `Skill "${slug}" not found in ${className}. Available: ${available}`
+        `${prefix}Skill "${slug}" not found in ${className}. Available: ${available}`
       );
     }
 
@@ -67,20 +71,20 @@ export function applyProposal(
     ]);
     if (!validFields.has(change.field)) {
       throw new Error(
-        `Unknown field "${change.field}" on skill "${slug}". Valid fields: ${[...validFields].join(', ')}`
+        `${prefix}Unknown field "${change.field}" on skill "${slug}". Valid fields: ${[...validFields].join(', ')}`
       );
     }
 
     // Validate "from" if provided
-    const currentValue = (skill as Record<string, unknown>)[change.field];
+    const currentValue = (skill as unknown as Record<string, unknown>)[change.field];
     if (change.from !== undefined && currentValue !== change.from) {
       throw new Error(
-        `Stale proposal: ${change.target}.${change.field} is ${currentValue}, expected ${change.from}`
+        `${prefix}Stale proposal: ${change.target}.${change.field} is ${currentValue}, expected ${change.from}`
       );
     }
 
     // Apply the change
-    (skill as Record<string, unknown>)[change.field] = change.to;
+    (skill as unknown as Record<string, unknown>)[change.field] = change.to;
   }
 
   return cloned;

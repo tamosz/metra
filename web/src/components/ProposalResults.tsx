@@ -14,6 +14,7 @@ import { renderComparisonReport } from '@engine/report/markdown.js';
 import { renderComparisonBBCode } from '@engine/report/bbcode.js';
 import { getClassColor } from '../utils/class-colors.js';
 import { setProposalInUrl } from '../utils/url-encoding.js';
+import { colors } from '../theme.js';
 
 interface ProposalResultsProps {
   result: ComparisonResult;
@@ -86,9 +87,9 @@ export function ProposalResults({ result, proposal }: ProposalResultsProps) {
               key={s}
               onClick={() => setSelectedScenario(s)}
               style={{
-                background: selectedScenario === s ? '#2a2a3e' : 'transparent',
-                color: selectedScenario === s ? '#f0f0f8' : '#666',
-                border: selectedScenario === s ? '1px solid #3a3a5e' : '1px solid transparent',
+                background: selectedScenario === s ? colors.filterBg : 'transparent',
+                color: selectedScenario === s ? colors.textBright : colors.textDim,
+                border: selectedScenario === s ? `1px solid ${colors.borderActive}` : '1px solid transparent',
                 padding: '4px 10px',
                 borderRadius: 4,
                 fontSize: 12,
@@ -132,8 +133,8 @@ function ComparisonChart({ deltas }: { deltas: DeltaEntry[] }) {
           <XAxis
             type="number"
             tickFormatter={(v: number) => `${(v / 1000).toFixed(0)}k`}
-            tick={{ fill: '#555', fontSize: 11 }}
-            axisLine={{ stroke: '#1e1e2e' }}
+            tick={{ fill: colors.textFaint, fontSize: 11 }}
+            axisLine={{ stroke: colors.border }}
             tickLine={false}
           />
           <YAxis
@@ -150,8 +151,8 @@ function ComparisonChart({ deltas }: { deltas: DeltaEntry[] }) {
               const d = payload[0]?.payload;
               return (
                 <div style={{
-                  background: '#1a1a2e',
-                  border: '1px solid #2a2a4e',
+                  background: colors.bgSurface,
+                  border: `1px solid ${colors.bgButton}`,
                   borderRadius: 6,
                   padding: '8px 12px',
                   fontSize: 12,
@@ -160,14 +161,14 @@ function ComparisonChart({ deltas }: { deltas: DeltaEntry[] }) {
                     {d.label}
                   </div>
                   <div style={{ marginTop: 4 }}>
-                    <span style={{ color: '#888' }}>Before: </span>
+                    <span style={{ color: colors.textMuted }}>Before: </span>
                     <span>{d.before.toLocaleString()}</span>
                   </div>
                   <div>
-                    <span style={{ color: '#888' }}>After: </span>
+                    <span style={{ color: colors.textMuted }}>After: </span>
                     <span>{d.after.toLocaleString()}</span>
                   </div>
-                  <div style={{ color: d.after > d.before ? '#55e068' : '#e05555' }}>
+                  <div style={{ color: d.after > d.before ? colors.positive : colors.negative }}>
                     {d.after > d.before ? '+' : ''}{(d.after - d.before).toLocaleString()} ({((d.after - d.before) / d.before * 100).toFixed(1)}%)
                   </div>
                 </div>
@@ -176,9 +177,9 @@ function ComparisonChart({ deltas }: { deltas: DeltaEntry[] }) {
           />
           <Legend
             wrapperStyle={{ fontSize: 12 }}
-            formatter={(value: string) => <span style={{ color: '#aaa' }}>{value}</span>}
+            formatter={(value: string) => <span style={{ color: colors.textSecondary }}>{value}</span>}
           />
-          <Bar dataKey="before" name="Before" fill="#555" fillOpacity={0.6} barSize={14} radius={[0, 3, 3, 0]} />
+          <Bar dataKey="before" name="Before" fill={colors.textFaint} fillOpacity={0.6} barSize={14} radius={[0, 3, 3, 0]} />
           <Bar dataKey="after" name="After" barSize={14} radius={[0, 3, 3, 0]}>
             {chartData.map((entry, index) => (
               <Cell key={index} fill={getClassColor(entry.className)} fillOpacity={0.8} />
@@ -204,7 +205,7 @@ function DeltaTable({ deltas }: { deltas: DeltaEntry[] }) {
   return (
     <table data-testid="delta-table" style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
       <thead>
-        <tr style={{ borderBottom: '1px solid #1e1e2e' }}>
+        <tr style={{ borderBottom: `1px solid ${colors.border}` }}>
           {hasRanks && <th style={thStyle}>Rank</th>}
           <th style={{ ...thStyle, textAlign: 'left' }}>Class</th>
           <th style={{ ...thStyle, textAlign: 'left' }}>Skill</th>
@@ -220,17 +221,17 @@ function DeltaTable({ deltas }: { deltas: DeltaEntry[] }) {
           const isChanged = d.change !== 0;
           return (
             <tr key={i} style={{
-              borderBottom: '1px solid #12121a',
+              borderBottom: `1px solid ${colors.borderSubtle}`,
               background: isChanged ? 'rgba(85, 184, 224, 0.03)' : undefined,
             }}>
               {hasRanks && (
-                <td style={{ ...tdStyle, color: '#666', fontSize: 12 }}>
+                <td style={{ ...tdStyle, color: colors.textDim, fontSize: 12 }}>
                   {formatRank(d.rankBefore, d.rankAfter)}
                 </td>
               )}
               <td style={tdStyle}>{d.className}</td>
-              <td style={{ ...tdStyle, color: '#aaa' }}>{d.skillName}</td>
-              <td style={{ ...tdStyle, color: '#888' }}>
+              <td style={{ ...tdStyle, color: colors.textSecondary }}>{d.skillName}</td>
+              <td style={{ ...tdStyle, color: colors.textMuted }}>
                 {d.tier.charAt(0).toUpperCase() + d.tier.slice(1)}
               </td>
               <td style={{ ...tdStyle, textAlign: 'right', fontVariantNumeric: 'tabular-nums' }}>
@@ -243,7 +244,7 @@ function DeltaTable({ deltas }: { deltas: DeltaEntry[] }) {
                 ...tdStyle,
                 textAlign: 'right',
                 fontVariantNumeric: 'tabular-nums',
-                color: d.change > 0 ? '#55e068' : d.change < 0 ? '#e05555' : '#555',
+                color: d.change > 0 ? colors.positive : d.change < 0 ? colors.negative : colors.textFaint,
               }}>
                 {d.change > 0 ? '+' : ''}{formatDps(d.change)}
               </td>
@@ -251,7 +252,7 @@ function DeltaTable({ deltas }: { deltas: DeltaEntry[] }) {
                 ...tdStyle,
                 textAlign: 'right',
                 fontVariantNumeric: 'tabular-nums',
-                color: d.changePercent > 0 ? '#55e068' : d.changePercent < 0 ? '#e05555' : '#555',
+                color: d.changePercent > 0 ? colors.positive : d.changePercent < 0 ? colors.negative : colors.textFaint,
               }}>
                 {d.changePercent > 0 ? '+' : ''}{d.changePercent.toFixed(1)}%
               </td>
@@ -278,7 +279,7 @@ const thStyle: React.CSSProperties = {
   fontSize: 11,
   textTransform: 'uppercase',
   letterSpacing: '0.05em',
-  color: '#666',
+  color: colors.textDim,
   fontWeight: 500,
 };
 
@@ -287,9 +288,9 @@ const tdStyle: React.CSSProperties = {
 };
 
 const actionButtonStyle: React.CSSProperties = {
-  background: '#1e1e2e',
-  color: '#aaa',
-  border: '1px solid #2a2a3e',
+  background: colors.bgActive,
+  color: colors.textSecondary,
+  border: `1px solid ${colors.borderMuted}`,
   borderRadius: 4,
   padding: '4px 10px',
   fontSize: 12,

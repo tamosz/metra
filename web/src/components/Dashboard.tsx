@@ -1,6 +1,7 @@
 import { useState, useMemo } from 'react';
 import { DpsChart } from './DpsChart.js';
 import type { SimulationData } from '../hooks/useSimulation.js';
+import { colors } from '../theme.js';
 
 interface DashboardProps {
   simulation: SimulationData;
@@ -71,7 +72,7 @@ function FilterGroup({
 }) {
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-      <span style={{ fontSize: 12, color: '#888', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+      <span style={{ fontSize: 12, color: colors.textMuted, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
         {label}
       </span>
       <div style={{ display: 'flex', gap: 2 }}>
@@ -80,9 +81,9 @@ function FilterGroup({
             key={opt.value}
             onClick={() => onChange(opt.value)}
             style={{
-              background: value === opt.value ? '#2a2a3e' : 'transparent',
-              color: value === opt.value ? '#f0f0f8' : '#666',
-              border: value === opt.value ? '1px solid #3a3a5e' : '1px solid transparent',
+              background: value === opt.value ? colors.filterBg : 'transparent',
+              color: value === opt.value ? colors.textBright : colors.textDim,
+              border: value === opt.value ? `1px solid ${colors.borderActive}` : '1px solid transparent',
               padding: '4px 10px',
               borderRadius: 4,
               fontSize: 12,
@@ -142,7 +143,7 @@ function RankingTable({ data }: { data: { className: string; skillName: string; 
     <>
       <table data-testid="ranking-table" style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
         <thead>
-          <tr style={{ borderBottom: '1px solid #1e1e2e' }}>
+          <tr style={{ borderBottom: `1px solid ${colors.border}` }}>
             <th style={thStyle}>#</th>
             <th style={sortableThStyle('class')} onClick={() => handleSort('class')}>
               Class{sortColumn === 'class' && <SortArrow direction={sortDirection} />}
@@ -161,7 +162,7 @@ function RankingTable({ data }: { data: { className: string; skillName: string; 
         <tbody>
           {sorted.length === 0 ? (
             <tr>
-              <td colSpan={5} style={{ padding: '24px 12px', textAlign: 'center', color: '#666', fontSize: 13 }}>
+              <td colSpan={5} style={{ padding: '24px 12px', textAlign: 'center', color: colors.textDim, fontSize: 13 }}>
                 No results for this filter combination
               </td>
             </tr>
@@ -169,14 +170,14 @@ function RankingTable({ data }: { data: { className: string; skillName: string; 
             sorted.map((r, i) => (
               <tr
                 key={`${r.className}-${r.skillName}-${r.tier}`}
-                style={{ borderBottom: '1px solid #12121a' }}
+                style={{ borderBottom: `1px solid ${colors.borderSubtle}` }}
                 onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,0.03)'; }}
                 onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = ''; }}
               >
-                <td style={{ ...tdStyle, color: '#555', width: 32 }}>{i + 1}</td>
+                <td style={{ ...tdStyle, color: colors.textFaint, width: 32 }}>{i + 1}</td>
                 <td style={tdStyle}>{r.className}</td>
-                <td style={{ ...tdStyle, color: '#aaa' }}>{r.skillName}</td>
-                <td style={{ ...tdStyle, color: '#888' }}>{r.tier.charAt(0).toUpperCase() + r.tier.slice(1)}</td>
+                <td style={{ ...tdStyle, color: colors.textSecondary }}>{r.skillName}</td>
+                <td style={{ ...tdStyle, color: colors.textMuted }}>{r.tier.charAt(0).toUpperCase() + r.tier.slice(1)}</td>
                 <td style={{ ...tdStyle, textAlign: 'right', fontVariantNumeric: 'tabular-nums' }}>
                   {formatDps(r.dps.dps)}
                 </td>
@@ -186,7 +187,7 @@ function RankingTable({ data }: { data: { className: string; skillName: string; 
         </tbody>
       </table>
       {sorted.length > 0 && (
-        <div style={{ fontSize: 12, color: '#555', marginTop: 8, textAlign: 'right' }}>
+        <div style={{ fontSize: 12, color: colors.textFaint, marginTop: 8, textAlign: 'right' }}>
           Showing {sorted.length} {sorted.length === 1 ? 'entry' : 'entries'}
         </div>
       )}
@@ -199,7 +200,7 @@ const thStyle: React.CSSProperties = {
   fontSize: 11,
   textTransform: 'uppercase',
   letterSpacing: '0.05em',
-  color: '#666',
+  color: colors.textDim,
   fontWeight: 500,
 };
 

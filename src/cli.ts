@@ -15,6 +15,7 @@ import { renderComparisonReport, renderBaselineReport } from './report/markdown.
 import { renderAsciiChart } from './report/ascii-chart.js';
 import { analyzeBalance } from './audit/analyze.js';
 import { formatAuditReport } from './audit/format.js';
+import { DEFAULT_SCENARIOS } from './scenarios.js';
 
 function loadProposal(path: string) {
   const fullPath = resolve(path);
@@ -28,31 +29,9 @@ function loadProposal(path: string) {
   return validateProposal(raw);
 }
 
-const DEFAULT_SCENARIOS: ScenarioConfig[] = [
-  { name: 'Buffed' },
-  {
-    name: 'Unbuffed',
-    overrides: {
-      sharpEyes: false,
-      echoActive: false,
-      speedInfusion: false,
-      mapleWarriorLevel: 0,
-      attackPotion: 0,
-    },
-  },
-  {
-    name: 'No-Echo',
-    overrides: { echoActive: false },
-  },
-  {
-    name: 'Bossing (50% PDR)',
-    pdr: 0.5,
-  },
-];
-
 function main() {
   const auditFlag = process.argv.includes('--audit');
-  const args = process.argv.slice(2).filter((arg) => !arg.startsWith('--'));
+  const args = process.argv.slice(2).filter((arg: string) => !arg.startsWith('--'));
   const proposalPath = args[0];
 
   // Load game data
