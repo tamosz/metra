@@ -31,6 +31,9 @@ npm run simulate
 # Run a proposal and print the Markdown comparison report
 npm run simulate -- proposals/brandish-buff-20.json
 
+# Run baseline with balance audit (outlier detection)
+npm run simulate -- --audit
+
 # Dump spreadsheet formulas/values for translation reference
 npm run dump-sheet
 
@@ -42,7 +45,7 @@ The pre-commit hook runs unit tests, type-checks the engine, and type-checks the
 
 ## Architecture
 
-Three layers. Keep them cleanly separated.
+Four layers. Keep them cleanly separated.
 
 ### 1. Data Layer (`/data`)
 Static game data stored as JSON files, version-controlled, human-readable and human-editable. This is the "current state of MapleRoyals."
@@ -105,6 +108,15 @@ A proposal is a JSON file that describes one or more changes:
 The pipeline: `apply.ts` patches the skill data → `simulate.ts` runs DPS across all classes/tiers/scenarios → `compare.ts` produces before/after deltas with rank tracking → `markdown.ts` renders a Markdown report with per-scenario tables. When no proposal is given, the CLI runs in **baseline mode**: it simulates all classes and renders a ranked DPS table with an ASCII bar chart.
 
 **Scenarios:** `ScenarioConfig` defines evaluation conditions (buff overrides, PDR). Proposals say *what changes*; scenarios say *under what conditions to evaluate*. PDR is applied as a post-calculation multiplier: `effectiveDps = dps * (1 - pdr)`.
+
+### 4. Balance Audit (`/src/audit`)
+Analyzes simulation results and flags statistical outliers. Pure functions, no I/O.
+
+- `analyze.ts` — `analyzeBalance(results: ScenarioResult[])` → `BalanceAudit`. Groups results by (scenario, tier), computes mean/stdDev/spread, flags skills >1.5σ from group mean as outliers, and detects unusual tier sensitivity (high/low DPS ratio outliers).
+- `format.ts` — `formatAuditReport(audit: BalanceAudit)` → Markdown string with outlier, tier sensitivity, and group summary tables.
+- `types.ts` — `BalanceAudit`, `OutlierEntry`, `TierSensitivity`, `GroupSummary`.
+
+CLI: `npm run simulate -- --audit` appends the audit report after baseline rankings.
 
 ## MapleRoyals Domain Knowledge
 
@@ -256,6 +268,12 @@ metra/
     ├── index.ts                 # library entry point
     ├── cli.ts                   # CLI entry: baseline rankings or proposal comparison
     ├── integration.test.ts      # end-to-end pipeline tests
+    ├── audit/
+    │   ├── index.ts             # re-exports
+    │   ├── types.ts             # BalanceAudit, OutlierEntry, TierSensitivity, GroupSummary
+    │   ├── analyze.ts           # analyzeBalance() — outlier detection + tier sensitivity
+    │   ├── analyze.test.ts
+    │   └── format.ts            # formatAuditReport() — Markdown rendering
     ├── data/
     │   ├── types.ts             # WeaponData, AttackSpeedData, ClassSkillData, CharacterBuild, etc.
     │   ├── loader.ts            # JSON data loaders + discoverClassesAndTiers()
