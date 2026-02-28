@@ -5,14 +5,14 @@ import {
   loadWeapons,
   loadAttackSpeed,
   loadMapleWarrior,
-  loadClassSkills,
-  loadGearTemplate,
+  discoverClassesAndTiers,
 } from './data/loader.js';
 import type { ClassSkillData } from './data/types.js';
 import { compareProposal } from './proposals/compare.js';
+import { runSimulation } from './proposals/simulate.js';
 import type { SimulationConfig, GearTemplateMap } from './proposals/simulate.js';
-import type { Proposal } from './proposals/types.js';
-import { renderComparisonReport } from './report/markdown.js';
+import type { Proposal, ScenarioConfig, ScenarioResult } from './proposals/types.js';
+import { renderComparisonReport, renderBaselineReport } from './report/markdown.js';
 import { applyProposal } from './proposals/apply.js';
 
 const DATA_DIR = resolve(import.meta.dirname, '..');
@@ -35,20 +35,10 @@ beforeAll(() => {
   attackSpeedData = loadAttackSpeed();
   mapleWarriorData = loadMapleWarrior();
 
-  const classNames = ['hero', 'hero-axe', 'drk', 'paladin', 'nl'];
-  classDataMap = new Map<string, ClassSkillData>();
-  for (const name of classNames) {
-    classDataMap.set(name, loadClassSkills(name));
-  }
-
-  gearTemplates = new Map();
-  for (const name of classNames) {
-    for (const tier of ['low', 'high']) {
-      gearTemplates.set(`${name}-${tier}`, loadGearTemplate(`${name}-${tier}`));
-    }
-  }
-
-  config = { classes: classNames, tiers: ['low', 'high'] };
+  const discovery = discoverClassesAndTiers();
+  classDataMap = discovery.classDataMap;
+  gearTemplates = discovery.gearTemplates;
+  config = { classes: discovery.classNames, tiers: discovery.tiers };
 });
 
 describe('End-to-end: brandish-buff-20 proposal', () => {
@@ -89,6 +79,15 @@ describe('End-to-end: brandish-buff-20 proposal', () => {
     )!;
     expect(nlDelta).toBeDefined();
     expect(nlDelta.change).toBe(0);
+
+    // All 5 new classes appear with zero change
+    for (const className of ['Bowmaster', 'Marksman', 'Corsair', 'Buccaneer', 'Shadower']) {
+      const delta = result.deltas.find(
+        (d) => d.className === className && d.tier === 'high'
+      );
+      expect(delta, `${className} should appear in deltas`).toBeDefined();
+      expect(delta!.change).toBe(0);
+    }
   });
 });
 
@@ -155,6 +154,232 @@ describe('End-to-end: warrior-rebalance proposal', () => {
 
     // Rebalance report should show DrK change (nerf)
     expect(report2).toMatch(/-\d/); // negative change value
+  });
+});
+
+describe('Baseline mode', () => {
+  let baselineResults: ScenarioResult[];
+  let baselineReport: string;
+
+  beforeAll(() => {
+    const baselineConfig: SimulationConfig = {
+      ...config,
+      scenarios: [{ name: 'Buffed' }],
+    };
+    baselineResults = runSimulation(
+      baselineConfig,
+      classDataMap,
+      gearTemplates,
+      weaponData,
+      attackSpeedData,
+      mapleWarriorData
+    );
+    baselineReport = renderBaselineReport(baselineResults);
+  });
+
+  it('renders report with all 10 class display names', () => {
+    expect(baselineReport).toContain('# DPS Rankings');
+    expect(baselineReport).toContain('## Buffed');
+
+    const expectedClasses = [
+      'Hero', 'Hero (Axe)', 'DrK', 'Paladin', 'NL',
+      'Bowmaster', 'Marksman', 'Corsair', 'Buccaneer', 'Shadower',
+    ];
+    for (const name of expectedClasses) {
+      expect(baselineReport, `report should contain ${name}`).toContain(name);
+    }
+  });
+
+  it('high-tier DPS matches reference values', () => {
+    const find = (className: string, skillName: string) =>
+      baselineResults.find(
+        (r) => r.className === className && r.skillName === skillName && r.tier === 'high'
+      )!;
+
+    expect(find('Hero', 'Brandish (Sword)').dps.dps).toBeCloseTo(247314, -2);
+    expect(find('Hero (Axe)', 'Brandish').dps.dps).toBeCloseTo(257772, -2);
+    expect(find('DrK', 'Spear Crusher').dps.dps).toBeCloseTo(251906, -2);
+    expect(find('Paladin', 'Blast (Holy, Sword)').dps.dps).toBeCloseTo(192932, -2);
+    expect(find('NL', 'Triple Throw 30').dps.dps).toBeCloseTo(292314, -2);
+    expect(find('Bowmaster', 'Hurricane').dps.dps).toBeCloseTo(225398, -2);
+    expect(find('Bowmaster', 'Strafe').dps.dps).toBeCloseTo(199749, -2);
+    expect(find('Marksman', 'Strafe (MM)').dps.dps).toBeCloseTo(211203, -2);
+    expect(find('Marksman', 'Snipe').dps.dps).toBeCloseTo(325000, -2);
+    expect(find('Corsair', 'Battleship Cannon').dps.dps).toBeCloseTo(331354, -2);
+    expect(find('Corsair', 'Rapid Fire').dps.dps).toBeCloseTo(228271, -2);
+    expect(find('Buccaneer', 'Demolition').dps.dps).toBeCloseTo(233453, -2);
+    expect(find('Buccaneer', 'Barrage + Dragon Strike').dps.dps).toBeCloseTo(244086, -2);
+    expect(find('Shadower', 'BStep + Assassinate 30').dps.dps).toBeCloseTo(326734, -2);
+    expect(find('Shadower', 'Savage Blow').dps.dps).toBeCloseTo(159536, -2);
+  });
+
+  it('low-tier DPS matches reference values', () => {
+    const find = (className: string, skillName: string) =>
+      baselineResults.find(
+        (r) => r.className === className && r.skillName === skillName && r.tier === 'low'
+      )!;
+
+    expect(find('Hero', 'Brandish (Sword)').dps.dps).toBeCloseTo(127356, -2);
+    expect(find('DrK', 'Spear Crusher').dps.dps).toBeCloseTo(133009, -2);
+    expect(find('Paladin', 'Blast (Holy, Sword)').dps.dps).toBeCloseTo(99352, -2);
+    expect(find('Bowmaster', 'Hurricane').dps.dps).toBeCloseTo(113332, -2);
+    expect(find('Marksman', 'Strafe (MM)').dps.dps).toBeCloseTo(106175, -2);
+    expect(find('Marksman', 'Snipe').dps.dps).toBeCloseTo(325000, -2);
+    expect(find('Corsair', 'Battleship Cannon').dps.dps).toBeCloseTo(202986, -2);
+    expect(find('Corsair', 'Rapid Fire').dps.dps).toBeCloseTo(139838, -2);
+    expect(find('Buccaneer', 'Demolition').dps.dps).toBeCloseTo(135843, -2);
+    expect(find('Buccaneer', 'Barrage + Dragon Strike').dps.dps).toBeCloseTo(144415, -2);
+    expect(find('Shadower', 'BStep + Assassinate 30').dps.dps).toBeCloseTo(198577, -2);
+    expect(find('Shadower', 'Savage Blow').dps.dps).toBeCloseTo(96960, -2);
+  });
+});
+
+describe('Special mechanics', () => {
+  let buffedResults: ScenarioResult[];
+
+  beforeAll(() => {
+    const buffedConfig: SimulationConfig = {
+      ...config,
+      scenarios: [{ name: 'Buffed' }],
+    };
+    buffedResults = runSimulation(
+      buffedConfig,
+      classDataMap,
+      gearTemplates,
+      weaponData,
+      attackSpeedData,
+      mapleWarriorData
+    );
+  });
+
+  it('Snipe fixedDamage produces identical DPS at both tiers', () => {
+    const snipeHigh = buffedResults.find(
+      (r) => r.className === 'Marksman' && r.skillName === 'Snipe' && r.tier === 'high'
+    )!;
+    const snipeLow = buffedResults.find(
+      (r) => r.className === 'Marksman' && r.skillName === 'Snipe' && r.tier === 'low'
+    )!;
+    expect(snipeHigh.dps.dps).toBe(snipeLow.dps.dps);
+    expect(snipeHigh.dps.dps).toBeCloseTo(325000, -2);
+  });
+
+  it('comboGroup aggregates Buccaneer to 2 results per tier', () => {
+    const buccResults = buffedResults.filter((r) => r.className === 'Buccaneer');
+    const buccHigh = buccResults.filter((r) => r.tier === 'high');
+    const buccLow = buccResults.filter((r) => r.tier === 'low');
+    expect(buccHigh).toHaveLength(2);
+    expect(buccLow).toHaveLength(2);
+    expect(buccHigh.map((r) => r.skillName).sort()).toEqual(
+      ['Barrage + Dragon Strike', 'Demolition']
+    );
+  });
+
+  it('comboGroup aggregates Shadower to 2 results per tier', () => {
+    const shadResults = buffedResults.filter((r) => r.className === 'Shadower');
+    const shadHigh = shadResults.filter((r) => r.tier === 'high');
+    const shadLow = shadResults.filter((r) => r.tier === 'low');
+    expect(shadHigh).toHaveLength(2);
+    expect(shadLow).toHaveLength(2);
+    expect(shadHigh.map((r) => r.skillName).sort()).toEqual(
+      ['BStep + Assassinate 30', 'Savage Blow']
+    );
+  });
+
+  it('Hurricane and Rapid Fire use 0.12s attack time', () => {
+    const hurricane = buffedResults.find(
+      (r) => r.className === 'Bowmaster' && r.skillName === 'Hurricane'
+    )!;
+    const rapidFire = buffedResults.find(
+      (r) => r.className === 'Corsair' && r.skillName === 'Rapid Fire'
+    )!;
+    expect(hurricane.dps.attackTime).toBe(0.12);
+    expect(rapidFire.dps.attackTime).toBe(0.12);
+  });
+});
+
+describe('Multi-scenario baseline', () => {
+  it('renders report with multiple scenarios and applies PDR to Snipe', () => {
+    const scenarios: ScenarioConfig[] = [
+      { name: 'Buffed' },
+      {
+        name: 'Unbuffed',
+        overrides: {
+          sharpEyes: false,
+          echoActive: false,
+          speedInfusion: false,
+          mapleWarriorLevel: 0,
+          attackPotion: 0,
+        },
+      },
+      { name: 'Bossing (50% PDR)', pdr: 0.5 },
+    ];
+
+    const multiConfig: SimulationConfig = { ...config, scenarios };
+    const results = runSimulation(
+      multiConfig,
+      classDataMap,
+      gearTemplates,
+      weaponData,
+      attackSpeedData,
+      mapleWarriorData
+    );
+    const report = renderBaselineReport(results);
+
+    expect(report).toContain('## Buffed');
+    expect(report).toContain('## Unbuffed');
+    expect(report).toContain('## Bossing (50% PDR)');
+
+    // Snipe DPS is 325,000 in non-PDR scenarios
+    const snipeBuffed = results.find(
+      (r) => r.className === 'Marksman' && r.skillName === 'Snipe' && r.scenario === 'Buffed' && r.tier === 'high'
+    )!;
+    expect(snipeBuffed.dps.dps).toBeCloseTo(325000, -2);
+
+    // Snipe DPS is halved with 50% PDR
+    const snipePdr = results.find(
+      (r) => r.className === 'Marksman' && r.skillName === 'Snipe' && r.scenario === 'Bossing (50% PDR)' && r.tier === 'high'
+    )!;
+    expect(snipePdr.dps.dps).toBeCloseTo(162500, -2);
+  });
+});
+
+describe('Ranking integrity', () => {
+  it('ranks are contiguous and unique within each (scenario, tier) group', () => {
+    const scenarios: ScenarioConfig[] = [{ name: 'Buffed' }];
+    const rankConfig: SimulationConfig = { ...config, scenarios };
+
+    const proposal = loadProposal('brandish-buff-20.json');
+    const result = compareProposal(
+      proposal,
+      rankConfig,
+      classDataMap,
+      gearTemplates,
+      weaponData,
+      attackSpeedData,
+      mapleWarriorData
+    );
+
+    // Group deltas by (scenario, tier)
+    const groups = new Map<string, typeof result.deltas>();
+    for (const d of result.deltas) {
+      const key = `${d.scenario}|${d.tier}`;
+      if (!groups.has(key)) groups.set(key, []);
+      groups.get(key)!.push(d);
+    }
+
+    expect(groups.size).toBeGreaterThan(0);
+
+    for (const [key, deltas] of groups) {
+      // Both rankBefore and rankAfter should be defined
+      const ranksBefore = deltas.map((d) => d.rankBefore!).sort((a, b) => a - b);
+      const ranksAfter = deltas.map((d) => d.rankAfter!).sort((a, b) => a - b);
+
+      // Contiguous 1..N
+      const n = deltas.length;
+      const expected = Array.from({ length: n }, (_, i) => i + 1);
+      expect(ranksBefore, `rankBefore for ${key}`).toEqual(expected);
+      expect(ranksAfter, `rankAfter for ${key}`).toEqual(expected);
+    }
   });
 });
 

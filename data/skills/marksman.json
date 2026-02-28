@@ -1,0 +1,34 @@
+{
+  "source": "dmg sheet rows 19-20 (MM), range calculator E18 (Crossbow: I31*3.6), D7 (mastery 0.9), N19 crit rates (0.40 built-in + 0.15 SE = 0.55), O20 Snipe fixed 195000",
+  "className": "Marksman",
+  "mastery": 0.9,
+  "primaryStat": "DEX",
+  "secondaryStat": "STR",
+  "sharpEyesCritRate": 0.15,
+  "sharpEyesCritDamageBonus": 140,
+  "seCritFormula": "addBeforeMultiply",
+  "damageFormula": "standard",
+  "skills": [
+    {
+      "name": "Strafe (MM)",
+      "basePower": 125,
+      "multiplier": 1,
+      "hitCount": 4,
+      "speedCategory": "Strafe/Snipe",
+      "weaponType": "Crossbow",
+      "builtInCritRate": 0.40,
+      "builtInCritDamageBonus": 100,
+      "source": "dmg sheet D19=125, E19=125 (125*1), N19 hitCount=4, crit: 0.40 built-in from Critical Shot"
+    },
+    {
+      "name": "Snipe",
+      "basePower": 0,
+      "multiplier": 1,
+      "hitCount": 1,
+      "speedCategory": "Strafe/Snipe",
+      "weaponType": "Crossbow",
+      "fixedDamage": 195000,
+      "source": "dmg sheet O20: 195000/C20. Fixed damage skill — bypasses normal damage formula. Modeled without cooldown (sustained DPS ceiling)."
+    }
+  ]
+}
