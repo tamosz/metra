@@ -48,6 +48,10 @@ export interface SkillEntry {
   weaponType: string;
   /** Attack type: 'slash' (default) or 'stab'. Determines which weapon multiplier is used. */
   attackType?: 'slash' | 'stab';
+  /** Swing/stab ratio for skills that alternate between slash and stab attacks.
+   *  e.g., BW Blast uses 3:2 swing/stab → { slash: 0.6, stab: 0.4 }.
+   *  When present, getWeaponMultiplier computes a weighted average. */
+  attackRatio?: { slash: number; stab: number };
   /** Built-in crit rate (e.g., TT has 0.50). Additive with SE crit rate. */
   builtInCritRate?: number;
   /** Built-in crit damage bonus added to basePower on crit. */
