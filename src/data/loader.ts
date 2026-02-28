@@ -105,8 +105,8 @@ export function discoverClassesAndTiers(): DiscoveryResult {
   const tiers = new Set<string>();
   for (const name of skillFiles) {
     const classTiers = templateFiles
-      .filter((t) => templateToClass.get(t) === name)
-      .map((t) => t.slice(name.length + 1));
+      .filter((t: string) => templateToClass.get(t) === name)
+      .map((t: string) => t.slice(name.length + 1));
     if (classTiers.length > 0) {
       classNames.push(name);
       for (const tier of classTiers) tiers.add(tier);

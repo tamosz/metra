@@ -144,7 +144,7 @@ describe('groupDeltasByScenario', () => {
   it('defaults undefined scenario to "Buffed"', () => {
     const deltaWithoutScenario = makeDelta({});
     // Force scenario to undefined to test the fallback
-    (deltaWithoutScenario as Record<string, unknown>).scenario = undefined;
+    (deltaWithoutScenario as unknown as Record<string, unknown>).scenario = undefined;
 
     const groups = groupDeltasByScenario([deltaWithoutScenario]);
 
@@ -201,7 +201,7 @@ function makeDpsResult(dps: number): DpsResult {
     damageRange: { min: 1000, max: 2000, average: 1500 },
     skillDamagePercent: 494,
     seDamagePercent: 600,
-    adjustedRange: 1500,
+    adjustedRangeNormal: 1500,
     adjustedRangeSe: 1800,
     averageDamage: dps * 0.63,
     dps,

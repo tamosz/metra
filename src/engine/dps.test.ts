@@ -1148,7 +1148,7 @@ describe('damage cap behavior', () => {
       capBuild, capClassData, capSkill, weaponData, attackSpeedData, mapleWarriorData
     );
     expect(result.skillDamagePercent).toBe(5000);
-    expect(result.adjustedRange).toBeLessThan(result.damageRange.average);
+    expect(result.adjustedRangeNormal).toBeLessThan(result.damageRange.average);
   });
 
   it('does not trigger cap with low skill damage percent', () => {
@@ -1164,7 +1164,7 @@ describe('damage cap behavior', () => {
       capBuild, capClassData, lowSkill, weaponData, attackSpeedData, mapleWarriorData
     );
     expect(result.skillDamagePercent).toBe(100);
-    expect(result.adjustedRange).toBe(result.damageRange.average);
+    expect(result.adjustedRangeNormal).toBe(result.damageRange.average);
   });
 });
 
@@ -1184,7 +1184,7 @@ describe('zero crit rate', () => {
 
     // With no crit: averageDamage = skillMultiplier * adjustedRange * hitCount
     const skillMultiplier = result.skillDamagePercent / 100;
-    const expectedAvgDmg = skillMultiplier * result.adjustedRange * brandish.hitCount;
+    const expectedAvgDmg = skillMultiplier * result.adjustedRangeNormal * brandish.hitCount;
     expect(result.averageDamage).toBeCloseTo(expectedAvgDmg, 0);
 
     // And DPS = averageDamage / attackTime
