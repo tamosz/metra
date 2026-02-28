@@ -61,6 +61,21 @@ export function calculateTotalAttack(build: CharacterBuild): number {
 }
 
 /**
+ * Calculate mage Echo of Hero bonus (4% of total INT + MATK + potion).
+ * Mage echo includes INT in the base, unlike physical echo.
+ *
+ * Source: range calculator E10 =
+ *   ROUNDDOWN((J31+L31+E8)*0.04, 0) for Archmage/Bishop
+ */
+export function calculateMageEcho(
+  totalInt: number,
+  totalMagicAttack: number,
+  attackPotion: number
+): number {
+  return Math.floor((totalInt + totalMagicAttack + attackPotion) * 0.04);
+}
+
+/**
  * Calculate total primary and secondary stats after MW and gear.
  *
  * Source: range calculator

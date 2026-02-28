@@ -90,7 +90,11 @@ export interface ClassSkillData {
    * - "throwingStar": NL-style 5.0 * LUK * totalAtk / 100
    * Future: "bow", "magic"
    */
-  damageFormula?: 'standard' | 'throwingStar';
+  damageFormula?: 'standard' | 'throwingStar' | 'magic';
+  /** Element Amplification multiplier for mages (1.4 for Archmage, 1.0 for Bishop). Default 1. */
+  spellAmplification?: number;
+  /** Elemental Staff/Wand bonus multiplier for mages (1.25 for Archmage, 1.0 for Bishop). Default 1. */
+  weaponAmplification?: number;
   skills: SkillEntry[];
 }
 

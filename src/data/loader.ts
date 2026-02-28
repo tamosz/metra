@@ -29,7 +29,7 @@ export function loadMapleWarrior(): MapleWarriorData {
 }
 
 export function loadClassSkills(className: string): ClassSkillData {
-  const filename = className.toLowerCase().replace(/\s+/g, '-') + '.json';
+  const filename = className.toLowerCase().replace(/\//g, '').replace(/\s+/g, '-') + '.json';
   return loadJson<ClassSkillData>(`skills/${filename}`);
 }
 
