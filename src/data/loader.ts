@@ -73,11 +73,11 @@ export interface DiscoveryResult {
  */
 export function discoverClassesAndTiers(): DiscoveryResult {
   const skillFiles = readdirSync(resolve(DATA_DIR, 'skills'))
-    .filter((f) => f.endsWith('.json'))
-    .map((f) => f.replace('.json', ''));
+    .filter((f: string) => f.endsWith('.json'))
+    .map((f: string) => f.replace('.json', ''));
   const templateFiles = readdirSync(resolve(DATA_DIR, 'gear-templates'))
-    .filter((f) => f.endsWith('.json'))
-    .map((f) => f.replace('.json', ''));
+    .filter((f: string) => f.endsWith('.json'))
+    .map((f: string) => f.replace('.json', ''));
 
   if (skillFiles.length === 0) {
     throw new Error(`No skill files found in data/skills/. Expected .json files defining class skills.`);
@@ -92,8 +92,8 @@ export function discoverClassesAndTiers(): DiscoveryResult {
 
   // Assign each template to the longest matching class name
   const templateToClass = new Map<string, string>();
-  for (const t of templateFiles) {
-    for (const name of sortedSkillFiles) {
+  for (const t of templateFiles as string[]) {
+    for (const name of sortedSkillFiles as string[]) {
       if (t.startsWith(name + '-')) {
         templateToClass.set(t, name);
         break;
