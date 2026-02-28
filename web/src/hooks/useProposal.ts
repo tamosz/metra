@@ -1,35 +1,14 @@
 import { useState, useMemo, useCallback } from 'react';
 import { compareProposal } from '@engine/proposals/compare.js';
 import type { SimulationConfig } from '@engine/proposals/simulate.js';
-import type { Proposal, ProposalChange, ScenarioConfig, ComparisonResult } from '@engine/proposals/types.js';
+import type { Proposal, ProposalChange, ComparisonResult } from '@engine/proposals/types.js';
+import { DEFAULT_SCENARIOS } from '@engine/scenarios.js';
 import {
   discoverClassesAndTiers,
   weaponData,
   attackSpeedData,
   mapleWarriorData,
 } from '../data/bundle.js';
-
-const DEFAULT_SCENARIOS: ScenarioConfig[] = [
-  { name: 'Buffed' },
-  {
-    name: 'Unbuffed',
-    overrides: {
-      sharpEyes: false,
-      echoActive: false,
-      speedInfusion: false,
-      mapleWarriorLevel: 0,
-      attackPotion: 0,
-    },
-  },
-  {
-    name: 'No-Echo',
-    overrides: { echoActive: false },
-  },
-  {
-    name: 'Bossing (50% PDR)',
-    pdr: 0.5,
-  },
-];
 
 export interface ProposalState {
   proposal: Proposal;
