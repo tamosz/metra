@@ -36,7 +36,7 @@ describe('url-encoding', () => {
     expect(decoded).toEqual(proposal);
   });
 
-  it('roundtrips an empty-changes proposal', () => {
+  it('rejects an empty-changes proposal', () => {
     const proposal: Proposal = {
       name: 'Empty',
       author: 'Test',
@@ -46,7 +46,8 @@ describe('url-encoding', () => {
     const encoded = encodeProposal(proposal);
     const decoded = decodeProposal(encoded);
 
-    expect(decoded).toEqual(proposal);
+    // validateProposal requires at least one change
+    expect(decoded).toBeNull();
   });
 
   it('returns null for malformed input', () => {
