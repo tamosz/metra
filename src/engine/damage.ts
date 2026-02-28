@@ -1,5 +1,14 @@
 import type { WeaponData } from '../data/types.js';
 
+/** Min damage mastery factor applied to physical attacks. Source: range calculator E19. */
+const MIN_DAMAGE_MASTERY_FACTOR = 0.9;
+
+/** Throwing star max damage coefficient (LUK scaling). Source: range calculator F18. */
+const THROWING_STAR_MAX_COEFF = 5.0;
+
+/** Throwing star min damage coefficient (LUK scaling). Source: range calculator F19. */
+const THROWING_STAR_MIN_COEFF = 2.5;
+
 export interface DamageRange {
   min: number;
   max: number;
@@ -51,7 +60,7 @@ export function calculateDamageRange(
     ((primaryStat * weaponMultiplier + secondaryStat) * totalAttack) / 100
   );
   const min = Math.floor(
-    ((primaryStat * weaponMultiplier * 0.9 * mastery + secondaryStat) *
+    ((primaryStat * weaponMultiplier * MIN_DAMAGE_MASTERY_FACTOR * mastery + secondaryStat) *
       totalAttack) /
       100
   );
@@ -72,8 +81,8 @@ export function calculateThrowingStarRange(
   luk: number,
   totalAttack: number
 ): DamageRange {
-  const max = Math.floor((5.0 * luk * totalAttack) / 100);
-  const min = Math.floor((2.5 * luk * totalAttack) / 100);
+  const max = Math.floor((THROWING_STAR_MAX_COEFF * luk * totalAttack) / 100);
+  const min = Math.floor((THROWING_STAR_MIN_COEFF * luk * totalAttack) / 100);
   return { min, max, average: (min + max) / 2 };
 }
 
@@ -104,7 +113,7 @@ export function calculateMagicDamageRange(
     ((tma * tma / 1000 + tma) / 30 + int / 200) * amp
   );
   const min = Math.floor(
-    ((tma * tma / 1000 + tma * mastery * 0.9) / 30 + int / 200) * amp
+    ((tma * tma / 1000 + tma * mastery * MIN_DAMAGE_MASTERY_FACTOR) / 30 + int / 200) * amp
   );
   return { min, max, average: (min + max) / 2 };
 }
