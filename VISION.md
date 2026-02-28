@@ -15,21 +15,28 @@
 - CLI with baseline rankings + proposal comparison
 - Web SPA: dashboard, proposal builder, class comparison view, URL sharing, BBCode export
 - 4 scenarios (Buffed, Unbuffed, No-Echo, Bossing 50% PDR)
-- ~227 tests, pre-commit hooks
+- ~314 tests (268 engine + 46 web), pre-commit hooks
 - Balance audit: automated outlier detection across scenarios and tiers
 
-### Phase 2: Public Launch
+### Phase 2a: Public Launch
 **Goal**: Deploy the existing tool publicly and make it approachable for non-technical users.
 
 - **Deploy static site** on Vercel (free tier, auto-deploys from main)
-- **Gear/build explorer**: hybrid approach — start from templates, let users override individual stats (STR, DEX, WATK, etc.) with sliders/inputs. Power users get full control, casual users get sensible defaults. Real-time DPS recalculation as stats change.
-- **Class comparison view**: side-by-side build comparison (done — in Phase 1 web SPA)
-- **Custom funding tiers**: mid-tier is where most players actually are, and the low→high jump is large. Let users save custom templates or add a mid tier.
+- **Mid funding tier**: most players live between low and high — add a mid tier that reflects reasonable scrolling without endgame gear
 - **UX polish**: mobile-friendly layout, tooltips explaining game mechanics, class icons, onboarding for first-time visitors
+- **Support class disclaimers**: UI caveat on Bishop/mage rankings noting that solo DPS doesn't reflect party contribution (full party modeling is Phase 4)
+
+### Phase 2b: Build Explorer
+**Goal**: Let users customize gear and stats beyond the fixed templates.
+
+- **Gear/stat overrides**: start from templates, let users override individual stats (STR, DEX, WATK, etc.) with sliders/inputs. Power users get full control, casual users get sensible defaults. Real-time DPS recalculation as stats change.
+- **Custom funding tiers**: let users save custom templates beyond low/mid/high
 - **Shareable builds**: extend URL encoding to include custom gear overrides (not just proposals)
 
 ### Phase 3: Community Features
 **Goal**: Turn the tool into a community hub for balance discussion.
+
+> **Prerequisite**: Phase 2a launch generates real usage and demand. Don't build social infrastructure before there's an audience.
 
 - **Backend**: Supabase (hosted PostgreSQL + auth + REST API)
   - Discord OAuth for login (the community already uses Discord)
@@ -46,16 +53,16 @@
 **Goal**: Deepen the simulator's analytical power.
 
 - **Party DPS modeling**: MapleRoyals endgame is party play. A Bishop's value isn't personal DPS — it's party buff contribution. Evaluating balance purely on solo DPS misses support/utility classes. Hard to model well, but the biggest analytical blind spot.
+- **Training efficiency**: kills/hr and EXP/hr on reference mobs, comparing classes for grinding scenarios
 - **Accuracy/miss rate**: the simulator assumes 100% hit rate. Against high-level bosses, accuracy matters and varies by class. Silently inflates some classes' effective bossing DPS.
 - **Buff uptime/sustain**: some skills have downtime (Berserk HP drain, Battleship HP, buff recasting). Sustained DPS over a 5-minute boss fight differs from theoretical peak.
 - **Marginal gain calculator**: "what should I upgrade next?" — show DPS gain per WATK, per primary stat point, per scroll tier. Not a full gear optimizer, but answers the most common question users will have.
-- **Training efficiency**: kills/hr and EXP/hr on reference mobs, comparing classes for grinding scenarios
 - **Mob/boss modeling**: model specific bosses (HP thresholds, PDR, phases) for realistic bossing comparisons
 
 ## Architecture Evolution
 
 ```
-Phase 1-2 (current → near-term):
+Phase 1–2 (current → near-term):
   Static site (Vercel) ← Vite build ← React SPA
   Engine runs client-side (no server needed)
 
@@ -80,7 +87,6 @@ The engine stays client-side — simulation is fast enough in the browser. Supab
 | Auth | Discord OAuth via Supabase | MapleRoyals community already on Discord |
 | Simulation execution | Client-side | Fast enough in browser, no server costs |
 | Build explorer state | URL-encoded | Shareable like proposals, no backend needed |
-| Magic classes | Done (Phase 1) | Archmage I/L and Bishop implemented with magic damage formula |
 
 ## Design Principles
 
@@ -88,7 +94,7 @@ The engine stays client-side — simulation is fast enough in the browser. Supab
 - **Templates as starting points**: don't force users to configure everything from scratch. Offer presets, allow overrides.
 - **Offline-capable core**: the engine and basic UI should work without a backend. Community features are additive.
 - **Forum-native output**: BBCode export, Markdown reports — results should flow naturally into royals.ms discussions.
-- **Small increments**: each phase delivers standalone value. Phase 2 is useful without Phase 3.
+- **Small increments**: each phase delivers standalone value. Phase 2a is useful without 2b, and both work without Phase 3.
 
 ## Non-Goals
 
