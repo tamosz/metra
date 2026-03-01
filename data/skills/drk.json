@@ -17,14 +17,6 @@
       "speedCategory": "Crusher",
       "weaponType": "Spear",
       "attackType": "stab"
-    },
-    {
-      "name": "Fury (Polearm)",
-      "basePower": 170,
-      "multiplier": 2.1,
-      "hitCount": 3,
-      "speedCategory": "Crusher",
-      "weaponType": "Polearm"
     }
   ]
 }
