@@ -990,6 +990,15 @@ describe('Archmage I/L DPS', () => {
     expect(amHigh.speedInfusion).toBe(false);
     expect(amLow.speedInfusion).toBe(false);
   });
+
+  it('engine ignores speedInfusion even if set to true for magic classes', () => {
+    const cl = amData.skills.find((s) => s.name === 'Chain Lightning')!;
+    const buildWithSI = { ...amHigh, speedInfusion: true };
+    const resultWithSI = calculateSkillDps(buildWithSI, amData, cl, weaponData, attackSpeedData, mapleWarriorData);
+    const resultWithoutSI = calculateSkillDps(amHigh, amData, cl, weaponData, attackSpeedData, mapleWarriorData);
+    expect(resultWithSI.dps).toBe(resultWithoutSI.dps);
+    expect(resultWithSI.attackTime).toBe(resultWithoutSI.attackTime);
+  });
 });
 
 describe('Bishop DPS', () => {

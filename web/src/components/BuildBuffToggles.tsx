@@ -14,6 +14,7 @@ export function BuildBuffToggles({ state }: BuildBuffTogglesProps) {
   if (!template || !classData) return null;
 
   const showShadowPartner = template.shadowPartner !== undefined;
+  const isMage = classData.damageFormula === 'magic';
   const mwOverridden = 'mapleWarriorLevel' in overrides;
 
   return (
@@ -39,14 +40,16 @@ export function BuildBuffToggles({ state }: BuildBuffTogglesProps) {
           setOverride={setOverride}
           resetField={resetField}
         />
-        <BuffCheckbox
-          label="Speed Infusion"
-          overrideKey="speedInfusion"
-          template={template}
-          overrides={overrides}
-          setOverride={setOverride}
-          resetField={resetField}
-        />
+        {!isMage && (
+          <BuffCheckbox
+            label="Speed Infusion"
+            overrideKey="speedInfusion"
+            template={template}
+            overrides={overrides}
+            setOverride={setOverride}
+            resetField={resetField}
+          />
+        )}
         {showShadowPartner && (
           <BuffCheckbox
             label="Shadow Partner"
