@@ -2,8 +2,8 @@ import { describe, it, expect } from 'vitest';
 import { DEFAULT_SCENARIOS } from './scenarios.js';
 
 describe('DEFAULT_SCENARIOS', () => {
-  it('has 4 scenarios', () => {
-    expect(DEFAULT_SCENARIOS).toHaveLength(4);
+  it('has 5 scenarios', () => {
+    expect(DEFAULT_SCENARIOS).toHaveLength(5);
   });
 
   it('each scenario has a non-empty name', () => {

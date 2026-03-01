@@ -90,7 +90,7 @@ Per-class verified values extracted from community guides on royals.ms.
 - Strafe (MM): 125% base, 4 hits, 0.6s at speed 2
 - Snipe + Strafe weave: 5s cycle, 1 Snipe + 7 Strafes at speed 2
 - Critical Shot: 40% crit, +100 bonus (same as Bowmaster)
-- Crossbow Expert: +10 WATK, 100% mastery (buffed from 90% in Update #71)
+- Marksman Boost: +15 WATK (buffed from +10, Update #65.1), 100% mastery (buffed from 90%, Update #71)
 - Crossbow 3.6x multiplier, DEX primary
 
 ## Corsair
