@@ -11,45 +11,41 @@ A balance simulator for MapleRoyals staff and community. Every number traces bac
 - Proposal pipeline (JSON → simulate → compare → report)
 - CLI with baseline rankings + proposal comparison
 - Web SPA: dashboard, proposal builder, class comparison view, URL sharing, BBCode export
+- 3 funding tiers (low, mid, high)
 - 4 scenarios (Buffed, Unbuffed, No-Echo, Bossing 50% PDR)
-- ~314 tests (268 engine + 46 web), pre-commit hooks
 - Balance audit: automated outlier detection across scenarios and tiers
+- Pre-commit hooks, comprehensive test coverage
 
-## Phase 2a: Public Launch
+## Phase 2: Public Launch + Build Explorer
 
-Deploy and make it approachable for non-technical users.
+Deploy and make it useful for real players.
 
 - Deploy static site on Vercel
-- Mid funding tier (most players live between low and high)
+- Gear/stat overrides with sliders/inputs (start from templates, real-time DPS recalc)
+- Shareable builds via URL encoding
 - UX polish: mobile layout, tooltips, class icons, onboarding
 - Support class disclaimers on Bishop/mage rankings (solo DPS ≠ party value)
-
-## Phase 2b: Build Explorer
-
-Let users customize gear and stats beyond the fixed templates.
-
-- Gear/stat overrides with sliders/inputs (start from templates, real-time DPS recalc)
 - Custom funding tiers beyond low/mid/high
-- Shareable builds via URL encoding
 
 ## Phase 3: Community Features
 
-> Don't build social infra before there's an audience. Phase 2a first.
+> Don't build social infra before there's an audience. Phase 2 first.
 
-- Backend via Supabase (PostgreSQL + Discord OAuth + row-level security)
-- Proposal gallery: browse, search, filter
-- Proposal templates/presets for recurring themes ("nerf NL", "buff warriors")
+- Proposal gallery: browse, search, filter, share
 - Diff visualization: bar chart overlays, bump charts for rank changes
-- Voting, comments, proposal versioning
+- If there's demand: voting, comments, proposal versioning (needs a backend)
 
 ## Phase 4: Advanced Analysis
 
-- Party DPS modeling (Bishop's value is party buffs, not solo DPS)
-- Training efficiency (kills/hr, EXP/hr on reference mobs)
+**Quick wins:**
+- Marginal gain calculator ("what should I upgrade next?" — DPS per WATK, per stat point)
 - Accuracy/miss rate against high-level bosses
 - Buff uptime/sustain (Berserk HP drain, Battleship HP, buff recasting)
-- Marginal gain calculator ("what should I upgrade next?")
-- Mob/boss modeling (HP thresholds, PDR, phases)
+
+**Hard problems:**
+- Party DPS modeling (Bishop's value is party buffs, not solo DPS — biggest analytical blind spot, but genuinely hard to model well)
+- Training efficiency (kills/hr, EXP/hr on reference mobs — needs mob data and AoE modeling)
+- Boss modeling (HP thresholds, PDR, phases)
 
 ## Architecture
 
@@ -58,27 +54,13 @@ Phase 1–2 (now):
   Static site (Vercel) ← Vite build ← React SPA
   Engine runs client-side (no server needed)
 
-Phase 3 (community):
+Phase 3 (if community features need persistence):
   Static site (Vercel) ← React SPA
-       ↕ Supabase client SDK
-  Supabase (hosted):
-    - PostgreSQL: proposals, votes, comments, user profiles
-    - Auth: Discord OAuth
-    - Row-level security
-    - Edge Functions if needed
+       ↕ lightweight backend (TBD)
+  Social data: proposals, votes, comments
 ```
 
-Engine stays client-side — simulation is fast enough in the browser. Supabase handles social data only. Hosting costs stay near zero.
-
-## Technical Decisions
-
-| Decision | Choice | Why |
-|----------|--------|-----|
-| Frontend hosting | Vercel | Free, auto-deploy, good DX |
-| Backend | Supabase | Hosted PG + auth, minimal maintenance |
-| Auth | Discord OAuth | Community already uses Discord |
-| Simulation | Client-side | Fast enough, no server costs |
-| Build explorer state | URL-encoded | Shareable, no backend needed |
+Engine stays client-side — simulation is fast enough in the browser. Backend (if needed) handles social data only. Hosting costs stay near zero.
 
 ## Principles
 
