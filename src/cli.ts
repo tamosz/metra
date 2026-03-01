@@ -30,7 +30,7 @@ export function loadProposal(path: string) {
   return validateProposal(raw);
 }
 
-function parseTargetsFlag(): number | undefined {
+export function parseTargetsFlag(): number | undefined {
   const idx = process.argv.indexOf('--targets');
   if (idx === -1) return undefined;
   const val = Number(process.argv[idx + 1]);
