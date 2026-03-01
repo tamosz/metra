@@ -17,6 +17,7 @@ import { setProposalInUrl } from '../utils/url-encoding.js';
 import { FilterGroup } from './FilterGroup.js';
 import { SupportClassNote } from './SupportClassNote.js';
 import { useIsMobile } from '../hooks/useIsMobile.js';
+import { SCENARIO_DESCRIPTIONS } from '../utils/game-terms.js';
 import { colors } from '../theme.js';
 
 interface ProposalResultsProps {
@@ -154,6 +155,7 @@ export function ProposalResults({ result, proposal }: ProposalResultsProps) {
               value: s,
               label: s,
               annotation: scenarioHints[s],
+              tooltip: SCENARIO_DESCRIPTIONS[s],
             }))}
             onChange={setSelectedScenario}
           />

@@ -4,6 +4,7 @@ import { FilterGroup } from './FilterGroup.js';
 import { SupportClassNote } from './SupportClassNote.js';
 import type { SimulationData } from '../hooks/useSimulation.js';
 import { TIER_ORDER } from '@engine/data/types.js';
+import { SCENARIO_DESCRIPTIONS } from '../utils/game-terms.js';
 
 interface DashboardProps {
   simulation: SimulationData;
@@ -38,7 +39,7 @@ export function Dashboard({ simulation }: DashboardProps) {
         <FilterGroup
           label="Scenario"
           value={selectedScenario}
-          options={scenarios.map((s) => ({ value: s, label: s }))}
+          options={scenarios.map((s) => ({ value: s, label: s, tooltip: SCENARIO_DESCRIPTIONS[s] }))}
           onChange={setSelectedScenario}
         />
         <FilterGroup
