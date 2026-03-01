@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, Fragment } from 'react';
 import {
   BarChart,
   Bar,
@@ -12,11 +12,20 @@ import {
 import type { ComparisonResult, DeltaEntry, Proposal } from '@engine/proposals/types.js';
 import { renderComparisonReport } from '@engine/report/markdown.js';
 import { renderComparisonBBCode } from '@engine/report/bbcode.js';
+import { TIER_ORDER } from '@engine/data/types.js';
 import { getClassColor } from '../utils/class-colors.js';
 import { setProposalInUrl } from '../utils/url-encoding.js';
 import { FilterGroup } from './FilterGroup.js';
 import { SupportClassNote } from './SupportClassNote.js';
 import { colors } from '../theme.js';
+
+function rankSort(a: DeltaEntry, b: DeltaEntry): number {
+  const aTier = TIER_ORDER.indexOf(a.tier as typeof TIER_ORDER[number]);
+  const bTier = TIER_ORDER.indexOf(b.tier as typeof TIER_ORDER[number]);
+  const tierCmp = (aTier === -1 ? Infinity : aTier) - (bTier === -1 ? Infinity : bTier);
+  if (tierCmp !== 0) return tierCmp;
+  return (a.rankAfter ?? Infinity) - (b.rankAfter ?? Infinity);
+}
 
 interface ProposalResultsProps {
   result: ComparisonResult;
@@ -174,14 +183,14 @@ export function ProposalResults({ result, proposal }: ProposalResultsProps) {
 
       {changed.length > 0 && <ComparisonChart deltas={changed} />}
 
-      <DeltaTable deltas={filtered} />
+      <DeltaTable deltas={filtered} showTierGroups={selectedTier === 'all'} />
     </div>
   );
 }
 
 function ComparisonChart({ deltas }: { deltas: DeltaEntry[] }) {
-  const chartData = deltas
-    .sort((a, b) => Math.abs(b.changePercent) - Math.abs(a.changePercent))
+  const chartData = [...deltas]
+    .sort(rankSort)
     .map((d) => ({
       label: `${d.className} ${d.skillName} (${d.tier.charAt(0).toUpperCase() + d.tier.slice(1)})`,
       before: Math.round(d.before),
@@ -258,34 +267,39 @@ function ComparisonChart({ deltas }: { deltas: DeltaEntry[] }) {
 
 function RankCell({ before, after }: { before?: number; after?: number }) {
   if (before == null || after == null) return <span className="text-text-faint">-</span>;
-  if (before === after) return <span className="text-text-dim">{before}</span>;
-  // Lower rank number = higher position, so improvement is before > after
-  const improved = after < before;
+  const diff = before - after; // positive = improved (lower rank number = better)
   return (
-    <span style={{ color: improved ? colors.positive : colors.negative }}>
-      {before}{improved ? '\u2009\u2191\u2009' : '\u2009\u2193\u2009'}{after}
+    <span className="inline-flex items-center gap-1.5">
+      <span className="text-text-secondary">{after}</span>
+      {diff !== 0 && (
+        <span
+          className="inline-flex items-center rounded-full px-1.5 py-0.5 text-[10px] font-medium leading-none"
+          style={{
+            backgroundColor: diff > 0 ? 'rgba(52, 211, 153, 0.15)' : 'rgba(248, 113, 113, 0.15)',
+            color: diff > 0 ? colors.positive : colors.negative,
+          }}
+        >
+          {diff > 0 ? `\u2191${diff}` : `\u2193${Math.abs(diff)}`}
+        </span>
+      )}
     </span>
   );
 }
 
-function DeltaTable({ deltas }: { deltas: DeltaEntry[] }) {
+function DeltaTable({ deltas, showTierGroups }: { deltas: DeltaEntry[]; showTierGroups?: boolean }) {
   const [showUnchanged, setShowUnchanged] = useState(false);
 
   const changedRows = useMemo(() =>
     [...deltas]
       .filter((d) => d.change !== 0)
-      .sort((a, b) => Math.abs(b.changePercent) - Math.abs(a.changePercent)),
+      .sort(rankSort),
     [deltas]
   );
 
   const unchangedRows = useMemo(() =>
     [...deltas]
       .filter((d) => d.change === 0)
-      .sort((a, b) => {
-        const classCmp = a.className.localeCompare(b.className);
-        if (classCmp !== 0) return classCmp;
-        return a.skillName.localeCompare(b.skillName);
-      }),
+      .sort(rankSort),
     [deltas]
   );
 
@@ -311,23 +325,20 @@ function DeltaTable({ deltas }: { deltas: DeltaEntry[] }) {
         <tbody>
           {visibleRows.map((d, i) => {
             const isChanged = d.change !== 0;
-            // Detect class group boundary for unchanged rows
-            const isFirstInClassGroup = !isChanged && i > 0 && (() => {
-              const prevIdx = i - 1;
-              if (prevIdx < changedRows.length) return false; // previous was a changed row
-              const unchangedIdx = i - changedRows.length;
-              return unchangedIdx > 0 && unchangedRows[unchangedIdx - 1].className !== d.className;
-            })();
+            const colCount = hasRanks ? 8 : 7;
+            const tierChanged = showTierGroups && i > 0 && visibleRows[i - 1].tier !== d.tier;
 
             return (
-              <tr
-                key={i}
-                className={`border-b border-border-subtle ${isChanged ? 'bg-accent/[0.03]' : ''}`}
-                style={{
-                  borderLeft: `3px solid ${getClassColor(d.className)}`,
-                  ...(isFirstInClassGroup ? { borderTopColor: colors.borderActive } : {}),
-                }}
-              >
+              <Fragment key={i}>
+                {tierChanged && (
+                  <tr>
+                    <td colSpan={colCount} className="h-px bg-border-default" />
+                  </tr>
+                )}
+                <tr
+                  className={`border-b border-border-subtle ${isChanged ? 'bg-accent/[0.03]' : ''}`}
+                  style={{ borderLeft: `3px solid ${getClassColor(d.className)}` }}
+                >
                 {hasRanks && (
                   <td className="px-3 py-2 text-xs">
                     <RankCell before={d.rankBefore} after={d.rankAfter} />
@@ -354,7 +365,8 @@ function DeltaTable({ deltas }: { deltas: DeltaEntry[] }) {
                 }}>
                   {d.changePercent > 0 ? '+' : ''}{d.changePercent.toFixed(1)}%
                 </td>
-              </tr>
+                </tr>
+              </Fragment>
             );
           })}
         </tbody>
