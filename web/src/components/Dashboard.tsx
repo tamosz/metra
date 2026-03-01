@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { DpsChart } from './DpsChart.js';
 import { FilterGroup } from './FilterGroup.js';
 import { SupportClassNote } from './SupportClassNote.js';
@@ -38,6 +38,16 @@ export function Dashboard({ simulation, customTiers, baseTiers, targetCount, set
   const { results, tiers, scenarios, customTierNames } = simulation;
   const [selectedScenario, setSelectedScenario] = useState('Buffed');
   const [selectedTier, setSelectedTier] = useState<string | 'all'>('all');
+
+  // Auto-select Training scenario when target count changes
+  useEffect(() => {
+    if (targetCount > 1) {
+      const trainingScenario = scenarios.find((s) => s.startsWith('Training'));
+      if (trainingScenario) setSelectedScenario(trainingScenario);
+    } else if (selectedScenario.startsWith('Training')) {
+      setSelectedScenario('Buffed');
+    }
+  }, [targetCount, scenarios]);
 
   const filtered = useMemo(() => {
     return results.filter((r) => {
