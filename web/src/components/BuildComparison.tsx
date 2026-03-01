@@ -26,7 +26,7 @@ export function BuildComparison({ state }: BuildComparisonProps) {
   return (
     <div>
       {/* Two build panels side by side */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24, marginBottom: 24 }}>
+      <div className="mb-6 grid grid-cols-1 gap-6 md:grid-cols-2">
         <BuildPanel label="Build A" state={buildA} />
         <BuildPanel label="Build B" state={buildB} />
       </div>
@@ -46,7 +46,7 @@ export function BuildComparison({ state }: BuildComparisonProps) {
       {comparison.sameClass ? (
         <SameClassDeltas resultsA={buildA.results} resultsB={buildB.results} />
       ) : (
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24 }}>
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
           <BuildDpsResults state={buildA} showCopyLink={false} />
           <BuildDpsResults state={buildB} showCopyLink={false} />
         </div>
@@ -166,6 +166,7 @@ function SameClassDeltas({ resultsA, resultsB }: { resultsA: SkillDpsRow[]; resu
       }}>
         Per-Skill Comparison
       </div>
+      <div className="overflow-x-auto">
       <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
         <thead>
           <tr style={{ borderBottom: '1px solid #1e1e2e' }}>
@@ -195,6 +196,7 @@ function SameClassDeltas({ resultsA, resultsB }: { resultsA: SkillDpsRow[]; resu
           ))}
         </tbody>
       </table>
+      </div>
     </div>
   );
 }

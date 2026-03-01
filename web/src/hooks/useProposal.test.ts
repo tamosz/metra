@@ -126,4 +126,88 @@ describe('useProposal', () => {
     expect(result.current.proposal.changes).toHaveLength(1);
     expect(result.current.result).toBeNull();
   });
+
+  it('setDescription updates the proposal description', () => {
+    const { result } = renderHook(() => useProposal());
+
+    act(() => {
+      result.current.setDescription('A balance change');
+    });
+
+    expect(result.current.proposal.description).toBe('A balance change');
+  });
+
+  it('clearResult resets result to null', async () => {
+    const { result } = renderHook(() => useProposal());
+
+    // Simulate to produce a result, then clear it
+    act(() => {
+      result.current.loadProposal({
+        name: 'Test',
+        author: '',
+        changes: [
+          { target: 'hero.brandish-sword', field: 'basePower', to: 280 },
+        ],
+      });
+    });
+
+    // Use proposalOverride to run simulation synchronously via setTimeout
+    await act(async () => {
+      result.current.simulate();
+      // Wait for setTimeout(fn, 0) to resolve
+      await new Promise((r) => setTimeout(r, 10));
+    });
+    expect(result.current.result).not.toBeNull();
+
+    act(() => {
+      result.current.clearResult();
+    });
+    expect(result.current.result).toBeNull();
+  });
+
+  it('simulate with valid changes produces a ComparisonResult', async () => {
+    const { result } = renderHook(() => useProposal());
+
+    const proposal = {
+      name: 'Brandish Buff',
+      author: 'Test',
+      changes: [
+        { target: 'hero.brandish-sword', field: 'basePower', to: 280 },
+      ],
+    };
+
+    act(() => {
+      result.current.loadProposal(proposal);
+    });
+
+    await act(async () => {
+      result.current.simulate();
+      await new Promise((r) => setTimeout(r, 10));
+    });
+
+    expect(result.current.simulating).toBe(false);
+    expect(result.current.result).not.toBeNull();
+    expect(result.current.result!.deltas.length).toBeGreaterThan(0);
+    expect(result.current.result!.proposal.name).toBe('Brandish Buff');
+  });
+
+  it('simulate with proposalOverride uses the override instead of state', async () => {
+    const { result } = renderHook(() => useProposal());
+
+    const override = {
+      name: 'Override Proposal',
+      author: '',
+      changes: [
+        { target: 'drk.spear-crusher', field: 'basePower', to: 300 },
+      ],
+    };
+
+    await act(async () => {
+      result.current.simulate(override);
+      await new Promise((r) => setTimeout(r, 10));
+    });
+
+    expect(result.current.result).not.toBeNull();
+    expect(result.current.result!.proposal.name).toBe('Override Proposal');
+  });
 });
