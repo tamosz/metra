@@ -53,22 +53,10 @@ export function BuildComparison({ state }: BuildComparisonProps) {
       )}
 
       {/* Copy Link */}
-      <div style={{ textAlign: 'right', marginTop: 16 }}>
+      <div className="mt-4 text-right">
         <button
           onClick={handleShare}
-          style={{
-            background: 'transparent', color: '#888',
-            border: '1px solid #2a2a3e', padding: '5px 14px',
-            borderRadius: 4, fontSize: 12, cursor: 'pointer', transition: 'all 0.15s',
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.color = '#e0e0e8';
-            e.currentTarget.style.borderColor = '#3a3a5e';
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.color = '#888';
-            e.currentTarget.style.borderColor = '#2a2a3e';
-          }}
+          className="cursor-pointer rounded border border-border-default bg-transparent px-3.5 py-1 text-xs text-text-muted transition-colors hover:border-border-active hover:text-text-bright"
         >
           Copy Link
         </button>
@@ -87,20 +75,12 @@ function BuildPanel({ label, state }: { label: string; state: BuildExplorerState
   const hasOverrides = Object.keys(overrides).length > 0;
 
   return (
-    <div style={{
-      background: '#0e0e16',
-      border: '1px solid #1e1e2e',
-      borderRadius: 8,
-      padding: 16,
-    }}>
-      <div style={{
-        fontSize: 11, color: '#555', textTransform: 'uppercase',
-        letterSpacing: '0.05em', marginBottom: 12, fontWeight: 500,
-      }}>
+    <div className="rounded-lg border border-border-subtle bg-bg-raised p-4">
+      <div className="mb-3 text-[11px] font-medium uppercase tracking-wide text-text-dim">
         {label}
       </div>
 
-      <div style={{ display: 'flex', gap: 8, alignItems: 'center', marginBottom: 16, flexWrap: 'wrap' }}>
+      <div className="mb-4 flex flex-wrap items-center gap-2">
         <Select
           label="Class"
           value={selectedClass}
@@ -116,11 +96,7 @@ function BuildPanel({ label, state }: { label: string; state: BuildExplorerState
         {hasOverrides && (
           <button
             onClick={resetOverrides}
-            style={{
-              background: 'transparent', color: '#f87171',
-              border: '1px solid rgba(248,113,113,0.3)', padding: '4px 10px',
-              borderRadius: 4, fontSize: 11, cursor: 'pointer',
-            }}
+            className="cursor-pointer rounded border border-negative/30 bg-transparent px-2.5 py-1 text-[11px] text-negative"
           >
             Reset
           </button>
@@ -128,21 +104,21 @@ function BuildPanel({ label, state }: { label: string; state: BuildExplorerState
       </div>
 
       {template && (
-        <div style={{ fontSize: 11, color: '#555', marginBottom: 16, display: 'flex', gap: 12 }}>
+        <div className="mb-4 flex gap-3 text-[11px] text-text-dim">
           <span>Weapon: {template.weaponType}</span>
           <span>Speed: {template.weaponSpeed}</span>
         </div>
       )}
 
       {template && classData && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+        <div className="flex flex-col gap-4">
           <BuildStatEditor state={state} />
           <BuildBuffToggles state={state} />
         </div>
       )}
 
       {!template && selectedClass && (
-        <div style={{ color: '#555', fontSize: 12, padding: '16px 0' }}>
+        <div className="py-4 text-xs text-text-dim">
           No template for {formatClassName(selectedClass)} ({selectedTier}).
         </div>
       )}
@@ -158,38 +134,34 @@ function SameClassDeltas({ resultsA, resultsB }: { resultsA: SkillDpsRow[]; resu
     return { skillName: a.skillName, dpsA: a.dps, dpsB: bDps, delta };
   });
 
+  const th = 'px-3 py-2 text-[11px] uppercase tracking-wide text-text-dim font-medium';
+
   return (
     <div>
-      <div style={{
-        fontSize: 11, color: '#666', textTransform: 'uppercase',
-        letterSpacing: '0.05em', fontWeight: 500, marginBottom: 8,
-      }}>
+      <div className="mb-2 text-[11px] font-medium uppercase tracking-wide text-text-muted">
         Per-Skill Comparison
       </div>
       <div className="overflow-x-auto">
-      <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
+      <table className="w-full border-collapse text-[13px]">
         <thead>
-          <tr style={{ borderBottom: '1px solid #1e1e2e' }}>
-            <th style={thStyle}>Skill</th>
-            <th style={{ ...thStyle, textAlign: 'right' }}>Build A</th>
-            <th style={{ ...thStyle, textAlign: 'right' }}>Build B</th>
-            <th style={{ ...thStyle, textAlign: 'right' }}>Delta</th>
+          <tr className="border-b border-border-subtle">
+            <th className={`${th} text-left`}>Skill</th>
+            <th className={`${th} text-right`}>Build A</th>
+            <th className={`${th} text-right`}>Build B</th>
+            <th className={`${th} text-right`}>Delta</th>
           </tr>
         </thead>
         <tbody>
           {rows.map((row) => (
-            <tr key={row.skillName} style={{ borderBottom: '1px solid #12121a' }}>
-              <td style={{ ...tdStyle, color: '#ccc' }}>{row.skillName}</td>
-              <td style={{ ...tdStyle, textAlign: 'right', fontVariantNumeric: 'tabular-nums' }}>
+            <tr key={row.skillName} className="border-b border-border-subtle">
+              <td className="px-3 py-2 text-text-primary">{row.skillName}</td>
+              <td className="px-3 py-2 text-right tabular-nums">
                 {Math.round(row.dpsA).toLocaleString()}
               </td>
-              <td style={{ ...tdStyle, textAlign: 'right', fontVariantNumeric: 'tabular-nums' }}>
+              <td className="px-3 py-2 text-right tabular-nums">
                 {Math.round(row.dpsB).toLocaleString()}
               </td>
-              <td style={{
-                ...tdStyle, textAlign: 'right', fontVariantNumeric: 'tabular-nums',
-                color: changeColor(row.delta),
-              }}>
+              <td className={`px-3 py-2 text-right tabular-nums ${changeColorClass(row.delta)}`}>
                 {formatChange(row.delta)}
               </td>
             </tr>
@@ -208,18 +180,14 @@ function Select({ label, value, options, onChange }: {
   onChange: (value: string) => void;
 }) {
   return (
-    <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-      <span style={{ fontSize: 10, color: '#555', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+    <div className="flex items-center gap-1">
+      <span className="text-[10px] uppercase tracking-wide text-text-dim">
         {label}
       </span>
       <select
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        style={{
-          background: '#1a1a2a', color: '#e0e0e8',
-          border: '1px solid #2a2a3e', padding: '4px 8px',
-          borderRadius: 4, fontSize: 12, cursor: 'pointer', outline: 'none',
-        }}
+        className="cursor-pointer rounded border border-border-default bg-bg-surface px-2 py-1 text-xs text-text-bright outline-none"
       >
         {options.map((opt) => (
           <option key={opt.value} value={opt.value}>{opt.label}</option>
@@ -235,16 +203,7 @@ function formatChange(percent: number): string {
   return `${sign}${percent.toFixed(1)}%`;
 }
 
-function changeColor(percent: number): string {
-  if (Math.abs(percent) < 0.01) return '#555';
-  return percent > 0 ? '#4ade80' : '#f87171';
+function changeColorClass(percent: number): string {
+  if (Math.abs(percent) < 0.01) return 'text-text-dim';
+  return percent > 0 ? 'text-positive' : 'text-negative';
 }
-
-const thStyle: React.CSSProperties = {
-  padding: '8px 12px', fontSize: 11, textTransform: 'uppercase',
-  letterSpacing: '0.05em', color: '#666', fontWeight: 500, textAlign: 'left',
-};
-
-const tdStyle: React.CSSProperties = {
-  padding: '8px 12px',
-};

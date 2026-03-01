@@ -145,12 +145,12 @@ export function ProposalResults({ result, proposal }: ProposalResultsProps) {
       {summary && (
         <div className="mb-4 text-xs text-text-muted">
           {summary.count} skill{summary.count !== 1 ? 's' : ''} affected, avg{' '}
-          <span style={{ color: summary.avg > 0 ? colors.positive : summary.avg < 0 ? colors.negative : undefined }}>
+          <span className={summary.avg > 0 ? 'text-positive' : summary.avg < 0 ? 'text-negative' : ''}>
             {summary.avg > 0 ? '+' : ''}{summary.avg.toFixed(1)}%
           </span>
           , biggest {summary.direction}:{' '}
           <span className="text-text-secondary">{summary.biggestLabel}</span>{' '}
-          <span style={{ color: summary.biggestChange > 0 ? colors.positive : colors.negative }}>
+          <span className={summary.biggestChange > 0 ? 'text-positive' : 'text-negative'}>
             {summary.biggestChange > 0 ? '+' : ''}{summary.biggestChange.toFixed(1)}%
           </span>
         </div>
@@ -248,7 +248,7 @@ function ComparisonChart({ deltas }: { deltas: DeltaEntry[] }) {
                     <span className="text-text-muted">After: </span>
                     <span>{d.after.toLocaleString()}</span>
                   </div>
-                  <div style={{ color: d.after > d.before ? colors.positive : colors.negative }}>
+                  <div className={d.after > d.before ? 'text-positive' : 'text-negative'}>
                     {d.after > d.before ? '+' : ''}{(d.after - d.before).toLocaleString()} ({((d.after - d.before) / d.before * 100).toFixed(1)}%)
                   </div>
                 </div>
@@ -279,11 +279,9 @@ function RankCell({ before, after }: { before?: number; after?: number }) {
       <span className="text-text-secondary">{after}</span>
       {diff !== 0 && (
         <span
-          className="inline-flex items-center rounded-full px-1.5 py-0.5 text-[10px] font-medium leading-none"
-          style={{
-            backgroundColor: diff > 0 ? 'rgba(52, 211, 153, 0.15)' : 'rgba(248, 113, 113, 0.15)',
-            color: diff > 0 ? colors.positive : colors.negative,
-          }}
+          className={`inline-flex items-center rounded-full px-1.5 py-0.5 text-[10px] font-medium leading-none ${
+            diff > 0 ? 'bg-positive/15 text-positive' : 'bg-negative/15 text-negative'
+          }`}
         >
           {diff > 0 ? `\u2191${diff}` : `\u2193${Math.abs(diff)}`}
         </span>
@@ -367,14 +365,10 @@ function DeltaTable({ deltas, showTierGroups }: { deltas: DeltaEntry[]; showTier
                 <td className="px-3 py-2 text-right tabular-nums">
                   {formatDps(d.after)}
                 </td>
-                <td className="px-3 py-2 text-right tabular-nums" style={{
-                  color: d.change > 0 ? colors.positive : d.change < 0 ? colors.negative : colors.textFaint,
-                }}>
+                <td className={`px-3 py-2 text-right tabular-nums ${d.change > 0 ? 'text-positive' : d.change < 0 ? 'text-negative' : 'text-text-faint'}`}>
                   {d.change > 0 ? '+' : ''}{formatDps(d.change)}
                 </td>
-                <td className="px-3 py-2 text-right tabular-nums" style={{
-                  color: d.changePercent > 0 ? colors.positive : d.changePercent < 0 ? colors.negative : colors.textFaint,
-                }}>
+                <td className={`px-3 py-2 text-right tabular-nums ${d.changePercent > 0 ? 'text-positive' : d.changePercent < 0 ? 'text-negative' : 'text-text-faint'}`}>
                   {d.changePercent > 0 ? '+' : ''}{d.changePercent.toFixed(1)}%
                 </td>
                 </tr>
