@@ -1,10 +1,10 @@
 {
-  "source": "Identical to Bowmaster high template — archers share gear. Crossbow Expert +10 WATK replaces Bow Expert per range calculator L31. Crossbow base speed 6 (Normal).",
+  "source": "Identical to Bowmaster high template — archers share gear. Marksman Boost +15 WATK (buffed from +10 in Update #65.1). Crossbow base speed 6 (Normal).",
   "label": "Marksman High",
   "className": "Marksman",
   "baseStats": { "STR": 4, "DEX": 999, "INT": 4, "LUK": 4 },
   "gearStats": { "STR": 97, "DEX": 158, "INT": 0, "LUK": 0 },
-  "totalWeaponAttack": 193,
+  "totalWeaponAttack": 198,
   "weaponType": "Crossbow",
   "weaponSpeed": 6,
   "attackPotion": 100,
@@ -16,7 +16,7 @@
   "sharpEyes": true,
   "gearBreakdown": {
     "weapon":        { "DEX": 0,  "STR": 0,  "WATK": 130, "notes": "Well-scrolled Neschere (~100 base + 6x 30% scrolls)." },
-    "crossbowExpert": { "DEX": 0,  "STR": 0,  "WATK": 10,  "notes": "Crossbow Expert passive +10 WATK (range calculator L31)." },
+    "crossbowExpert": { "DEX": 0,  "STR": 0,  "WATK": 15,  "notes": "Marksman Boost passive +15 WATK (buffed from +10 in Update #65.1)." },
     "helmet":        { "DEX": 21, "STR": 40, "WATK": 0,   "notes": "Well-scrolled Zakum Helmet." },
     "top":           { "DEX": 60, "STR": 8,  "WATK": 0,   "notes": "DEX scrolled Bathrobe/overall." },
     "earring":       { "DEX": 15, "STR": 0,  "WATK": 0 },

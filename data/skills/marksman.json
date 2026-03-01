@@ -1,7 +1,7 @@
 {
-  "source": "dmg sheet rows 19-20 (MM), range calculator E18 (Crossbow: I31*3.6), D7 (mastery 0.9), N19 crit rates (0.40 built-in + 0.15 SE = 0.55), O20 Snipe fixed 195000. Snipe has ~5s effective cooldown (4s programmed + ~1s server tick rounding, confirmed by staff on royals.ms forum).",
+  "source": "dmg sheet rows 19-20 (MM), range calculator E18 (Crossbow: I31*3.6), D7 (mastery 0.9 in spreadsheet, buffed to 1.0 per Update #71), N19 crit rates (0.40 built-in + 0.15 SE = 0.55), O20 Snipe fixed 195000. Snipe has ~5s effective cooldown (4s programmed + ~1s server tick rounding, confirmed by staff on royals.ms forum). Marksman Boost WATK +10→+15 (Update #65.1), mastery 90%→100% (Update #71).",
   "className": "Marksman",
-  "mastery": 0.9,
+  "mastery": 1.0,
   "primaryStat": "DEX",
   "secondaryStat": "STR",
   "sharpEyesCritRate": 0.15,
