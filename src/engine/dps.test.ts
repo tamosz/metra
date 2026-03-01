@@ -1075,6 +1075,428 @@ describe('Bishop DPS', () => {
   });
 });
 
+describe('Bowmaster DPS', () => {
+  let bmData: ClassSkillData;
+  let bmHigh: CharacterBuild;
+  let bmLow: CharacterBuild;
+
+  beforeAll(() => {
+    bmData = loadClassSkills('Bowmaster');
+    bmHigh = loadGearTemplate('bowmaster-high');
+    bmLow = loadGearTemplate('bowmaster-low');
+  });
+
+  it('loads Bowmaster skill data correctly', () => {
+    expect(bmData.className).toBe('Bowmaster');
+    expect(bmData.mastery).toBe(0.9);
+    expect(bmData.primaryStat).toBe('DEX');
+    expect(bmData.secondaryStat).toBe('STR');
+    expect(bmData.damageFormula).toBe('standard');
+    expect(bmData.skills.length).toBe(2);
+  });
+
+  it('Hurricane uses fixed 0.12s attack time', () => {
+    const hurricane = bmData.skills.find((s) => s.name === 'Hurricane')!;
+    const result = calculateSkillDps(
+      bmHigh, bmData, hurricane, weaponData, attackSpeedData, mwData
+    );
+
+    expect(result.attackTime).toBe(0.12);
+  });
+
+  it('Hurricane High tier damage range', () => {
+    const hurricane = bmData.skills.find((s) => s.name === 'Hurricane')!;
+    const result = calculateSkillDps(
+      bmHigh, bmData, hurricane, weaponData, attackSpeedData, mwData
+    );
+
+    // DEX: floor(999*1.1) + 158 = 1256, STR: floor(4*1.1) + 97 = 101
+    // totalAttack = 193 + 100 + 0 + floor(293*0.04) = 304
+    // Bow 3.4x, mastery 0.9
+    // max = floor((1256 * 3.4 + 101) * 304 / 100) = 13289
+    // min = floor((1256 * 3.4 * 0.9 * 0.9 + 101) * 304 / 100) = 10822
+    expect(result.damageRange.max).toBe(13289);
+    expect(result.damageRange.min).toBe(10822);
+  });
+
+  it('Hurricane High tier crit uses 55% rate (40% Critical Shot + 15% SE)', () => {
+    const hurricane = bmData.skills.find((s) => s.name === 'Hurricane')!;
+    const result = calculateSkillDps(
+      bmHigh, bmData, hurricane, weaponData, attackSpeedData, mwData
+    );
+
+    // basePower 100, multiplier 1 → skillDmg% = 100
+    expect(result.skillDamagePercent).toBe(100);
+    // addBeforeMultiply: (100 + 100 + 140) * 1 = 340
+    expect(result.seDamagePercent).toBe(340);
+  });
+
+  it('Hurricane High tier DPS ~233,073', () => {
+    const hurricane = bmData.skills.find((s) => s.name === 'Hurricane')!;
+    const result = calculateSkillDps(
+      bmHigh, bmData, hurricane, weaponData, attackSpeedData, mwData
+    );
+
+    expect(result.dps).toBeCloseTo(233073, -2);
+  });
+
+  it('Hurricane Low tier DPS ~104,932', () => {
+    const hurricane = bmData.skills.find((s) => s.name === 'Hurricane')!;
+    const result = calculateSkillDps(
+      bmLow, bmData, hurricane, weaponData, attackSpeedData, mwData
+    );
+
+    expect(result.attackTime).toBe(0.12);
+    // DEX: floor(700*1.1) + 87 = 857, STR: 4 + 73 = 77
+    // totalAttack = 133 + 60 + 0 + 7 = 200
+    expect(result.damageRange.max).toBe(5981);
+    expect(result.damageRange.min).toBe(4874);
+    expect(result.dps).toBeCloseTo(104932, -2);
+  });
+
+  it('Strafe High tier DPS ~206,551', () => {
+    const strafe = bmData.skills.find((s) => s.name === 'Strafe')!;
+    const result = calculateSkillDps(
+      bmHigh, bmData, strafe, weaponData, attackSpeedData, mwData
+    );
+
+    expect(result.attackTime).toBe(0.60);
+    expect(result.skillDamagePercent).toBe(125);
+    // SE: (125 + 100 + 140) * 1 = 365
+    expect(result.seDamagePercent).toBe(365);
+    // Same damage range as Hurricane (same weapon/class)
+    expect(result.damageRange.max).toBe(13289);
+    expect(result.dps).toBeCloseTo(206551, -2);
+  });
+
+  it('Strafe Low tier DPS ~92,991', () => {
+    const strafe = bmData.skills.find((s) => s.name === 'Strafe')!;
+    const result = calculateSkillDps(
+      bmLow, bmData, strafe, weaponData, attackSpeedData, mwData
+    );
+
+    expect(result.dps).toBeCloseTo(92991, -2);
+  });
+
+  it('High tier DPS is greater than Low tier for all skills', () => {
+    for (const skill of bmData.skills) {
+      const high = calculateSkillDps(
+        bmHigh, bmData, skill, weaponData, attackSpeedData, mwData
+      );
+      const low = calculateSkillDps(
+        bmLow, bmData, skill, weaponData, attackSpeedData, mwData
+      );
+      expect(high.dps).toBeGreaterThan(low.dps);
+    }
+  });
+});
+
+describe('Hero (Axe) DPS', () => {
+  let axeData: ClassSkillData;
+  let axeHigh: CharacterBuild;
+  let axeLow: CharacterBuild;
+
+  beforeAll(() => {
+    axeData = loadClassSkills('hero-axe');
+    axeHigh = loadGearTemplate('hero-axe-high');
+    axeLow = loadGearTemplate('hero-axe-low');
+  });
+
+  it('loads Hero (Axe) skill data correctly', () => {
+    expect(axeData.className).toBe('Hero (Axe)');
+    expect(axeData.mastery).toBe(0.6);
+    expect(axeData.primaryStat).toBe('STR');
+    expect(axeData.secondaryStat).toBe('DEX');
+    expect(axeData.skills.length).toBe(1);
+  });
+
+  it('Brandish uses 2H Axe 4.8x multiplier', () => {
+    const brandish = axeData.skills.find((s) => s.name === 'Brandish')!;
+    expect(brandish.weaponType).toBe('2H Axe');
+
+    const result = calculateSkillDps(
+      axeHigh, axeData, brandish, weaponData, attackSpeedData, mwData
+    );
+
+    // STR: floor(999*1.1) + 174 = 1272, DEX: floor(23*1.1) + 102 = 127
+    // totalAttack = 203 + 100 + floor(303*0.04) = 315
+    // 2H Axe 4.8x
+    // max = floor((1272 * 4.8 + 127) * 315 / 100) = 19632
+    // min = floor((1272 * 4.8 * 0.9 * 0.6 + 127) * 315 / 100) = 10785
+    expect(result.damageRange.max).toBe(19632);
+    expect(result.damageRange.min).toBe(10785);
+  });
+
+  it('Brandish High tier DPS ~257,772', () => {
+    const brandish = axeData.skills.find((s) => s.name === 'Brandish')!;
+    const result = calculateSkillDps(
+      axeHigh, axeData, brandish, weaponData, attackSpeedData, mwData
+    );
+
+    expect(result.attackTime).toBe(0.63);
+    expect(result.skillDamagePercent).toBe(494);
+    // SE: (260 + 140) * 1.9 = 760
+    expect(result.seDamagePercent).toBe(760);
+    expect(result.dps).toBeCloseTo(257772, -2);
+  });
+
+  it('Brandish Low tier DPS ~132,712', () => {
+    const brandish = axeData.skills.find((s) => s.name === 'Brandish')!;
+    const result = calculateSkillDps(
+      axeLow, axeData, brandish, weaponData, attackSpeedData, mwData
+    );
+
+    expect(result.attackTime).toBe(0.63);
+    expect(result.damageRange.max).toBe(10093);
+    expect(result.damageRange.min).toBe(5567);
+    expect(result.dps).toBeCloseTo(132712, -2);
+  });
+
+  it('Axe Brandish has higher damage range than Sword (4.8 > 4.6 multiplier)', () => {
+    const axeBrandish = axeData.skills.find((s) => s.name === 'Brandish')!;
+    const swordBrandish = heroData.skills.find((s) => s.name === 'Brandish (Sword)')!;
+
+    const axeResult = calculateSkillDps(
+      axeHigh, axeData, axeBrandish, weaponData, attackSpeedData, mwData
+    );
+    const swordResult = calculateSkillDps(
+      heroHigh, heroData, swordBrandish, weaponData, attackSpeedData, mwData
+    );
+
+    // Same stats, same attack time — only weapon multiplier differs
+    expect(axeResult.attackTime).toBe(swordResult.attackTime);
+    expect(axeResult.damageRange.max).toBeGreaterThan(swordResult.damageRange.max);
+    expect(axeResult.dps).toBeGreaterThan(swordResult.dps);
+  });
+});
+
+describe('Corsair DPS', () => {
+  let sairData: ClassSkillData;
+  let sairHigh: CharacterBuild;
+  let sairLow: CharacterBuild;
+
+  beforeAll(() => {
+    sairData = loadClassSkills('sair');
+    sairHigh = loadGearTemplate('sair-high');
+    sairLow = loadGearTemplate('sair-low');
+  });
+
+  it('loads Corsair skill data correctly', () => {
+    expect(sairData.className).toBe('Corsair');
+    expect(sairData.mastery).toBe(0.6);
+    expect(sairData.primaryStat).toBe('DEX');
+    expect(sairData.secondaryStat).toBe('STR');
+    expect(sairData.damageFormula).toBe('standard');
+    expect(sairData.skills.length).toBe(2);
+  });
+
+  it('Battleship Cannon High tier damage range', () => {
+    const cannon = sairData.skills.find((s) => s.name === 'Battleship Cannon')!;
+    const result = calculateSkillDps(
+      sairHigh, sairData, cannon, weaponData, attackSpeedData, mwData
+    );
+
+    // DEX: floor(999*1.1) + 165 = 1263, STR: 4 + 90 = 94
+    // totalAttack = 173 + 100 + 20 + floor(293*0.04) = 304
+    // Gun 3.6x
+    // max = floor((1263 * 3.6 + 94) * 304 / 100) = 14108
+    // min = floor((1263 * 3.6 * 0.9 * 0.6 + 94) * 304 / 100) = 7749
+    expect(result.damageRange.max).toBe(14108);
+    expect(result.damageRange.min).toBe(7749);
+  });
+
+  it('Battleship Cannon High tier DPS ~350,586', () => {
+    const cannon = sairData.skills.find((s) => s.name === 'Battleship Cannon')!;
+    const result = calculateSkillDps(
+      sairHigh, sairData, cannon, weaponData, attackSpeedData, mwData
+    );
+
+    expect(result.attackTime).toBe(0.60);
+    // basePower 380, multiplier 1.2 → 456
+    expect(result.skillDamagePercent).toBe(456);
+    // SE: (380 + 140) * 1.2 = 624
+    expect(result.seDamagePercent).toBe(624);
+    expect(result.dps).toBeCloseTo(350586, -2);
+  });
+
+  it('Battleship Cannon Low tier DPS ~180,049', () => {
+    const cannon = sairData.skills.find((s) => s.name === 'Battleship Cannon')!;
+    const result = calculateSkillDps(
+      sairLow, sairData, cannon, weaponData, attackSpeedData, mwData
+    );
+
+    expect(result.attackTime).toBe(0.60);
+    expect(result.damageRange.max).toBe(7231);
+    expect(result.damageRange.min).toBe(3994);
+    expect(result.dps).toBeCloseTo(180049, -2);
+  });
+
+  it('Rapid Fire uses Hurricane speed (0.12s)', () => {
+    const rf = sairData.skills.find((s) => s.name === 'Rapid Fire')!;
+    const result = calculateSkillDps(
+      sairHigh, sairData, rf, weaponData, attackSpeedData, mwData
+    );
+
+    expect(result.attackTime).toBe(0.12);
+  });
+
+  it('Rapid Fire High tier DPS ~241,520', () => {
+    const rf = sairData.skills.find((s) => s.name === 'Rapid Fire')!;
+    const result = calculateSkillDps(
+      sairHigh, sairData, rf, weaponData, attackSpeedData, mwData
+    );
+
+    // basePower 200, multiplier 1.2 → 240
+    expect(result.skillDamagePercent).toBe(240);
+    // SE: (200 + 140) * 1.2 = 408
+    expect(result.seDamagePercent).toBe(408);
+    // Same damage range as Cannon (same weapon/class)
+    expect(result.damageRange.max).toBe(14108);
+    expect(result.dps).toBeCloseTo(241520, -2);
+  });
+
+  it('Rapid Fire Low tier DPS ~124,036', () => {
+    const rf = sairData.skills.find((s) => s.name === 'Rapid Fire')!;
+    const result = calculateSkillDps(
+      sairLow, sairData, rf, weaponData, attackSpeedData, mwData
+    );
+
+    expect(result.dps).toBeCloseTo(124036, -2);
+  });
+
+  it('no Shadow Partner for Corsair', () => {
+    expect(sairHigh.shadowPartner).toBe(false);
+    expect(sairLow.shadowPartner).toBe(false);
+  });
+
+  it('High tier DPS is greater than Low tier for all skills', () => {
+    for (const skill of sairData.skills) {
+      const high = calculateSkillDps(
+        sairHigh, sairData, skill, weaponData, attackSpeedData, mwData
+      );
+      const low = calculateSkillDps(
+        sairLow, sairData, skill, weaponData, attackSpeedData, mwData
+      );
+      expect(high.dps).toBeGreaterThan(low.dps);
+    }
+  });
+});
+
+describe('Buccaneer DPS', () => {
+  let buccData: ClassSkillData;
+  let buccHigh: CharacterBuild;
+  let buccLow: CharacterBuild;
+
+  beforeAll(() => {
+    buccData = loadClassSkills('bucc');
+    buccHigh = loadGearTemplate('bucc-high');
+    buccLow = loadGearTemplate('bucc-low');
+  });
+
+  it('loads Buccaneer skill data correctly', () => {
+    expect(buccData.className).toBe('Buccaneer');
+    expect(buccData.mastery).toBe(0.6);
+    expect(buccData.primaryStat).toBe('STR');
+    expect(buccData.secondaryStat).toBe('DEX');
+    expect(buccData.damageFormula).toBe('standard');
+    expect(buccData.skills.length).toBe(5);
+  });
+
+  it('Demolition High tier damage range', () => {
+    const demo = buccData.skills.find((s) => s.name === 'Demolition')!;
+    const result = calculateSkillDps(
+      buccHigh, buccData, demo, weaponData, attackSpeedData, mwData
+    );
+
+    // STR: floor(999*1.1) + 151 = 1249, DEX: floor(23*1.1) + 116 = 141
+    // totalAttack = 181 + 100 + 0 + floor(281*0.04) = 292
+    // Knuckle 4.8x
+    // max = floor((1249 * 4.8 + 141) * 292 / 100) = 17917
+    // min = floor((1249 * 4.8 * 0.9 * 0.6 + 141) * 292 / 100) = 9864
+    expect(result.damageRange.max).toBe(17917);
+    expect(result.damageRange.min).toBe(9864);
+  });
+
+  it('Demolition uses fixed 2.34s attack time', () => {
+    const demo = buccData.skills.find((s) => s.name === 'Demolition')!;
+    const result = calculateSkillDps(
+      buccHigh, buccData, demo, weaponData, attackSpeedData, mwData
+    );
+
+    expect(result.attackTime).toBe(2.34);
+  });
+
+  it('Demolition High tier DPS ~247,417', () => {
+    const demo = buccData.skills.find((s) => s.name === 'Demolition')!;
+    const result = calculateSkillDps(
+      buccHigh, buccData, demo, weaponData, attackSpeedData, mwData
+    );
+
+    // basePower 500, multiplier 1.0 → 500
+    expect(result.skillDamagePercent).toBe(500);
+    // SE: (500 + 140) * 1.0 = 640
+    expect(result.seDamagePercent).toBe(640);
+    expect(result.dps).toBeCloseTo(247417, -2);
+  });
+
+  it('Demolition Low tier DPS ~121,362', () => {
+    const demo = buccData.skills.find((s) => s.name === 'Demolition')!;
+    const result = calculateSkillDps(
+      buccLow, buccData, demo, weaponData, attackSpeedData, mwData
+    );
+
+    expect(result.damageRange.max).toBe(8783);
+    expect(result.damageRange.min).toBe(4844);
+    expect(result.dps).toBeCloseTo(121362, -2);
+  });
+
+  it('Barrage + Demolition combo sub-skills all share 4.04s cycle time', () => {
+    const comboSkills = buccData.skills.filter((s) => s.comboGroup === 'Barrage + Demolition');
+    expect(comboSkills.length).toBe(4);
+
+    for (const skill of comboSkills) {
+      const result = calculateSkillDps(
+        buccHigh, buccData, skill, weaponData, attackSpeedData, mwData
+      );
+      expect(result.attackTime).toBe(4.04);
+    }
+  });
+
+  it('Barrage sub-skills have correct damage multipliers', () => {
+    const normal = buccData.skills.find((s) => s.name === 'Barrage + Demolition (Normal Hits)')!;
+    const fifth = buccData.skills.find((s) => s.name === 'Barrage + Demolition (5th Hit)')!;
+    const sixth = buccData.skills.find((s) => s.name === 'Barrage + Demolition (6th Hit)')!;
+
+    expect(normal.basePower).toBe(330);
+    expect(normal.multiplier).toBe(1.0);
+    expect(normal.hitCount).toBe(4);
+
+    expect(fifth.basePower).toBe(330);
+    expect(fifth.multiplier).toBe(2.0);
+    expect(fifth.hitCount).toBe(1);
+
+    expect(sixth.basePower).toBe(330);
+    expect(sixth.multiplier).toBe(4.0);
+    expect(sixth.hitCount).toBe(1);
+  });
+
+  it('no Shadow Partner for Buccaneer', () => {
+    expect(buccHigh.shadowPartner).toBe(false);
+    expect(buccLow.shadowPartner).toBe(false);
+  });
+
+  it('High tier DPS is greater than Low tier for standalone Demolition', () => {
+    const demo = buccData.skills.find((s) => s.name === 'Demolition')!;
+    const high = calculateSkillDps(
+      buccHigh, buccData, demo, weaponData, attackSpeedData, mwData
+    );
+    const low = calculateSkillDps(
+      buccLow, buccData, demo, weaponData, attackSpeedData, mwData
+    );
+    expect(high.dps).toBeGreaterThan(low.dps);
+  });
+});
+
 describe('damage cap behavior', () => {
   // Synthetic skill with extreme basePower to trigger the 199,999 damage cap.
   const capSkill: SkillEntry = {
