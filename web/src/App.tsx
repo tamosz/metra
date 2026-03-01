@@ -9,6 +9,7 @@ import { useProposal } from './hooks/useProposal.js';
 import { useBuildExplorer } from './hooks/useBuildExplorer.js';
 import { useBuildComparison } from './hooks/useBuildComparison.js';
 import { useCustomTiers } from './hooks/useCustomTiers.js';
+import { useSavedBuilds } from './hooks/useSavedBuilds.js';
 import { discoverClassesAndTiers } from './data/bundle.js';
 import { getProposalFromUrl, getBuildFromUrl, getComparisonFromUrl } from './utils/url-encoding.js';
 
@@ -18,6 +19,7 @@ export function App() {
   const customTiersState = useCustomTiers();
   const baseTiers = useMemo(() => discoverClassesAndTiers().tiers, []);
   const simulation = useSimulation(customTiersState.tiers);
+  const savedBuildsState = useSavedBuilds();
   const proposalState = useProposal();
   const buildState = useBuildExplorer();
   const comparisonState = useBuildComparison();
@@ -136,7 +138,7 @@ export function App() {
             )}
           </>
         )}
-        {page === 'build' && <BuildExplorer state={buildState} />}
+        {page === 'build' && <BuildExplorer state={buildState} savedBuilds={savedBuildsState} />}
         {page === 'compare' && <BuildComparison state={comparisonState} />}
       </main>
     </div>
