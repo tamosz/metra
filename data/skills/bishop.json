@@ -17,7 +17,8 @@
       "multiplier": 1,
       "hitCount": 1,
       "speedCategory": "Angel Ray",
-      "weaponType": "Staff"
+      "weaponType": "Staff",
+      "element": "Holy"
     },
     {
       "name": "Genesis",
@@ -26,7 +27,8 @@
       "multiplier": 1,
       "hitCount": 1,
       "speedCategory": "Genesis",
-      "weaponType": "Staff"
+      "weaponType": "Staff",
+      "element": "Holy"
     }
   ]
 }
