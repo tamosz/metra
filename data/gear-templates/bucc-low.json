@@ -2,7 +2,7 @@
   "source": "gear templates sheet, Bucc rows, Low. Knuckle base speed 6 (Normal).",
   "label": "Bucc Low",
   "className": "Buccaneer",
-  "baseStats": { "STR": 797, "DEX": 25, "INT": 4, "LUK": 4 },
+  "baseStats": { "STR": 700, "DEX": 22, "INT": 4, "LUK": 4 },
   "gearStats": { "STR": 96, "DEX": 83, "INT": 0, "LUK": 0 },
   "totalWeaponAttack": 139,
   "weaponType": "Knuckle",
