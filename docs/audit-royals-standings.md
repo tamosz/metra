@@ -126,49 +126,6 @@ Bucc Barrage+DS at 244k sits between DrK and Corsair. Community noted Bucc was i
 
 ## 4. Areas of Disagreement / Investigation Required
 
-### INVESTIGATE-1: Bowmaster Hurricane Seems Too Low [RESOLVED]
-
-**Severity: HIGH**
-**Status: Resolved**
-
-**Root cause:** Archer (BM + MM) weapon WATK was flat 120 across all funding tiers — no scaling from low to high. Every other class had proper tiered weapon values (e.g., Hero 130→150, DrK 127→139). The source spreadsheet has no archer gear template data; templates were adapted from warrior templates with a single estimated WATK that was never differentiated.
-
-**Fix:** Calibrated bow/crossbow weapon WATK using MapleRoyals forum marketplace data (Nisrock base ATK 95-100, 30% scroll +5 WATK, forum-verified pricing):
-- Low: 120 → 105 WATK (budget Nisrock, ~95 base + a few 60% scrolls)
-- Mid: 120 → 120 WATK (unchanged, already appropriate)
-- High: 120 → 130 WATK (well-scrolled Nisrock, ~100 base + 6x 30% scrolls)
-
-**Impact:** BM Hurricane moved from #9 (225k) to #8 (233k), now above Corsair Rapid Fire (228k). Low tier decreased from 113k to 105k, giving more realistic tier spread matching other classes. MM Snipe+Strafe High moved from 216k to 223k.
-
-### INVESTIGATE-2: Shadower Unbuffed Outlier (+2.6 sigma) — RESOLVED
-
-**Severity: MEDIUM**
-**Status: RESOLVED** — SI enabled in Shadower gear templates.
-
-**Root cause:** Shadower gear templates had Speed Infusion disabled "to match spreadsheet attack times." Investigation found this was unnecessary: BStep + Assassinate combo uses speed-independent 2.31s timing (unaffected by SI). Only Savage Blow was incorrectly modeled slower than it should be.
-
-**Fix applied:** Enabled `speedInfusion: true` in all 3 Shadower gear templates. Savage Blow DPS increased ~15% (high: 159k → 183k, low: 97k → 112k). BStep + Assassinate 30 completely unchanged.
-
-**Remaining outlier:** BStep + Assassinate 30 still flags as an outlier in unbuffed scenarios (+2.6σ). This is correct game behavior — the combo's speed-independent 2.31s cycle doesn't lose anything when SI is removed, unlike speed-dependent skills on other classes. This is a genuine Shadower advantage, not a modeling artifact.
-
-### INVESTIGATE-3: Corsair Battleship Cannon Tier Sensitivity
-
-**Severity: LOW-MEDIUM**
-**Simulator audit flags:** Corsair (both Battleship Cannon and Rapid Fire) shows -0.31σ tier sensitivity deviation (High/Low ratio of 1.63x vs median 1.94x). This means Corsair's DPS scales less with funding than average.
-
-**Analysis:** Battleship Cannon Low tier (203k) is remarkably high — in fact it exceeds NL Mid tier (195k). This "floor" effect may come from Battleship Cannon's strong base power (380) and hit count (4), which provides high throughput even with modest gear.
-
-**Community view:** Community notes Corsair "gains only ~5% DPS from SI or SE" — this reduced dependency on party buffs aligns with the reduced tier sensitivity we see.
-
-**Questions to resolve:**
-1. Is the low-tier Corsair gear appropriately modeled? Verify gun WATK at low tier.
-2. Is the flat tier sensitivity a correct reflection of Corsair's mechanics, or does it indicate a gear template issue?
-
-**Self-contained investigation task:**
-- Compare Corsair low/mid/high WATK values against community-verified baselines
-- Verify Battleship Cannon's 4-hit, 0.60s, 380 base power, 1.2x multiplier against source spreadsheet
-- Check if Corsair's reduced buff sensitivity matches the known ~5% SI/SE gain
-
 ### INVESTIGATE-4: Mage DPS Gap vs Physical Classes
 
 **Severity: MEDIUM**
@@ -271,9 +228,6 @@ This 2.0-2.4x spread among physical classes is more reasonable but still wider t
 
 | ID | Title | Severity | Status |
 |----|-------|----------|--------|
-| INVESTIGATE-1 | Bowmaster Hurricane seems too low vs community ranking | HIGH | **Resolved** — archer weapon WATK wasn't scaling by tier (120 across all 3). Fixed: Low 105, Mid 120, High 130. BM Hurricane High 225k→233k (#9→#8). MM Snipe+Strafe High 216k→223k. |
-| INVESTIGATE-2 | Shadower unbuffed outlier from SI-disabled assumption | MEDIUM | **Resolved** — SI enabled in Shadower templates. Savage Blow DPS increased ~15%. BStep+Assn unchanged (speed-independent combo). |
-| INVESTIGATE-3 | Corsair Battleship Cannon tier sensitivity | LOW-MEDIUM | Open |
 | INVESTIGATE-4 | Mage DPS gap vs physical classes (magnitude verification) | MEDIUM | Open |
 | INVESTIGATE-5 | Hero Axe vs Sword gap verification | LOW | Open |
 | INVESTIGATE-6 | Marksman Snipe+Strafe rotation modeling | LOW-MEDIUM | Open |
@@ -282,8 +236,7 @@ This 2.0-2.4x spread among physical classes is more reasonable but still wider t
 
 1. **INVESTIGATE-4 (Mage DPS)** — Verify the magnitude is correct before drawing balance conclusions about mages.
 2. **INVESTIGATE-6 (MM Snipe rotation)** — The small Snipe gain is counterintuitive and worth verifying.
-3. **INVESTIGATE-3 (Corsair tier sensitivity)** — Lower priority; may just be a correct reflection of Corsair's mechanics.
-4. **INVESTIGATE-5 (Hero Axe vs Sword)** — Lowest priority; the gap is small and well-explained by weapon multiplier.
+3. **INVESTIGATE-5 (Hero Axe vs Sword)** — Lowest priority; the gap is small and well-explained by weapon multiplier.
 
 ---
 
