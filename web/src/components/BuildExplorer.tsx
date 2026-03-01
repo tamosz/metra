@@ -53,7 +53,7 @@ export function BuildExplorer({ state }: BuildExplorerProps) {
       )}
 
       {template && classData && (
-        <div className="grid grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
           <div className="flex flex-col gap-5">
             <BuildStatEditor state={state} />
             <BuildBuffToggles state={state} />

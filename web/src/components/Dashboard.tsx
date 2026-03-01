@@ -4,6 +4,9 @@ import { FilterGroup } from './FilterGroup.js';
 import { SupportClassNote } from './SupportClassNote.js';
 import type { SimulationData } from '../hooks/useSimulation.js';
 import { TIER_ORDER } from '@engine/data/types.js';
+import { SCENARIO_DESCRIPTIONS } from '../utils/game-terms.js';
+import { ClassIcon } from './icons/index.js';
+import { WelcomeBanner } from './WelcomeBanner.js';
 
 interface DashboardProps {
   simulation: SimulationData;
@@ -34,11 +37,12 @@ export function Dashboard({ simulation }: DashboardProps) {
 
   return (
     <div>
+      <WelcomeBanner />
       <div className="mb-6 flex flex-wrap gap-4">
         <FilterGroup
           label="Scenario"
           value={selectedScenario}
-          options={scenarios.map((s) => ({ value: s, label: s }))}
+          options={scenarios.map((s) => ({ value: s, label: s, tooltip: SCENARIO_DESCRIPTIONS[s] }))}
           onChange={setSelectedScenario}
         />
         <FilterGroup
@@ -105,6 +109,7 @@ function RankingTable({ data }: { data: { className: string; skillName: string; 
 
   return (
     <>
+      <div className="overflow-x-auto">
       <table data-testid="ranking-table" className="w-full border-collapse text-sm">
         <thead>
           <tr className="border-b border-border-default">
@@ -137,7 +142,12 @@ function RankingTable({ data }: { data: { className: string; skillName: string; 
                 className="border-b border-border-subtle hover:bg-white/[0.03]"
               >
                 <td className="px-3 py-2 w-8 text-text-faint">{i + 1}</td>
-                <td className="px-3 py-2">{r.className}</td>
+                <td className="px-3 py-2">
+                  <span className="inline-flex items-center gap-1.5">
+                    <ClassIcon className={r.className} />
+                    {r.className}
+                  </span>
+                </td>
                 <td className="px-3 py-2 text-text-secondary">{r.skillName}</td>
                 <td className="px-3 py-2 text-text-muted">{r.tier.charAt(0).toUpperCase() + r.tier.slice(1)}</td>
                 <td className="px-3 py-2 text-right tabular-nums">
@@ -148,6 +158,7 @@ function RankingTable({ data }: { data: { className: string; skillName: string; 
           )}
         </tbody>
       </table>
+      </div>
       {sorted.length > 0 && (
         <div className="mt-2 text-right text-xs text-text-faint">
           Showing {sorted.length} {sorted.length === 1 ? 'entry' : 'entries'}

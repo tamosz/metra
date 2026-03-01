@@ -1,5 +1,7 @@
 import type { CharacterBuild } from '@engine/data/types.js';
 import type { BuildExplorerState, BuildOverrides } from '../hooks/useBuildExplorer.js';
+import { Tooltip } from './Tooltip.js';
+import { BUFF_DESCRIPTIONS } from '../utils/game-terms.js';
 
 interface BuildBuffTogglesProps {
   state: BuildExplorerState;
@@ -58,7 +60,10 @@ export function BuildBuffToggles({ state }: BuildBuffTogglesProps) {
 
         {/* MW Level */}
         <div className={`flex items-center gap-2 py-0.5 pl-2 ${mwOverridden ? 'border-l-2 border-blue-400' : 'border-l-2 border-transparent'}`}>
-          <span className="w-[120px] text-xs text-text-secondary">MW Level</span>
+          <span className="flex w-[120px] items-center text-xs text-text-secondary">
+            MW Level
+            <Tooltip text={BUFF_DESCRIPTIONS['MW Level']} />
+          </span>
           <select
             value={overrides.mapleWarriorLevel ?? template.mapleWarriorLevel}
             onChange={(e) => {
@@ -133,6 +138,7 @@ function BuffCheckbox({
       <span className={`text-xs ${isOverridden ? 'text-blue-400' : 'text-text-secondary'}`}>
         {label}
       </span>
+      {BUFF_DESCRIPTIONS[label] && <Tooltip text={BUFF_DESCRIPTIONS[label]} />}
     </label>
   );
 }
