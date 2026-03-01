@@ -1,3 +1,4 @@
+import { useCallback, useRef } from 'react';
 import type { BuildExplorerState, BuildOverrides } from '../hooks/useBuildExplorer.js';
 
 interface BuildStatEditorProps {
@@ -105,6 +106,32 @@ export function BuildStatEditor({ state }: BuildStatEditorProps) {
   );
 }
 
+function useSpinner(callback: () => void) {
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  const stop = useCallback(() => {
+    if (timerRef.current) clearTimeout(timerRef.current);
+    if (intervalRef.current) clearInterval(intervalRef.current);
+    timerRef.current = null;
+    intervalRef.current = null;
+  }, []);
+
+  const start = useCallback(() => {
+    callback();
+    timerRef.current = setTimeout(() => {
+      intervalRef.current = setInterval(callback, 80);
+    }, 400);
+  }, [callback]);
+
+  return {
+    onMouseDown: start,
+    onMouseUp: stop,
+    onMouseLeave: stop,
+    onTouchEnd: stop,
+  };
+}
+
 function StatInput({
   label,
   value,
@@ -122,20 +149,49 @@ function StatInput({
 }) {
   const displayValue = value ?? templateValue;
 
+  const decrement = useCallback(() => {
+    onChange(Math.max(0, displayValue - 1));
+  }, [displayValue, onChange]);
+
+  const increment = useCallback(() => {
+    onChange(displayValue + 1);
+  }, [displayValue, onChange]);
+
+  const decSpinner = useSpinner(decrement);
+  const incSpinner = useSpinner(increment);
+
   return (
     <div className={`flex items-center gap-2 py-0.5 pl-2 ${isOverridden ? 'border-l-2 border-blue-400' : 'border-l-2 border-transparent'}`}>
       <span className="w-20 shrink-0 text-xs text-text-muted">{label}</span>
-      <input
-        type="number"
-        value={displayValue}
-        onChange={(e) => {
-          const v = parseInt(e.target.value, 10);
-          if (!isNaN(v)) onChange(v);
-        }}
-        className={`w-[72px] rounded border border-border-default bg-bg-raised px-2 py-1 text-right text-sm tabular-nums focus:border-border-active transition-colors ${
-          isOverridden ? 'text-blue-400' : 'text-text-primary'
-        }`}
-      />
+      <div className="flex items-stretch overflow-hidden rounded border border-border-default">
+        <button
+          type="button"
+          tabIndex={-1}
+          className="flex h-6 w-5 items-center justify-center bg-bg-raised text-xs text-text-faint hover:bg-bg-active hover:text-text-muted"
+          {...decSpinner}
+        >
+          &minus;
+        </button>
+        <input
+          type="number"
+          value={displayValue}
+          onChange={(e) => {
+            const v = parseInt(e.target.value, 10);
+            if (!isNaN(v)) onChange(v);
+          }}
+          className={`w-[48px] border-x border-border-default bg-bg-raised px-1 py-1 text-center text-sm tabular-nums focus:border-border-active transition-colors [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${
+            isOverridden ? 'text-blue-400' : 'text-text-primary'
+          }`}
+        />
+        <button
+          type="button"
+          tabIndex={-1}
+          className="flex h-6 w-5 items-center justify-center bg-bg-raised text-xs text-text-faint hover:bg-bg-active hover:text-text-muted"
+          {...incSpinner}
+        >
+          +
+        </button>
+      </div>
       <span
         onClick={isOverridden ? onReset : undefined}
         className={`text-[11px] tabular-nums select-none ${
