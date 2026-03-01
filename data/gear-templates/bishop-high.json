@@ -1,5 +1,5 @@
 {
-  "source": "No mage gear templates in source spreadsheet. Same gear as Archmage I/L High — Bishop uses the same INT/MATK gear, just without Element Amplification or Elemental Staff bonus.",
+  "source": "No mage gear templates in source spreadsheet. Same gear as Archmage I/L High — Bishop uses the same INT/MATK gear, just without Element Amplification or Elemental Staff bonus. Potion: Ssiws Cheese (220 MATK) — mage-specific endgame potion.",
   "label": "Bishop High",
   "className": "Bishop",
   "baseStats": { "STR": 4, "DEX": 25, "INT": 999, "LUK": 4 },
@@ -7,8 +7,8 @@
   "totalWeaponAttack": 145,
   "weaponType": "Staff",
   "weaponSpeed": 6,
-  "attackPotion": 100,
-  "potionName": "Apple",
+  "attackPotion": 220,
+  "potionName": "Ssiws Cheese",
   "projectile": 0,
   "echoActive": true,
   "mapleWarriorLevel": 20,

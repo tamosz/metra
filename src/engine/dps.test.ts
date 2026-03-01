@@ -918,13 +918,13 @@ describe('Archmage I/L DPS', () => {
     );
 
     // Magic formula: max = floor(((TMA²/1000 + TMA)/30 + INT/200) * 1.4 * 1.25)
-    // TMA = 1348 + 145 + 100 + echo(63) = 1656
-    expect(result.damageRange.max).toBe(268);
-    expect(result.damageRange.min).toBe(223);
-    expect(result.damageRange.average).toBe(245.5);
+    // TMA = 1348 + 145 + 220 + echo(68) = 1781
+    expect(result.damageRange.max).toBe(300);
+    expect(result.damageRange.min).toBe(252);
+    expect(result.damageRange.average).toBe(276);
   });
 
-  it('Chain Lightning High tier DPS ~82,189', () => {
+  it('Chain Lightning High tier DPS ~92,400', () => {
     const cl = amData.skills.find((s) => s.name === 'Chain Lightning')!;
     const result = calculateSkillDps(
       amHigh, amData, cl, weaponData, attackSpeedData, mapleWarriorData
@@ -934,7 +934,7 @@ describe('Archmage I/L DPS', () => {
     expect(result.skillDamagePercent).toBe(210);
     // SE crit: (210 + 140) * 1 = 350
     expect(result.seDamagePercent).toBe(350);
-    expect(result.dps).toBeCloseTo(82189, -1);
+    expect(result.dps).toBeCloseTo(92400, -1);
   });
 
   it('Chain Lightning Low tier DPS ~41,848', () => {
@@ -949,7 +949,7 @@ describe('Archmage I/L DPS', () => {
     expect(result.dps).toBeCloseTo(41848, -1);
   });
 
-  it('Blizzard High tier DPS ~47,415', () => {
+  it('Blizzard High tier DPS ~53,184', () => {
     const bliz = amData.skills.find((s) => s.name === 'Blizzard')!;
     const result = calculateSkillDps(
       amHigh, amData, bliz, weaponData, attackSpeedData, mapleWarriorData
@@ -959,7 +959,7 @@ describe('Archmage I/L DPS', () => {
     expect(result.skillDamagePercent).toBe(570);
     // SE crit: (570 + 140) * 1 = 710
     expect(result.seDamagePercent).toBe(710);
-    expect(result.dps).toBeCloseTo(47415, -1);
+    expect(result.dps).toBeCloseTo(53184, -1);
   });
 
   it('uses magic formula (not standard weapon multiplier)', () => {
@@ -969,9 +969,9 @@ describe('Archmage I/L DPS', () => {
     );
 
     // Magic range cap uses raw multiplier: 199999/210 = 952.38
-    // This is well above the max damage (268), so no capping occurs
+    // This is well above the max damage (300), so no capping occurs
     // adjustedRangeNormal should equal average
-    expect(result.adjustedRangeNormal).toBe(245.5);
+    expect(result.adjustedRangeNormal).toBe(276);
   });
 
   it('High tier DPS is greater than Low tier', () => {
@@ -1021,7 +1021,7 @@ describe('Bishop DPS', () => {
     expect(bishopData.skills.length).toBe(2);
   });
 
-  it('Angel Ray High tier DPS ~45,111', () => {
+  it('Angel Ray High tier DPS ~50,750', () => {
     const ar = bishopData.skills.find((s) => s.name === 'Angel Ray')!;
     const result = calculateSkillDps(
       bishopHigh, bishopData, ar, weaponData, attackSpeedData, mapleWarriorData
@@ -1031,10 +1031,10 @@ describe('Bishop DPS', () => {
     expect(result.skillDamagePercent).toBe(240);
     // SE: (240 + 140) * 1 = 380
     expect(result.seDamagePercent).toBe(380);
-    expect(result.dps).toBeCloseTo(45111, -1);
+    expect(result.dps).toBeCloseTo(50750, -1);
   });
 
-  it('Genesis High tier DPS ~35,830', () => {
+  it('Genesis High tier DPS ~40,308', () => {
     const gen = bishopData.skills.find((s) => s.name === 'Genesis')!;
     const result = calculateSkillDps(
       bishopHigh, bishopData, gen, weaponData, attackSpeedData, mapleWarriorData
@@ -1042,7 +1042,7 @@ describe('Bishop DPS', () => {
 
     expect(result.attackTime).toBe(2.70);
     expect(result.skillDamagePercent).toBe(670);
-    expect(result.dps).toBeCloseTo(35830, -1);
+    expect(result.dps).toBeCloseTo(40308, -1);
   });
 
   it('Bishop has lower DPS than Archmage (no amp)', () => {

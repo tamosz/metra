@@ -8,24 +8,27 @@
 
 ## 1. Simulator Top-Tier DPS Summary (Buffed, High Tier)
 
-Best skill per class, fully buffed (MW20, SE, SI, Echo, Apple):
+Best skill per class, fully buffed (MW20, SE, SI, Echo, potion):
+- Physical classes use Onyx Apple (100 WATK)
+- Mages use Ssiws Cheese (220 MATK) — mage-specific endgame potion confirmed by community
 
 | Rank | Class | Skill | DPS | % of #1 |
 |-----:|-------|-------|----:|--------:|
-| 1 | Corsair | Battleship Cannon | 331,354 | 100.0% |
-| 2 | Shadower | BStep + Assassinate 30 | 326,734 | 98.6% |
-| 3 | NL | Triple Throw 30 | 292,314 | 88.2% |
-| 4 | Hero (Axe) | Brandish | 257,772 | 77.8% |
-| 5 | DrK | Spear Crusher / Fury | 251,906 | 76.0% |
-| 6 | Hero (Sword) | Brandish | 247,314 | 74.6% |
-| 7 | Buccaneer | Barrage + Demolition | 246,715 | 74.4% |
-| 8 | Bowmaster | Hurricane | 233,073 | 70.3% |
-| 9 | Corsair | Rapid Fire | 228,271 | 68.9% |
-| 10 | Marksman | Snipe + Strafe | 222,521 | 67.1% |
-| 11 | Bowmaster | Strafe | 206,551 | 62.3% |
-| 12 | Paladin | Blast (Holy, Sword) | 192,932 | 58.2% |
-| 13 | Archmage I/L | Chain Lightning | 82,189 | 24.8% |
-| 14 | Bishop | Angel Ray | 45,111 | 13.6% |
+| 1 | Corsair | Battleship Cannon | 350,586 | 100.0% |
+| 2 | Shadower | BStep + Assassinate 30 | 326,734 | 93.2% |
+| 3 | NL | Triple Throw 30 | 292,314 | 83.4% |
+| 4 | Buccaneer | Barrage + Demolition | 260,373 | 74.3% |
+| 5 | Hero (Axe) | Brandish | 257,772 | 73.5% |
+| 6 | DrK | Spear Crusher | 251,906 | 71.9% |
+| 7 | Hero (Sword) | Brandish | 247,314 | 70.5% |
+| 8 | Corsair | Rapid Fire | 241,520 | 68.9% |
+| 9 | Marksman | Snipe + Strafe | 234,586 | 66.9% |
+| 10 | Bowmaster | Hurricane | 233,073 | 66.5% |
+| 11 | Bowmaster | Strafe | 206,551 | 58.9% |
+| 12 | Paladin | Blast (Holy, Sword) | 192,932 | 55.0% |
+| 13 | Archmage F/P | Paralyze | 100,050 | 28.5% |
+| 14 | Archmage I/L | Chain Lightning | 92,400 | 26.4% |
+| 15 | Bishop | Angel Ray | 50,750 | 14.5% |
 
 ---
 
@@ -126,26 +129,26 @@ Bucc Barrage+DS at 244k sits between DrK and Corsair. Community noted Bucc was i
 
 ## 4. Areas of Disagreement / Investigation Required
 
-### INVESTIGATE-4: Mage DPS Gap vs Physical Classes
+### INVESTIGATE-4: Mage DPS Gap vs Physical Classes — RESOLVED
 
 **Severity: MEDIUM**
-**Simulator:** Archmage I/L Chain Lightning at 82k (24.8% of Corsair), Bishop Angel Ray at 45k (13.6% of Corsair).
-**Audit flags:** Bishop Genesis and Angel Ray at -1.9σ to -2.1σ across all scenarios. Archmage Blizzard at -1.5σ to -1.9σ.
+**Simulator (updated):** Archmage I/L Chain Lightning at 92k (26.4% of Corsair), Bishop Angel Ray at 51k (14.5% of Corsair).
 
-**Context:** Mage DPS is expected to be significantly lower than physical classes in v62 MapleStory. Community explicitly confirms this: "no incentive to scroll endgame INT gear," "relegated to leeching," and "no one will take them to bosses because they are only seen as leech slaves." Multiple community threads have called for Arch Mage bossing buffs. The 4:1 gap (I/L vs Corsair) and 7:1 gap (Bishop vs Corsair) may be accurate but still warrant formula verification.
+**Verdict: Formula is correct. Gap is real and expected for v62. Mage potions were wrong — now fixed.**
 
-**Possible causes:**
-1. **Magic damage formula correctness**: Verify the magic damage formula matches MapleRoyals implementation. Magic damage in v62 is: `(INT * spellAmplification * weaponAmplification * magicAttack / 100) * skillPower`.
-2. **Bishop has no amplification**: Spell amp 1.0 and weapon amp 1.0 (vs I/L's 1.4 and 1.25). This 1.75x disadvantage is huge. Verify this matches in-game.
-3. **MATK values**: Bishop/I-L use Lollipop (45 MATK) at low/mid vs physical classes using Heartstopper (60 WATK). Verify mage MATK totals.
-4. **Missing mechanics**: Are there mage-specific buffs or mechanics we're not modeling (e.g., Meditation, Spell Booster effects)?
+**Investigation findings (March 2026):**
 
-**Self-contained investigation task:**
-- Verify magic damage formula against MapleRoyals damage calculator and source spreadsheet
-- Cross-check mage gear template MATK totals against community guides
-- Verify Bishop's 1.0/1.0 amplification values (is there a skill that provides amplification we're missing?)
-- Compare our mage DPS numbers against the "damage calculator - all classes" spreadsheet referenced on royals.ms
-- Note: mage DPS being lower is expected — the question is whether the magnitude is correct
+1. **Magic damage formula verified correct.** Manual trace of Archmage I/L High Chain Lightning reproduced the simulator output exactly (92,400 DPS). Formula matches the source spreadsheet range calculator E18/E19 cell-for-cell: `MaxDmg = floor(((TMA²/1000 + TMA)/30 + INT/200) * spellAmp * weaponAmp)`.
+
+2. **Community benchmark match.** A royals.ms [forum thread](https://royals.ms/forum/threads/buff-chain-lightning-paralyze.150852/) cites ~94k DPS for Chain Lightning at 1850 TMA. Our formula at 1850 TMA produces ~92-99k depending on SE assumption — consistent.
+
+3. **Mage potion fix applied.** The source spreadsheet's E8 formula shows mage-specific potions up to 220 MATK (Ssiws Cheese), confirmed by community: *"Mages use Ssiws Cheese or Subani's Mystic Cauldron (not stoppers/apples)"* ([DPS charts thread](https://royals.ms/forum/threads/dps-charts.124709/)). Updated mage high-tier potion from Apple (100 MATK) → Ssiws Cheese (220 MATK). Impact: Archmage I/L CL 82k → 92k (+12%), Bishop AR 45k → 51k (+13%).
+
+4. **Root cause of the gap.** The magic damage formula produces raw ranges ~70× lower than physical (268 vs 18,831 max). Mage skill multipliers (210× raw) only partially compensate vs physical (4.94× effective, a ~42× ratio). Additionally, mages can't scroll non-weapon gear for MATK — physical classes get 64+ WATK from gloves/cape/shoes, while mages get MATK only from their staff.
+
+5. **Bishop amplification confirmed.** Bishop lacks Element Amplification (1.4×) and Elemental Staff bonus (1.25×) that Archmage gets. This 1.75× disadvantage is the intended v62 mechanic — Bishop's value is Holy Symbol, Heal, Dispel, and Resurrection, not DPS.
+
+6. **Community consensus aligns.** Forum posters describe mage single-target DPS as "complete garbage" at ~40% of attacker class DPS. Our ~26% (I/L vs Corsair) is even lower, but Corsair is the ceiling — vs the median physical class (~250k), I/L at 92k is ~37%, close to the community's 40% estimate.
 
 ### INVESTIGATE-5: Hero Axe vs Hero Sword Gap
 
@@ -202,12 +205,14 @@ This tier sensitivity is already captured in the statistical audit (1.32x high/l
 
 | Class | Skill | Direction | Strongest Scenario | Peak Deviation |
 |-------|-------|-----------|--------------------|---------------|
-| Shadower | BStep + Assassinate 30 | HIGH | Unbuffed (all tiers) | +2.6σ |
-| Bishop | Genesis | LOW | Buffed/Bossing/No-Echo (all tiers) | -2.1σ |
-| Corsair | Battleship Cannon | HIGH | Low tier (all scenarios) | +2.0σ |
-| Bishop | Angel Ray | LOW | All scenarios, High tier | -2.0σ |
-| Archmage I/L | Blizzard | LOW | All scenarios (all tiers) | -1.9σ |
-| Archmage I/L | Chain Lightning | LOW | Buffed/No-Echo, High tier | -1.5σ |
+| Shadower | BStep + Assassinate 30 | HIGH | Unbuffed (all tiers) | +2.9σ |
+| Corsair | Battleship Cannon | HIGH | Buffed/Bossing/No-Echo (High) | +1.8σ |
+| Bishop | Genesis | LOW | Buffed/Bossing/No-Echo (all tiers) | -1.8σ |
+| Bishop | Angel Ray | LOW | All scenarios, High tier | -1.7σ |
+| Archmage I/L | Blizzard | LOW | Bossing Undead (High) | -1.8σ |
+| Archmage F/P | Meteor | LOW | Bossing Undead (High) | -1.8σ |
+
+Note: Mage outlier severity decreased slightly after potion fix (previously -1.9σ to -2.1σ).
 
 ### Tier Sensitivity Outliers
 
@@ -221,16 +226,16 @@ This tier sensitivity is already captured in the statistical audit (1.32x high/l
 
 | Tier | Min DPS | Max DPS | Spread | Observation |
 |------|--------:|--------:|:------:|-------------|
-| Low | 18,299 | 202,986 | 11.1x | Huge gap driven by mages vs Corsair |
-| Mid | 25,465 | 243,215 | 9.6x | Narrows slightly at mid funding |
-| High | 35,830 | 331,354 | 9.3x | Still very wide; mages are the floor |
+| Low | 18,299 | 180,049 | 9.8x | Huge gap driven by mages vs Corsair |
+| Mid | 25,465 | 239,830 | 9.4x | Narrows slightly at mid funding |
+| High | 40,308 | 350,586 | 8.7x | Slightly narrower after mage potion fix |
 
 **Note:** If mages are excluded, the physical-only spread narrows to:
-- Low: 85,447 to 202,986 (2.4x)
-- Mid: 112,455 to 243,215 (2.2x)
-- High: 165,838 to 331,354 (2.0x)
+- Low: 85,447 to 180,049 (2.1x)
+- Mid: 112,455 to 239,830 (2.1x)
+- High: 165,838 to 350,586 (2.1x)
 
-This 2.0-2.4x spread among physical classes is more reasonable but still wider than the server's stated 130k-250k target range.
+This ~2.1x spread among physical classes is reasonable. Corsair Battleship Cannon at the top and Paladin BW at the bottom define the physical range.
 
 ---
 
@@ -238,15 +243,13 @@ This 2.0-2.4x spread among physical classes is more reasonable but still wider t
 
 | ID | Title | Severity | Status |
 |----|-------|----------|--------|
-| INVESTIGATE-4 | Mage DPS gap vs physical classes (magnitude verification) | MEDIUM | Open |
+| INVESTIGATE-4 | Mage DPS gap vs physical classes (magnitude verification) | MEDIUM | **Resolved** — formula correct, mage potions fixed (Apple → Ssiws Cheese) |
 | INVESTIGATE-5 | Hero Axe vs Sword gap verification | LOW | Open |
 | INVESTIGATE-6 | Marksman Snipe+Strafe rotation modeling | LOW-MEDIUM | **Resolved** — model correct, small gain expected at high tier |
 
 ### Prioritized Next Steps
 
-1. **INVESTIGATE-4 (Mage DPS)** — Verify the magnitude is correct before drawing balance conclusions about mages.
-2. **INVESTIGATE-6 (MM Snipe rotation)** — The small Snipe gain is counterintuitive and worth verifying.
-3. **INVESTIGATE-5 (Hero Axe vs Sword)** — Lowest priority; the gap is small and well-explained by weapon multiplier.
+1. **INVESTIGATE-5 (Hero Axe vs Sword)** — Low priority; the gap is small and well-explained by weapon multiplier.
 
 ---
 

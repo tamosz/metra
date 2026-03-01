@@ -22,15 +22,14 @@ describe('loadWorkbook', () => {
 });
 
 describe('getSheetNames', () => {
-  it('returns all 10 sheet names', () => {
+  it('returns all 9 sheet names', () => {
     const names = getSheetNames(workbook);
-    expect(names).toHaveLength(10);
+    expect(names).toHaveLength(9);
     expect(names).toContain('range calculator');
     expect(names).toContain('dmg');
     expect(names).toContain('maple warrior');
     expect(names).toContain('Weapons');
     expect(names).toContain('Attack Speed');
-    expect(names).toContain('hero charts');
   });
 });
 

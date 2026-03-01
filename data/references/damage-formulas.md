@@ -44,10 +44,10 @@ MaxDamage = floor(((TMA^2 / 1000 + TMA) / 30 + INT / 200) * spellAmp * weaponAmp
 
 Key differences from physical:
 - Echo for mages includes INT in the base (physical echo is WATK-only)
-- `spellAmplification` (Elemental Amplification passive): 1.4 for Archmage I/L, 1.0 for Bishop
-- `weaponAmplification` (Elemental Staff): 1.25 for Archmage I/L, 1.0 for Bishop
+- `spellAmplification` (Elemental Amplification passive): 1.4 for Archmage I/L and F/P, 1.0 for Bishop
+- `weaponAmplification` (Elemental Staff): 1.25 for Archmage I/L and F/P, 1.0 for Bishop
 - Magic skills use raw multipliers (not divided by 100)
-- Min damage is 0 (magic has no mastery-based minimum in our model)
+- Min damage uses mastery 0.6 (hardcoded in spreadsheet): `MinDmg = floor(((TMA²/1000 + TMA*0.6*0.9)/30 + INT/200) * spellAmp * weaponAmp)`
 
 ## Weapon Multipliers
 

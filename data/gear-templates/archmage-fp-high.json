@@ -1,5 +1,5 @@
 {
-  "source": "No mage gear templates in source spreadsheet. Derived from physical class templates and MapleRoyals mage gear conventions. Staff MATK ~145 (well-scrolled Elemental Staff 1, base 95 + 7 slots * 7 MATK/scroll). INT gear comparable to warrior STR gear. Mages do not benefit from Speed Infusion.",
+  "source": "No mage gear templates in source spreadsheet. Derived from physical class templates and MapleRoyals mage gear conventions. Staff MATK ~145 (well-scrolled Elemental Staff 1, base 95 + 7 slots * 7 MATK/scroll). INT gear comparable to warrior STR gear. Mages do not benefit from Speed Infusion. Potion: Ssiws Cheese (220 MATK) — mage-specific endgame potion.",
   "label": "Archmage F/P High",
   "className": "Archmage F/P",
   "baseStats": { "STR": 4, "DEX": 25, "INT": 999, "LUK": 4 },
@@ -7,8 +7,8 @@
   "totalWeaponAttack": 145,
   "weaponType": "Staff",
   "weaponSpeed": 6,
-  "attackPotion": 100,
-  "potionName": "Apple",
+  "attackPotion": 220,
+  "potionName": "Ssiws Cheese",
   "projectile": 0,
   "echoActive": true,
   "mapleWarriorLevel": 20,

@@ -26,7 +26,8 @@ Cross-referenced against MapleRoyals forum guides:
 | Tiers | Low, Mid, High | Budget → mid-funded → endgame. |
 | Low potion | 60 WATK (Heartstopper) | 1 min duration. Standard for bossing comparisons. |
 | Mid potion | 60 WATK (Heartstopper) | Same as low — mid-tier players don't regularly Apple. |
-| High potion | 100 WATK (Onyx Apple) | 10 min. Standard endgame bossing potion. |
+| High potion (physical) | 100 WATK (Onyx Apple) | 10 min. Standard endgame bossing potion. |
+| High potion (mage) | 220 MATK (Ssiws Cheese) | Mage-specific endgame potion. Community confirmed: "Mages use Ssiws Cheese or Subani's Mystic Cauldron (not stoppers/apples)" ([DPS charts thread](https://royals.ms/forum/threads/dps-charts.124709/)). Source spreadsheet E8 formula lists mage-only potions: Lollipop (45), Graham Pie (120), Subani (200), Ssiws Cheese (220). |
 | Mid mage potion | 45 MATK (Lollipop) | Same as low — Stopper gives 0 MATK for mages. |
 
 **Implications:**
