@@ -136,4 +136,44 @@ describe('useBuildExplorer', () => {
     expect(result.current.selectedTier).toBe('low');
     expect(result.current.overrides).toEqual({ baseSTR: 800 });
   });
+
+  it('stat override reaches the correct field on effectiveBuild', () => {
+    const { result } = renderHook(() => useBuildExplorer());
+
+    // Select hero so we know the primary stat is STR
+    act(() => {
+      result.current.setClass('hero');
+      result.current.setTier('high');
+    });
+
+    const templateSTR = result.current.template!.baseStats.STR;
+
+    act(() => {
+      result.current.setOverride('baseSTR', 999);
+    });
+
+    expect(result.current.effectiveBuild!.baseStats.STR).toBe(999);
+    // Other stats should remain unchanged
+    expect(result.current.effectiveBuild!.baseStats.DEX).toBe(result.current.template!.baseStats.DEX);
+  });
+
+  it('boolean override reaches the correct field on effectiveBuild', () => {
+    const { result } = renderHook(() => useBuildExplorer());
+
+    act(() => {
+      result.current.setOverride('sharpEyes', false);
+    });
+
+    expect(result.current.effectiveBuild!.sharpEyes).toBe(false);
+  });
+
+  it('totalWeaponAttack override reaches effectiveBuild', () => {
+    const { result } = renderHook(() => useBuildExplorer());
+
+    act(() => {
+      result.current.setOverride('totalWeaponAttack', 500);
+    });
+
+    expect(result.current.effectiveBuild!.totalWeaponAttack).toBe(500);
+  });
 });
