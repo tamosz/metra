@@ -15,7 +15,8 @@
       "multiplier": 1.4,
       "hitCount": 1,
       "speedCategory": "Blast",
-      "weaponType": "2H Sword"
+      "weaponType": "2H Sword",
+      "element": "Holy"
     },
     {
       "name": "Blast (F/I/L Charge, Sword)",
@@ -32,7 +33,8 @@
       "hitCount": 1,
       "speedCategory": "Blast",
       "weaponType": "2H BW",
-      "attackRatio": { "slash": 0.6, "stab": 0.4 }
+      "attackRatio": { "slash": 0.6, "stab": 0.4 },
+      "element": "Holy"
     },
     {
       "name": "Blast (F/I/L Charge, BW)",

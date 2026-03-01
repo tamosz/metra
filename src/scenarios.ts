@@ -20,4 +20,9 @@ export const DEFAULT_SCENARIOS: ScenarioConfig[] = [
     name: 'Bossing (50% PDR)',
     pdr: 0.5,
   },
+  {
+    name: 'Bossing (Undead, 50% PDR)',
+    pdr: 0.5,
+    elementModifiers: { Holy: 1.5 },
+  },
 ];

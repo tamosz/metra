@@ -17,7 +17,8 @@
       "multiplier": 1,
       "hitCount": 1,
       "speedCategory": "Chain Lightning",
-      "weaponType": "Staff"
+      "weaponType": "Staff",
+      "element": "Lightning"
     },
     {
       "name": "Blizzard",
@@ -26,7 +27,8 @@
       "multiplier": 1,
       "hitCount": 1,
       "speedCategory": "Blizzard",
-      "weaponType": "Staff"
+      "weaponType": "Staff",
+      "element": "Ice"
     }
   ]
 }
