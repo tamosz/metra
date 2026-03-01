@@ -32,6 +32,8 @@ export interface ScenarioConfig {
     'mapleWarriorLevel' | 'attackPotion' | 'shadowPartner'>>;
   /** Physical Damage Reduction (0–1). Applied as a multiplier: effectiveDps = dps * (1 - pdr). */
   pdr?: number;
+  /** Element → damage multiplier map. Skills with a matching element get multiplied (default 1.0). */
+  elementModifiers?: Record<string, number>;
 }
 
 /** DPS result for a single class/skill/tier combination. */

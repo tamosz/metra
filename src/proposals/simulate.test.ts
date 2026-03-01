@@ -31,6 +31,7 @@ beforeAll(() => {
   classDataMap = new Map([
     ['hero', loadClassSkills('Hero')],
     ['bucc', loadClassSkills('Bucc')],
+    ['paladin', loadClassSkills('Paladin')],
   ]);
 
   gearTemplates = new Map([
@@ -38,6 +39,7 @@ beforeAll(() => {
     ['hero-high', loadGearTemplate('hero-high')],
     ['bucc-low', loadGearTemplate('bucc-low')],
     ['bucc-high', loadGearTemplate('bucc-high')],
+    ['paladin-high', loadGearTemplate('paladin-high')],
   ]);
 });
 
@@ -296,6 +298,109 @@ describe('runSimulation PDR', () => {
     for (const r of results) {
       expect(r.dps.dps).toBe(0);
     }
+  });
+});
+
+describe('elementModifiers', () => {
+  it('Holy 1.5x multiplies Holy-element skill DPS by 1.5', () => {
+    const config: SimulationConfig = {
+      classes: ['paladin'],
+      tiers: ['high'],
+      scenarios: [
+        { name: 'Buffed' },
+        { name: 'Holy Advantage', elementModifiers: { Holy: 1.5 } },
+      ],
+    };
+
+    const results = runSimulation(
+      config, classDataMap, gearTemplates,
+      weaponData, attackSpeedData, mapleWarriorData
+    );
+
+    const buffed = results.find(
+      r => r.skillName === 'Blast (Holy, Sword)' && r.scenario === 'Buffed'
+    )!;
+    const holy = results.find(
+      r => r.skillName === 'Blast (Holy, Sword)' && r.scenario === 'Holy Advantage'
+    )!;
+
+    expect(holy.dps.dps).toBeCloseTo(buffed.dps.dps * 1.5, 0);
+  });
+
+  it('non-elemental skills unaffected by elementModifiers', () => {
+    const config: SimulationConfig = {
+      classes: ['paladin'],
+      tiers: ['high'],
+      scenarios: [
+        { name: 'Buffed' },
+        { name: 'Holy Advantage', elementModifiers: { Holy: 1.5 } },
+      ],
+    };
+
+    const results = runSimulation(
+      config, classDataMap, gearTemplates,
+      weaponData, attackSpeedData, mapleWarriorData
+    );
+
+    const buffed = results.find(
+      r => r.skillName === 'Blast (F/I/L Charge, Sword)' && r.scenario === 'Buffed'
+    )!;
+    const holy = results.find(
+      r => r.skillName === 'Blast (F/I/L Charge, Sword)' && r.scenario === 'Holy Advantage'
+    )!;
+
+    expect(holy.dps.dps).toBe(buffed.dps.dps);
+  });
+
+  it('element modifier stacks multiplicatively with PDR', () => {
+    const config: SimulationConfig = {
+      classes: ['paladin'],
+      tiers: ['high'],
+      scenarios: [
+        { name: 'Buffed' },
+        { name: 'Undead Boss', pdr: 0.5, elementModifiers: { Holy: 1.5 } },
+      ],
+    };
+
+    const results = runSimulation(
+      config, classDataMap, gearTemplates,
+      weaponData, attackSpeedData, mapleWarriorData
+    );
+
+    const buffed = results.find(
+      r => r.skillName === 'Blast (Holy, Sword)' && r.scenario === 'Buffed'
+    )!;
+    const undead = results.find(
+      r => r.skillName === 'Blast (Holy, Sword)' && r.scenario === 'Undead Boss'
+    )!;
+
+    // 0.5 PDR * 1.5 Holy = 0.75x net
+    expect(undead.dps.dps).toBeCloseTo(buffed.dps.dps * 0.75, 0);
+  });
+
+  it('element resistance (0.5x) reduces elemental skill DPS', () => {
+    const config: SimulationConfig = {
+      classes: ['paladin'],
+      tiers: ['high'],
+      scenarios: [
+        { name: 'Buffed' },
+        { name: 'Holy Resist', elementModifiers: { Holy: 0.5 } },
+      ],
+    };
+
+    const results = runSimulation(
+      config, classDataMap, gearTemplates,
+      weaponData, attackSpeedData, mapleWarriorData
+    );
+
+    const buffed = results.find(
+      r => r.skillName === 'Blast (Holy, Sword)' && r.scenario === 'Buffed'
+    )!;
+    const resist = results.find(
+      r => r.skillName === 'Blast (Holy, Sword)' && r.scenario === 'Holy Resist'
+    )!;
+
+    expect(resist.dps.dps).toBeCloseTo(buffed.dps.dps * 0.5, 0);
   });
 });
 
