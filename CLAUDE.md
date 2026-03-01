@@ -61,6 +61,7 @@ Actual files:
 - `maple-warrior.json` — MW level → stat multiplier table.
 - `gear-assumptions.md` — documents all baked-in assumptions in gear templates (buff availability, stat choices, funding philosophy, per-slot WATK breakdowns validated against forum guides).
 - `source-sheet.xlsx` — original spreadsheet (read-only reference).
+- `references/` — extracted forum knowledge organized by topic. Check these BEFORE web-searching royals.ms. When adding forum-sourced data: add to the relevant file with source URL, access date, and which data files it relates to.
 
 ### 2. Simulation Engine (`/src/engine`)
 Pure functions. No side effects, no I/O. Takes game data + a character build, outputs damage ranges and DPS.
