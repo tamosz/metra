@@ -16,7 +16,7 @@ describe('DEFAULT_SCENARIOS', () => {
   it('override keys are valid CharacterBuild fields', () => {
     const validKeys = new Set([
       'sharpEyes', 'echoActive', 'speedInfusion',
-      'mapleWarriorLevel', 'attackPotion', 'shadowPartner',
+      'mwLevel', 'attackPotion', 'shadowPartner',
     ]);
     for (const scenario of DEFAULT_SCENARIOS) {
       if (scenario.overrides) {
@@ -56,7 +56,7 @@ describe('DEFAULT_SCENARIOS', () => {
       sharpEyes: false,
       echoActive: false,
       speedInfusion: false,
-      mapleWarriorLevel: 0,
+      mwLevel: 0,
       attackPotion: 0,
     });
   });

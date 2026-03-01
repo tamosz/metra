@@ -2,7 +2,7 @@ import {
   TIER_ORDER,
   type WeaponData,
   type AttackSpeedData,
-  type MapleWarriorData,
+  type MWData,
   type ClassSkillData,
   type CharacterBuild,
 } from '@engine/data/types.js';
@@ -10,7 +10,7 @@ import {
 // Static imports — bundled at build time, no fetch latency
 import weaponsJson from '@data/weapons.json';
 import attackSpeedJson from '@data/attack-speed.json';
-import mapleWarriorJson from '@data/maple-warrior.json';
+import mwJson from '@data/mw.json';
 
 // Skill data
 const skillModules = import.meta.glob('@data/skills/*.json', { eager: true, import: 'default' }) as Record<string, ClassSkillData>;
@@ -20,7 +20,7 @@ const templateModules = import.meta.glob('@data/gear-templates/*.json', { eager:
 
 export const weaponData: WeaponData = weaponsJson as WeaponData;
 export const attackSpeedData: AttackSpeedData = attackSpeedJson as AttackSpeedData;
-export const mapleWarriorData: MapleWarriorData = (mapleWarriorJson as { entries: MapleWarriorData }).entries;
+export const mwData: MWData = (mwJson as { entries: MWData }).entries;
 
 function parseGearTemplate(raw: Record<string, unknown>): CharacterBuild {
   return {
@@ -33,7 +33,7 @@ function parseGearTemplate(raw: Record<string, unknown>): CharacterBuild {
     attackPotion: raw.attackPotion as number,
     projectile: raw.projectile as number,
     echoActive: raw.echoActive as boolean,
-    mapleWarriorLevel: raw.mapleWarriorLevel as number,
+    mwLevel: raw.mwLevel as number,
     speedInfusion: raw.speedInfusion as boolean,
     sharpEyes: raw.sharpEyes as boolean,
     shadowPartner: raw.shadowPartner as boolean | undefined,

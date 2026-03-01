@@ -30,10 +30,10 @@ export function WelcomeBanner() {
         </svg>
       </button>
       <div className="text-sm font-medium text-text-bright">
-        MapleRoyals Balance Simulator
+        Royals Balance Simulator
       </div>
       <p className="m-0 mt-1.5 text-xs leading-relaxed text-text-muted">
-        Compare DPS across MapleRoyals classes at different funding tiers and buff scenarios.
+        Compare DPS across Royals classes at different funding tiers and buff scenarios.
         Use the <strong className="text-text-secondary">Proposal Builder</strong> to test balance changes,
         or explore individual builds in <strong className="text-text-secondary">Build Explorer</strong>.
       </p>

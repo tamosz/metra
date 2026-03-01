@@ -52,7 +52,7 @@ Key differences from physical:
 ## Weapon Multipliers
 
 **Source:** [Damage Range Calculator](https://royals.ms/forum/threads/damage-range-calculator.17086/)
-**Source:** [MapleRoyals hasn't changed axes](https://royals.ms/forum/threads/did-mapleroyals-balance-the-damage-between-axe-blunt-weapon-and-sword%EF%BC%9F.125863/)
+**Source:** [Royals hasn't changed axes](https://royals.ms/forum/threads/did-mapleroyals-balance-the-damage-between-axe-blunt-weapon-and-sword%EF%BC%9F.125863/)
 **Accessed:** 2026-02-01
 **Used in:** `data/weapons.json`
 
@@ -72,7 +72,7 @@ Key differences from physical:
 | Knuckle | 4.8 | 4.8 | Buccaneer |
 | Dagger | 3.6 | 3.6 | Shadower |
 
-Axe/BW multipliers (1H 4.4, 2H 4.8) are standard GMS v62 — MapleRoyals has not modified
+Axe/BW multipliers (1H 4.4, 2H 4.8) are standard GMS v62 — Royals has not modified
 them. Confirmed by StrategyWiki, Ayumilove, and community member Zerato.
 
 ### BW Swing/Stab Ratio

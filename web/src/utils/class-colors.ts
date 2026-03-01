@@ -1,5 +1,5 @@
 /**
- * Color palette for MapleStory classes.
+ * Color palette for Royals classes.
  * Designed for dark backgrounds with good contrast and class identity.
  */
 const CLASS_COLORS: Record<string, string> = {

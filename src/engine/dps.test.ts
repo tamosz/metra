@@ -2,14 +2,14 @@ import { describe, it, expect, beforeAll } from 'vitest';
 import {
   loadWeapons,
   loadAttackSpeed,
-  loadMapleWarrior,
+  loadMW,
   loadClassSkills,
   loadGearTemplate,
 } from '../data/loader.js';
 import type {
   WeaponData,
   AttackSpeedData,
-  MapleWarriorData,
+  MWData,
   ClassSkillData,
   CharacterBuild,
 } from '../data/types.js';
@@ -18,7 +18,7 @@ import type { SkillEntry } from '../data/types.js';
 
 let weaponData: WeaponData;
 let attackSpeedData: AttackSpeedData;
-let mapleWarriorData: MapleWarriorData;
+let mwData: MWData;
 let heroData: ClassSkillData;
 let heroHigh: CharacterBuild;
 let heroLow: CharacterBuild;
@@ -35,7 +35,7 @@ let nlLow: CharacterBuild;
 beforeAll(() => {
   weaponData = loadWeapons();
   attackSpeedData = loadAttackSpeed();
-  mapleWarriorData = loadMapleWarrior();
+  mwData = loadMW();
   heroData = loadClassSkills('Hero');
   heroHigh = loadGearTemplate('hero-high');
   heroLow = loadGearTemplate('hero-low');
@@ -61,7 +61,7 @@ describe('Hero Brandish (Sword) DPS', () => {
       brandish,
       weaponData,
       attackSpeedData,
-      mapleWarriorData
+      mwData
     );
 
     // Verify intermediate values
@@ -86,7 +86,7 @@ describe('Hero Brandish (Sword) DPS', () => {
       brandish,
       weaponData,
       attackSpeedData,
-      mapleWarriorData
+      mwData
     );
 
     // After weapon WATK reduction (178→168 WATK)
@@ -108,7 +108,7 @@ describe('Hero Brandish (Sword) DPS', () => {
       brandish,
       weaponData,
       attackSpeedData,
-      mapleWarriorData
+      mwData
     );
 
     // After C/G/S standardization (214→203 WATK)
@@ -125,7 +125,7 @@ describe('Hero Brandish (Sword) DPS', () => {
       brandish,
       weaponData,
       attackSpeedData,
-      mapleWarriorData
+      mwData
     );
 
     // After weapon WATK reduction (178→168 WATK)
@@ -142,7 +142,7 @@ describe('DrK Spear Crusher DPS', () => {
       crusher,
       weaponData,
       attackSpeedData,
-      mapleWarriorData
+      mwData
     );
 
     // Berserk multiplier updated from 2.0 to 2.1 per royals.ms Update #68
@@ -165,7 +165,7 @@ describe('DrK Spear Crusher DPS', () => {
       crusher,
       weaponData,
       attackSpeedData,
-      mapleWarriorData
+      mwData
     );
 
     // Computed from gear template (WATK=165, Spear, mastery 0.8)
@@ -187,7 +187,7 @@ describe('DrK Spear Crusher DPS', () => {
       crusher,
       weaponData,
       attackSpeedData,
-      mapleWarriorData
+      mwData
     );
 
     // SE damage% = (170 + 140) * 2.1 = 651
@@ -213,7 +213,7 @@ describe('Paladin Blast DPS', () => {
       blast,
       weaponData,
       attackSpeedData,
-      mapleWarriorData
+      mwData
     );
 
     // Paladin SE: basePower * multiplier + bonus = 580 * 1.4 + 140 = 952
@@ -232,7 +232,7 @@ describe('Paladin Blast DPS', () => {
       blast,
       weaponData,
       attackSpeedData,
-      mapleWarriorData
+      mwData
     );
 
     // Paladin uses Hero-identical gear (gear templates sheet row 3: "Hero & Paladin")
@@ -253,7 +253,7 @@ describe('Paladin Blast DPS', () => {
       blast,
       weaponData,
       attackSpeedData,
-      mapleWarriorData
+      mwData
     );
 
     // Same damage range as Hero Low after weapon WATK reduction (178→168 WATK)
@@ -273,7 +273,7 @@ describe('Paladin Blast DPS', () => {
       blast,
       weaponData,
       attackSpeedData,
-      mapleWarriorData
+      mwData
     );
 
     // F/I/L charge uses Strafe/Snipe speed (0.60s at speed 2)
@@ -295,7 +295,7 @@ describe('Paladin BW Blast DPS', () => {
       blast,
       weaponData,
       attackSpeedData,
-      mapleWarriorData
+      mwData
     );
 
     // Same speed category as Sword Blast → same attack time
@@ -321,7 +321,7 @@ describe('Paladin BW Blast DPS', () => {
       blast,
       weaponData,
       attackSpeedData,
-      mapleWarriorData
+      mwData
     );
 
     // BW charge variant uses Blast speed (same as all BW variants)
@@ -347,7 +347,7 @@ describe('Paladin BW Blast DPS', () => {
       swordBlast,
       weaponData,
       attackSpeedData,
-      mapleWarriorData
+      mwData
     );
     const bwResult = calculateSkillDps(
       paladinHigh,
@@ -355,7 +355,7 @@ describe('Paladin BW Blast DPS', () => {
       bwBlast,
       weaponData,
       attackSpeedData,
-      mapleWarriorData
+      mwData
     );
 
     // 2H BW effective = 4.24 (3:2 swing/stab) < 2H Sword 4.6 → Sword wins
@@ -373,7 +373,7 @@ describe('NL Gear Template DPS', () => {
       tt,
       weaponData,
       attackSpeedData,
-      mapleWarriorData
+      mwData
     );
 
     // totalAttack = 144 + 100 + 30 + echo(floor(274*0.04)=10) = 284
@@ -392,7 +392,7 @@ describe('NL Gear Template DPS', () => {
       tt,
       weaponData,
       attackSpeedData,
-      mapleWarriorData
+      mwData
     );
 
     // totalAttack = 105 + 60 + 27 + echo(floor(192*0.04)=7) = 199
@@ -411,7 +411,7 @@ describe('NL Gear Template DPS', () => {
       tt,
       weaponData,
       attackSpeedData,
-      mapleWarriorData
+      mwData
     );
     const lowResult = calculateSkillDps(
       nlLow,
@@ -419,7 +419,7 @@ describe('NL Gear Template DPS', () => {
       tt,
       weaponData,
       attackSpeedData,
-      mapleWarriorData
+      mwData
     );
 
     expect(highResult.dps).toBeGreaterThan(lowResult.dps);
@@ -435,7 +435,7 @@ describe('NL Gear Template DPS', () => {
       tt,
       weaponData,
       attackSpeedData,
-      mapleWarriorData
+      mwData
     );
 
     expect(result.attackTime).toBe(0.60);
@@ -459,7 +459,7 @@ describe('Night Lord Triple Throw DPS', () => {
     attackPotion: 0,
     projectile: 27,
     echoActive: false,
-    mapleWarriorLevel: 20,
+    mwLevel: 20,
     speedInfusion: true,
     sharpEyes: true,
     shadowPartner: true,
@@ -485,7 +485,7 @@ describe('Night Lord Triple Throw DPS', () => {
       tt,
       weaponData,
       attackSpeedData,
-      mapleWarriorData
+      mwData
     );
 
     // Throwing star: max = floor(5.0 * LUK * totalAttack / 100)
@@ -506,7 +506,7 @@ describe('Night Lord Triple Throw DPS', () => {
       tt,
       weaponData,
       attackSpeedData,
-      mapleWarriorData
+      mwData
     );
 
     // Normal: 150 * 1 = 150
@@ -524,7 +524,7 @@ describe('Night Lord Triple Throw DPS', () => {
       tt,
       weaponData,
       attackSpeedData,
-      mapleWarriorData
+      mwData
     );
 
     // Without SE: crit bonus = 100 only (built-in), no SE bonus
@@ -540,7 +540,7 @@ describe('Night Lord Triple Throw DPS', () => {
       tt,
       weaponData,
       attackSpeedData,
-      mapleWarriorData
+      mwData
     );
 
     // Verify via average damage formula:
@@ -554,7 +554,7 @@ describe('Night Lord Triple Throw DPS', () => {
       tt,
       weaponData,
       attackSpeedData,
-      mapleWarriorData
+      mwData
     );
     // Shadow Partner should multiply by exactly 1.5
     expect(result.averageDamage / resultNoSp.averageDamage).toBeCloseTo(1.5);
@@ -568,7 +568,7 @@ describe('Night Lord Triple Throw DPS', () => {
       tt,
       weaponData,
       attackSpeedData,
-      mapleWarriorData
+      mwData
     );
     const noSpBuild = { ...nlBuild, shadowPartner: false };
     const withoutSp = calculateSkillDps(
@@ -577,7 +577,7 @@ describe('Night Lord Triple Throw DPS', () => {
       tt,
       weaponData,
       attackSpeedData,
-      mapleWarriorData
+      mwData
     );
 
     expect(withSp.dps / withoutSp.dps).toBeCloseTo(1.5);
@@ -591,7 +591,7 @@ describe('Night Lord Triple Throw DPS', () => {
       tt,
       weaponData,
       attackSpeedData,
-      mapleWarriorData
+      mwData
     );
 
     // weaponSpeed=4 - booster(2) - SI(1) = speed 1, clamped to 2
@@ -623,7 +623,7 @@ describe('Shadower DPS', () => {
   it('uses standard damage formula with Dagger 3.6x multiplier', () => {
     const bstep = shadData.skills.find((s) => s.name === 'Boomerang Step')!;
     const result = calculateSkillDps(
-      shadHigh, shadData, bstep, weaponData, attackSpeedData, mapleWarriorData
+      shadHigh, shadData, bstep, weaponData, attackSpeedData, mwData
     );
 
     // Standard formula: max = floor((LUK * 3.6 + STR + DEX) * totalAttack / 100)
@@ -642,10 +642,10 @@ describe('Shadower DPS', () => {
     const bstep = shadData.skills.find((s) => s.name === 'Boomerang Step')!;
     const assn = shadData.skills.find((s) => s.name === 'Assassinate 30')!;
     const bstepResult = calculateSkillDps(
-      shadHigh, shadData, bstep, weaponData, attackSpeedData, mapleWarriorData
+      shadHigh, shadData, bstep, weaponData, attackSpeedData, mwData
     );
     const assnResult = calculateSkillDps(
-      shadHigh, shadData, assn, weaponData, attackSpeedData, mapleWarriorData
+      shadHigh, shadData, assn, weaponData, attackSpeedData, mwData
     );
 
     // Both share the combo cycle time
@@ -656,7 +656,7 @@ describe('Shadower DPS', () => {
   it('Savage Blow uses Strafe/Snipe speed (0.60s at speed 2)', () => {
     const sb = shadData.skills.find((s) => s.name === 'Savage Blow')!;
     const result = calculateSkillDps(
-      shadHigh, shadData, sb, weaponData, attackSpeedData, mapleWarriorData
+      shadHigh, shadData, sb, weaponData, attackSpeedData, mwData
     );
 
     // weaponSpeed 5 - booster 2 - SI 2 = speed 2 (capped)
@@ -666,7 +666,7 @@ describe('Shadower DPS', () => {
   it('has no built-in crit (SE only at 15%)', () => {
     const bstep = shadData.skills.find((s) => s.name === 'Boomerang Step')!;
     const result = calculateSkillDps(
-      shadHigh, shadData, bstep, weaponData, attackSpeedData, mapleWarriorData
+      shadHigh, shadData, bstep, weaponData, attackSpeedData, mwData
     );
 
     // Normal: 600 * 1 = 600
@@ -678,11 +678,11 @@ describe('Shadower DPS', () => {
   it('Shadow Partner multiplies DPS by 1.5', () => {
     const bstep = shadData.skills.find((s) => s.name === 'Boomerang Step')!;
     const withSp = calculateSkillDps(
-      shadHigh, shadData, bstep, weaponData, attackSpeedData, mapleWarriorData
+      shadHigh, shadData, bstep, weaponData, attackSpeedData, mwData
     );
     const noSpBuild = { ...shadHigh, shadowPartner: false };
     const withoutSp = calculateSkillDps(
-      noSpBuild, shadData, bstep, weaponData, attackSpeedData, mapleWarriorData
+      noSpBuild, shadData, bstep, weaponData, attackSpeedData, mwData
     );
 
     expect(withSp.dps / withoutSp.dps).toBeCloseTo(1.5);
@@ -692,10 +692,10 @@ describe('Shadower DPS', () => {
     const bstep = shadData.skills.find((s) => s.name === 'Boomerang Step')!;
     const assn = shadData.skills.find((s) => s.name === 'Assassinate 30')!;
     const bstepDps = calculateSkillDps(
-      shadHigh, shadData, bstep, weaponData, attackSpeedData, mapleWarriorData
+      shadHigh, shadData, bstep, weaponData, attackSpeedData, mwData
     ).dps;
     const assnDps = calculateSkillDps(
-      shadHigh, shadData, assn, weaponData, attackSpeedData, mapleWarriorData
+      shadHigh, shadData, assn, weaponData, attackSpeedData, mwData
     ).dps;
 
     // Combo DPS = sum of individual DPS (both share 2.31s cycle)
@@ -707,7 +707,7 @@ describe('Shadower DPS', () => {
   it('High tier Savage Blow DPS', () => {
     const sb = shadData.skills.find((s) => s.name === 'Savage Blow')!;
     const result = calculateSkillDps(
-      shadHigh, shadData, sb, weaponData, attackSpeedData, mapleWarriorData
+      shadHigh, shadData, sb, weaponData, attackSpeedData, mwData
     );
 
     expect(result.dps).toBeCloseTo(183467, -1);
@@ -717,10 +717,10 @@ describe('Shadower DPS', () => {
     const bstep = shadData.skills.find((s) => s.name === 'Boomerang Step')!;
     const assn = shadData.skills.find((s) => s.name === 'Assassinate 30')!;
     const bstepDps = calculateSkillDps(
-      shadLow, shadData, bstep, weaponData, attackSpeedData, mapleWarriorData
+      shadLow, shadData, bstep, weaponData, attackSpeedData, mwData
     ).dps;
     const assnDps = calculateSkillDps(
-      shadLow, shadData, assn, weaponData, attackSpeedData, mapleWarriorData
+      shadLow, shadData, assn, weaponData, attackSpeedData, mwData
     ).dps;
 
     const comboDps = bstepDps + assnDps;
@@ -730,7 +730,7 @@ describe('Shadower DPS', () => {
   it('Low tier Savage Blow DPS', () => {
     const sb = shadData.skills.find((s) => s.name === 'Savage Blow')!;
     const result = calculateSkillDps(
-      shadLow, shadData, sb, weaponData, attackSpeedData, mapleWarriorData
+      shadLow, shadData, sb, weaponData, attackSpeedData, mwData
     );
 
     expect(result.dps).toBeCloseTo(111504, -1);
@@ -739,10 +739,10 @@ describe('Shadower DPS', () => {
   it('High tier DPS is greater than Low tier for all skills', () => {
     for (const skill of shadData.skills) {
       const high = calculateSkillDps(
-        shadHigh, shadData, skill, weaponData, attackSpeedData, mapleWarriorData
+        shadHigh, shadData, skill, weaponData, attackSpeedData, mwData
       );
       const low = calculateSkillDps(
-        shadLow, shadData, skill, weaponData, attackSpeedData, mapleWarriorData
+        shadLow, shadData, skill, weaponData, attackSpeedData, mwData
       );
       expect(high.dps).toBeGreaterThan(low.dps);
     }
@@ -772,7 +772,7 @@ describe('Marksman DPS', () => {
   it('Strafe (MM) uses Crossbow 3.6x multiplier', () => {
     const strafe = mmData.skills.find((s) => s.name === 'Strafe (MM)')!;
     const result = calculateSkillDps(
-      mmHigh, mmData, strafe, weaponData, attackSpeedData, mapleWarriorData
+      mmHigh, mmData, strafe, weaponData, attackSpeedData, mwData
     );
 
     // Standard formula with Crossbow 3.6x, mastery 1.0 (Update #71)
@@ -787,7 +787,7 @@ describe('Marksman DPS', () => {
   it('Strafe (MM) High tier DPS ~232,748', () => {
     const strafe = mmData.skills.find((s) => s.name === 'Strafe (MM)')!;
     const result = calculateSkillDps(
-      mmHigh, mmData, strafe, weaponData, attackSpeedData, mapleWarriorData
+      mmHigh, mmData, strafe, weaponData, attackSpeedData, mwData
     );
 
     // 4-hit, 0.6s attack time, 55% crit (40% Critical Shot + 15% SE)
@@ -801,7 +801,7 @@ describe('Marksman DPS', () => {
   it('Strafe (MM) Low tier DPS ~105,644', () => {
     const strafe = mmData.skills.find((s) => s.name === 'Strafe (MM)')!;
     const result = calculateSkillDps(
-      mmLow, mmData, strafe, weaponData, attackSpeedData, mapleWarriorData
+      mmLow, mmData, strafe, weaponData, attackSpeedData, mwData
     );
 
     expect(result.attackTime).toBe(0.60);
@@ -813,7 +813,7 @@ describe('Marksman DPS', () => {
     expect(snipe.fixedDamage).toBe(195000);
 
     const result = calculateSkillDps(
-      mmHigh, mmData, snipe, weaponData, attackSpeedData, mapleWarriorData
+      mmHigh, mmData, snipe, weaponData, attackSpeedData, mwData
     );
 
     // Fixed damage: bypasses damage formula entirely
@@ -827,7 +827,7 @@ describe('Marksman DPS', () => {
   it('Snipe DPS = 39,000 (195000 / 5.0s rotation cycle)', () => {
     const snipe = mmData.skills.find((s) => s.name === 'Snipe')!;
     const result = calculateSkillDps(
-      mmHigh, mmData, snipe, weaponData, attackSpeedData, mapleWarriorData
+      mmHigh, mmData, snipe, weaponData, attackSpeedData, mwData
     );
 
     expect(result.attackTime).toBe(5.00);
@@ -839,10 +839,10 @@ describe('Marksman DPS', () => {
     const doubleHitSnipe = { ...snipe, hitCount: 2 };
 
     const single = calculateSkillDps(
-      mmHigh, mmData, snipe, weaponData, attackSpeedData, mapleWarriorData
+      mmHigh, mmData, snipe, weaponData, attackSpeedData, mwData
     );
     const double = calculateSkillDps(
-      mmHigh, mmData, doubleHitSnipe, weaponData, attackSpeedData, mapleWarriorData
+      mmHigh, mmData, doubleHitSnipe, weaponData, attackSpeedData, mwData
     );
 
     expect(double.averageDamage).toBe(single.averageDamage * 2);
@@ -854,10 +854,10 @@ describe('Marksman DPS', () => {
   it('Snipe DPS is gear-independent (same at low and high tier)', () => {
     const snipe = mmData.skills.find((s) => s.name === 'Snipe')!;
     const highResult = calculateSkillDps(
-      mmHigh, mmData, snipe, weaponData, attackSpeedData, mapleWarriorData
+      mmHigh, mmData, snipe, weaponData, attackSpeedData, mwData
     );
     const lowResult = calculateSkillDps(
-      mmLow, mmData, snipe, weaponData, attackSpeedData, mapleWarriorData
+      mmLow, mmData, snipe, weaponData, attackSpeedData, mwData
     );
 
     expect(highResult.dps).toBe(lowResult.dps);
@@ -867,7 +867,7 @@ describe('Marksman DPS', () => {
   it('Strafe (in Snipe Rotation) uses 0.714s attack time at speed 2', () => {
     const strafeRotation = mmData.skills.find((s) => s.name === 'Strafe (in Snipe Rotation)')!;
     const result = calculateSkillDps(
-      mmHigh, mmData, strafeRotation, weaponData, attackSpeedData, mapleWarriorData
+      mmHigh, mmData, strafeRotation, weaponData, attackSpeedData, mwData
     );
 
     // 7 Strafes per 5s cycle → effective attack time = 5.0/7 = 0.714s
@@ -880,10 +880,10 @@ describe('Marksman DPS', () => {
   it('Strafe (MM) High tier DPS > Low tier', () => {
     const strafe = mmData.skills.find((s) => s.name === 'Strafe (MM)')!;
     const highResult = calculateSkillDps(
-      mmHigh, mmData, strafe, weaponData, attackSpeedData, mapleWarriorData
+      mmHigh, mmData, strafe, weaponData, attackSpeedData, mwData
     );
     const lowResult = calculateSkillDps(
-      mmLow, mmData, strafe, weaponData, attackSpeedData, mapleWarriorData
+      mmLow, mmData, strafe, weaponData, attackSpeedData, mwData
     );
 
     expect(highResult.dps).toBeGreaterThan(lowResult.dps);
@@ -914,7 +914,7 @@ describe('Archmage I/L DPS', () => {
   it('Chain Lightning High tier damage range', () => {
     const cl = amData.skills.find((s) => s.name === 'Chain Lightning')!;
     const result = calculateSkillDps(
-      amHigh, amData, cl, weaponData, attackSpeedData, mapleWarriorData
+      amHigh, amData, cl, weaponData, attackSpeedData, mwData
     );
 
     // Magic formula: max = floor(((TMA²/1000 + TMA)/30 + INT/200) * 1.4 * 1.25)
@@ -927,7 +927,7 @@ describe('Archmage I/L DPS', () => {
   it('Chain Lightning High tier DPS ~92,400', () => {
     const cl = amData.skills.find((s) => s.name === 'Chain Lightning')!;
     const result = calculateSkillDps(
-      amHigh, amData, cl, weaponData, attackSpeedData, mapleWarriorData
+      amHigh, amData, cl, weaponData, attackSpeedData, mwData
     );
 
     expect(result.attackTime).toBe(0.69);
@@ -940,7 +940,7 @@ describe('Archmage I/L DPS', () => {
   it('Chain Lightning Low tier DPS ~41,848', () => {
     const cl = amData.skills.find((s) => s.name === 'Chain Lightning')!;
     const result = calculateSkillDps(
-      amLow, amData, cl, weaponData, attackSpeedData, mapleWarriorData
+      amLow, amData, cl, weaponData, attackSpeedData, mwData
     );
 
     expect(result.attackTime).toBe(0.69);
@@ -952,7 +952,7 @@ describe('Archmage I/L DPS', () => {
   it('Blizzard High tier DPS ~53,184', () => {
     const bliz = amData.skills.find((s) => s.name === 'Blizzard')!;
     const result = calculateSkillDps(
-      amHigh, amData, bliz, weaponData, attackSpeedData, mapleWarriorData
+      amHigh, amData, bliz, weaponData, attackSpeedData, mwData
     );
 
     expect(result.attackTime).toBe(3.06);
@@ -965,7 +965,7 @@ describe('Archmage I/L DPS', () => {
   it('uses magic formula (not standard weapon multiplier)', () => {
     const cl = amData.skills.find((s) => s.name === 'Chain Lightning')!;
     const result = calculateSkillDps(
-      amHigh, amData, cl, weaponData, attackSpeedData, mapleWarriorData
+      amHigh, amData, cl, weaponData, attackSpeedData, mwData
     );
 
     // Magic range cap uses raw multiplier: 199999/210 = 952.38
@@ -977,10 +977,10 @@ describe('Archmage I/L DPS', () => {
   it('High tier DPS is greater than Low tier', () => {
     for (const skill of amData.skills) {
       const high = calculateSkillDps(
-        amHigh, amData, skill, weaponData, attackSpeedData, mapleWarriorData
+        amHigh, amData, skill, weaponData, attackSpeedData, mwData
       );
       const low = calculateSkillDps(
-        amLow, amData, skill, weaponData, attackSpeedData, mapleWarriorData
+        amLow, amData, skill, weaponData, attackSpeedData, mwData
       );
       expect(high.dps).toBeGreaterThan(low.dps);
     }
@@ -994,8 +994,8 @@ describe('Archmage I/L DPS', () => {
   it('engine ignores speedInfusion even if set to true for magic classes', () => {
     const cl = amData.skills.find((s) => s.name === 'Chain Lightning')!;
     const buildWithSI = { ...amHigh, speedInfusion: true };
-    const resultWithSI = calculateSkillDps(buildWithSI, amData, cl, weaponData, attackSpeedData, mapleWarriorData);
-    const resultWithoutSI = calculateSkillDps(amHigh, amData, cl, weaponData, attackSpeedData, mapleWarriorData);
+    const resultWithSI = calculateSkillDps(buildWithSI, amData, cl, weaponData, attackSpeedData, mwData);
+    const resultWithoutSI = calculateSkillDps(amHigh, amData, cl, weaponData, attackSpeedData, mwData);
     expect(resultWithSI.dps).toBe(resultWithoutSI.dps);
     expect(resultWithSI.attackTime).toBe(resultWithoutSI.attackTime);
   });
@@ -1024,7 +1024,7 @@ describe('Bishop DPS', () => {
   it('Angel Ray High tier DPS ~50,750', () => {
     const ar = bishopData.skills.find((s) => s.name === 'Angel Ray')!;
     const result = calculateSkillDps(
-      bishopHigh, bishopData, ar, weaponData, attackSpeedData, mapleWarriorData
+      bishopHigh, bishopData, ar, weaponData, attackSpeedData, mwData
     );
 
     expect(result.attackTime).toBe(0.81);
@@ -1037,7 +1037,7 @@ describe('Bishop DPS', () => {
   it('Genesis High tier DPS ~40,308', () => {
     const gen = bishopData.skills.find((s) => s.name === 'Genesis')!;
     const result = calculateSkillDps(
-      bishopHigh, bishopData, gen, weaponData, attackSpeedData, mapleWarriorData
+      bishopHigh, bishopData, gen, weaponData, attackSpeedData, mwData
     );
 
     expect(result.attackTime).toBe(2.70);
@@ -1052,10 +1052,10 @@ describe('Bishop DPS', () => {
     const ar = bishopData.skills.find((s) => s.name === 'Angel Ray')!;
 
     const amDps = calculateSkillDps(
-      amHigh, amData, cl, weaponData, attackSpeedData, mapleWarriorData
+      amHigh, amData, cl, weaponData, attackSpeedData, mwData
     ).dps;
     const bishopDps = calculateSkillDps(
-      bishopHigh, bishopData, ar, weaponData, attackSpeedData, mapleWarriorData
+      bishopHigh, bishopData, ar, weaponData, attackSpeedData, mwData
     ).dps;
 
     // Archmage has 1.4 * 1.25 = 1.75× amp advantage
@@ -1065,10 +1065,10 @@ describe('Bishop DPS', () => {
   it('High tier DPS is greater than Low tier', () => {
     for (const skill of bishopData.skills) {
       const high = calculateSkillDps(
-        bishopHigh, bishopData, skill, weaponData, attackSpeedData, mapleWarriorData
+        bishopHigh, bishopData, skill, weaponData, attackSpeedData, mwData
       );
       const low = calculateSkillDps(
-        bishopLow, bishopData, skill, weaponData, attackSpeedData, mapleWarriorData
+        bishopLow, bishopData, skill, weaponData, attackSpeedData, mwData
       );
       expect(high.dps).toBeGreaterThan(low.dps);
     }
@@ -1107,7 +1107,7 @@ describe('damage cap behavior', () => {
     attackPotion: 100,
     projectile: 0,
     echoActive: true,
-    mapleWarriorLevel: 20,
+    mwLevel: 20,
     speedInfusion: true,
     sharpEyes: true,
     shadowPartner: false,
@@ -1118,7 +1118,7 @@ describe('damage cap behavior', () => {
     // rangeCap = 199999 / 50 = 3999.98
     // With these stats, max damage range should far exceed 3999, so adjusted < average
     const result = calculateSkillDps(
-      capBuild, capClassData, capSkill, weaponData, attackSpeedData, mapleWarriorData
+      capBuild, capClassData, capSkill, weaponData, attackSpeedData, mwData
     );
     expect(result.skillDamagePercent).toBe(5000);
     expect(result.adjustedRangeNormal).toBeLessThan(result.damageRange.average);
@@ -1134,7 +1134,7 @@ describe('damage cap behavior', () => {
     // skillDamagePercent = 100 → skillMultiplier = 1.0 → rangeCap = 199999
     // Max damage with these stats should be well below 199999
     const result = calculateSkillDps(
-      capBuild, capClassData, lowSkill, weaponData, attackSpeedData, mapleWarriorData
+      capBuild, capClassData, lowSkill, weaponData, attackSpeedData, mwData
     );
     expect(result.skillDamagePercent).toBe(100);
     expect(result.adjustedRangeNormal).toBe(result.damageRange.average);
@@ -1152,7 +1152,7 @@ describe('zero crit rate', () => {
       (s) => s.name === 'Brandish (Sword)'
     )!;
     const result = calculateSkillDps(
-      noCritBuild, heroData, brandish, weaponData, attackSpeedData, mapleWarriorData
+      noCritBuild, heroData, brandish, weaponData, attackSpeedData, mwData
     );
 
     // With no crit: averageDamage = skillMultiplier * adjustedRange * hitCount
@@ -1176,7 +1176,7 @@ describe('DPS result structure', () => {
       brandish,
       weaponData,
       attackSpeedData,
-      mapleWarriorData
+      mwData
     );
 
     expect(result.skillName).toBe('Brandish (Sword)');

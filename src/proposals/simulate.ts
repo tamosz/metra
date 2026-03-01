@@ -3,7 +3,7 @@ import type {
   CharacterBuild,
   WeaponData,
   AttackSpeedData,
-  MapleWarriorData,
+  MWData,
   SkillEntry,
 } from '../data/types.js';
 import { calculateSkillDps, type DpsResult } from '../engine/dps.js';
@@ -62,7 +62,7 @@ export function runSimulation(
   gearTemplates: GearTemplateMap,
   weaponData: WeaponData,
   attackSpeedData: AttackSpeedData,
-  mapleWarriorData: MapleWarriorData
+  mwData: MWData
 ): ScenarioResult[] {
   const scenarios = config.scenarios ?? DEFAULT_SCENARIOS;
   const results: ScenarioResult[] = [];
@@ -96,7 +96,7 @@ export function runSimulation(
             skill,
             weaponData,
             attackSpeedData,
-            mapleWarriorData
+            mwData
           );
 
           let effectiveDps = scenario.pdr != null ? applyPdr(dps, scenario.pdr) : dps;

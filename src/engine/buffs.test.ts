@@ -1,32 +1,32 @@
 import { describe, it, expect, beforeAll } from 'vitest';
-import { loadMapleWarrior, loadClassSkills } from '../data/loader.js';
-import type { MapleWarriorData, ClassSkillData, CharacterBuild } from '../data/types.js';
+import { loadMW, loadClassSkills } from '../data/loader.js';
+import type { MWData, ClassSkillData, CharacterBuild } from '../data/types.js';
 import {
-  applyMapleWarrior,
+  applyMW,
   calculateEcho,
   calculateMageEcho,
   calculateTotalAttack,
   calculateTotalStats,
 } from './buffs.js';
 
-let mwData: MapleWarriorData;
+let mwData: MWData;
 let heroData: ClassSkillData;
 
 beforeAll(() => {
-  mwData = loadMapleWarrior();
+  mwData = loadMW();
   heroData = loadClassSkills('Hero');
 });
 
-describe('applyMapleWarrior', () => {
+describe('applyMW', () => {
   it('MW0 does not change stats', () => {
-    expect(applyMapleWarrior(999, mwData, 0)).toBe(999);
+    expect(applyMW(999, mwData, 0)).toBe(999);
   });
 
   it('MW20 applies 1.10 multiplier with floor', () => {
     // floor(999 * 1.10) = floor(1098.9) = 1098
-    expect(applyMapleWarrior(999, mwData, 20)).toBe(1098);
+    expect(applyMW(999, mwData, 20)).toBe(1098);
     // floor(23 * 1.10) = floor(25.3) = 25
-    expect(applyMapleWarrior(23, mwData, 20)).toBe(25);
+    expect(applyMW(23, mwData, 20)).toBe(25);
   });
 
 });
@@ -138,7 +138,7 @@ function makeBuild(overrides: Partial<CharacterBuild> = {}): CharacterBuild {
     attackPotion: 100,
     projectile: 0,
     echoActive: true,
-    mapleWarriorLevel: 20,
+    mwLevel: 20,
     speedInfusion: true,
     sharpEyes: true,
     ...overrides,

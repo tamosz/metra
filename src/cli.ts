@@ -3,7 +3,7 @@ import { resolve } from 'path';
 import {
   loadWeapons,
   loadAttackSpeed,
-  loadMapleWarrior,
+  loadMW,
   discoverClassesAndTiers,
 } from './data/loader.js';
 import { compareProposal } from './proposals/compare.js';
@@ -38,7 +38,7 @@ function main() {
   // Load game data
   const weaponData = loadWeapons();
   const attackSpeedData = loadAttackSpeed();
-  const mapleWarriorData = loadMapleWarrior();
+  const mwData = loadMW();
   const { classNames, tiers, classDataMap, gearTemplates } = discoverClassesAndTiers();
 
   const config: SimulationConfig = {
@@ -55,7 +55,7 @@ function main() {
       gearTemplates,
       weaponData,
       attackSpeedData,
-      mapleWarriorData
+      mwData
     );
 
     const report = renderBaselineReport(results);
@@ -89,7 +89,7 @@ function main() {
     gearTemplates,
     weaponData,
     attackSpeedData,
-    mapleWarriorData
+    mwData
   );
 
   const report = renderComparisonReport(result);

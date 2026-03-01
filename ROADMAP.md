@@ -2,7 +2,7 @@
 
 ## What This Is
 
-A balance simulator for MapleRoyals staff and community. Every number traces back to a formula, every proposal is reproducible. Non-technical users can explore class balance and propose changes without touching a spreadsheet.
+A balance simulator for Royals staff and community. Every number traces back to a formula, every proposal is reproducible. Non-technical users can explore class balance and propose changes without touching a spreadsheet.
 
 ## Done
 

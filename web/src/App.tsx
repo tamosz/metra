@@ -52,7 +52,7 @@ export function App() {
       <header className="relative border-b border-border-default px-4 py-4 sm:px-8">
         <div className="flex items-center gap-6">
           <h1 className="m-0 text-lg font-bold tracking-tight text-text-bright">
-            MapleRoyals Balance Simulator
+            Royals Balance Simulator
           </h1>
 
           {/* Desktop nav */}

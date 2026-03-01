@@ -15,7 +15,7 @@ export function BuildBuffToggles({ state }: BuildBuffTogglesProps) {
 
   const showShadowPartner = template.shadowPartner !== undefined;
   const isMage = classData.damageFormula === 'magic';
-  const mwOverridden = 'mapleWarriorLevel' in overrides;
+  const mwOverridden = 'mwLevel' in overrides;
 
   return (
     <div>
@@ -68,13 +68,13 @@ export function BuildBuffToggles({ state }: BuildBuffTogglesProps) {
             <Tooltip text={BUFF_DESCRIPTIONS['MW Level']} />
           </span>
           <select
-            value={overrides.mapleWarriorLevel ?? template.mapleWarriorLevel}
+            value={overrides.mwLevel ?? template.mwLevel}
             onChange={(e) => {
               const v = parseInt(e.target.value, 10);
-              if (v === template.mapleWarriorLevel) {
-                resetField('mapleWarriorLevel');
+              if (v === template.mwLevel) {
+                resetField('mwLevel');
               } else {
-                setOverride('mapleWarriorLevel', v);
+                setOverride('mwLevel', v);
               }
             }}
             className={`cursor-pointer rounded border border-border-default bg-bg-raised px-1.5 py-0.5 text-sm focus:border-border-active transition-colors ${
@@ -89,11 +89,11 @@ export function BuildBuffToggles({ state }: BuildBuffTogglesProps) {
           </select>
           {mwOverridden && (
             <span
-              onClick={() => resetField('mapleWarriorLevel')}
+              onClick={() => resetField('mwLevel')}
               className="cursor-pointer select-none text-[11px] text-blue-400"
               title="Click to reset"
             >
-              ({template.mapleWarriorLevel})
+              ({template.mwLevel})
             </span>
           )}
         </div>

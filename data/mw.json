@@ -1,5 +1,5 @@
 {
-  "source": "maple warrior sheet A1:B22 (MW caps at level 20 in MapleRoyals)",
+  "source": "mw sheet A1:B22 (MW caps at level 20 in Royals)",
   "entries": [
     { "level": 0,  "multiplier": 1.00 },
     { "level": 1,  "multiplier": 1.01 },

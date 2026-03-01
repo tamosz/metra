@@ -1,31 +1,31 @@
-import type { CharacterBuild, ClassSkillData, MapleWarriorData } from '../data/types.js';
+import type { CharacterBuild, ClassSkillData, MWData } from '../data/types.js';
 
 /** Echo of Hero bonus multiplier (4%). Source: range calculator E10. */
 const ECHO_MULTIPLIER = 0.04;
 
 /**
- * Apply Maple Warrior to base stats, returning the MW-boosted stat value.
+ * Apply MW to base stats, returning the MW-boosted stat value.
  * MW is applied to base stats only, then floored.
  *
  * Source: range calculator H28 = ROUNDDOWN(H27*E15, 0)
  */
-export function applyMapleWarrior(
+export function applyMW(
   baseStat: number,
-  mapleWarriorData: MapleWarriorData,
-  mapleWarriorLevel: number
+  mwData: MWData,
+  mwLevel: number
 ): number {
-  const multiplier = getMapleWarriorMultiplier(mapleWarriorData, mapleWarriorLevel);
+  const multiplier = getMWMultiplier(mwData, mwLevel);
   return Math.floor(baseStat * multiplier);
 }
 
 /**
  * Get the MW multiplier for a given level.
  */
-export function getMapleWarriorMultiplier(
-  mapleWarriorData: MapleWarriorData,
+export function getMWMultiplier(
+  mwData: MWData,
   level: number
 ): number {
-  const entry = mapleWarriorData.find((e) => e.level === level);
+  const entry = mwData.find((e) => e.level === level);
   if (!entry) throw new Error(`MW level ${level} not found`);
   return entry.multiplier;
 }
@@ -85,11 +85,11 @@ export function calculateMageEcho(
 export function calculateTotalStats(
   build: CharacterBuild,
   classData: ClassSkillData,
-  mapleWarriorData: MapleWarriorData
+  mwData: MWData
 ): { primary: number; secondary: number } {
-  const mwMultiplier = getMapleWarriorMultiplier(
-    mapleWarriorData,
-    build.mapleWarriorLevel
+  const mwMultiplier = getMWMultiplier(
+    mwData,
+    build.mwLevel
   );
 
   const primaryStatKey = classData.primaryStat;
