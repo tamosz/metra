@@ -1,0 +1,32 @@
+{
+  "source": "dmg sheet rows 36 (Paralyze), row 39 (Meteor). Spell amp 1.4 (Element Amplification), weapon amp 1.25 (Elemental Staff) from range calculator B6/B5. Mastery 0.6 from range calculator D7 default. SE crit +140/15% from dmg sheet G36/G39 formulas.",
+  "className": "Archmage F/P",
+  "mastery": 0.6,
+  "primaryStat": "INT",
+  "secondaryStat": "LUK",
+  "sharpEyesCritRate": 0.15,
+  "sharpEyesCritDamageBonus": 140,
+  "damageFormula": "magic",
+  "spellAmplification": 1.4,
+  "weaponAmplification": 1.25,
+  "skills": [
+    {
+      "name": "Paralyze",
+      "source": "dmg sheet B36: basePower 240, C36: 0.72s. Single-target DPS skill.",
+      "basePower": 240,
+      "multiplier": 1,
+      "hitCount": 1,
+      "speedCategory": "Paralyze",
+      "weaponType": "Staff"
+    },
+    {
+      "name": "Meteor",
+      "source": "dmg sheet B39: basePower 570, C39: 3.06s. Map-wide AoE ultimate.",
+      "basePower": 570,
+      "multiplier": 1,
+      "hitCount": 1,
+      "speedCategory": "Meteor",
+      "weaponType": "Staff"
+    }
+  ]
+}
