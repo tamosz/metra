@@ -4,7 +4,7 @@ import {
   TIER_ORDER,
   type WeaponData,
   type AttackSpeedData,
-  type MapleWarriorData,
+  type MWData,
   type ClassSkillData,
   type CharacterBuild,
 } from './types.js';
@@ -30,8 +30,8 @@ export function loadAttackSpeed(): AttackSpeedData {
   return loadJson<AttackSpeedData>('attack-speed.json');
 }
 
-export function loadMapleWarrior(): MapleWarriorData {
-  const raw = loadJson<{ entries: MapleWarriorData }>('maple-warrior.json');
+export function loadMW(): MWData {
+  const raw = loadJson<{ entries: MWData }>('mw.json');
   return raw.entries;
 }
 
@@ -54,7 +54,7 @@ export function loadGearTemplate(templateName: string): CharacterBuild {
     attackPotion: raw.attackPotion as number,
     projectile: raw.projectile as number,
     echoActive: raw.echoActive as boolean,
-    mapleWarriorLevel: raw.mapleWarriorLevel as number,
+    mwLevel: raw.mwLevel as number,
     speedInfusion: raw.speedInfusion as boolean,
     sharpEyes: raw.sharpEyes as boolean,
     shadowPartner: raw.shadowPartner as boolean | undefined,

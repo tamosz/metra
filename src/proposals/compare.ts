@@ -2,7 +2,7 @@ import type {
   ClassSkillData,
   WeaponData,
   AttackSpeedData,
-  MapleWarriorData,
+  MWData,
 } from '../data/types.js';
 import { applyProposal } from './apply.js';
 import { runSimulation, type SimulationConfig, type GearTemplateMap } from './simulate.js';
@@ -18,7 +18,7 @@ export function compareProposal(
   gearTemplates: GearTemplateMap,
   weaponData: WeaponData,
   attackSpeedData: AttackSpeedData,
-  mapleWarriorData: MapleWarriorData
+  mwData: MWData
 ): ComparisonResult {
   // Run "before" simulation
   const before = runSimulation(
@@ -27,7 +27,7 @@ export function compareProposal(
     gearTemplates,
     weaponData,
     attackSpeedData,
-    mapleWarriorData
+    mwData
   );
 
   // Apply proposal and run "after" simulation
@@ -38,7 +38,7 @@ export function compareProposal(
     gearTemplates,
     weaponData,
     attackSpeedData,
-    mapleWarriorData
+    mwData
   );
 
   // Compute deltas

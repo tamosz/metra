@@ -7,7 +7,7 @@ import {
   discoverClassesAndTiers,
   weaponData,
   attackSpeedData,
-  mapleWarriorData,
+  mwData,
 } from '../data/bundle.js';
 
 export interface ProposalState {
@@ -89,7 +89,7 @@ export function useProposal(): ProposalState {
         gearTemplates,
         weaponData,
         attackSpeedData,
-        mapleWarriorData
+        mwData
       );
 
       setResult(comparisonResult);

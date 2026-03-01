@@ -11,7 +11,7 @@
   "potionName": "Ssiws Cheese",
   "projectile": 0,
   "echoActive": true,
-  "mapleWarriorLevel": 20,
+  "mwLevel": 20,
   "speedInfusion": false,
   "sharpEyes": true,
   "gearBreakdown": {

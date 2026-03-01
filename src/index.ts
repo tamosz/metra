@@ -1,4 +1,4 @@
-// Public API for the MapleRoyals Balance Simulator
+// Public API for the Royals Balance Simulator
 
 // Engine
 export { calculateSkillDps, type DpsResult } from './engine/dps.js';
@@ -12,7 +12,7 @@ export {
 export {
   calculateTotalAttack,
   calculateTotalStats,
-  applyMapleWarrior,
+  applyMW,
   calculateEcho,
 } from './engine/buffs.js';
 export {
@@ -24,7 +24,7 @@ export {
 export {
   loadWeapons,
   loadAttackSpeed,
-  loadMapleWarrior,
+  loadMW,
   loadClassSkills,
   loadGearTemplate,
   discoverClassesAndTiers,
@@ -37,8 +37,8 @@ export type {
   WeaponType,
   AttackSpeedData,
   AttackSpeedEntry,
-  MapleWarriorData,
-  MapleWarriorEntry,
+  MWData,
+  MWEntry,
   ClassSkillData,
   SkillEntry,
   CharacterBuild,

@@ -2,14 +2,14 @@ import { describe, it, expect, beforeAll } from 'vitest';
 import {
   loadWeapons,
   loadAttackSpeed,
-  loadMapleWarrior,
+  loadMW,
   loadClassSkills,
   loadGearTemplate,
 } from '../data/loader.js';
 import type {
   WeaponData,
   AttackSpeedData,
-  MapleWarriorData,
+  MWData,
   ClassSkillData,
 } from '../data/types.js';
 import { compareProposal } from './compare.js';
@@ -18,7 +18,7 @@ import type { Proposal, ScenarioConfig } from './types.js';
 
 let weaponData: WeaponData;
 let attackSpeedData: AttackSpeedData;
-let mapleWarriorData: MapleWarriorData;
+let mwData: MWData;
 let classDataMap: Map<string, ClassSkillData>;
 let gearTemplates: GearTemplateMap;
 let config: SimulationConfig;
@@ -26,7 +26,7 @@ let config: SimulationConfig;
 beforeAll(() => {
   weaponData = loadWeapons();
   attackSpeedData = loadAttackSpeed();
-  mapleWarriorData = loadMapleWarrior();
+  mwData = loadMW();
 
   classDataMap = new Map([
     ['hero', loadClassSkills('Hero')],
@@ -75,7 +75,7 @@ describe('compareProposal', () => {
       gearTemplates,
       weaponData,
       attackSpeedData,
-      mapleWarriorData
+      mwData
     );
 
     // Should have results for all class × tier × skill combos
@@ -155,7 +155,7 @@ describe('compareProposal', () => {
       gearTemplates,
       weaponData,
       attackSpeedData,
-      mapleWarriorData
+      mwData
     );
 
     const heroBrandishLow = result.deltas.find(
@@ -186,7 +186,7 @@ describe('compareProposal', () => {
       gearTemplates,
       weaponData,
       attackSpeedData,
-      mapleWarriorData
+      mwData
     );
 
     // Hero goes up
@@ -225,7 +225,7 @@ describe('compareProposal with multiple scenarios', () => {
           sharpEyes: false,
           echoActive: false,
           speedInfusion: false,
-          mapleWarriorLevel: 0,
+          mwLevel: 0,
           attackPotion: 0,
         },
       },
@@ -252,7 +252,7 @@ describe('compareProposal with multiple scenarios', () => {
       gearTemplates,
       weaponData,
       attackSpeedData,
-      mapleWarriorData
+      mwData
     );
 
     // Should have results for both scenarios × skills
@@ -288,7 +288,7 @@ describe('compareProposal with multiple scenarios', () => {
           sharpEyes: false,
           echoActive: false,
           speedInfusion: false,
-          mapleWarriorLevel: 0,
+          mwLevel: 0,
           attackPotion: 0,
         },
       },
@@ -314,7 +314,7 @@ describe('compareProposal with multiple scenarios', () => {
       gearTemplates,
       weaponData,
       attackSpeedData,
-      mapleWarriorData
+      mwData
     );
 
     const buffedBrandish = result.deltas.find(
@@ -359,7 +359,7 @@ describe('compareProposal with multiple scenarios', () => {
       gearTemplates,
       weaponData,
       attackSpeedData,
-      mapleWarriorData
+      mwData
     );
 
     const buffedBrandish = result.deltas.find(
@@ -402,7 +402,7 @@ describe('compareProposal with multiple scenarios', () => {
       gearTemplates,
       weaponData,
       attackSpeedData,
-      mapleWarriorData
+      mwData
     );
 
     const buffedDelta = result.deltas.find(
@@ -448,7 +448,7 @@ describe('compareProposal with multiple scenarios', () => {
       gearTemplates,
       weaponData,
       attackSpeedData,
-      mapleWarriorData
+      mwData
     );
 
     // All deltas should have rank fields
@@ -494,7 +494,7 @@ describe('compareProposal with multiple scenarios', () => {
       gearTemplates,
       weaponData,
       attackSpeedData,
-      mapleWarriorData
+      mwData
     );
 
     const noPdrDelta = result.deltas.find(

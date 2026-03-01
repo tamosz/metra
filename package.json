@@ -1,9 +1,9 @@
 {
-  "name": "maple-balance",
+  "name": "royals-balance",
   "version": "0.1.0",
   "type": "module",
   "main": "src/index.ts",
-  "description": "MapleRoyals class balance simulator",
+  "description": "Royals class balance simulator",
   "scripts": {
     "test": "vitest run",
     "test:watch": "vitest",

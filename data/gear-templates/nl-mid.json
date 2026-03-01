@@ -12,7 +12,7 @@
   "projectile": 29,
   "projectileName": "Crystal Ilbi",
   "echoActive": true,
-  "mapleWarriorLevel": 20,
+  "mwLevel": 20,
   "speedInfusion": true,
   "sharpEyes": true,
   "shadowPartner": true,

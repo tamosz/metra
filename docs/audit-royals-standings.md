@@ -71,7 +71,7 @@ The most empirical community data comes from the Krexel DPS comparison thread, w
 5. Warriors (Hero / DrK competitive, Paladin lower DPS but utility)
 6. Mages - lowest DPS but essential utility (HS, Heal, Dispel)
 
-### 2c. MapleRoyals-Specific Balance Changes (verified)
+### 2c. Royals-Specific Balance Changes (verified)
 
 These server-specific changes affect our simulation:
 - **DrK Berserk**: Buffed from 200% to 210% in Update #68 (Oct 2020). Our simulator uses 2.1x multiplier. **Correctly modeled.**
@@ -80,7 +80,7 @@ These server-specific changes affect our simulation:
 - **Bucc Barrage + Demolition**: Buffed to be "in line with 130k-250k DPS targets." Our simulator shows 247k at high tier. **Within target range.**
 - **Marksman Snipe**: Can now ignore weapon cancel on bosses (Update #68). Not yet relevant to our DPS model (we don't model weapon cancel).
 
-### 2d. MapleRoyals Balance Philosophy
+### 2d. Royals Balance Philosophy
 
 Official staff position: most classes with equivalent funding should range between **130k DPS at level 140** and **250k DPS at level 200**. Our high-tier physical DPS ranges from 192k (Paladin) to 331k (Corsair), suggesting the top end may exceed their target or that the target has evolved since 2019.
 
@@ -118,7 +118,7 @@ DrK at 252k vs Hero Sword at 247k (2% gap) reflects the community view that thes
 ### Shadower #2 in Buffed DPS
 **Verdict: MATCHES (recent meta shift)**
 
-Our simulator places Shadower BStep+Assassinate at #2 (327k). A 2026 community guide explicitly calls Shadower "the most meta job in recent years." The Assassinate base power was boosted to 950 (from 600) on MapleRoyals, and BStep was boosted to 600 (from 500). Combined with Shadow Partner (1.5x), a 2.31s combo cycle, and Dagger 3.6x multiplier, Shadower's theoretical DPS is very high. Community DPS optimization discoveries (Aug 2024) have further validated Shadower's top-tier position.
+Our simulator places Shadower BStep+Assassinate at #2 (327k). A 2026 community guide explicitly calls Shadower "the most meta job in recent years." The Assassinate base power was boosted to 950 (from 600) on Royals, and BStep was boosted to 600 (from 500). Combined with Shadow Partner (1.5x), a 2.31s combo cycle, and Dagger 3.6x multiplier, Shadower's theoretical DPS is very high. Community DPS optimization discoveries (Aug 2024) have further validated Shadower's top-tier position.
 
 ### Buccaneer Mid-Pack After Buffs
 **Verdict: MATCHES**
@@ -157,17 +157,17 @@ Bucc Barrage+DS at 244k sits between DrK and Corsair. Community noted Bucc was i
 
 **Analysis:** Both use the same base power (260), multiplier (1.9), and hit count (2). The difference comes from weapon multiplier: 2H Axe 4.8x vs 2H Sword 4.6x (+4.3%). With SI active, both resolve to the same effective speed (speed 2). The DPS difference is entirely from the weapon multiplier.
 
-**Community view:** Most community discussions don't distinguish Axe vs Sword Hero. The gear assumptions doc confirms 4.8 for 2H Axe is the correct v62 baseline (verified against StrategyWiki, Ayumilove, MapleStory Wiki).
+**Community view:** Most community discussions don't distinguish Axe vs Sword Hero. The gear assumptions doc confirms 4.8 for 2H Axe is the correct v62 baseline (verified against StrategyWiki, Ayumilove, Royals Wiki).
 
 **Questions to resolve:**
 1. Does the 4.2% Axe advantage match community/spreadsheet expectations?
 2. Are there any trade-offs (weapon availability, scrolling options) that would narrow the real-world gap?
-3. Is 4.8x for 2H Axe confirmed on MapleRoyals specifically (not just generic v62)?
+3. Is 4.8x for 2H Axe confirmed on Royals specifically (not just generic v62)?
 
 **Self-contained investigation task:**
 - Verify Hero Axe and Sword DPS match source spreadsheet values
 - Check if the Axe advantage is consistent across tiers
-- Confirm 2H Axe 4.8x multiplier is MapleRoyals-verified (the gear assumptions doc says it is, citing community member Zerato)
+- Confirm 2H Axe 4.8x multiplier is Royals-verified (the gear assumptions doc says it is, citing community member Zerato)
 
 ---
 
@@ -229,7 +229,7 @@ This ~2.1x spread among physical classes is reasonable. Corsair Battleship Canno
 - [Krex Class DPS comparison](https://royals.ms/forum/threads/krex-class-dps-comparison.224575/) — In-game DPS testing at Krexel
 - [General consensus on DPS ranking](https://royals.ms/forum/threads/general-consensus-on-dps-ranking.146711/) — Community discussion on class rankings
 - [2024 DPS class rankings](https://royals.ms/forum/threads/2024-dps-class-rankings.233570/) — Recent ranking discussion
-- [MapleRoyals Class Tier List](https://royals.ms/forum/threads/mapleroyals-class-tier-list.151600/) — Community tier list (4 pages)
+- [Royals Class Tier List](https://royals.ms/forum/threads/mapleroyals-class-tier-list.151600/) — Community tier list (4 pages)
 - [DPS charts](https://royals.ms/forum/threads/dps-charts.124709/) — Community-plotted DPS graphs with CSV data
 - [Damage calculator - All classes](https://royals.ms/forum/threads/damage-calculator-all-classes.123479/) — Source spreadsheet for all-class DPS
 - [Update #68 class buffs](https://royals.ms/forum/threads/update-68-class-buffs.176455/) — DrK Berserk 200% → 210%, MM Snipe ignores weapon cancel
@@ -238,7 +238,7 @@ This ~2.1x spread among physical classes is reasonable. Corsair Battleship Canno
 - [NL or Shadower? Bossing and DPS](https://royals.ms/forum/threads/nl-or-shadower-what%E2%80%99s-good-for-bossing-and-dps-wise.137287/) — NL vs Shadower community comparison
 - [How good is Paladin post buff?](https://royals.ms/forum/threads/how-good-is-paladin-post-buff.116208/) — Paladin viability discussion
 - [Feedback Request: Skill Changes and Balancing](https://royals.ms/forum/threads/feedback-request-skill-changes-and-balancing.205730/) — Official balance feedback thread
-- [Comprehensive list of changes since new source](https://royals.ms/forum/threads/comprehensive-list-of-changes-since-the-new-source.183746/) — All MapleRoyals-specific changes
+- [Comprehensive list of changes since new source](https://royals.ms/forum/threads/comprehensive-list-of-changes-since-the-new-source.183746/) — All Royals-specific changes
 - [Dream.ms Class Selection Guide](https://forum.dream.ms/threads/class-selection-guide-i-e-which-class-should-i-play.4793/) — Detailed class comparison from a similar v62 server
 - [Conspiracy's Corsair Guide (Dream.ms)](https://forum.dream.ms/threads/conspiracys-corsair-guide-2022.5065/) — Corsair ranked #2 single-target DPS
 - [A Guide to Shadower 2026](https://royals.ms/forum/threads/a-guide-to-shadower-2026.252048/) — Donn1e's guide calling Shadower "the most meta job in recent years"

@@ -7,7 +7,7 @@ import {
   discoverClassesAndTiers,
   weaponData,
   attackSpeedData,
-  mapleWarriorData,
+  mwData,
 } from '../data/bundle.js';
 
 export interface SimulationData {
@@ -33,7 +33,7 @@ export function useSimulation(): SimulationData {
       gearTemplates,
       weaponData,
       attackSpeedData,
-      mapleWarriorData
+      mwData
     );
 
     const scenarios = DEFAULT_SCENARIOS.map((s) => s.name);

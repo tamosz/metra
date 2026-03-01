@@ -12,7 +12,7 @@
   "projectile": 20,
   "projectileName": "Eternal Bullet",
   "echoActive": true,
-  "mapleWarriorLevel": 20,
+  "mwLevel": 20,
   "speedInfusion": true,
   "sharpEyes": true,
   "shadowPartner": false,

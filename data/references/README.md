@@ -30,7 +30,7 @@ Keep entries factual — values, formulas, and brief quotes. Skip opinions and d
 
 | File | Covers |
 |------|--------|
-| `balance-changes.md` | MapleRoyals deviations from v62 (Update #68, skill changes) |
+| `balance-changes.md` | Royals deviations from v62 (Update #68, skill changes) |
 | `damage-formulas.md` | Physical/magic/star formulas, weapon multipliers, crit variants |
 | `attack-speed.md` | Speed tiers, booster/SI, Hurricane/fixed-time, Snipe cooldown |
 | `class-guides.md` | Per-class verified values from community guides |

@@ -1,5 +1,5 @@
 {
-  "source": "Weapons sheet D7:F13. Axe/BW swing multipliers (1H 4.4, 2H 4.8) are standard GMS v62 values — confirmed by StrategyWiki, Ayumilove, MapleStory Wiki, and the MapleRoyals damage calculator thread (https://royals.ms/forum/threads/damage-range-calculator.17086/). MapleRoyals has not modified these (https://royals.ms/forum/threads/did-mapleroyals-balance-the-damage-between-axe-blunt-weapon-and-sword%EF%BC%9F.125863/).",
+  "source": "Weapons sheet D7:F13. Axe/BW swing multipliers (1H 4.4, 2H 4.8) are standard GMS v62 values — confirmed by StrategyWiki, Ayumilove, Royals Wiki, and the Royals damage calculator thread (https://royals.ms/forum/threads/damage-range-calculator.17086/). Royals has not modified these (https://royals.ms/forum/threads/did-mapleroyals-balance-the-damage-between-axe-blunt-weapon-and-sword%EF%BC%9F.125863/).",
   "types": [
     { "name": "1H Axe",   "slashMultiplier": 4.4, "stabMultiplier": 3.2 },
     { "name": "2H Axe",   "slashMultiplier": 4.8, "stabMultiplier": 3.4 },

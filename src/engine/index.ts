@@ -9,8 +9,8 @@ export {
 } from './damage.js';
 
 export {
-  applyMapleWarrior,
-  getMapleWarriorMultiplier,
+  applyMW,
+  getMWMultiplier,
   calculateEcho,
   calculateMageEcho,
   calculateTotalAttack,
