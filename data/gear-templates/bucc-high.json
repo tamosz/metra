@@ -2,7 +2,7 @@
   "source": "gear templates sheet, Bucc rows, High. Knuckle base speed 6 (Normal). echoActive true for high tier.",
   "label": "Bucc High",
   "className": "Buccaneer",
-  "baseStats": { "STR": 938, "DEX": 4, "INT": 4, "LUK": 4 },
+  "baseStats": { "STR": 999, "DEX": 23, "INT": 4, "LUK": 4 },
   "gearStats": { "STR": 151, "DEX": 116, "INT": 0, "LUK": 0 },
   "totalWeaponAttack": 181,
   "weaponType": "Knuckle",

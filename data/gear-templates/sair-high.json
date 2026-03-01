@@ -2,7 +2,7 @@
   "source": "Adapted from ranged class templates for Corsair. DEX primary, STR secondary. Gun base speed 6 (Normal). Eternal Bullet +20 WATK projectile.",
   "label": "Corsair High",
   "className": "Corsair",
-  "baseStats": { "STR": 11, "DEX": 931, "INT": 4, "LUK": 4 },
+  "baseStats": { "STR": 4, "DEX": 999, "INT": 4, "LUK": 4 },
   "gearStats": { "STR": 90, "DEX": 165, "INT": 0, "LUK": 0 },
   "totalWeaponAttack": 173,
   "weaponType": "Gun",

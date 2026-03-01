@@ -2,7 +2,7 @@
   "source": "Interpolated between bucc-low and bucc-high. Knuckle 116 WATK.",
   "label": "Bucc Mid",
   "className": "Buccaneer",
-  "baseStats": { "STR": 868, "DEX": 15, "INT": 4, "LUK": 4 },
+  "baseStats": { "STR": 850, "DEX": 22, "INT": 4, "LUK": 4 },
   "gearStats": { "STR": 124, "DEX": 100, "INT": 0, "LUK": 0 },
   "totalWeaponAttack": 160,
   "weaponType": "Knuckle",
