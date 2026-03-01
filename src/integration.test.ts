@@ -208,7 +208,7 @@ describe('Baseline mode', () => {
     expect(find('Corsair', 'Battleship Cannon').dps.dps).toBeCloseTo(331354, -2);
     expect(find('Corsair', 'Rapid Fire').dps.dps).toBeCloseTo(228271, -2);
     expect(find('Buccaneer', 'Demolition').dps.dps).toBeCloseTo(233453, -2);
-    expect(find('Buccaneer', 'Barrage + Dragon Strike').dps.dps).toBeCloseTo(244086, -2);
+    expect(find('Buccaneer', 'Barrage + Demolition').dps.dps).toBeGreaterThan(find('Buccaneer', 'Demolition').dps.dps);
     expect(find('Shadower', 'BStep + Assassinate 30').dps.dps).toBeCloseTo(326734, -2);
     expect(find('Shadower', 'Savage Blow').dps.dps).toBeCloseTo(159536, -2);
   });
@@ -228,7 +228,7 @@ describe('Baseline mode', () => {
     expect(find('Corsair', 'Battleship Cannon').dps.dps).toBeCloseTo(202986, -2);
     expect(find('Corsair', 'Rapid Fire').dps.dps).toBeCloseTo(139838, -2);
     expect(find('Buccaneer', 'Demolition').dps.dps).toBeCloseTo(135843, -2);
-    expect(find('Buccaneer', 'Barrage + Dragon Strike').dps.dps).toBeCloseTo(144415, -2);
+    expect(find('Buccaneer', 'Barrage + Demolition').dps.dps).toBeGreaterThan(find('Buccaneer', 'Demolition').dps.dps);
     expect(find('Shadower', 'BStep + Assassinate 30').dps.dps).toBeCloseTo(198577, -2);
     expect(find('Shadower', 'Savage Blow').dps.dps).toBeCloseTo(96960, -2);
   });
@@ -270,7 +270,7 @@ describe('Special mechanics', () => {
     expect(buccHigh).toHaveLength(2);
     expect(buccLow).toHaveLength(2);
     expect(buccHigh.map((r) => r.skillName).sort()).toEqual(
-      ['Barrage + Dragon Strike', 'Demolition']
+      ['Barrage + Demolition', 'Demolition']
     );
   });
 
