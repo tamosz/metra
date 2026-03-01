@@ -303,6 +303,60 @@ describe('renderBaselineReport', () => {
   });
 });
 
+describe('renderBaselineReport content accuracy', () => {
+  it('DPS values in table match input data', () => {
+    const results: ScenarioResult[] = [
+      { className: 'Hero', skillName: 'Brandish', tier: 'high', scenario: 'Buffed', dps: mockDpsResult(274167) },
+      { className: 'DrK', skillName: 'Crusher', tier: 'mid', scenario: 'Buffed', dps: mockDpsResult(183042) },
+    ];
+
+    const report = renderBaselineReport(results);
+    const heroLine = report.split('\n').find((l) => l.includes('Hero'));
+    expect(heroLine).toContain('274,167');
+    const drkLine = report.split('\n').find((l) => l.includes('DrK'));
+    expect(drkLine).toContain('183,042');
+    expect(drkLine).toContain('Mid');
+  });
+
+  it('multi-tier grouping produces tier labels in table rows', () => {
+    const results: ScenarioResult[] = [
+      { className: 'Hero', skillName: 'Brandish', tier: 'high', scenario: 'Buffed', dps: mockDpsResult(300000) },
+      { className: 'Hero', skillName: 'Brandish', tier: 'low', scenario: 'Buffed', dps: mockDpsResult(100000) },
+    ];
+
+    const report = renderBaselineReport(results);
+    expect(report).toContain('High');
+    expect(report).toContain('Low');
+  });
+});
+
+describe('renderComparisonReport content accuracy', () => {
+  it('negative changes show minus prefix', () => {
+    const result: ComparisonResult = {
+      proposal: { name: 'Nerf', author: 'test', changes: [] },
+      before: [],
+      after: [],
+      deltas: [
+        {
+          className: 'Hero',
+          skillName: 'Brandish',
+          tier: 'high',
+          scenario: 'Buffed',
+          before: 300000,
+          after: 270000,
+          change: -30000,
+          changePercent: -10,
+        },
+      ],
+    };
+
+    const report = renderComparisonReport(result);
+    expect(report).toContain('-30,000');
+    expect(report).toContain('-10.0%');
+    expect(report).not.toContain('+-');
+  });
+});
+
 describe('renderComparisonReport with rank columns', () => {
   it('shows rank column when ranks are present', () => {
     const result: ComparisonResult = {

@@ -1,8 +1,8 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, afterEach } from 'vitest';
 import { writeFileSync, mkdtempSync, rmSync } from 'fs';
 import { join } from 'path';
 import { tmpdir } from 'os';
-import { loadProposal } from './cli.js';
+import { loadProposal, parseTargetsFlag } from './cli.js';
 
 describe('loadProposal', () => {
   function withTempFile(filename: string, content: string): string {
@@ -51,5 +51,45 @@ describe('loadProposal', () => {
       changes: [],
     }));
     expect(() => loadProposal(path)).toThrow(/at least one change/);
+  });
+});
+
+describe('parseTargetsFlag', () => {
+  const origArgv = process.argv;
+  afterEach(() => { process.argv = origArgv; });
+
+  it('returns undefined when no --targets flag', () => {
+    process.argv = ['node', 'cli.ts'];
+    expect(parseTargetsFlag()).toBeUndefined();
+  });
+
+  it('returns parsed number for valid input', () => {
+    process.argv = ['node', 'cli.ts', '--targets', '6'];
+    expect(parseTargetsFlag()).toBe(6);
+  });
+
+  it('floors fractional values', () => {
+    process.argv = ['node', 'cli.ts', '--targets', '6.7'];
+    expect(parseTargetsFlag()).toBe(6);
+  });
+
+  it('throws on missing value after --targets', () => {
+    process.argv = ['node', 'cli.ts', '--targets'];
+    expect(() => parseTargetsFlag()).toThrow(/positive integer/);
+  });
+
+  it('throws on non-numeric value', () => {
+    process.argv = ['node', 'cli.ts', '--targets', 'abc'];
+    expect(() => parseTargetsFlag()).toThrow(/positive integer/);
+  });
+
+  it('throws on zero', () => {
+    process.argv = ['node', 'cli.ts', '--targets', '0'];
+    expect(() => parseTargetsFlag()).toThrow(/positive integer/);
+  });
+
+  it('throws on negative value', () => {
+    process.argv = ['node', 'cli.ts', '--targets', '-1'];
+    expect(() => parseTargetsFlag()).toThrow(/positive integer/);
   });
 });

@@ -90,6 +90,66 @@ describe('renderComparisonBBCode', () => {
     expect(bbcode).toContain('Rank');
     expect(bbcode).toContain('2\u21921');
   });
+
+  it('renders negative changes with minus prefix', () => {
+    const result: ComparisonResult = {
+      proposal: { name: 'Nerf', author: 'test', changes: [] },
+      before: [],
+      after: [],
+      deltas: [
+        {
+          className: 'Hero',
+          skillName: 'Brandish',
+          tier: 'high',
+          scenario: 'Buffed',
+          before: 300000,
+          after: 270000,
+          change: -30000,
+          changePercent: -10,
+        },
+      ],
+    };
+
+    const bbcode = renderComparisonBBCode(result);
+    expect(bbcode).toContain('-30,000');
+    expect(bbcode).toContain('-10.0%');
+  });
+
+  it('renders multi-scenario results as separate sections', () => {
+    const result: ComparisonResult = {
+      proposal: { name: 'Multi', author: 'test', changes: [] },
+      before: [],
+      after: [],
+      deltas: [
+        {
+          className: 'Hero',
+          skillName: 'Brandish',
+          tier: 'high',
+          scenario: 'Buffed',
+          before: 100000,
+          after: 110000,
+          change: 10000,
+          changePercent: 10,
+        },
+        {
+          className: 'Hero',
+          skillName: 'Brandish',
+          tier: 'high',
+          scenario: 'Unbuffed',
+          before: 50000,
+          after: 55000,
+          change: 5000,
+          changePercent: 10,
+        },
+      ],
+    };
+
+    const bbcode = renderComparisonBBCode(result);
+    expect(bbcode).toContain('[b]Buffed[/b]');
+    expect(bbcode).toContain('[b]Unbuffed[/b]');
+    const codeBlocks = bbcode.match(/\[code\]/g);
+    expect(codeBlocks).toHaveLength(2);
+  });
 });
 
 describe('renderBaselineBBCode', () => {
@@ -108,5 +168,18 @@ describe('renderBaselineBBCode', () => {
     // Hero should be rank 1 (higher DPS)
     const heroLine = bbcode.split('\n').find((l) => l.includes('Hero'));
     expect(heroLine).toMatch(/^\s*1/);
+  });
+
+  it('contains all scenario names from input', () => {
+    const results: ScenarioResult[] = [
+      { className: 'Hero', skillName: 'Brandish', tier: 'high', scenario: 'Buffed', dps: mockDpsResult(300000) },
+      { className: 'Hero', skillName: 'Brandish', tier: 'high', scenario: 'Unbuffed', dps: mockDpsResult(150000) },
+      { className: 'Hero', skillName: 'Brandish', tier: 'high', scenario: 'Bossing (50% PDR)', dps: mockDpsResult(150000) },
+    ];
+
+    const bbcode = renderBaselineBBCode(results);
+    expect(bbcode).toContain('[b]Buffed[/b]');
+    expect(bbcode).toContain('[b]Unbuffed[/b]');
+    expect(bbcode).toContain('[b]Bossing (50% PDR)[/b]');
   });
 });
