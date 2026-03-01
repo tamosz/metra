@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { Dashboard } from './components/Dashboard.js';
 import { ProposalBuilder } from './components/ProposalBuilder.js';
 import { ProposalResults } from './components/ProposalResults.js';
@@ -8,12 +8,16 @@ import { useSimulation } from './hooks/useSimulation.js';
 import { useProposal } from './hooks/useProposal.js';
 import { useBuildExplorer } from './hooks/useBuildExplorer.js';
 import { useBuildComparison } from './hooks/useBuildComparison.js';
+import { useCustomTiers } from './hooks/useCustomTiers.js';
+import { discoverClassesAndTiers } from './data/bundle.js';
 import { getProposalFromUrl, getBuildFromUrl, getComparisonFromUrl } from './utils/url-encoding.js';
 
 type Page = 'dashboard' | 'proposal' | 'build' | 'compare';
 
 export function App() {
-  const simulation = useSimulation();
+  const customTiersState = useCustomTiers();
+  const baseTiers = useMemo(() => discoverClassesAndTiers().tiers, []);
+  const simulation = useSimulation(customTiersState.tiers);
   const proposalState = useProposal();
   const buildState = useBuildExplorer();
   const comparisonState = useBuildComparison();
@@ -114,7 +118,13 @@ export function App() {
       </header>
 
       <main className="mx-auto max-w-[1200px] px-4 py-6 sm:px-8">
-        {page === 'dashboard' && <Dashboard simulation={simulation} />}
+        {page === 'dashboard' && (
+          <Dashboard
+            simulation={simulation}
+            customTiers={customTiersState}
+            baseTiers={baseTiers}
+          />
+        )}
         {page === 'proposal' && (
           <>
             <ProposalBuilder proposalState={proposalState} simulation={simulation} />

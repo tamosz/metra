@@ -3,13 +3,17 @@ import { DpsChart } from './DpsChart.js';
 import { FilterGroup } from './FilterGroup.js';
 import { SupportClassNote } from './SupportClassNote.js';
 import type { SimulationData } from '../hooks/useSimulation.js';
+import type { CustomTiersState } from '../hooks/useCustomTiers.js';
 import { compareTiers } from '@engine/data/types.js';
 import { SCENARIO_DESCRIPTIONS } from '../utils/game-terms.js';
 import { ClassIcon } from './icons/index.js';
 import { WelcomeBanner } from './WelcomeBanner.js';
+import { CustomTierList } from './CustomTierList.js';
 
 interface DashboardProps {
   simulation: SimulationData;
+  customTiers: CustomTiersState;
+  baseTiers: string[];
 }
 
 type SortColumn = 'class' | 'skill' | 'tier' | 'dps';
@@ -22,8 +26,14 @@ const COLUMN_DEFAULTS: Record<SortColumn, SortDirection> = {
   dps: 'desc',
 };
 
-export function Dashboard({ simulation }: DashboardProps) {
-  const { results, tiers, scenarios } = simulation;
+function tierDisplayName(tier: string, customTierNames: Map<string, string>): string {
+  const custom = customTierNames.get(tier);
+  if (custom) return custom;
+  return tier.charAt(0).toUpperCase() + tier.slice(1);
+}
+
+export function Dashboard({ simulation, customTiers, baseTiers }: DashboardProps) {
+  const { results, tiers, scenarios, customTierNames } = simulation;
   const [selectedScenario, setSelectedScenario] = useState('Buffed');
   const [selectedTier, setSelectedTier] = useState<string | 'all'>('all');
 
@@ -38,6 +48,9 @@ export function Dashboard({ simulation }: DashboardProps) {
   return (
     <div>
       <WelcomeBanner />
+
+      <CustomTierList customTiers={customTiers} baseTiers={baseTiers} />
+
       <div className="mb-6 flex flex-wrap gap-4">
         <FilterGroup
           label="Scenario"
@@ -50,7 +63,7 @@ export function Dashboard({ simulation }: DashboardProps) {
           value={selectedTier}
           options={[
             { value: 'all', label: 'All Tiers' },
-            ...tiers.map((t) => ({ value: t, label: t.charAt(0).toUpperCase() + t.slice(1) })),
+            ...tiers.map((t) => ({ value: t, label: tierDisplayName(t, customTierNames) })),
           ]}
           onChange={setSelectedTier}
         />
@@ -61,7 +74,7 @@ export function Dashboard({ simulation }: DashboardProps) {
       <DpsChart data={filtered} />
 
       <div className="mt-6">
-        <RankingTable data={filtered} />
+        <RankingTable data={filtered} customTierNames={customTierNames} />
       </div>
     </div>
   );
@@ -75,7 +88,13 @@ function SortArrow({ direction }: { direction: SortDirection }) {
   return <span className="ml-1 text-[10px]">{direction === 'asc' ? '\u25B2' : '\u25BC'}</span>;
 }
 
-function RankingTable({ data }: { data: { className: string; skillName: string; tier: string; dps: { dps: number } }[] }) {
+function RankingTable({
+  data,
+  customTierNames,
+}: {
+  data: { className: string; skillName: string; tier: string; dps: { dps: number } }[];
+  customTierNames: Map<string, string>;
+}) {
   const [sortColumn, setSortColumn] = useState<SortColumn>('dps');
   const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
 
@@ -145,7 +164,7 @@ function RankingTable({ data }: { data: { className: string; skillName: string; 
                   </span>
                 </td>
                 <td className="px-3 py-2 text-text-secondary">{r.skillName}</td>
-                <td className="px-3 py-2 text-text-muted">{r.tier.charAt(0).toUpperCase() + r.tier.slice(1)}</td>
+                <td className="px-3 py-2 text-text-muted">{tierDisplayName(r.tier, customTierNames)}</td>
                 <td className="px-3 py-2 text-right tabular-nums">
                   {formatDps(r.dps.dps)}
                 </td>
