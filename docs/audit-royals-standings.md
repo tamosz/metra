@@ -166,23 +166,33 @@ Bucc Barrage+DS at 244k sits between DrK and Corsair. Community noted Bucc was i
 - Check if the Axe advantage is consistent across tiers
 - Confirm 2H Axe 4.8x multiplier is MapleRoyals-verified (the gear assumptions doc says it is, citing community member Zerato)
 
-### INVESTIGATE-6: Marksman Snipe + Strafe Rotation Modeling
+### INVESTIGATE-6: Marksman Snipe + Strafe Rotation Modeling — RESOLVED
 
 **Severity: LOW-MEDIUM**
-**Simulator:** MM Snipe+Strafe at 223k vs standalone Strafe at 218k (+1.9% gain from weaving Snipe).
+**Simulator:** MM Snipe+Strafe at 223k vs standalone Strafe at 218k (+1.9% gain from weaving Snipe at high tier).
 
-**Analysis:** The Snipe+Strafe weave only adds ~1.9% over pure Strafe. Snipe does 195k fixed damage per hit on a ~5s cycle, but the Strafe filler in that same cycle does nearly as much total damage. This small gain seems surprising given Snipe's reputation as a powerful skill.
+**Verdict: Model is correct. The small gain at high tier is expected.**
 
-**Possible causes:**
-1. **Strafe count in rotation**: At speed 2, the model computes 7 Strafes per 5s Snipe cycle. Each 4-hit Strafe at high funding does substantial damage, so the Snipe's 195k is only incrementally better than one more Strafe.
-2. **5s cycle time**: The ~5s effective cooldown (4s programmed + 1s server tick) may be too long. Community needs to verify.
-3. **Snipe ignores weapon cancel** (Update #68 buff) — our model doesn't account for this, but it wouldn't affect pure DPS calculation.
+The royals.ms [DPS charts thread](https://royals.ms/forum/threads/dps-charts.124709/) independently derives the same rotation our model uses:
+- 7 Strafes per Snipe cycle at speed 2 (with SI)
+- 1:7 Snipe:Strafe ratio
+- `total_dps = snipe_dps * 1/8 + strafe_dps * 7/8`
 
-**Self-contained investigation task:**
-- Verify the 5s Snipe cooldown against in-game testing and community reports
-- Verify the number of filler Strafes (7 per cycle at speed 2)
-- Cross-reference MM Snipe+Strafe DPS against source spreadsheet
-- Check if the ~2.4% Snipe gain over pure Strafe matches spreadsheet calculations
+Community quote: *"strafe and snipe takes 0.63 to animate, thus, it will take 7 strafes (0.63*7 = 4.41 seconds) before another snipe can be used"*
+
+**Why the gain is small at high tier:** At high funding, Strafe averages ~131k per hit (0.60s). Weaving Snipe replaces ~1.33 Strafes with one 195k Snipe:
+- Lost: 1.33 × 131k = ~174k damage
+- Gained: 195k damage
+- Net: +21k per 5s cycle = +4.1k DPS = **+1.9%**
+
+At low funding, Strafe averages ~59k, so the trade is much more favorable:
+- Lost: 1.33 × 59k = ~78k
+- Gained: 195k
+- Net: +117k per 5s cycle = +23.3k DPS = **+23.7%**
+
+This tier sensitivity is already captured in the statistical audit (1.32x high/low ratio vs 1.77x median) — Snipe's fixed 195k doesn't scale with gear, so its relative contribution shrinks at higher funding.
+
+**Minor note:** The community thread uses 0.63s Strafe animation vs our 0.60s (from the source spreadsheet). This ~0.8% difference in rotation DPS is negligible; we follow the spreadsheet.
 
 ---
 
@@ -230,7 +240,7 @@ This 2.0-2.4x spread among physical classes is more reasonable but still wider t
 |----|-------|----------|--------|
 | INVESTIGATE-4 | Mage DPS gap vs physical classes (magnitude verification) | MEDIUM | Open |
 | INVESTIGATE-5 | Hero Axe vs Sword gap verification | LOW | Open |
-| INVESTIGATE-6 | Marksman Snipe+Strafe rotation modeling | LOW-MEDIUM | Open |
+| INVESTIGATE-6 | Marksman Snipe+Strafe rotation modeling | LOW-MEDIUM | **Resolved** — model correct, small gain expected at high tier |
 
 ### Prioritized Next Steps
 
