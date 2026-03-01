@@ -18,6 +18,7 @@ import { FilterGroup } from './FilterGroup.js';
 import { SupportClassNote } from './SupportClassNote.js';
 import { useIsMobile } from '../hooks/useIsMobile.js';
 import { SCENARIO_DESCRIPTIONS } from '../utils/game-terms.js';
+import { ClassIcon } from './icons/index.js';
 import { colors } from '../theme.js';
 
 interface ProposalResultsProps {
@@ -339,7 +340,12 @@ function DeltaTable({ deltas }: { deltas: DeltaEntry[] }) {
                     <RankCell before={d.rankBefore} after={d.rankAfter} />
                   </td>
                 )}
-                <td className="px-3 py-2">{d.className}</td>
+                <td className="px-3 py-2">
+                  <span className="inline-flex items-center gap-1.5">
+                    <ClassIcon className={d.className} />
+                    {d.className}
+                  </span>
+                </td>
                 <td className="px-3 py-2 text-text-secondary">{d.skillName}</td>
                 <td className="px-3 py-2 text-text-muted">
                   {d.tier.charAt(0).toUpperCase() + d.tier.slice(1)}

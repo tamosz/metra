@@ -5,6 +5,7 @@ import { SupportClassNote } from './SupportClassNote.js';
 import type { SimulationData } from '../hooks/useSimulation.js';
 import { TIER_ORDER } from '@engine/data/types.js';
 import { SCENARIO_DESCRIPTIONS } from '../utils/game-terms.js';
+import { ClassIcon } from './icons/index.js';
 
 interface DashboardProps {
   simulation: SimulationData;
@@ -139,7 +140,12 @@ function RankingTable({ data }: { data: { className: string; skillName: string; 
                 className="border-b border-border-subtle hover:bg-white/[0.03]"
               >
                 <td className="px-3 py-2 w-8 text-text-faint">{i + 1}</td>
-                <td className="px-3 py-2">{r.className}</td>
+                <td className="px-3 py-2">
+                  <span className="inline-flex items-center gap-1.5">
+                    <ClassIcon className={r.className} />
+                    {r.className}
+                  </span>
+                </td>
                 <td className="px-3 py-2 text-text-secondary">{r.skillName}</td>
                 <td className="px-3 py-2 text-text-muted">{r.tier.charAt(0).toUpperCase() + r.tier.slice(1)}</td>
                 <td className="px-3 py-2 text-right tabular-nums">
