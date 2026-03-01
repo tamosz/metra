@@ -777,10 +777,11 @@ describe('Marksman DPS', () => {
 
     // Standard formula with Crossbow 3.6x
     // DEX: floor(999 * 1.1) + 158 = 1256, STR: floor(4 * 1.1) + 97 = 101
-    // max = floor((1256 * 3.6 + 101) * 294 / 100) = 13590
-    // min = floor((1256 * 3.6 * 0.9 * 0.9 + 101) * 294 / 100) = 11064
-    expect(result.damageRange.max).toBe(13590);
-    expect(result.damageRange.min).toBe(11064);
+    // totalAttack = 193 + 100 + floor((193+100)*0.04) = 304
+    // max = floor((1256 * 3.6 + 101) * 304 / 100) = 14052
+    // min = floor((1256 * 3.6 * 0.9 * 0.9 + 101) * 304 / 100) = 11441
+    expect(result.damageRange.max).toBe(14052);
+    expect(result.damageRange.min).toBe(11441);
   });
 
   it('Strafe (MM) High tier DPS ~211,203', () => {
@@ -794,17 +795,17 @@ describe('Marksman DPS', () => {
     expect(result.skillDamagePercent).toBe(125);
     // SE: (125 + 100 + 140) * 1 = 365
     expect(result.seDamagePercent).toBe(365);
-    expect(result.dps).toBeCloseTo(211203, -1);
+    expect(result.dps).toBeCloseTo(218390, -1);
   });
 
-  it('Strafe (MM) Low tier DPS ~106,175', () => {
+  it('Strafe (MM) Low tier DPS ~98,311', () => {
     const strafe = mmData.skills.find((s) => s.name === 'Strafe (MM)')!;
     const result = calculateSkillDps(
       mmLow, mmData, strafe, weaponData, attackSpeedData, mapleWarriorData
     );
 
     expect(result.attackTime).toBe(0.60);
-    expect(result.dps).toBeCloseTo(106175, -1);
+    expect(result.dps).toBeCloseTo(98311, -1);
   });
 
   it('Snipe uses fixedDamage path (195,000 per hit)', () => {
@@ -872,8 +873,8 @@ describe('Marksman DPS', () => {
     // 7 Strafes per 5s cycle → effective attack time = 5.0/7 = 0.714s
     expect(result.attackTime).toBe(0.714);
     // Same damage range as standalone Strafe (MM) — same basePower, crit, weapon
-    expect(result.damageRange.max).toBe(13590);
-    expect(result.damageRange.min).toBe(11064);
+    expect(result.damageRange.max).toBe(14052);
+    expect(result.damageRange.min).toBe(11441);
   });
 
   it('Strafe (MM) High tier DPS > Low tier', () => {
