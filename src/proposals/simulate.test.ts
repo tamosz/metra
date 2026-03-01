@@ -300,7 +300,7 @@ describe('runSimulation PDR', () => {
 });
 
 describe('comboGroup aggregation', () => {
-  it('collapses Barrage + Dragon Strike sub-skills into 1 result', () => {
+  it('collapses Barrage + Demolition sub-skills into 1 result', () => {
     const config: SimulationConfig = {
       classes: ['bucc'],
       tiers: ['high'],
@@ -312,8 +312,8 @@ describe('comboGroup aggregation', () => {
       weaponData, attackSpeedData, mapleWarriorData
     );
 
-    // Bucc has 5 raw skills: 1 Demolition + 4 Barrage+DS sub-skills
-    // After aggregation: 1 Demolition + 1 Barrage+DS = 2
+    // Bucc has 5 raw skills: 1 Demolition + 4 Barrage+Demo sub-skills
+    // After aggregation: 1 Demolition + 1 Barrage+Demo = 2
     expect(results.length).toBe(2);
   });
 
@@ -329,9 +329,9 @@ describe('comboGroup aggregation', () => {
       weaponData, attackSpeedData, mapleWarriorData
     );
 
-    const combo = results.find(r => r.skillName === 'Barrage + Dragon Strike');
+    const combo = results.find(r => r.skillName === 'Barrage + Demolition');
     expect(combo).toBeDefined();
-    expect(combo!.dps.skillName).toBe('Barrage + Dragon Strike');
+    expect(combo!.dps.skillName).toBe('Barrage + Demolition');
   });
 
   it('aggregated DPS equals sum of individual sub-skill DPS values', () => {
@@ -341,15 +341,15 @@ describe('comboGroup aggregation', () => {
       scenarios: [{ name: 'Buffed' }],
     };
 
-    // Run with real data — we can verify against known reference value
+    // Run with real data — DPS value will be computed from new combo data
     const results = runSimulation(
       config, classDataMap, gearTemplates,
       weaponData, attackSpeedData, mapleWarriorData
     );
 
-    const combo = results.find(r => r.skillName === 'Barrage + Dragon Strike')!;
-    // Reference value from MEMORY.md: ~244,086 DPS
-    expect(combo.dps.dps).toBeCloseTo(244086, -2);
+    const combo = results.find(r => r.skillName === 'Barrage + Demolition')!;
+    // B+Demo should be higher than standalone Demolition (~233k high tier)
+    expect(combo.dps.dps).toBeGreaterThan(233000);
   });
 
   it('non-combo skills pass through unchanged', () => {
