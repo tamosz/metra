@@ -12,7 +12,8 @@
     "type-check": "tsc --noEmit",
     "type-check:web": "cd web && tsc --noEmit",
     "type-check:all": "tsc --noEmit && cd web && tsc --noEmit",
-    "setup": "git config core.hooksPath .githooks"
+    "setup": "git config core.hooksPath .githooks",
+    "vercel-build": "cd web && npm install && npm run build"
   },
   "devDependencies": {
     "@types/node": "^25.3.2",
