@@ -22,6 +22,8 @@ export function DpsChart({ data }: DpsChartProps) {
   const chartData = data.map((r) => ({
     label: `${r.className} — ${r.skillName}`,
     sublabel: r.tier.charAt(0).toUpperCase() + r.tier.slice(1),
+    // Unique key for Recharts YAxis — includes tier to avoid duplicate labels
+    uid: `${r.className} — ${r.skillName} [${r.tier}]`,
     dps: Math.round(r.dps.dps),
     className: r.className,
   }));
@@ -53,11 +55,11 @@ export function DpsChart({ data }: DpsChartProps) {
           />
           <YAxis
             type="category"
-            dataKey="label"
+            dataKey="uid"
             width={yAxisWidth}
             interval={0}
             tick={({ x, y, payload }) => {
-              const entry = chartData.find((d) => d.label === payload.value);
+              const entry = chartData.find((d) => d.uid === payload.value);
               return (
                 <g transform={`translate(${x},${y})`}>
                   <text
@@ -68,7 +70,7 @@ export function DpsChart({ data }: DpsChartProps) {
                     fill={colors.textSecondary}
                     fontSize={labelFontSize}
                   >
-                    {payload.value}
+                    {entry?.label ?? payload.value}
                   </text>
                   {entry && (
                     <text
