@@ -368,8 +368,8 @@ describe('comboGroup aggregation', () => {
     expect(demolition).toBeDefined();
     expect(demolition.className).toBe('Buccaneer');
     expect(demolition.tier).toBe('high');
-    // Reference value: ~233,453 DPS
-    expect(demolition.dps.dps).toBeCloseTo(233453, -2);
+    // Reference value: ~247,417 DPS
+    expect(demolition.dps.dps).toBeCloseTo(247417, -2);
   });
 
   it('produces correct count across tiers and scenarios', () => {

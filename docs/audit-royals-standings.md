@@ -159,23 +159,29 @@ Bucc Barrage+DS at 244k sits between DrK and Corsair. Community noted Bucc was i
 
 **Remaining outlier:** BStep + Assassinate 30 still flags as an outlier in unbuffed scenarios (+2.6σ). This is correct game behavior — the combo's speed-independent 2.31s cycle doesn't lose anything when SI is removed, unlike speed-dependent skills on other classes. This is a genuine Shadower advantage, not a modeling artifact.
 
-### INVESTIGATE-3: Corsair Battleship Cannon Tier Sensitivity
+### INVESTIGATE-3: Corsair & Buccaneer Tier Sensitivity
 
-**Severity: LOW-MEDIUM**
-**Simulator audit flags:** Corsair (both Battleship Cannon and Rapid Fire) shows -0.31σ tier sensitivity deviation (High/Low ratio of 1.63x vs median 1.94x). This means Corsair's DPS scales less with funding than average.
+**Severity: LOW-MEDIUM** → **Resolved**
 
-**Analysis:** Battleship Cannon Low tier (203k) is remarkably high — in fact it exceeds NL Mid tier (195k). This "floor" effect may come from Battleship Cannon's strong base power (380) and hit count (4), which provides high throughput even with modest gear.
+**Root cause:** Corsair and Buccaneer gear templates had anomalous base stat values compared to other classes. Corsair DEX ranged 796→931 (1.17x ratio) and Bucc STR ranged 797→938 (1.18x ratio), while all other classes use 700→999 (1.43x ratio). Secondary stats were also inconsistent (declining across tiers instead of stable).
 
-**Community view:** Community notes Corsair "gains only ~5% DPS from SI or SE" — this reduced dependency on party buffs aligns with the reduced tier sensitivity we see.
+**Fix:** Standardized pirate base stats to match their archetype counterparts:
+- Corsair → Bowmaster pattern (DEX primary): `{STR: 4, DEX: 700/850/999}`
+- Buccaneer → Hero pattern (STR primary): `{STR: 700/850/999, DEX: 22/22/23}`
 
-**Questions to resolve:**
-1. Is the low-tier Corsair gear appropriately modeled? Verify gun WATK at low tier.
-2. Is the flat tier sensitivity a correct reflection of Corsair's mechanics, or does it indicate a gear template issue?
+**DPS changes (Buffed scenario):**
+| Class | Skill | Tier | Before | After | Change |
+|-------|-------|------|--------|-------|--------|
+| Corsair | Battleship Cannon | High | 331,354 | 350,586 | +5.8% |
+| Corsair | Battleship Cannon | Low | 202,986 | 180,049 | -11.3% |
+| Corsair | Rapid Fire | High | 228,271 | 241,520 | +5.8% |
+| Corsair | Rapid Fire | Low | 139,838 | 124,036 | -11.3% |
+| Bucc | Demolition | High | 233,453 | 247,417 | +6.0% |
+| Bucc | Demolition | Low | 135,843 | 121,362 | -10.7% |
+| Bucc | Barrage + Demo | High | 246,715 | 260,373 | +5.5% |
+| Bucc | Barrage + Demo | Low | 144,941 | 129,490 | -10.7% |
 
-**Self-contained investigation task:**
-- Compare Corsair low/mid/high WATK values against community-verified baselines
-- Verify Battleship Cannon's 4-hit, 0.60s, 380 base power, 1.2x multiplier against source spreadsheet
-- Check if Corsair's reduced buff sensitivity matches the known ~5% SI/SE gain
+High/Low ratio now ~1.95x for both classes, matching the median.
 
 ### INVESTIGATE-4: Mage DPS Gap vs Physical Classes
 
@@ -281,7 +287,7 @@ This 2.0-2.4x spread among physical classes is more reasonable but still wider t
 |----|-------|----------|--------|
 | INVESTIGATE-1 | Bowmaster Hurricane seems too low vs community ranking | HIGH | Open |
 | INVESTIGATE-2 | Shadower unbuffed outlier from SI-disabled assumption | MEDIUM | Resolved |
-| INVESTIGATE-3 | Corsair Battleship Cannon tier sensitivity | LOW-MEDIUM | Open |
+| INVESTIGATE-3 | Corsair & Bucc tier sensitivity (base stat scaling) | LOW-MEDIUM | Resolved |
 | INVESTIGATE-4 | Mage DPS gap vs physical classes (magnitude verification) | MEDIUM | Open |
 | INVESTIGATE-5 | Hero Axe vs Sword gap verification | LOW | Open |
 | INVESTIGATE-6 | Marksman Snipe+Strafe rotation modeling | LOW-MEDIUM | Open |
@@ -291,7 +297,7 @@ This 2.0-2.4x spread among physical classes is more reasonable but still wider t
 1. **INVESTIGATE-1 (BM Hurricane)** — Highest priority because the discrepancy vs community consensus is the largest. If Hurricane DPS is undermodeled, it distorts the entire ranking picture.
 2. **INVESTIGATE-4 (Mage DPS)** — Verify the magnitude is correct before drawing balance conclusions about mages.
 3. **INVESTIGATE-6 (MM Snipe rotation)** — The small Snipe gain is counterintuitive and worth verifying.
-4. **INVESTIGATE-3 (Corsair tier sensitivity)** — Lower priority; may just be a correct reflection of Corsair's mechanics.
+4. **INVESTIGATE-3 (Corsair & Bucc tier sensitivity)** — Resolved. Base stats standardized to match archetype counterparts.
 5. **INVESTIGATE-5 (Hero Axe vs Sword)** — Lowest priority; the gap is small and well-explained by weapon multiplier.
 
 ---

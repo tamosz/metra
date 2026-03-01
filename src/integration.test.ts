@@ -205,9 +205,9 @@ describe('Baseline mode', () => {
     expect(find('Bowmaster', 'Strafe').dps.dps).toBeCloseTo(199749, -2);
     expect(find('Marksman', 'Strafe (MM)').dps.dps).toBeCloseTo(211203, -2);
     expect(find('Marksman', 'Snipe + Strafe').dps.dps).toBeCloseTo(216482, -2);
-    expect(find('Corsair', 'Battleship Cannon').dps.dps).toBeCloseTo(331354, -2);
-    expect(find('Corsair', 'Rapid Fire').dps.dps).toBeCloseTo(228271, -2);
-    expect(find('Buccaneer', 'Demolition').dps.dps).toBeCloseTo(233453, -2);
+    expect(find('Corsair', 'Battleship Cannon').dps.dps).toBeCloseTo(350586, -2);
+    expect(find('Corsair', 'Rapid Fire').dps.dps).toBeCloseTo(241520, -2);
+    expect(find('Buccaneer', 'Demolition').dps.dps).toBeCloseTo(247417, -2);
     expect(find('Buccaneer', 'Barrage + Demolition').dps.dps).toBeGreaterThan(find('Buccaneer', 'Demolition').dps.dps);
     expect(find('Shadower', 'BStep + Assassinate 30').dps.dps).toBeCloseTo(326734, -2);
     expect(find('Shadower', 'Savage Blow').dps.dps).toBeCloseTo(183467, -2);
@@ -225,9 +225,9 @@ describe('Baseline mode', () => {
     expect(find('Bowmaster', 'Hurricane').dps.dps).toBeCloseTo(113332, -2);
     expect(find('Marksman', 'Strafe (MM)').dps.dps).toBeCloseTo(106175, -2);
     expect(find('Marksman', 'Snipe + Strafe').dps.dps).toBeCloseTo(128223, -2);
-    expect(find('Corsair', 'Battleship Cannon').dps.dps).toBeCloseTo(202986, -2);
-    expect(find('Corsair', 'Rapid Fire').dps.dps).toBeCloseTo(139838, -2);
-    expect(find('Buccaneer', 'Demolition').dps.dps).toBeCloseTo(135843, -2);
+    expect(find('Corsair', 'Battleship Cannon').dps.dps).toBeCloseTo(180049, -2);
+    expect(find('Corsair', 'Rapid Fire').dps.dps).toBeCloseTo(124036, -2);
+    expect(find('Buccaneer', 'Demolition').dps.dps).toBeCloseTo(121362, -2);
     expect(find('Buccaneer', 'Barrage + Demolition').dps.dps).toBeGreaterThan(find('Buccaneer', 'Demolition').dps.dps);
     expect(find('Shadower', 'BStep + Assassinate 30').dps.dps).toBeCloseTo(198577, -2);
     expect(find('Shadower', 'Savage Blow').dps.dps).toBeCloseTo(111504, -2);
