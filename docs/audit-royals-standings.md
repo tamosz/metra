@@ -289,7 +289,7 @@ This 2.1-2.4x spread among physical classes is more reasonable but still wider t
 
 | ID | Title | Severity | Status |
 |----|-------|----------|--------|
-| INVESTIGATE-1 | Bowmaster Hurricane seems too low vs community ranking | HIGH | Open |
+| INVESTIGATE-1 | Bowmaster Hurricane seems too low vs community ranking | HIGH | **Resolved** — archer weapon WATK wasn't scaling by tier (120 across all 3). Fixed: Low 105, Mid 120, High 130. BM Hurricane High 225k→233k. |
 | INVESTIGATE-2 | Shadower unbuffed outlier from SI-disabled assumption | MEDIUM | Open |
 | INVESTIGATE-3 | Corsair Battleship Cannon tier sensitivity | LOW-MEDIUM | Open |
 | INVESTIGATE-4 | Mage DPS gap vs physical classes (magnitude verification) | MEDIUM | Open |
