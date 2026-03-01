@@ -6,6 +6,7 @@ import type { SimulationData } from '../hooks/useSimulation.js';
 import { TIER_ORDER } from '@engine/data/types.js';
 import { SCENARIO_DESCRIPTIONS } from '../utils/game-terms.js';
 import { ClassIcon } from './icons/index.js';
+import { WelcomeBanner } from './WelcomeBanner.js';
 
 interface DashboardProps {
   simulation: SimulationData;
@@ -36,6 +37,7 @@ export function Dashboard({ simulation }: DashboardProps) {
 
   return (
     <div>
+      <WelcomeBanner />
       <div className="mb-6 flex flex-wrap gap-4">
         <FilterGroup
           label="Scenario"
