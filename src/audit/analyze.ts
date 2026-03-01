@@ -1,6 +1,6 @@
 import type { ScenarioResult } from '../proposals/types.js';
 import type { BalanceAudit, GroupSummary, OutlierEntry, TierSensitivity } from './types.js';
-import { TIER_ORDER } from '../data/types.js';
+import { TIER_ORDER, compareTiers } from '../data/types.js';
 
 const OUTLIER_THRESHOLD = 1.5;
 

@@ -21,7 +21,7 @@ export {
 } from './engine/attack-speed.js';
 
 // Constants
-export { TIER_ORDER } from './data/types.js';
+export { TIER_ORDER, compareTiers } from './data/types.js';
 
 // Types
 export type {

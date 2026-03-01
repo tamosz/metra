@@ -1,7 +1,7 @@
 import { readFileSync, readdirSync } from 'fs';
 import { resolve } from 'path';
 import {
-  TIER_ORDER,
+  compareTiers,
   type WeaponData,
   type AttackSpeedData,
   type MWData,
@@ -119,11 +119,7 @@ export function discoverClassesAndTiers(): DiscoveryResult {
     classDataMap.set(name, loadClassSkills(name));
   }
 
-  const tierArray = [...tiers].sort((a, b) => {
-    const ai = TIER_ORDER.indexOf(a as typeof TIER_ORDER[number]);
-    const bi = TIER_ORDER.indexOf(b as typeof TIER_ORDER[number]);
-    return (ai === -1 ? Infinity : ai) - (bi === -1 ? Infinity : bi);
-  });
+  const tierArray = [...tiers].sort(compareTiers);
   const gearTemplates = new Map<string, CharacterBuild>();
   for (const name of classNames) {
     for (const tier of tierArray) {

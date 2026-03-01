@@ -12,7 +12,7 @@ import {
 import type { ComparisonResult, DeltaEntry, Proposal } from '@engine/proposals/types.js';
 import { renderComparisonReport } from '@engine/report/markdown.js';
 import { renderComparisonBBCode } from '@engine/report/bbcode.js';
-import { TIER_ORDER } from '@engine/data/types.js';
+import { compareTiers } from '@engine/data/types.js';
 import { getClassColor } from '../utils/class-colors.js';
 import { setProposalInUrl } from '../utils/url-encoding.js';
 import { FilterGroup } from './FilterGroup.js';
@@ -23,9 +23,7 @@ import { ClassIcon } from './icons/index.js';
 import { colors } from '../theme.js';
 
 function rankSort(a: DeltaEntry, b: DeltaEntry): number {
-  const aTier = TIER_ORDER.indexOf(a.tier as typeof TIER_ORDER[number]);
-  const bTier = TIER_ORDER.indexOf(b.tier as typeof TIER_ORDER[number]);
-  const tierCmp = (aTier === -1 ? Infinity : aTier) - (bTier === -1 ? Infinity : bTier);
+  const tierCmp = compareTiers(a.tier, b.tier);
   if (tierCmp !== 0) return tierCmp;
   return (a.rankAfter ?? Infinity) - (b.rankAfter ?? Infinity);
 }
