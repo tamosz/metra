@@ -6,25 +6,22 @@ A balance simulator for MapleRoyals staff and community. Every number traces bac
 
 ## Done
 
-- 12 classes with verified DPS (10 physical + Archmage I/L, Bishop)
+- 13 classes with verified DPS (10 physical + Archmage I/L, Archmage F/P, Bishop)
 - Standard and magic damage formulas (spell/weapon amplification)
 - Proposal pipeline (JSON → simulate → compare → report)
 - CLI with baseline rankings + proposal comparison
 - Web SPA: dashboard, proposal builder, class comparison view, URL sharing, BBCode export
+- Build explorer: gear/stat overrides with sliders/inputs, real-time DPS recalc
+- Shareable builds via URL encoding (`#b=` for builds, `#c=` for comparisons)
+- UX: mobile layout, tooltips, class icons, onboarding banner, support class disclaimers
 - 3 funding tiers (low, mid, high)
-- 4 scenarios (Buffed, Unbuffed, No-Echo, Bossing 50% PDR)
+- 5 scenarios (Buffed, Unbuffed, No-Echo, Bossing 50% PDR, Bossing Undead 50% PDR)
 - Balance audit: automated outlier detection across scenarios and tiers
 - Pre-commit hooks, comprehensive test coverage
 - Deployed on Vercel: https://metra-ten.vercel.app
 
-## Phase 2: Public Launch + Build Explorer
+## Phase 2: Custom Funding Tiers
 
-Deploy and make it useful for real players.
-
-- Gear/stat overrides with sliders/inputs (start from templates, real-time DPS recalc)
-- Shareable builds via URL encoding
-- UX polish: mobile layout, tooltips, class icons, onboarding
-- Support class disclaimers on Bishop/mage rankings (solo DPS ≠ party value)
 - Custom funding tiers beyond low/mid/high
 
 ## Phase 3: Community Features
