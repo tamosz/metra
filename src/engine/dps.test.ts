@@ -762,7 +762,7 @@ describe('Marksman DPS', () => {
 
   it('loads Marksman skill data correctly', () => {
     expect(mmData.className).toBe('Marksman');
-    expect(mmData.mastery).toBe(0.9);
+    expect(mmData.mastery).toBe(1.0);
     expect(mmData.primaryStat).toBe('DEX');
     expect(mmData.secondaryStat).toBe('STR');
     expect(mmData.damageFormula).toBe('standard');
@@ -775,16 +775,16 @@ describe('Marksman DPS', () => {
       mmHigh, mmData, strafe, weaponData, attackSpeedData, mapleWarriorData
     );
 
-    // Standard formula with Crossbow 3.6x
+    // Standard formula with Crossbow 3.6x, mastery 1.0 (Update #71)
     // DEX: floor(999 * 1.1) + 158 = 1256, STR: floor(4 * 1.1) + 97 = 101
-    // totalAttack = 193 + 100 + floor((193+100)*0.04) = 304
-    // max = floor((1256 * 3.6 + 101) * 304 / 100) = 14052
-    // min = floor((1256 * 3.6 * 0.9 * 0.9 + 101) * 304 / 100) = 11441
-    expect(result.damageRange.max).toBe(14052);
-    expect(result.damageRange.min).toBe(11441);
+    // totalAttack = 198 + 100 + floor((198+100)*0.04) = 309
+    // max = floor((1256 * 3.6 + 101) * 309 / 100) = 14283
+    // min = floor((1256 * 3.6 * 0.9 * 1.0 + 101) * 309 / 100) = 12886
+    expect(result.damageRange.max).toBe(14283);
+    expect(result.damageRange.min).toBe(12886);
   });
 
-  it('Strafe (MM) High tier DPS ~211,203', () => {
+  it('Strafe (MM) High tier DPS ~232,748', () => {
     const strafe = mmData.skills.find((s) => s.name === 'Strafe (MM)')!;
     const result = calculateSkillDps(
       mmHigh, mmData, strafe, weaponData, attackSpeedData, mapleWarriorData
@@ -795,17 +795,17 @@ describe('Marksman DPS', () => {
     expect(result.skillDamagePercent).toBe(125);
     // SE: (125 + 100 + 140) * 1 = 365
     expect(result.seDamagePercent).toBe(365);
-    expect(result.dps).toBeCloseTo(218390, -1);
+    expect(result.dps).toBeCloseTo(232748, -1);
   });
 
-  it('Strafe (MM) Low tier DPS ~98,311', () => {
+  it('Strafe (MM) Low tier DPS ~105,644', () => {
     const strafe = mmData.skills.find((s) => s.name === 'Strafe (MM)')!;
     const result = calculateSkillDps(
       mmLow, mmData, strafe, weaponData, attackSpeedData, mapleWarriorData
     );
 
     expect(result.attackTime).toBe(0.60);
-    expect(result.dps).toBeCloseTo(98311, -1);
+    expect(result.dps).toBeCloseTo(105644, -1);
   });
 
   it('Snipe uses fixedDamage path (195,000 per hit)', () => {
@@ -873,8 +873,8 @@ describe('Marksman DPS', () => {
     // 7 Strafes per 5s cycle → effective attack time = 5.0/7 = 0.714s
     expect(result.attackTime).toBe(0.714);
     // Same damage range as standalone Strafe (MM) — same basePower, crit, weapon
-    expect(result.damageRange.max).toBe(14052);
-    expect(result.damageRange.min).toBe(11441);
+    expect(result.damageRange.max).toBe(14283);
+    expect(result.damageRange.min).toBe(12886);
   });
 
   it('Strafe (MM) High tier DPS > Low tier', () => {
