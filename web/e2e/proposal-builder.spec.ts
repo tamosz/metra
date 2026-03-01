@@ -31,12 +31,15 @@ test.describe('proposal builder', () => {
       value: '280',
     });
 
-    // Change row should be visible
-    await expect(page.getByText('hero.brandish-sword')).toBeVisible();
+    // Change row should show human-readable names
+    const changeRow = page.getByTestId('change-row').first();
+    await expect(changeRow.getByText('Hero')).toBeVisible();
+    await expect(changeRow.getByText('Brandish (Sword)')).toBeVisible();
+    await expect(changeRow.getByText('Base Power')).toBeVisible();
 
     // Remove it
     await page.getByRole('button', { name: 'Remove' }).click();
-    await expect(page.getByText('hero.brandish-sword')).not.toBeVisible();
+    await expect(changeRow.getByText('Base Power')).not.toBeVisible();
   });
 
   test('current value hint shows after selecting skill', async ({ page }) => {
@@ -52,9 +55,11 @@ test.describe('proposal builder', () => {
     await page.getByTestId('json-import').fill(JSON.stringify(BRANDISH_BUFF));
     await page.getByRole('button', { name: 'Import' }).click();
 
-    // Name and change should be loaded
+    // Name and change should be loaded with human-readable display
     await expect(page.locator('input[placeholder="e.g. Brandish Buff"]')).toHaveValue('Brandish +20');
-    await expect(page.getByText('hero.brandish-sword')).toBeVisible();
+    const changeRow = page.getByTestId('change-row').first();
+    await expect(changeRow.getByText('Hero')).toBeVisible();
+    await expect(changeRow.getByText('Brandish (Sword)')).toBeVisible();
   });
 
   test('JSON export contains valid JSON matching current proposal', async ({ page }) => {

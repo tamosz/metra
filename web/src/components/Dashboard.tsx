@@ -1,5 +1,6 @@
 import { useState, useMemo } from 'react';
 import { DpsChart } from './DpsChart.js';
+import { FilterGroup } from './FilterGroup.js';
 import { SupportClassNote } from './SupportClassNote.js';
 import type { SimulationData } from '../hooks/useSimulation.js';
 import { TIER_ORDER } from '@engine/data/types.js';
@@ -57,41 +58,6 @@ export function Dashboard({ simulation }: DashboardProps) {
 
       <div className="mt-6">
         <RankingTable data={filtered} />
-      </div>
-    </div>
-  );
-}
-
-function FilterGroup({
-  label,
-  value,
-  options,
-  onChange,
-}: {
-  label: string;
-  value: string;
-  options: { value: string; label: string }[];
-  onChange: (value: string) => void;
-}) {
-  return (
-    <div className="flex items-center gap-2">
-      <span className="text-xs uppercase tracking-wide text-text-muted">
-        {label}
-      </span>
-      <div className="flex gap-0.5">
-        {options.map((opt) => (
-          <button
-            key={opt.value}
-            onClick={() => onChange(opt.value)}
-            className={`cursor-pointer rounded px-2.5 py-1 text-xs transition-colors ${
-              value === opt.value
-                ? 'border border-border-active bg-bg-active text-text-bright'
-                : 'border border-transparent bg-transparent text-text-dim hover:text-text-muted'
-            }`}
-          >
-            {opt.label}
-          </button>
-        ))}
       </div>
     </div>
   );

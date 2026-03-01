@@ -1,13 +1,37 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import type { ProposalState } from '../hooks/useProposal.js';
 import type { SimulationData } from '../hooks/useSimulation.js';
 import type { ProposalChange, Proposal } from '@engine/proposals/types.js';
 import { skillSlug } from '@engine/proposals/apply.js';
 import {
   discoverClassesAndTiers,
+  type DiscoveryResult,
 } from '../data/bundle.js';
 import { setProposalInUrl } from '../utils/url-encoding.js';
 import { colors } from '../theme.js';
+
+const FIELD_LABELS: Record<string, string> = {
+  basePower: 'Base Power',
+  multiplier: 'Multiplier',
+  hitCount: 'Hit Count',
+};
+
+function resolveChangeDisplay(
+  target: string,
+  discovery: DiscoveryResult
+): { className: string; skillName: string } | null {
+  const dotIndex = target.indexOf('.');
+  if (dotIndex === -1) return null;
+  const classKey = target.slice(0, dotIndex);
+  const skillKey = target.slice(dotIndex + 1);
+  const classData = discovery.classDataMap.get(classKey);
+  if (!classData) return null;
+  const skill = classData.skills.find((s) => skillSlug(s.name) === skillKey);
+  return {
+    className: classData.className,
+    skillName: skill?.name ?? skillKey,
+  };
+}
 
 interface ProposalBuilderProps {
   proposalState: ProposalState;
@@ -19,6 +43,7 @@ export function ProposalBuilder({ proposalState, simulation }: ProposalBuilderPr
   const [showJson, setShowJson] = useState(false);
   const [jsonInput, setJsonInput] = useState('');
   const [jsonError, setJsonError] = useState('');
+  const discovery = useMemo(() => discoverClassesAndTiers(), []);
 
   const handleSimulate = () => {
     simulate();
@@ -84,10 +109,10 @@ export function ProposalBuilder({ proposalState, simulation }: ProposalBuilderPr
       </div>
 
       {proposal.changes.map((change, i) => (
-        <ChangeRow key={i} change={change} onRemove={() => removeChange(i)} />
+        <ChangeRow key={i} change={change} discovery={discovery} onRemove={() => removeChange(i)} />
       ))}
 
-      <AddChangeForm simulation={simulation} onAdd={addChange} />
+      <AddChangeForm simulation={simulation} discovery={discovery} onAdd={addChange} />
 
       <div className="mt-6 flex gap-3">
         <button
@@ -144,12 +169,22 @@ function JsonPanel({
   );
 }
 
-function ChangeRow({ change, onRemove }: { change: ProposalChange; onRemove: () => void }) {
+function ChangeRow({ change, discovery, onRemove }: { change: ProposalChange; discovery: DiscoveryResult; onRemove: () => void }) {
+  const display = resolveChangeDisplay(change.target, discovery);
+  const fieldLabel = FIELD_LABELS[change.field] ?? change.field;
+
   return (
-    <div className="mb-1.5 flex items-center gap-3 rounded-md bg-bg-raised px-3 py-2 text-sm">
-      <span className="text-text-muted">{change.target}</span>
-      <span className="text-text-dim">.</span>
-      <span className="text-text-secondary">{change.field}</span>
+    <div data-testid="change-row" className="mb-1.5 flex items-center gap-2 rounded-md bg-bg-raised px-3 py-2 text-sm">
+      {display ? (
+        <>
+          <span className="font-medium text-text-primary">{display.className}</span>
+          <span className="text-text-dim">&mdash;</span>
+          <span className="text-text-secondary">{display.skillName}:</span>
+        </>
+      ) : (
+        <span className="text-text-muted">{change.target}</span>
+      )}
+      <span className="text-text-muted">{fieldLabel}</span>
       {change.from !== undefined && (
         <span className="text-text-dim">{change.from}</span>
       )}
@@ -164,12 +199,13 @@ function ChangeRow({ change, onRemove }: { change: ProposalChange; onRemove: () 
 
 function AddChangeForm({
   simulation,
+  discovery,
   onAdd,
 }: {
   simulation: SimulationData;
+  discovery: DiscoveryResult;
   onAdd: (change: ProposalChange) => void;
 }) {
-  const discovery = discoverClassesAndTiers();
   const [selectedClass, setSelectedClass] = useState('');
   const [selectedSkill, setSelectedSkill] = useState('');
   const [field, setField] = useState('basePower');
@@ -234,9 +270,9 @@ function AddChangeForm({
       <div>
         <label className={labelClass}>Field</label>
         <select data-testid="field-select" value={field} onChange={(e) => setField(e.target.value)} className={selectClass}>
-          <option value="basePower">basePower</option>
-          <option value="multiplier">multiplier</option>
-          <option value="hitCount">hitCount</option>
+          <option value="basePower">Base Power</option>
+          <option value="multiplier">Multiplier</option>
+          <option value="hitCount">Hit Count</option>
         </select>
       </div>
       <div>
