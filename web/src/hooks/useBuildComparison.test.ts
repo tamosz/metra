@@ -50,4 +50,46 @@ describe('useBuildComparison', () => {
 
     expect(result.current.comparison.deltaPercent).not.toBe(0);
   });
+
+  it('bestA is the highest-DPS skill from buildA results', () => {
+    const { result } = renderHook(() => useBuildComparison());
+
+    const bestA = result.current.comparison.bestA!;
+    const maxDps = Math.max(...result.current.buildA.results.map((r) => r.dps));
+    expect(bestA.dps).toBe(maxDps);
+
+    // Verify the skill name matches
+    const maxRow = result.current.buildA.results.find((r) => r.dps === maxDps)!;
+    expect(bestA.skillName).toBe(maxRow.skillName);
+  });
+
+  it('bestB is the highest-DPS skill from buildB results', () => {
+    const { result } = renderHook(() => useBuildComparison());
+
+    const bestB = result.current.comparison.bestB!;
+    const maxDps = Math.max(...result.current.buildB.results.map((r) => r.dps));
+    expect(bestB.dps).toBe(maxDps);
+  });
+
+  it('deltaPercent is positive when B has higher WATK', () => {
+    const { result } = renderHook(() => useBuildComparison());
+
+    act(() => {
+      result.current.buildB.setOverride('totalWeaponAttack', 999);
+    });
+
+    // B should win → positive delta
+    expect(result.current.comparison.deltaPercent).toBeGreaterThan(0);
+  });
+
+  it('deltaPercent is negative when A has higher WATK', () => {
+    const { result } = renderHook(() => useBuildComparison());
+
+    act(() => {
+      result.current.buildA.setOverride('totalWeaponAttack', 999);
+    });
+
+    // A wins → B is weaker → negative delta
+    expect(result.current.comparison.deltaPercent).toBeLessThan(0);
+  });
 });
