@@ -34,6 +34,8 @@ export interface ScenarioConfig {
   pdr?: number;
   /** Element → damage multiplier map. Skills with a matching element get multiplied (default 1.0). */
   elementModifiers?: Record<string, number>;
+  /** Number of mobs available. Training DPS = singleTargetDps × min(skill.maxTargets, targetCount). */
+  targetCount?: number;
 }
 
 /** DPS result for a single class/skill/tier combination. */

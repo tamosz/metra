@@ -17,6 +17,7 @@
       "speedCategory": "BStep + Assassinate 30",
       "weaponType": "Dagger",
       "comboGroup": "BStep + Assassinate 30",
+      "maxTargets": 6,
       "source": "dmg D43=600, E43=600*1.0, N43 hitCount=2, C43=0.69 (combo cycle 2.31s)"
     },
     {

@@ -5,7 +5,7 @@ import { SupportClassNote } from './SupportClassNote.js';
 import type { SimulationData } from '../hooks/useSimulation.js';
 import type { CustomTiersState } from '../hooks/useCustomTiers.js';
 import { compareTiers } from '@engine/data/types.js';
-import { SCENARIO_DESCRIPTIONS } from '../utils/game-terms.js';
+import { getScenarioDescription } from '../utils/game-terms.js';
 import { ClassIcon } from './icons/index.js';
 import { WelcomeBanner } from './WelcomeBanner.js';
 import { CustomTierList } from './CustomTierList.js';
@@ -14,6 +14,8 @@ interface DashboardProps {
   simulation: SimulationData;
   customTiers: CustomTiersState;
   baseTiers: string[];
+  targetCount: number;
+  setTargetCount: (n: number) => void;
 }
 
 type SortColumn = 'class' | 'skill' | 'tier' | 'dps';
@@ -32,7 +34,7 @@ function tierDisplayName(tier: string, customTierNames: Map<string, string>): st
   return tier.charAt(0).toUpperCase() + tier.slice(1);
 }
 
-export function Dashboard({ simulation, customTiers, baseTiers }: DashboardProps) {
+export function Dashboard({ simulation, customTiers, baseTiers, targetCount, setTargetCount }: DashboardProps) {
   const { results, tiers, scenarios, customTierNames } = simulation;
   const [selectedScenario, setSelectedScenario] = useState('Buffed');
   const [selectedTier, setSelectedTier] = useState<string | 'all'>('all');
@@ -55,7 +57,7 @@ export function Dashboard({ simulation, customTiers, baseTiers }: DashboardProps
         <FilterGroup
           label="Scenario"
           value={selectedScenario}
-          options={scenarios.map((s) => ({ value: s, label: s, tooltip: SCENARIO_DESCRIPTIONS[s] }))}
+          options={scenarios.map((s) => ({ value: s, label: s, tooltip: getScenarioDescription(s) }))}
           onChange={setSelectedScenario}
         />
         <FilterGroup
@@ -67,6 +69,20 @@ export function Dashboard({ simulation, customTiers, baseTiers }: DashboardProps
           ]}
           onChange={setSelectedTier}
         />
+        <div className="flex items-end gap-1.5">
+          <label className="text-[11px] font-medium uppercase tracking-wide text-text-dim">Targets</label>
+          <input
+            type="number"
+            min={1}
+            max={15}
+            value={targetCount}
+            onChange={(e) => {
+              const v = Math.max(1, Math.min(15, Math.floor(Number(e.target.value) || 1)));
+              setTargetCount(v);
+            }}
+            className="w-14 rounded border border-border-default bg-bg-raised px-2 py-1 text-sm text-text-primary text-center tabular-nums focus:border-border-active transition-colors"
+          />
+        </div>
       </div>
 
       <SupportClassNote classNames={[...new Set(filtered.map((r) => r.className))]} />

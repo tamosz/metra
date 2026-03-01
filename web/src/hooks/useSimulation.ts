@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { runSimulation } from '@engine/proposals/simulate.js';
 import type { SimulationConfig } from '@engine/proposals/simulate.js';
-import type { ScenarioResult } from '@engine/proposals/types.js';
+import type { ScenarioConfig, ScenarioResult } from '@engine/proposals/types.js';
 import { DEFAULT_SCENARIOS } from '@engine/scenarios.js';
 import {
   discoverClassesAndTiers,
@@ -21,7 +21,7 @@ export interface SimulationData {
   customTierNames: Map<string, string>;
 }
 
-export function useSimulation(customTiers: CustomTier[] = []): SimulationData {
+export function useSimulation(customTiers: CustomTier[] = [], targetCount?: number): SimulationData {
   return useMemo(() => {
     const { classNames, tiers, classDataMap, gearTemplates } = discoverClassesAndTiers();
 
@@ -39,10 +39,18 @@ export function useSimulation(customTiers: CustomTier[] = []): SimulationData {
       customTierNames.set(ct.id, ct.name);
     }
 
+    const scenarios: ScenarioConfig[] = [...DEFAULT_SCENARIOS];
+    if (targetCount != null && targetCount > 1) {
+      scenarios.push({
+        name: `Training (${targetCount} mobs)`,
+        targetCount,
+      });
+    }
+
     const config: SimulationConfig = {
       classes: classNames,
       tiers: allTiers,
-      scenarios: DEFAULT_SCENARIOS,
+      scenarios,
     };
 
     const results = runSimulation(
@@ -54,7 +62,7 @@ export function useSimulation(customTiers: CustomTier[] = []): SimulationData {
       mwData
     );
 
-    const scenarios = DEFAULT_SCENARIOS.map((s) => s.name);
-    return { results, classNames, tiers: allTiers, scenarios, customTierNames };
-  }, [customTiers]);
+    const scenarioNames = scenarios.map((s) => s.name);
+    return { results, classNames, tiers: allTiers, scenarios: scenarioNames, customTierNames };
+  }, [customTiers, targetCount]);
 }

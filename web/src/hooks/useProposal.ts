@@ -1,7 +1,7 @@
 import { useState, useMemo, useCallback } from 'react';
 import { compareProposal } from '@engine/proposals/compare.js';
 import type { SimulationConfig } from '@engine/proposals/simulate.js';
-import type { Proposal, ProposalChange, ComparisonResult } from '@engine/proposals/types.js';
+import type { Proposal, ProposalChange, ComparisonResult, ScenarioConfig } from '@engine/proposals/types.js';
 import { DEFAULT_SCENARIOS } from '@engine/scenarios.js';
 import {
   discoverClassesAndTiers,
@@ -25,7 +25,7 @@ export interface ProposalState {
   clearResult: () => void;
 }
 
-export function useProposal(): ProposalState {
+export function useProposal(targetCount?: number): ProposalState {
   const [proposal, setProposal] = useState<Proposal>({
     name: '',
     author: '',
@@ -76,10 +76,14 @@ export function useProposal(): ProposalState {
     setSimulating(true);
     setTimeout(() => {
       const { classNames, tiers, classDataMap, gearTemplates } = discoverClassesAndTiers();
+      const scenarios: ScenarioConfig[] = [...DEFAULT_SCENARIOS];
+      if (targetCount != null && targetCount > 1) {
+        scenarios.push({ name: `Training (${targetCount} mobs)`, targetCount });
+      }
       const config: SimulationConfig = {
         classes: classNames,
         tiers,
-        scenarios: DEFAULT_SCENARIOS,
+        scenarios,
       };
 
       const comparisonResult = compareProposal(
@@ -95,7 +99,7 @@ export function useProposal(): ProposalState {
       setResult(comparisonResult);
       setSimulating(false);
     }, 0);
-  }, [proposal]);
+  }, [proposal, targetCount]);
 
   const loadProposal = useCallback((p: Proposal) => {
     setProposal(p);

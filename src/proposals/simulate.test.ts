@@ -32,6 +32,9 @@ beforeAll(() => {
     ['hero', loadClassSkills('Hero')],
     ['bucc', loadClassSkills('Bucc')],
     ['paladin', loadClassSkills('Paladin')],
+    ['shadower', loadClassSkills('Shadower')],
+    ['archmage-il', loadClassSkills('Archmage I/L')],
+    ['nl', loadClassSkills('NL')],
   ]);
 
   gearTemplates = new Map([
@@ -40,6 +43,9 @@ beforeAll(() => {
     ['bucc-low', loadGearTemplate('bucc-low')],
     ['bucc-high', loadGearTemplate('bucc-high')],
     ['paladin-high', loadGearTemplate('paladin-high')],
+    ['shadower-high', loadGearTemplate('shadower-high')],
+    ['archmage-il-high', loadGearTemplate('archmage-il-high')],
+    ['nl-high', loadGearTemplate('nl-high')],
   ]);
 });
 
@@ -491,5 +497,156 @@ describe('comboGroup aggregation', () => {
 
     // 2 skills after aggregation × 2 tiers × 2 scenarios = 8
     expect(results.length).toBe(8);
+  });
+});
+
+describe('targetCount (multi-target scaling)', () => {
+  it('scales AoE skill DPS by effective target count', () => {
+    const config: SimulationConfig = {
+      classes: ['hero'],
+      tiers: ['high'],
+      scenarios: [
+        { name: 'Buffed' },
+        { name: 'Training', targetCount: 3 },
+      ],
+    };
+
+    const results = runSimulation(
+      config, classDataMap, gearTemplates,
+      weaponData, attackSpeedData, mwData
+    );
+
+    const buffed = results.find(r => r.scenario === 'Buffed')!;
+    const training = results.find(r => r.scenario === 'Training')!;
+
+    // Hero Brandish has maxTargets: 3, so with targetCount: 3 it should triple
+    expect(training.dps.dps).toBeCloseTo(buffed.dps.dps * 3, 0);
+  });
+
+  it('caps effective targets at skill maxTargets', () => {
+    const config: SimulationConfig = {
+      classes: ['hero'],
+      tiers: ['high'],
+      scenarios: [
+        { name: 'Buffed' },
+        { name: 'Training', targetCount: 10 },
+      ],
+    };
+
+    const results = runSimulation(
+      config, classDataMap, gearTemplates,
+      weaponData, attackSpeedData, mwData
+    );
+
+    const buffed = results.find(r => r.scenario === 'Buffed')!;
+    const training = results.find(r => r.scenario === 'Training')!;
+
+    // Hero Brandish maxTargets: 3, so even with 10 targets it caps at 3x
+    expect(training.dps.dps).toBeCloseTo(buffed.dps.dps * 3, 0);
+  });
+
+  it('single-target skills are unaffected by targetCount', () => {
+    const config: SimulationConfig = {
+      classes: ['nl'],
+      tiers: ['high'],
+      scenarios: [
+        { name: 'Buffed' },
+        { name: 'Training', targetCount: 6 },
+      ],
+    };
+
+    const results = runSimulation(
+      config, classDataMap, gearTemplates,
+      weaponData, attackSpeedData, mwData
+    );
+
+    const buffed = results.find(r => r.scenario === 'Buffed')!;
+    const training = results.find(r => r.scenario === 'Training')!;
+
+    // NL Triple Throw has no maxTargets (defaults to 1), so DPS unchanged
+    expect(training.dps.dps).toBe(buffed.dps.dps);
+  });
+
+  it('targetCount of 1 has no effect', () => {
+    const config: SimulationConfig = {
+      classes: ['hero'],
+      tiers: ['high'],
+      scenarios: [
+        { name: 'Buffed' },
+        { name: 'Training 1', targetCount: 1 },
+      ],
+    };
+
+    const results = runSimulation(
+      config, classDataMap, gearTemplates,
+      weaponData, attackSpeedData, mwData
+    );
+
+    const buffed = results.find(r => r.scenario === 'Buffed')!;
+    const training = results.find(r => r.scenario === 'Training 1')!;
+
+    expect(training.dps.dps).toBe(buffed.dps.dps);
+  });
+
+  it('combo sub-skills scale independently by their maxTargets', () => {
+    const config: SimulationConfig = {
+      classes: ['shadower'],
+      tiers: ['high'],
+      scenarios: [
+        { name: 'Buffed' },
+        { name: 'Training', targetCount: 6 },
+      ],
+    };
+
+    const results = runSimulation(
+      config, classDataMap, gearTemplates,
+      weaponData, attackSpeedData, mwData
+    );
+
+    const buffedCombo = results.find(
+      r => r.skillName === 'BStep + Assassinate 30' && r.scenario === 'Buffed'
+    )!;
+    const trainingCombo = results.find(
+      r => r.skillName === 'BStep + Assassinate 30' && r.scenario === 'Training'
+    )!;
+
+    // BStep has maxTargets: 6, Assassinate has default 1
+    // So combo DPS != buffed * 6 — only BStep's portion scales
+    expect(trainingCombo.dps.dps).toBeGreaterThan(buffedCombo.dps.dps);
+    expect(trainingCombo.dps.dps).toBeLessThan(buffedCombo.dps.dps * 6);
+  });
+
+  it('high-maxTargets skill scales correctly', () => {
+    const config: SimulationConfig = {
+      classes: ['archmage-il'],
+      tiers: ['high'],
+      scenarios: [
+        { name: 'Buffed' },
+        { name: 'Training 6', targetCount: 6 },
+      ],
+    };
+
+    const results = runSimulation(
+      config, classDataMap, gearTemplates,
+      weaponData, attackSpeedData, mwData
+    );
+
+    const chainBuffed = results.find(
+      r => r.skillName === 'Chain Lightning' && r.scenario === 'Buffed'
+    )!;
+    const chainTraining = results.find(
+      r => r.skillName === 'Chain Lightning' && r.scenario === 'Training 6'
+    )!;
+    const blizzBuffed = results.find(
+      r => r.skillName === 'Blizzard' && r.scenario === 'Buffed'
+    )!;
+    const blizzTraining = results.find(
+      r => r.skillName === 'Blizzard' && r.scenario === 'Training 6'
+    )!;
+
+    // Chain Lightning maxTargets: 6, targetCount: 6 → 6x
+    expect(chainTraining.dps.dps).toBeCloseTo(chainBuffed.dps.dps * 6, 0);
+    // Blizzard maxTargets: 15, targetCount: 6 → capped at 6x
+    expect(blizzTraining.dps.dps).toBeCloseTo(blizzBuffed.dps.dps * 6, 0);
   });
 });

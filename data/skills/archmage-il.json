@@ -18,7 +18,8 @@
       "hitCount": 1,
       "speedCategory": "Chain Lightning",
       "weaponType": "Staff",
-      "element": "Lightning"
+      "element": "Lightning",
+      "maxTargets": 6
     },
     {
       "name": "Blizzard",
@@ -28,7 +29,8 @@
       "hitCount": 1,
       "speedCategory": "Blizzard",
       "weaponType": "Staff",
-      "element": "Ice"
+      "element": "Ice",
+      "maxTargets": 15
     }
   ]
 }

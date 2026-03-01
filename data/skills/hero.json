@@ -15,7 +15,8 @@
       "multiplier": 1.9,
       "hitCount": 2,
       "speedCategory": "Brandish",
-      "weaponType": "2H Sword"
+      "weaponType": "2H Sword",
+      "maxTargets": 3
     }
   ]
 }

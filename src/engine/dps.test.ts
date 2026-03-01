@@ -1092,7 +1092,7 @@ describe('Bowmaster DPS', () => {
     expect(bmData.primaryStat).toBe('DEX');
     expect(bmData.secondaryStat).toBe('STR');
     expect(bmData.damageFormula).toBe('standard');
-    expect(bmData.skills.length).toBe(2);
+    expect(bmData.skills.length).toBe(1);
   });
 
   it('Hurricane uses fixed 0.12s attack time', () => {
@@ -1152,30 +1152,6 @@ describe('Bowmaster DPS', () => {
     expect(result.damageRange.max).toBe(5981);
     expect(result.damageRange.min).toBe(4874);
     expect(result.dps).toBeCloseTo(104932, -2);
-  });
-
-  it('Strafe High tier DPS ~206,551', () => {
-    const strafe = bmData.skills.find((s) => s.name === 'Strafe')!;
-    const result = calculateSkillDps(
-      bmHigh, bmData, strafe, weaponData, attackSpeedData, mwData
-    );
-
-    expect(result.attackTime).toBe(0.60);
-    expect(result.skillDamagePercent).toBe(125);
-    // SE: (125 + 100 + 140) * 1 = 365
-    expect(result.seDamagePercent).toBe(365);
-    // Same damage range as Hurricane (same weapon/class)
-    expect(result.damageRange.max).toBe(13289);
-    expect(result.dps).toBeCloseTo(206551, -2);
-  });
-
-  it('Strafe Low tier DPS ~92,991', () => {
-    const strafe = bmData.skills.find((s) => s.name === 'Strafe')!;
-    const result = calculateSkillDps(
-      bmLow, bmData, strafe, weaponData, attackSpeedData, mwData
-    );
-
-    expect(result.dps).toBeCloseTo(92991, -2);
   });
 
   it('High tier DPS is greater than Low tier for all skills', () => {

@@ -165,6 +165,20 @@ describe('applyProposal', () => {
     expect(brandish.attackType).toBe('stab');
   });
 
+  it('accepts maxTargets field', () => {
+    const proposal: Proposal = {
+      name: 'Add AoE to Brandish',
+      author: 'test',
+      changes: [
+        { target: 'hero.brandish-sword', field: 'maxTargets', to: 6 },
+      ],
+    };
+
+    const modified = applyProposal(classDataMap, proposal);
+    const brandish = modified.get('hero')!.skills.find((s) => s.name === 'Brandish (Sword)')!;
+    expect(brandish.maxTargets).toBe(6);
+  });
+
   it('applies multiple changes across classes', () => {
     const proposal: Proposal = {
       name: 'Multi-class rebalance',

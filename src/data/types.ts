@@ -84,6 +84,8 @@ export interface SkillEntry {
   fixedDamage?: number;
   /** Elemental tag for damage advantage scenarios (e.g., "Holy", "Ice", "Lightning"). */
   element?: string;
+  /** Maximum number of targets this skill can hit per attack. Default 1 (single-target). */
+  maxTargets?: number;
 }
 
 /** The four primary stats in Royals. */

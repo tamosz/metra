@@ -18,9 +18,10 @@ type Page = 'dashboard' | 'proposal' | 'build' | 'compare';
 export function App() {
   const customTiersState = useCustomTiers();
   const baseTiers = useMemo(() => discoverClassesAndTiers().tiers, []);
-  const simulation = useSimulation(customTiersState.tiers);
+  const [targetCount, setTargetCount] = useState(1);
+  const simulation = useSimulation(customTiersState.tiers, targetCount > 1 ? targetCount : undefined);
   const savedBuildsState = useSavedBuilds();
-  const proposalState = useProposal();
+  const proposalState = useProposal(targetCount > 1 ? targetCount : undefined);
   const buildState = useBuildExplorer();
   const comparisonState = useBuildComparison();
   const [page, setPage] = useState<Page>('dashboard');
@@ -125,6 +126,8 @@ export function App() {
             simulation={simulation}
             customTiers={customTiersState}
             baseTiers={baseTiers}
+            targetCount={targetCount}
+            setTargetCount={setTargetCount}
           />
         )}
         {page === 'proposal' && (

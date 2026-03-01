@@ -31,6 +31,12 @@ npm run simulate
 # Run a proposal and print the Markdown comparison report
 npm run simulate -- proposals/brandish-buff-20.json
 
+# Run baseline with training scenario (6 stacked mobs)
+npm run simulate -- --targets 6
+
+# Run a proposal with training scenario
+npm run simulate -- --targets 6 proposals/brandish-buff-20.json
+
 # Run baseline with balance audit (outlier detection)
 npm run simulate -- --audit
 
@@ -75,9 +81,10 @@ Pure functions. No side effects, no I/O. Takes game data + a character build, ou
 
 **Simulation features:**
 - **comboGroup**: skills sharing a `comboGroup` string on `SkillEntry` have their DPS summed into a single row in simulation output (used for Buccaneer's Barrage + Demolition and Shadower's BStep + Assassinate). All sub-skills in a combo use the total cycle time as their speed category so that sum-of-DPS equals rotation DPS.
+- **maxTargets**: optional field on `SkillEntry` (default 1). Combined with `targetCount` on `ScenarioConfig`, enables multi-target training simulation: `effectiveTargets = min(skill.maxTargets, scenario.targetCount)`, applied as a post-calculation multiplier before combo aggregation. CLI: `--targets N`. Web: target count input in the Dashboard filter bar.
 
 **Not yet implemented:**
-- Training efficiency (kills/hr, EXP/hr on a given mob).
+- Training efficiency (kills/hr, EXP/hr on a given mob — AoE modeling done via `maxTargets`, still needs mob data).
 
 **Every function must be testable in isolation.** If you can't write a unit test for it, the function is doing too much.
 
@@ -105,13 +112,13 @@ A proposal is a JSON file that describes one or more changes:
 - `className` is the lowercase filename stem in `data/skills/` (e.g., `hero`, `drk`, `paladin`).
 - `skill-slug` is the skill name lowercased with spaces/punctuation replaced by hyphens (e.g., `"Brandish (Sword)"` → `brandish-sword`).
 
-**Valid fields:** any numeric property on a `SkillEntry` — typically `basePower`, `multiplier`, `hitCount`.
+**Valid fields:** any numeric property on a `SkillEntry` — typically `basePower`, `multiplier`, `hitCount`, `maxTargets`.
 
 **`from` field:** optional but recommended. If present, the system validates that the current value matches, catching stale proposals.
 
 The pipeline: `apply.ts` patches the skill data → `simulate.ts` runs DPS across all classes/tiers/scenarios → `compare.ts` produces before/after deltas with rank tracking → `markdown.ts` or `bbcode.ts` renders a report. When no proposal is given, the CLI runs in **baseline mode**: it simulates all classes and renders a ranked DPS table with an ASCII bar chart.
 
-**Scenarios:** `ScenarioConfig` defines evaluation conditions (buff overrides, PDR). Proposals say *what changes*; scenarios say *under what conditions to evaluate*. PDR is applied as a post-calculation multiplier: `effectiveDps = dps * (1 - pdr)`.
+**Scenarios:** `ScenarioConfig` defines evaluation conditions (buff overrides, PDR, targetCount). Proposals say *what changes*; scenarios say *under what conditions to evaluate*. PDR is applied as a post-calculation multiplier: `effectiveDps = dps * (1 - pdr)`. `targetCount` enables multi-target training simulation.
 
 ### 4. Balance Audit (`/src/audit`)
 Analyzes simulation results and flags statistical outliers. Pure functions, no I/O.

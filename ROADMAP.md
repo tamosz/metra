@@ -16,6 +16,7 @@ A balance simulator for Royals staff and community. Every number traces back to 
 - UX: mobile layout, tooltips, class icons, onboarding banner, support class disclaimers
 - 3 funding tiers (low, mid, high)
 - 5 scenarios (Buffed, Unbuffed, No-Echo, Bossing 50% PDR, Bossing Undead 50% PDR)
+- Multi-target simulation: per-skill `maxTargets` + per-scenario `targetCount` for training/AoE comparisons
 - Balance audit: automated outlier detection across scenarios and tiers
 - Pre-commit hooks, comprehensive test coverage
 - Deployed on Vercel: https://metra-ten.vercel.app
@@ -41,7 +42,7 @@ A balance simulator for Royals staff and community. Every number traces back to 
 
 **Hard problems:**
 - Party DPS modeling (Bishop's value is party buffs, not solo DPS — biggest analytical blind spot, but genuinely hard to model well)
-- Training efficiency (kills/hr, EXP/hr on reference mobs — needs mob data and AoE modeling)
+- Training efficiency (kills/hr, EXP/hr on reference mobs — AoE modeling done via `maxTargets`, still needs mob data)
 - Boss modeling (HP thresholds, PDR, phases)
 
 ## Architecture

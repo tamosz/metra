@@ -53,6 +53,14 @@ function applyElementModifier(dps: DpsResult, modifier: number): DpsResult {
 }
 
 /**
+ * Apply multi-target scaling to a DPS result.
+ * effectiveTargets = min(skill.maxTargets, scenario.targetCount).
+ */
+function applyTargetCount(dps: DpsResult, effectiveTargets: number): DpsResult {
+  return { ...dps, dps: dps.dps * effectiveTargets, averageDamage: dps.averageDamage * effectiveTargets };
+}
+
+/**
  * Run a simulation across all classes × tiers × skills × scenarios.
  * Returns a ScenarioResult for each combination.
  */
@@ -103,6 +111,10 @@ export function runSimulation(
           if (scenario.elementModifiers && skill.element) {
             const mod = scenario.elementModifiers[skill.element] ?? 1;
             if (mod !== 1) effectiveDps = applyElementModifier(effectiveDps, mod);
+          }
+          if (scenario.targetCount != null && scenario.targetCount > 1) {
+            const effectiveTargets = Math.min(skill.maxTargets ?? 1, scenario.targetCount);
+            if (effectiveTargets > 1) effectiveDps = applyTargetCount(effectiveDps, effectiveTargets);
           }
 
           skillResults.push({

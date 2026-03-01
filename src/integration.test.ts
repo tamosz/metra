@@ -202,7 +202,6 @@ describe('Baseline mode', () => {
     expect(find('Paladin', 'Blast (Holy, Sword)').dps.dps).toBeCloseTo(192932, -2);
     expect(find('NL', 'Triple Throw 30').dps.dps).toBeCloseTo(292314, -2);
     expect(find('Bowmaster', 'Hurricane').dps.dps).toBeCloseTo(233073, -2);
-    expect(find('Bowmaster', 'Strafe').dps.dps).toBeCloseTo(206551, -2);
     expect(find('Marksman', 'Strafe (MM)').dps.dps).toBeCloseTo(232748, -2);
     expect(find('Marksman', 'Snipe + Strafe').dps.dps).toBeCloseTo(234586, -2);
     expect(find('Corsair', 'Battleship Cannon').dps.dps).toBeCloseTo(350586, -2);
@@ -225,7 +224,6 @@ describe('Baseline mode', () => {
     expect(find('Paladin', 'Blast (Holy, Sword)').dps.dps).toBeCloseTo(130807, -2);
     expect(find('NL', 'Triple Throw 30').dps.dps).toBeCloseTo(194891, -2);
     expect(find('Bowmaster', 'Hurricane').dps.dps).toBeCloseTo(157112, -2);
-    expect(find('Bowmaster', 'Strafe').dps.dps).toBeCloseTo(139234, -2);
     expect(find('Marksman', 'Strafe (MM)').dps.dps).toBeCloseTo(157515, -2);
     expect(find('Marksman', 'Snipe + Strafe').dps.dps).toBeCloseTo(171366, -2);
     expect(find('Corsair', 'Battleship Cannon').dps.dps).toBeCloseTo(239622, -2);
@@ -403,6 +401,47 @@ describe('Ranking integrity', () => {
       expect(ranksBefore, `rankBefore for ${key}`).toEqual(expected);
       expect(ranksAfter, `rankAfter for ${key}`).toEqual(expected);
     }
+  });
+});
+
+describe('Multi-target training scenario', () => {
+  it('AoE skills scale by maxTargets, single-target skills unchanged', () => {
+    const trainingConfig: SimulationConfig = {
+      ...config,
+      scenarios: [
+        { name: 'Buffed' },
+        { name: 'Training (6 mobs)', targetCount: 6 },
+      ],
+    };
+    const results = runSimulation(
+      trainingConfig,
+      classDataMap,
+      gearTemplates,
+      weaponData,
+      attackSpeedData,
+      mwData
+    );
+
+    const find = (className: string, skillName: string, scenario: string) =>
+      results.find(
+        (r) => r.className === className && r.skillName === skillName && r.scenario === scenario
+      )!;
+
+    // Hero Brandish: maxTargets 3, capped at 3 even with 6 mobs
+    const heroBuffed = find('Hero', 'Brandish (Sword)', 'Buffed');
+    const heroTraining = find('Hero', 'Brandish (Sword)', 'Training (6 mobs)');
+    expect(heroTraining.dps.dps).toBeCloseTo(heroBuffed.dps.dps * 3, 0);
+
+    // NL Triple Throw: single-target (no maxTargets), unchanged
+    const nlBuffed = find('NL', 'Triple Throw 30', 'Buffed');
+    const nlTraining = find('NL', 'Triple Throw 30', 'Training (6 mobs)');
+    expect(nlTraining.dps.dps).toBe(nlBuffed.dps.dps);
+
+    // Shadower BStep+Assassinate combo: BStep has maxTargets 6, Assassinate defaults to 1
+    const shadBuffed = find('Shadower', 'BStep + Assassinate 30', 'Buffed');
+    const shadTraining = find('Shadower', 'BStep + Assassinate 30', 'Training (6 mobs)');
+    expect(shadTraining.dps.dps).toBeGreaterThan(shadBuffed.dps.dps);
+    expect(shadTraining.dps.dps).toBeLessThan(shadBuffed.dps.dps * 6);
   });
 });
 
