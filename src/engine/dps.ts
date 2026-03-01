@@ -188,7 +188,8 @@ export function calculateSkillDps(
   attackSpeedData: AttackSpeedData,
   mapleWarriorData: MapleWarriorData
 ): DpsResult {
-  const effectiveSpeed = resolveEffectiveWeaponSpeed(build.weaponSpeed, build.speedInfusion);
+  const si = classData.damageFormula === 'magic' ? false : build.speedInfusion;
+  const effectiveSpeed = resolveEffectiveWeaponSpeed(build.weaponSpeed, si);
   const attackTime = lookupAttackTime(attackSpeedData, effectiveSpeed, skill.speedCategory);
 
   // Fixed damage bypasses the normal formula. Fields like skillDamagePercent and
