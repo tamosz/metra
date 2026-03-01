@@ -12,7 +12,7 @@
   "projectile": 0,
   "echoActive": true,
   "mapleWarriorLevel": 20,
-  "speedInfusion": false,
+  "speedInfusion": true,
   "sharpEyes": true,
   "shadowPartner": true,
   "gearBreakdown": {
