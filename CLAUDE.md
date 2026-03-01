@@ -173,7 +173,7 @@ Two formula variants exist, configured per class via `seCritFormula`:
 **Implemented (10 classes):**
 - **Hero** — 2H Sword, Brandish (2-hit)
 - **Hero (Axe)** — 2H Axe, Brandish (2-hit). Separate skill file and gear templates. Weapon speed 6 (no speed-5 2H Axe exists), 4.8× multiplier. Buffed DPS matches Sword (SI resolves both to speed 2); unbuffed Axe is slower.
-- **Dark Knight (DrK)** — Spear/Polearm, Crusher and Fury
+- **Dark Knight (DrK)** — Spear, Crusher
 - **Paladin** — 2H Sword/2H BW, Blast (4 variants: Holy and F/I/L Charge × Sword and BW)
 - **Night Lord (NL)** — Claw, Triple Throw (3-hit, built-in 50% crit, Shadow Partner)
 - **Bowmaster** — Bow, Hurricane (fixed 0.12s attack time) and Strafe (4-hit), built-in 40% crit from Critical Shot
