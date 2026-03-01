@@ -6,7 +6,7 @@ This project makes MapleStory class balance *legible*. It translates a sprawling
 
 The north star: anyone should be able to write a small change file ("buff Brandish from 260 to 280"), run a command, and get a clear before/after comparison across classes and scenarios.
 
-For the long-term roadmap (public launch, community features, advanced analysis), see `VISION.md`.
+For the long-term roadmap (public launch, community features, advanced analysis), see `ROADMAP.md`.
 
 ## Source Spreadsheet
 
@@ -243,7 +243,7 @@ Multi-scenario support: `ScenarioConfig` can override buff flags and apply PDR. 
 ```
 metra/
 ├── CLAUDE.md
-├── VISION.md
+├── ROADMAP.md
 ├── package.json
 ├── tsconfig.json
 ├── vitest.config.ts
