@@ -1,5 +1,6 @@
 import { useState, useMemo } from 'react';
 import { DpsChart } from './DpsChart.js';
+import { SupportClassNote } from './SupportClassNote.js';
 import type { SimulationData } from '../hooks/useSimulation.js';
 import { TIER_ORDER } from '@engine/data/types.js';
 
@@ -49,6 +50,8 @@ export function Dashboard({ simulation }: DashboardProps) {
           onChange={setSelectedTier}
         />
       </div>
+
+      <SupportClassNote classNames={[...new Set(filtered.map((r) => r.className))]} />
 
       <DpsChart data={filtered} />
 
