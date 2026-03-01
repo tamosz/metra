@@ -18,11 +18,11 @@ Best skill per class, fully buffed (MW20, SE, SI, Echo, Apple):
 | 4 | Hero (Axe) | Brandish | 257,772 | 77.8% |
 | 5 | DrK | Spear Crusher / Fury | 251,906 | 76.0% |
 | 6 | Hero (Sword) | Brandish | 247,314 | 74.6% |
-| 7 | Buccaneer | Barrage + Dragon Strike | 244,086 | 73.7% |
-| 8 | Corsair | Rapid Fire | 228,271 | 68.9% |
-| 9 | Bowmaster | Hurricane | 225,398 | 68.0% |
-| 10 | Marksman | Snipe + Strafe | 216,481 | 65.3% |
-| 11 | Bowmaster | Strafe | 199,749 | 60.3% |
+| 7 | Buccaneer | Barrage + Demolition | 246,715 | 74.4% |
+| 8 | Bowmaster | Hurricane | 233,073 | 70.3% |
+| 9 | Corsair | Rapid Fire | 228,271 | 68.9% |
+| 10 | Marksman | Snipe + Strafe | 222,521 | 67.1% |
+| 11 | Bowmaster | Strafe | 206,551 | 62.3% |
 | 12 | Paladin | Blast (Holy, Sword) | 192,932 | 58.2% |
 | 13 | Archmage I/L | Chain Lightning | 82,189 | 24.8% |
 | 14 | Bishop | Angel Ray | 45,111 | 13.6% |
@@ -74,7 +74,7 @@ These server-specific changes affect our simulation:
 - **DrK Berserk**: Buffed from 200% to 210% in Update #68 (Oct 2020). Our simulator uses 2.1x multiplier. **Correctly modeled.**
 - **Shadower Assassinate**: Base power boosted from 600 to 950 (removed charge mechanic). Our simulator uses 950. **Correctly modeled.**
 - **Shadower BStep**: Boosted from 500 to 600. Our simulator uses 600. **Correctly modeled.**
-- **Bucc Barrage + Dragon Strike**: Buffed to be "in line with 130k-250k DPS targets." Our simulator shows 244k at high tier. **Within target range.**
+- **Bucc Barrage + Demolition**: Buffed to be "in line with 130k-250k DPS targets." Our simulator shows 247k at high tier. **Within target range.**
 - **Marksman Snipe**: Can now ignore weapon cancel on bosses (Update #68). Not yet relevant to our DPS model (we don't model weapon cancel).
 
 ### 2d. MapleRoyals Balance Philosophy
@@ -126,27 +126,19 @@ Bucc Barrage+DS at 244k sits between DrK and Corsair. Community noted Bucc was i
 
 ## 4. Areas of Disagreement / Investigation Required
 
-### INVESTIGATE-1: Bowmaster Hurricane Seems Too Low
+### INVESTIGATE-1: Bowmaster Hurricane Seems Too Low [RESOLVED]
 
 **Severity: HIGH**
-**Simulator:** BM Hurricane at 225k (#9 overall, #4 among ranged)
-**Community:** BM is generally ranked A-tier for bossing (below S-tier NL/Corsair/Shadower). Community describes BM as "a growth potential character that can dish out amazing DPS after lots of funding." One Krex comparison found Paladin and BM "come close in range with each other." Community also notes archer mains have been "fading away after the big 4th job balance update" (2020). BM's advantage is consistent uptime and not requiring SI.
+**Status: Resolved**
 
-**Gap analysis:** BM Hurricane (225k) is 32% below Corsair (331k) and 23% below NL (292k). BM is also below all warriors and Buccaneer. While some community views place BM in A-tier (below NL/Corsair/Shadower but above warriors), the Krex data suggesting BM ≈ Paladin is concerning. Being below warriors with a Hurricane skill may indicate a gear template or formula issue, or it may reflect that MapleRoyals' rebalancing lifted warriors above the pre-patch archer baseline.
+**Root cause:** Archer (BM + MM) weapon WATK was flat 120 across all funding tiers — no scaling from low to high. Every other class had proper tiered weapon values (e.g., Hero 130→150, DrK 127→139). The source spreadsheet has no archer gear template data; templates were adapted from warrior templates with a single estimated WATK that was never differentiated.
 
-**Possible causes to investigate:**
-1. **Hurricane attack time**: Currently modeled as fixed 0.12s. Verify this matches community-verified Hurricane speed on MapleRoyals. Some servers use 0.12s, others use slightly different values.
-2. **Bow weapon multiplier**: 3.4x for Bow. Verify against MapleRoyals-specific values.
-3. **Gear template WATK**: Verify BM's total WATK is appropriate relative to other classes.
-4. **Built-in crit interaction with SE**: BM has 40% built-in crit + 15% SE = 55% total. Verify crit damage formula is applying correctly.
-5. **Base power**: Hurricane base power is 100. Compare against other skills and verify against spreadsheet.
+**Fix:** Calibrated bow/crossbow weapon WATK using MapleRoyals forum marketplace data (Nisrock base ATK 95-100, 30% scroll +5 WATK, forum-verified pricing):
+- Low: 120 → 105 WATK (budget Nisrock, ~95 base + a few 60% scrolls)
+- Mid: 120 → 120 WATK (unchanged, already appropriate)
+- High: 120 → 130 WATK (well-scrolled Nisrock, ~100 base + 6x 30% scrolls)
 
-**Self-contained investigation task:**
-- Cross-reference BM gear template WATK against other classes
-- Verify Hurricane base power 100 matches spreadsheet cells
-- Check if 0.12s attack time is MapleRoyals-correct
-- Compare BM DPS with the source spreadsheet output
-- If discrepancy found, trace through the DPS pipeline step by step
+**Impact:** BM Hurricane moved from #9 (225k) to #8 (233k), now above Corsair Rapid Fire (228k). Low tier decreased from 113k to 105k, giving more realistic tier spread matching other classes. MM Snipe+Strafe High moved from 216k to 223k.
 
 ### INVESTIGATE-2: Shadower Unbuffed Outlier (+2.7 sigma)
 
@@ -230,9 +222,9 @@ Bucc Barrage+DS at 244k sits between DrK and Corsair. Community noted Bucc was i
 ### INVESTIGATE-6: Marksman Snipe + Strafe Rotation Modeling
 
 **Severity: LOW-MEDIUM**
-**Simulator:** MM Snipe+Strafe at 216k vs standalone Strafe at 211k (+2.4% gain from weaving Snipe).
+**Simulator:** MM Snipe+Strafe at 223k vs standalone Strafe at 218k (+1.9% gain from weaving Snipe).
 
-**Analysis:** The Snipe+Strafe weave only adds 2.4% over pure Strafe. Snipe does 195k fixed damage per hit on a ~5s cycle, but the Strafe filler in that same cycle does nearly as much total damage. This small gain seems surprising given Snipe's reputation as a powerful skill.
+**Analysis:** The Snipe+Strafe weave only adds ~1.9% over pure Strafe. Snipe does 195k fixed damage per hit on a ~5s cycle, but the Strafe filler in that same cycle does nearly as much total damage. This small gain seems surprising given Snipe's reputation as a powerful skill.
 
 **Possible causes:**
 1. **Strafe count in rotation**: At speed 2, the model computes 7 Strafes per 5s Snipe cycle. Each 4-hit Strafe at high funding does substantial damage, so the Snipe's 195k is only incrementally better than one more Strafe.
@@ -289,7 +281,7 @@ This 2.1-2.4x spread among physical classes is more reasonable but still wider t
 
 | ID | Title | Severity | Status |
 |----|-------|----------|--------|
-| INVESTIGATE-1 | Bowmaster Hurricane seems too low vs community ranking | HIGH | **Resolved** — archer weapon WATK wasn't scaling by tier (120 across all 3). Fixed: Low 105, Mid 120, High 130. BM Hurricane High 225k→233k. |
+| INVESTIGATE-1 | Bowmaster Hurricane seems too low vs community ranking | HIGH | **Resolved** — archer weapon WATK wasn't scaling by tier (120 across all 3). Fixed: Low 105, Mid 120, High 130. BM Hurricane High 225k→233k (#9→#8). MM Snipe+Strafe High 216k→223k. |
 | INVESTIGATE-2 | Shadower unbuffed outlier from SI-disabled assumption | MEDIUM | Open |
 | INVESTIGATE-3 | Corsair Battleship Cannon tier sensitivity | LOW-MEDIUM | Open |
 | INVESTIGATE-4 | Mage DPS gap vs physical classes (magnitude verification) | MEDIUM | Open |
