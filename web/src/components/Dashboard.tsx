@@ -105,6 +105,7 @@ function RankingTable({ data }: { data: { className: string; skillName: string; 
 
   return (
     <>
+      <div className="overflow-x-auto">
       <table data-testid="ranking-table" className="w-full border-collapse text-sm">
         <thead>
           <tr className="border-b border-border-default">
@@ -148,6 +149,7 @@ function RankingTable({ data }: { data: { className: string; skillName: string; 
           )}
         </tbody>
       </table>
+      </div>
       {sorted.length > 0 && (
         <div className="mt-2 text-right text-xs text-text-faint">
           Showing {sorted.length} {sorted.length === 1 ? 'entry' : 'entries'}
