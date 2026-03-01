@@ -16,6 +16,7 @@ import { getClassColor } from '../utils/class-colors.js';
 import { setProposalInUrl } from '../utils/url-encoding.js';
 import { FilterGroup } from './FilterGroup.js';
 import { SupportClassNote } from './SupportClassNote.js';
+import { useIsMobile } from '../hooks/useIsMobile.js';
 import { colors } from '../theme.js';
 
 interface ProposalResultsProps {
@@ -117,7 +118,7 @@ export function ProposalResults({ result, proposal }: ProposalResultsProps) {
     <div className="mt-8">
       <div className="mb-4 flex items-center justify-between">
         <h2 className="m-0 text-base font-semibold">Results</h2>
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
           <button onClick={handleShare} className={actionBtn}>
             {copied ? 'Copied!' : 'Copy Share Link'}
           </button>
@@ -180,6 +181,7 @@ export function ProposalResults({ result, proposal }: ProposalResultsProps) {
 }
 
 function ComparisonChart({ deltas }: { deltas: DeltaEntry[] }) {
+  const isMobile = useIsMobile();
   const chartData = deltas
     .sort((a, b) => Math.abs(b.changePercent) - Math.abs(a.changePercent))
     .map((d) => ({
@@ -191,6 +193,7 @@ function ComparisonChart({ deltas }: { deltas: DeltaEntry[] }) {
 
   const barHeight = 36;
   const chartHeight = Math.max(200, chartData.length * barHeight + 60);
+  const yAxisWidth = isMobile ? 180 : 280;
 
   return (
     <div data-testid="comparison-chart" style={{ width: '100%', height: chartHeight }} className="mb-6">
@@ -198,7 +201,7 @@ function ComparisonChart({ deltas }: { deltas: DeltaEntry[] }) {
         <BarChart
           data={chartData}
           layout="vertical"
-          margin={{ top: 8, right: 80, left: 0, bottom: 8 }}
+          margin={{ top: 8, right: isMobile ? 40 : 80, left: 0, bottom: 8 }}
         >
           <XAxis
             type="number"
@@ -210,9 +213,9 @@ function ComparisonChart({ deltas }: { deltas: DeltaEntry[] }) {
           <YAxis
             type="category"
             dataKey="label"
-            width={280}
+            width={yAxisWidth}
             interval={0}
-            tick={{ fill: colors.textSecondary, fontSize: 12 }}
+            tick={{ fill: colors.textSecondary, fontSize: isMobile ? 10 : 12 }}
             axisLine={false}
             tickLine={false}
           />
@@ -295,6 +298,7 @@ function DeltaTable({ deltas }: { deltas: DeltaEntry[] }) {
 
   return (
     <>
+      <div className="overflow-x-auto">
       <table data-testid="delta-table" className="w-full border-collapse text-sm">
         <thead>
           <tr className="border-b border-border-default">
@@ -359,6 +363,7 @@ function DeltaTable({ deltas }: { deltas: DeltaEntry[] }) {
           })}
         </tbody>
       </table>
+      </div>
       {unchangedRows.length > 0 && (
         <button
           onClick={() => setShowUnchanged(!showUnchanged)}

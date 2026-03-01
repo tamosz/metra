@@ -9,6 +9,7 @@ import {
 } from 'recharts';
 import type { ScenarioResult } from '@engine/proposals/types.js';
 import { getClassColor } from '../utils/class-colors.js';
+import { useIsMobile } from '../hooks/useIsMobile.js';
 import { colors } from '../theme.js';
 
 interface DpsChartProps {
@@ -16,6 +17,8 @@ interface DpsChartProps {
 }
 
 export function DpsChart({ data }: DpsChartProps) {
+  const isMobile = useIsMobile();
+
   const chartData = data.map((r) => ({
     label: `${r.className} — ${r.skillName}`,
     sublabel: r.tier.charAt(0).toUpperCase() + r.tier.slice(1),
@@ -29,6 +32,9 @@ export function DpsChart({ data }: DpsChartProps) {
 
   const barHeight = 28;
   const chartHeight = Math.max(300, chartData.length * barHeight + 60);
+  const yAxisWidth = isMobile ? 160 : 260;
+  const labelFontSize = isMobile ? 10 : 12;
+  const sublabelFontSize = isMobile ? 9 : 10;
 
   return (
     <div data-testid="dps-chart" style={{ width: '100%', height: chartHeight }}>
@@ -36,7 +42,7 @@ export function DpsChart({ data }: DpsChartProps) {
         <BarChart
           data={chartData}
           layout="vertical"
-          margin={{ top: 8, right: 80, left: 0, bottom: 8 }}
+          margin={{ top: 8, right: isMobile ? 40 : 80, left: 0, bottom: 8 }}
         >
           <XAxis
             type="number"
@@ -48,7 +54,7 @@ export function DpsChart({ data }: DpsChartProps) {
           <YAxis
             type="category"
             dataKey="label"
-            width={260}
+            width={yAxisWidth}
             interval={0}
             tick={({ x, y, payload }) => {
               const entry = chartData.find((d) => d.label === payload.value);
@@ -60,7 +66,7 @@ export function DpsChart({ data }: DpsChartProps) {
                     dy={-4}
                     textAnchor="end"
                     fill={colors.textSecondary}
-                    fontSize={12}
+                    fontSize={labelFontSize}
                   >
                     {payload.value}
                   </text>
@@ -71,7 +77,7 @@ export function DpsChart({ data }: DpsChartProps) {
                       dy={10}
                       textAnchor="end"
                       fill={colors.textFaint}
-                      fontSize={10}
+                      fontSize={sublabelFontSize}
                     >
                       {entry.sublabel}
                     </text>
