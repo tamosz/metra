@@ -136,12 +136,12 @@ export function ProposalResults({ result, proposal }: ProposalResultsProps) {
       {summary && (
         <div className="mb-4 text-xs text-text-muted">
           {summary.count} skill{summary.count !== 1 ? 's' : ''} affected, avg{' '}
-          <span style={{ color: summary.avg > 0 ? colors.positive : summary.avg < 0 ? colors.negative : undefined }}>
+          <span className={summary.avg > 0 ? 'text-positive' : summary.avg < 0 ? 'text-negative' : ''}>
             {summary.avg > 0 ? '+' : ''}{summary.avg.toFixed(1)}%
           </span>
           , biggest {summary.direction}:{' '}
           <span className="text-text-secondary">{summary.biggestLabel}</span>{' '}
-          <span style={{ color: summary.biggestChange > 0 ? colors.positive : colors.negative }}>
+          <span className={summary.biggestChange > 0 ? 'text-positive' : 'text-negative'}>
             {summary.biggestChange > 0 ? '+' : ''}{summary.biggestChange.toFixed(1)}%
           </span>
         </div>
@@ -239,7 +239,7 @@ function ComparisonChart({ deltas }: { deltas: DeltaEntry[] }) {
                     <span className="text-text-muted">After: </span>
                     <span>{d.after.toLocaleString()}</span>
                   </div>
-                  <div style={{ color: d.after > d.before ? colors.positive : colors.negative }}>
+                  <div className={d.after > d.before ? 'text-positive' : 'text-negative'}>
                     {d.after > d.before ? '+' : ''}{(d.after - d.before).toLocaleString()} ({((d.after - d.before) / d.before * 100).toFixed(1)}%)
                   </div>
                 </div>
@@ -268,7 +268,7 @@ function RankCell({ before, after }: { before?: number; after?: number }) {
   // Lower rank number = higher position, so improvement is before > after
   const improved = after < before;
   return (
-    <span style={{ color: improved ? colors.positive : colors.negative }}>
+    <span className={improved ? 'text-positive' : 'text-negative'}>
       {before}{improved ? '\u2009\u2191\u2009' : '\u2009\u2193\u2009'}{after}
     </span>
   );
@@ -356,14 +356,10 @@ function DeltaTable({ deltas }: { deltas: DeltaEntry[] }) {
                 <td className="px-3 py-2 text-right tabular-nums">
                   {formatDps(d.after)}
                 </td>
-                <td className="px-3 py-2 text-right tabular-nums" style={{
-                  color: d.change > 0 ? colors.positive : d.change < 0 ? colors.negative : colors.textFaint,
-                }}>
+                <td className={`px-3 py-2 text-right tabular-nums ${d.change > 0 ? 'text-positive' : d.change < 0 ? 'text-negative' : 'text-text-faint'}`}>
                   {d.change > 0 ? '+' : ''}{formatDps(d.change)}
                 </td>
-                <td className="px-3 py-2 text-right tabular-nums" style={{
-                  color: d.changePercent > 0 ? colors.positive : d.changePercent < 0 ? colors.negative : colors.textFaint,
-                }}>
+                <td className={`px-3 py-2 text-right tabular-nums ${d.changePercent > 0 ? 'text-positive' : d.changePercent < 0 ? 'text-negative' : 'text-text-faint'}`}>
                   {d.changePercent > 0 ? '+' : ''}{d.changePercent.toFixed(1)}%
                 </td>
               </tr>
