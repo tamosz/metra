@@ -150,24 +150,22 @@ Bucc Barrage+DS at 244k sits between DrK and Corsair. Community noted Bucc was i
 
 6. **Community consensus aligns.** Forum posters describe mage single-target DPS as "complete garbage" at ~40% of attacker class DPS. Our ~26% (I/L vs Corsair) is even lower, but Corsair is the ceiling — vs the median physical class (~250k), I/L at 92k is ~37%, close to the community's 40% estimate.
 
-### INVESTIGATE-5: Hero Axe vs Hero Sword Gap
+### INVESTIGATE-5: Hero Axe vs Hero Sword Gap — RESOLVED
 
 **Severity: LOW**
 **Simulator:** Hero (Axe) Brandish at 258k vs Hero (Sword) Brandish at 247k (+4.2% for Axe).
 
-**Analysis:** Both use the same base power (260), multiplier (1.9), and hit count (2). The difference comes from weapon multiplier: 2H Axe 4.8x vs 2H Sword 4.6x (+4.3%). With SI active, both resolve to the same effective speed (speed 2). The DPS difference is entirely from the weapon multiplier.
+**Verdict: Gap is real, well-explained, and correctly modeled.**
 
-**Community view:** Most community discussions don't distinguish Axe vs Sword Hero. The gear assumptions doc confirms 4.8 for 2H Axe is the correct v62 baseline (verified against StrategyWiki, Ayumilove, Royals Wiki).
+**Investigation findings (March 2026):**
 
-**Questions to resolve:**
-1. Does the 4.2% Axe advantage match community/spreadsheet expectations?
-2. Are there any trade-offs (weapon availability, scrolling options) that would narrow the real-world gap?
-3. Is 4.8x for 2H Axe confirmed on Royals specifically (not just generic v62)?
+1. **Buffed (with SI) — Axe wins by ~4.2% at all tiers.** With SI, both resolve to the same effective speed (speed 2). The gap is purely from the weapon multiplier: 4.8 / 4.6 = 4.35%. Consistent across low (133k vs 127k), mid (175k vs 168k), and high (258k vs 247k).
 
-**Self-contained investigation task:**
-- Verify Hero Axe and Sword DPS match source spreadsheet values
-- Check if the Axe advantage is consistent across tiers
-- Confirm 2H Axe 4.8x multiplier is Royals-verified (the gear assumptions doc says it is, citing community member Zerato)
+2. **Unbuffed (no SI) — Sword wins at high tier.** Stonetooth Sword (speed 5) without SI resolves to speed 3, while 2H Axe (speed 6) resolves to speed 4. The faster attack speed more than erases the multiplier advantage: Sword wins by ~4.1% at high tier. At mid/low (both weapons speed 6), Axe keeps its multiplier edge (+4.2%).
+
+3. **Multiplier confirmed.** 2H Axe 4.8x is confirmed as standard GMS v62, unchanged on MapleRoyals (community member Zerato, multiple wiki sources, damage calculator thread). No speed-5 2H Axe exists in v62 — Stonetooth Sword is speed 5, all 2H Axes are speed 6.
+
+4. **Community context.** Community overwhelmingly uses swords; axes are "underutilized" and cheaper. The trade-off (higher multiplier vs slower unbuffed speed) is the intended design.
 
 ---
 
@@ -216,11 +214,9 @@ This ~2.1x spread among physical classes is reasonable. Corsair Battleship Canno
 | ID | Title | Severity | Status |
 |----|-------|----------|--------|
 | INVESTIGATE-4 | Mage DPS gap vs physical classes (magnitude verification) | MEDIUM | **Resolved** — formula correct, mage potions fixed (Apple → Ssiws Cheese) |
-| INVESTIGATE-5 | Hero Axe vs Sword gap verification | LOW | Open |
+| INVESTIGATE-5 | Hero Axe vs Sword gap verification | LOW | **Resolved** — gap is real (4.2% buffed, from 4.8 vs 4.6 multiplier); unbuffed speed trade-off correctly modeled |
 
-### Prioritized Next Steps
-
-1. **INVESTIGATE-5 (Hero Axe vs Sword)** — Low priority; the gap is small and well-explained by weapon multiplier.
+All investigation items resolved.
 
 ---
 
