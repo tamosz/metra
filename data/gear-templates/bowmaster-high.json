@@ -4,7 +4,7 @@
   "className": "Bowmaster",
   "baseStats": { "STR": 4, "DEX": 999, "INT": 4, "LUK": 4 },
   "gearStats": { "STR": 97, "DEX": 158, "INT": 0, "LUK": 0 },
-  "totalWeaponAttack": 183,
+  "totalWeaponAttack": 193,
   "weaponType": "Bow",
   "weaponSpeed": 6,
   "attackPotion": 100,
@@ -15,7 +15,7 @@
   "speedInfusion": true,
   "sharpEyes": true,
   "gearBreakdown": {
-    "weapon":    { "DEX": 0,  "STR": 0,  "WATK": 120, "notes": "Well-scrolled Nisrock. 120 WATK endgame bow." },
+    "weapon":    { "DEX": 0,  "STR": 0,  "WATK": 130, "notes": "Well-scrolled Nisrock (~100 base + 6x 30% scrolls). Forum marketplace: 130 ATK bows valued at ~3.8b." },
     "bowExpert": { "DEX": 0,  "STR": 0,  "WATK": 10,  "notes": "Bow Expert passive +10 WATK (range calculator L31)." },
     "helmet":    { "DEX": 21, "STR": 40, "WATK": 0,   "notes": "Well-scrolled Zakum Helmet." },
     "top":       { "DEX": 60, "STR": 8,  "WATK": 0,   "notes": "DEX scrolled Bathrobe/overall." },
