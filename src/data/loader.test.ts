@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import {
   loadWeapons,
   loadAttackSpeed,
-  loadMapleWarrior,
+  loadMW,
   loadClassSkills,
   loadGearTemplate,
   discoverClassesAndTiers,
@@ -37,9 +37,9 @@ describe('loadAttackSpeed', () => {
   });
 });
 
-describe('loadMapleWarrior', () => {
+describe('loadMW', () => {
   it('loads MW table with correct multipliers', () => {
-    const mw = loadMapleWarrior();
+    const mw = loadMW();
     expect(mw).toHaveLength(21);
     expect(mw[0].multiplier).toBe(1.0);
     expect(mw[20].multiplier).toBe(1.1);
@@ -79,7 +79,7 @@ describe('loadGearTemplate', () => {
     expect(build.baseStats.STR).toBe(999);
     expect(build.totalWeaponAttack).toBe(203);
     expect(build.attackPotion).toBe(100);
-    expect(build.mapleWarriorLevel).toBe(20);
+    expect(build.mwLevel).toBe(20);
   });
 
   it('loads hero-low gear template', () => {

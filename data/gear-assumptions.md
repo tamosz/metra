@@ -4,7 +4,7 @@ This document captures the implicit assumptions baked into each gear template.
 These drive all DPS comparisons in simulation reports — understanding them is
 essential for interpreting results.
 
-Cross-referenced against MapleRoyals forum guides:
+Cross-referenced against Royals forum guides:
 - [Hero Guide](https://royals.ms/forum/threads/hero-guide.57080/)
 - [Sire's Warrior Guide](https://royals.ms/forum/threads/sires-complete-mapleroyals-warrior-guide.8474/)
 - [Dark Knight Guide 2026](https://royals.ms/forum/threads/a-guide-to-dark-knight-2026.230387/)
@@ -18,7 +18,7 @@ Cross-referenced against MapleRoyals forum guides:
 
 | Assumption | Value | Notes |
 |------------|-------|-------|
-| MW level | 20 | MW20 is the max level in MapleRoyals. |
+| MW level | 20 | MW20 is the max level in Royals. |
 | Sharp Eyes | Always active | SE from BM/MM mule or party member. Guides call it "the most important buff." |
 | Speed Infusion | Always active | SI from Buccaneer. |
 | Echo of Hero | Always active | Nearly universal buff (4% WATK). Both tiers assume it. |
@@ -252,14 +252,14 @@ Sources: [Hero Guide](https://royals.ms/forum/threads/hero-guide.57080/),
 **Finding:** The values 4.4 (1H) and 4.8 (2H) for Axe/BW swing multipliers ARE the
 standard GMS v62 values. The previously cited "GMS v62 values" of 4.0/4.2 were incorrect —
 4.0 is the 1H **Sword** multiplier, not 1H Axe. Multiple authoritative sources confirm:
-StrategyWiki, Ayumilove formula compilation, MapleStory Wiki damage formula page, and the
-MapleRoyals damage range calculator thread. MapleRoyals has not modified these values
+StrategyWiki, Ayumilove formula compilation, Royals Wiki damage formula page, and the
+Royals damage range calculator thread. Royals has not modified these values
 ([confirmed by community member Zerato](https://royals.ms/forum/threads/did-mapleroyals-balance-the-damage-between-axe-blunt-weapon-and-sword%EF%BC%9F.125863/)).
 
 **Action taken:** Removed incorrect warning from `weapons.json`. No value changes needed.
 
 Sources: [Axe/BW Balancing Thread](https://royals.ms/forum/threads/the-balancing-of-axes-blunt-weapons-data-included.53212/),
-[MapleRoyals hasn't changed axes](https://royals.ms/forum/threads/did-mapleroyals-balance-the-damage-between-axe-blunt-weapon-and-sword%EF%BC%9F.125863/),
+[Royals hasn't changed axes](https://royals.ms/forum/threads/did-mapleroyals-balance-the-damage-between-axe-blunt-weapon-and-sword%EF%BC%9F.125863/),
 [Damage Range Calculator](https://royals.ms/forum/threads/damage-range-calculator.17086/),
 [Warrior 2H Weapon Balancing](https://royals.ms/forum/threads/warrior-2h-weapon-balancing.163124/)
 
@@ -276,7 +276,7 @@ class had proper tiered weapon values (e.g., Hero 130→140→150, DrK 127→133
 source spreadsheet has no archer gear template data — templates were adapted from warrior
 templates with a single estimated WATK that was never differentiated.
 
-**Decision:** Calibrated bow/crossbow weapon WATK using MapleRoyals forum marketplace data:
+**Decision:** Calibrated bow/crossbow weapon WATK using Royals forum marketplace data:
 - Low: 120 → 105 (budget Nisrock, ~95 base + a few 60% scrolls)
 - Mid: 120 → 120 (unchanged, already appropriate)
 - High: 120 → 130 (well-scrolled Nisrock, ~100 base + 6x 30% scrolls, valued at ~3.8b)
@@ -284,7 +284,7 @@ templates with a single estimated WATK that was never differentiated.
 BM Hurricane High moved from 225k (#9) to 233k (#8). Low tier decreased from 113k to 105k,
 giving realistic tier spread matching other classes.
 
-Sources: MapleRoyals forum marketplace listings, Nisrock price/check threads, buy threads.
+Sources: Royals forum marketplace listings, Nisrock price/check threads, buy threads.
 
 ---
 

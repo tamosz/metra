@@ -6,7 +6,7 @@ import {
   discoverClassesAndTiers,
   weaponData,
   attackSpeedData,
-  mapleWarriorData,
+  mwData,
 } from '../data/bundle.js';
 
 export interface BuildOverrides {
@@ -25,7 +25,7 @@ export interface BuildOverrides {
   sharpEyes: boolean;
   speedInfusion: boolean;
   shadowPartner: boolean;
-  mapleWarriorLevel: number;
+  mwLevel: number;
 }
 
 export interface SkillDpsRow {
@@ -75,7 +75,7 @@ function mergeOverrides(template: CharacterBuild, overrides: Partial<BuildOverri
     sharpEyes: overrides.sharpEyes ?? template.sharpEyes,
     speedInfusion: overrides.speedInfusion ?? template.speedInfusion,
     shadowPartner: overrides.shadowPartner ?? template.shadowPartner,
-    mapleWarriorLevel: overrides.mapleWarriorLevel ?? template.mapleWarriorLevel,
+    mwLevel: overrides.mwLevel ?? template.mwLevel,
   };
 }
 
@@ -86,7 +86,7 @@ function computeSkillDps(
   const skillResults: { skill: SkillEntry; dps: DpsResult }[] = [];
   for (const skill of classData.skills) {
     const result = calculateSkillDps(
-      build, classData, skill, weaponData, attackSpeedData, mapleWarriorData
+      build, classData, skill, weaponData, attackSpeedData, mwData
     );
     skillResults.push({ skill, dps: result });
   }

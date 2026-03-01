@@ -12,7 +12,7 @@ export {
 export {
   calculateTotalAttack,
   calculateTotalStats,
-  applyMapleWarrior,
+  applyMW,
   calculateEcho,
 } from './engine/buffs.js';
 export {
@@ -29,8 +29,8 @@ export type {
   WeaponType,
   AttackSpeedData,
   AttackSpeedEntry,
-  MapleWarriorData,
-  MapleWarriorEntry,
+  MWData,
+  MWEntry,
   ClassSkillData,
   SkillEntry,
   CharacterBuild,

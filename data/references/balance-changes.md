@@ -1,6 +1,6 @@
 # Balance Changes
 
-MapleRoyals deviations from standard GMS v62. Primary source is the comprehensive
+Royals deviations from standard GMS v62. Primary source is the comprehensive
 change list thread, supplemented by individual update threads.
 
 ## Master Change List
@@ -10,7 +10,7 @@ change list thread, supplemented by individual update threads.
 **Accessed:** 2026-03-01
 **Used in:** all `data/skills/*.json` files
 
-These threads track every MapleRoyals deviation from vanilla v62. The sections below
+These threads track every Royals deviation from vanilla v62. The sections below
 extract DPS-relevant changes by class.
 
 ## Update #68 — Dark Knight Berserk Buff

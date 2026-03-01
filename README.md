@@ -1,6 +1,6 @@
-# MapleRoyals Balance Simulator
+# Royals Balance Simulator
 
-A tool for evaluating class balance in MapleRoyals. Express balance changes as structured proposals, simulate DPS across all classes and funding tiers, and get clear before/after comparison reports.
+A tool for evaluating class balance in Royals. Express balance changes as structured proposals, simulate DPS across all classes and funding tiers, and get clear before/after comparison reports.
 
 ## Quick Start
 

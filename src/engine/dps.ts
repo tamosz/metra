@@ -4,7 +4,7 @@ import type {
   SkillEntry,
   WeaponData,
   AttackSpeedData,
-  MapleWarriorData,
+  MWData,
 } from '../data/types.js';
 import { calculateTotalAttack, calculateTotalStats, calculateMageEcho } from './buffs.js';
 import {
@@ -86,9 +86,9 @@ function calculateBaseDamageRange(
   classData: ClassSkillData,
   skill: SkillEntry,
   weaponData: WeaponData,
-  mapleWarriorData: MapleWarriorData
+  mwData: MWData
 ): DamageRange {
-  const { primary, secondary } = calculateTotalStats(build, classData, mapleWarriorData);
+  const { primary, secondary } = calculateTotalStats(build, classData, mwData);
   const damageFormula = classData.damageFormula ?? 'standard';
 
   if (damageFormula === 'magic') {
@@ -186,7 +186,7 @@ export function calculateSkillDps(
   skill: SkillEntry,
   weaponData: WeaponData,
   attackSpeedData: AttackSpeedData,
-  mapleWarriorData: MapleWarriorData
+  mwData: MWData
 ): DpsResult {
   const si = classData.damageFormula === 'magic' ? false : build.speedInfusion;
   const effectiveSpeed = resolveEffectiveWeaponSpeed(build.weaponSpeed, si);
@@ -211,7 +211,7 @@ export function calculateSkillDps(
 
   const skillDamagePercent = skill.basePower * skill.multiplier;
   const { critDamagePercent, totalCritRate } = calculateCritDamage(skill, classData, build.sharpEyes);
-  const damageRange = calculateBaseDamageRange(build, classData, skill, weaponData, mapleWarriorData);
+  const damageRange = calculateBaseDamageRange(build, classData, skill, weaponData, mwData);
   const isMagic = (classData.damageFormula ?? 'standard') === 'magic';
   const { adjustedRangeNormal, adjustedRangeCrit, averageDamage } = calculateAverageDamage(
     damageRange, skillDamagePercent, critDamagePercent, totalCritRate,

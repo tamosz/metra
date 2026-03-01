@@ -2,14 +2,14 @@ import { describe, it, expect, beforeAll } from 'vitest';
 import {
   loadWeapons,
   loadAttackSpeed,
-  loadMapleWarrior,
+  loadMW,
   loadClassSkills,
   loadGearTemplate,
 } from '../data/loader.js';
 import type {
   WeaponData,
   AttackSpeedData,
-  MapleWarriorData,
+  MWData,
   ClassSkillData,
   CharacterBuild,
 } from '../data/types.js';
@@ -19,14 +19,14 @@ import type { ScenarioConfig } from './types.js';
 
 let weaponData: WeaponData;
 let attackSpeedData: AttackSpeedData;
-let mapleWarriorData: MapleWarriorData;
+let mwData: MWData;
 let classDataMap: Map<string, ClassSkillData>;
 let gearTemplates: GearTemplateMap;
 
 beforeAll(() => {
   weaponData = loadWeapons();
   attackSpeedData = loadAttackSpeed();
-  mapleWarriorData = loadMapleWarrior();
+  mwData = loadMW();
 
   classDataMap = new Map([
     ['hero', loadClassSkills('Hero')],
@@ -52,7 +52,7 @@ describe('runSimulation basics', () => {
 
     const results = runSimulation(
       config, classDataMap, gearTemplates,
-      weaponData, attackSpeedData, mapleWarriorData
+      weaponData, attackSpeedData, mwData
     );
 
     expect(results.length).toBeGreaterThan(0);
@@ -70,7 +70,7 @@ describe('runSimulation basics', () => {
 
     const results = runSimulation(
       config, classDataMap, gearTemplates,
-      weaponData, attackSpeedData, mapleWarriorData
+      weaponData, attackSpeedData, mwData
     );
 
     const heroSkillCount = classDataMap.get('hero')!.skills.length;
@@ -86,7 +86,7 @@ describe('runSimulation basics', () => {
 
     const results = runSimulation(
       config, classDataMap, gearTemplates,
-      weaponData, attackSpeedData, mapleWarriorData
+      weaponData, attackSpeedData, mwData
     );
 
     const heroSkillCount = classDataMap.get('hero')!.skills.length;
@@ -102,7 +102,7 @@ describe('runSimulation basics', () => {
 
     const results = runSimulation(
       config, classDataMap, gearTemplates,
-      weaponData, attackSpeedData, mapleWarriorData
+      weaponData, attackSpeedData, mwData
     );
 
     for (const r of results) {
@@ -124,7 +124,7 @@ describe('runSimulation error handling', () => {
     expect(() =>
       runSimulation(
         config, classDataMap, gearTemplates,
-        weaponData, attackSpeedData, mapleWarriorData
+        weaponData, attackSpeedData, mwData
       )
     ).toThrow(/Class "nonexistent" not found/);
   });
@@ -138,7 +138,7 @@ describe('runSimulation error handling', () => {
     expect(() =>
       runSimulation(
         config, classDataMap, gearTemplates,
-        weaponData, attackSpeedData, mapleWarriorData
+        weaponData, attackSpeedData, mwData
       )
     ).toThrow(/Gear template "hero-mythical" not found/);
   });
@@ -157,7 +157,7 @@ describe('runSimulation scenario overrides', () => {
             sharpEyes: false,
             echoActive: false,
             speedInfusion: false,
-            mapleWarriorLevel: 0,
+            mwLevel: 0,
             attackPotion: 0,
           },
         },
@@ -166,7 +166,7 @@ describe('runSimulation scenario overrides', () => {
 
     const results = runSimulation(
       config, classDataMap, gearTemplates,
-      weaponData, attackSpeedData, mapleWarriorData
+      weaponData, attackSpeedData, mwData
     );
 
     const buffed = results.find(
@@ -193,7 +193,7 @@ describe('runSimulation scenario overrides', () => {
 
     const results = runSimulation(
       config, classDataMap, gearTemplates,
-      weaponData, attackSpeedData, mapleWarriorData
+      weaponData, attackSpeedData, mwData
     );
 
     const buffed = results.find(
@@ -210,25 +210,25 @@ describe('runSimulation scenario overrides', () => {
   it('overrides do not mutate the original build objects', () => {
     const originalBuild = gearTemplates.get('hero-high')!;
     const originalPotion = originalBuild.attackPotion;
-    const originalMW = originalBuild.mapleWarriorLevel;
+    const originalMW = originalBuild.mwLevel;
 
     const config: SimulationConfig = {
       classes: ['hero'],
       tiers: ['high'],
       scenarios: [{
         name: 'Zeroed',
-        overrides: { mapleWarriorLevel: 0, attackPotion: 0 },
+        overrides: { mwLevel: 0, attackPotion: 0 },
       }],
     };
 
     runSimulation(
       config, classDataMap, gearTemplates,
-      weaponData, attackSpeedData, mapleWarriorData
+      weaponData, attackSpeedData, mwData
     );
 
     const buildAfter = gearTemplates.get('hero-high')!;
     expect(buildAfter.attackPotion).toBe(originalPotion);
-    expect(buildAfter.mapleWarriorLevel).toBe(originalMW);
+    expect(buildAfter.mwLevel).toBe(originalMW);
   });
 });
 
@@ -245,7 +245,7 @@ describe('runSimulation PDR', () => {
 
     const results = runSimulation(
       config, classDataMap, gearTemplates,
-      weaponData, attackSpeedData, mapleWarriorData
+      weaponData, attackSpeedData, mwData
     );
 
     const buffed = results.find(
@@ -270,7 +270,7 @@ describe('runSimulation PDR', () => {
 
     const results = runSimulation(
       config, classDataMap, gearTemplates,
-      weaponData, attackSpeedData, mapleWarriorData
+      weaponData, attackSpeedData, mwData
     );
 
     const buffed = results.find(
@@ -292,7 +292,7 @@ describe('runSimulation PDR', () => {
 
     const results = runSimulation(
       config, classDataMap, gearTemplates,
-      weaponData, attackSpeedData, mapleWarriorData
+      weaponData, attackSpeedData, mwData
     );
 
     for (const r of results) {
@@ -314,7 +314,7 @@ describe('elementModifiers', () => {
 
     const results = runSimulation(
       config, classDataMap, gearTemplates,
-      weaponData, attackSpeedData, mapleWarriorData
+      weaponData, attackSpeedData, mwData
     );
 
     const buffed = results.find(
@@ -339,7 +339,7 @@ describe('elementModifiers', () => {
 
     const results = runSimulation(
       config, classDataMap, gearTemplates,
-      weaponData, attackSpeedData, mapleWarriorData
+      weaponData, attackSpeedData, mwData
     );
 
     const buffed = results.find(
@@ -364,7 +364,7 @@ describe('elementModifiers', () => {
 
     const results = runSimulation(
       config, classDataMap, gearTemplates,
-      weaponData, attackSpeedData, mapleWarriorData
+      weaponData, attackSpeedData, mwData
     );
 
     const buffed = results.find(
@@ -390,7 +390,7 @@ describe('elementModifiers', () => {
 
     const results = runSimulation(
       config, classDataMap, gearTemplates,
-      weaponData, attackSpeedData, mapleWarriorData
+      weaponData, attackSpeedData, mwData
     );
 
     const buffed = results.find(
@@ -414,7 +414,7 @@ describe('comboGroup aggregation', () => {
 
     const results = runSimulation(
       config, classDataMap, gearTemplates,
-      weaponData, attackSpeedData, mapleWarriorData
+      weaponData, attackSpeedData, mwData
     );
 
     // Bucc has 5 raw skills: 1 Demolition + 4 Barrage+Demo sub-skills
@@ -431,7 +431,7 @@ describe('comboGroup aggregation', () => {
 
     const results = runSimulation(
       config, classDataMap, gearTemplates,
-      weaponData, attackSpeedData, mapleWarriorData
+      weaponData, attackSpeedData, mwData
     );
 
     const combo = results.find(r => r.skillName === 'Barrage + Demolition');
@@ -449,7 +449,7 @@ describe('comboGroup aggregation', () => {
     // Run with real data — DPS value will be computed from new combo data
     const results = runSimulation(
       config, classDataMap, gearTemplates,
-      weaponData, attackSpeedData, mapleWarriorData
+      weaponData, attackSpeedData, mwData
     );
 
     const combo = results.find(r => r.skillName === 'Barrage + Demolition')!;
@@ -466,7 +466,7 @@ describe('comboGroup aggregation', () => {
 
     const results = runSimulation(
       config, classDataMap, gearTemplates,
-      weaponData, attackSpeedData, mapleWarriorData
+      weaponData, attackSpeedData, mwData
     );
 
     const demolition = results.find(r => r.skillName === 'Demolition')!;
@@ -486,7 +486,7 @@ describe('comboGroup aggregation', () => {
 
     const results = runSimulation(
       config, classDataMap, gearTemplates,
-      weaponData, attackSpeedData, mapleWarriorData
+      weaponData, attackSpeedData, mwData
     );
 
     // 2 skills after aggregation × 2 tiers × 2 scenarios = 8

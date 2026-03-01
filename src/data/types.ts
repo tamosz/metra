@@ -28,13 +28,13 @@ export interface AttackSpeedData {
   entries: AttackSpeedEntry[];
 }
 
-/** Maple Warrior buff multiplier by skill level. */
-export interface MapleWarriorEntry {
+/** MW buff multiplier by skill level. */
+export interface MWEntry {
   level: number;
   multiplier: number;
 }
 
-export type MapleWarriorData = MapleWarriorEntry[];
+export type MWData = MWEntry[];
 
 /** A single skill's damage properties. */
 export interface SkillEntry {
@@ -70,7 +70,7 @@ export interface SkillEntry {
   element?: string;
 }
 
-/** The four primary stats in MapleStory. */
+/** The four primary stats in Royals. */
 export type StatName = 'STR' | 'DEX' | 'INT' | 'LUK';
 
 /** All skills for a single class. */
@@ -135,8 +135,8 @@ export interface CharacterBuild {
   projectile: number;
   /** Whether echo of hero is active (4% WATK bonus). */
   echoActive: boolean;
-  /** Maple Warrior skill level (0-30). */
-  mapleWarriorLevel: number;
+  /** MW skill level (0-30). */
+  mwLevel: number;
   /** Whether Speed Infusion is active. */
   speedInfusion: boolean;
   /** Whether Sharp Eyes is active. */

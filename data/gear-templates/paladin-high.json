@@ -11,7 +11,7 @@
   "potionName": "Apple",
   "projectile": 0,
   "echoActive": true,
-  "mapleWarriorLevel": 20,
+  "mwLevel": 20,
   "speedInfusion": true,
   "sharpEyes": true,
   "note": "gearBreakdown copied from hero-high.json — Hero & Paladin share identical gear per source sheet",

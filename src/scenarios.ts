@@ -8,7 +8,7 @@ export const DEFAULT_SCENARIOS: ScenarioConfig[] = [
       sharpEyes: false,
       echoActive: false,
       speedInfusion: false,
-      mapleWarriorLevel: 0,
+      mwLevel: 0,
       attackPotion: 0,
     },
   },

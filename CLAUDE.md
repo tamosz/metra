@@ -1,8 +1,8 @@
-# MapleRoyals Balance Simulator
+# Royals Balance Simulator
 
 ## Project Purpose
 
-This project makes MapleStory class balance *legible*. It translates a sprawling Google Sheet calculator into a structured, testable codebase so that proposed balance changes can be expressed as diffs, simulated, and shared as reproducible reports. The audience is MapleRoyals staff, contributors, and community members debating balance.
+This project makes Royals class balance *legible*. It translates a sprawling Google Sheet calculator into a structured, testable codebase so that proposed balance changes can be expressed as diffs, simulated, and shared as reproducible reports. The audience is Royals staff, contributors, and community members debating balance.
 
 The north star: anyone should be able to write a small change file ("buff Brandish from 260 to 280"), run a command, and get a clear before/after comparison across classes and scenarios.
 
@@ -51,14 +51,14 @@ The pre-commit hook runs unit tests, type-checks the engine, and type-checks the
 Five layers. Keep them cleanly separated.
 
 ### 1. Data Layer (`/data`)
-Static game data stored as JSON files, version-controlled, human-readable and human-editable. This is the "current state of MapleRoyals."
+Static game data stored as JSON files, version-controlled, human-readable and human-editable. This is the "current state of Royals."
 
 Actual files:
 - `skills/` — one file per class (`hero.json`, `hero-axe.json`, `drk.json`, `paladin.json`, `nl.json`, `bowmaster.json`, `marksman.json`, `sair.json`, `bucc.json`, `shadower.json`). Each contains mastery, stat mapping, SE crit config, and a `skills[]` array.
 - `gear-templates/` — character builds at each funding tier (`hero-low.json`, `hero-high.json`, etc.). Include full gear breakdown, stats, buffs, and weapon info.
 - `weapons.json` — weapon type slash/stab multipliers for the damage formula.
 - `attack-speed.json` — effective speed tier → attack time lookup, keyed by skill category.
-- `maple-warrior.json` — MW level → stat multiplier table.
+- `mw.json` — MW level → stat multiplier table.
 - `gear-assumptions.md` — documents all baked-in assumptions in gear templates (buff availability, stat choices, funding philosophy, per-slot WATK breakdowns validated against forum guides).
 - `source-sheet.xlsx` — original spreadsheet (read-only reference).
 - `references/` — extracted forum knowledge organized by topic. Check these BEFORE web-searching royals.ms. When adding forum-sourced data: add to the relevant file with source URL, access date, and which data files it relates to.
@@ -68,7 +68,7 @@ Pure functions. No side effects, no I/O. Takes game data + a character build, ou
 
 **Implemented:**
 - `damage.ts` — raw damage range (min/max), throwing star range (NL/Shad), range cap from damage cap, adjusted range for capped distributions.
-- `buffs.ts` — Maple Warrior stat boost, Echo of Hero WATK bonus, total attack/stat aggregation.
+- `buffs.ts` — MW stat boost, Echo of Hero WATK bonus, total attack/stat aggregation.
 - `attack-speed.ts` — weapon speed resolution (base speed + booster + SI), attack time lookup by skill category.
 - `dps.ts` — full DPS pipeline: attack time → skill damage% → crit damage% → range caps → adjusted ranges → average damage → DPS. Uses `skill.weaponType` (not build) for weapon multiplier lookup, enabling weapon variants within the same class/tier. Supports built-in crit (additive with SE), throwing star formula (branches on `weaponType === 'Claw'`), Shadow Partner (1.5× multiplier), and `fixedDamage` (bypasses damage formula for skills like Snipe).
 - `index.ts` — re-exports.
@@ -132,9 +132,9 @@ React + Vite single-page app with its own `package.json`. Consumes the engine vi
 - BBCode export for royals.ms forum posts (`src/report/bbcode.ts`)
 - Playwright e2e tests in `web/e2e/`
 
-## MapleRoyals Domain Knowledge
+## Royals Domain Knowledge
 
-This is a v62-based MapleStory private server. Key differences from official GMS:
+This is a v62-based Royals private server. Key differences from official GMS:
 - Pre-Big Bang class balance and mechanics
 - Fourth job skills are the endgame
 - No potential system, no star force — funding is primarily via scrolling
@@ -142,7 +142,7 @@ This is a v62-based MapleStory private server. Key differences from official GMS
 - Weapon Attack (WATK) and primary stat scaling differ by class
 
 ### Sources of Truth
-1. **royals.ms forum** — primary source for MapleRoyals-specific mechanics, balance changes, and community-verified formulas. Treat forum-confirmed values as authoritative when they differ from generic v62 references.
+1. **royals.ms forum** — primary source for Royals-specific mechanics, balance changes, and community-verified formulas. Treat forum-confirmed values as authoritative when they differ from generic v62 references.
 2. **Source spreadsheet** (`data/source-sheet.xlsx`) — reference implementation being translated. Cross-check against forum when values seem uncertain.
 3. **In-game verification** — ultimate authority when forum and spreadsheet disagree.
 
@@ -222,7 +222,7 @@ Multi-scenario support: `ScenarioConfig` can override buff flags and apply PDR. 
 ## Conventions
 
 - Use descriptive variable names. `weaponAttack` not `wa`, `damagePercent` not `dmg`.
-- No abbreviations in code that wouldn't be obvious to someone unfamiliar with MapleStory.
+- No abbreviations in code that wouldn't be obvious to someone unfamiliar with Royals.
 - All game data values must cite their source (spreadsheet cell, royals.ms forum thread, wiki, or in-game verification). Use a `"source"` field in JSON data files.
 - Tests go next to the code they test (`damage.ts` → `damage.test.ts`).
 - Keep functions small. If a function needs a comment explaining what a section does, that section should be its own function.
@@ -252,7 +252,7 @@ metra/
 │   ├── gear-assumptions.md      # gear template assumptions documentation
 │   ├── weapons.json             # weapon type multipliers
 │   ├── attack-speed.json        # speed tier → attack time table
-│   ├── maple-warrior.json       # MW level → stat multiplier
+│   ├── mw.json       # MW level → stat multiplier
 │   ├── skills/
 │   │   ├── hero.json
 │   │   ├── hero-axe.json

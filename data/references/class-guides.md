@@ -35,7 +35,7 @@ Per-class verified values extracted from community guides on royals.ms.
 
 - Mastery: 0.8 (highest among warriors)
 - Spear Crusher: 170% base, 2.1x Berserk multiplier, 3 hits, stab (5.0x Spear multiplier)
-- Berserk 2.1x confirmed at level 30 (MapleRoyals buff, was 2.0x in v62)
+- Berserk 2.1x confirmed at level 30 (Royals buff, was 2.0x in v62)
 - Primary: STR, Secondary: DEX
 - Endgame weapon: Sky Ski (speed 6)
 - Fury not modeled — mobbing skill with unsourced attack speed data

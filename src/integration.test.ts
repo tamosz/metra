@@ -4,7 +4,7 @@ import { resolve } from 'path';
 import {
   loadWeapons,
   loadAttackSpeed,
-  loadMapleWarrior,
+  loadMW,
   discoverClassesAndTiers,
 } from './data/loader.js';
 import type { ClassSkillData } from './data/types.js';
@@ -28,12 +28,12 @@ let gearTemplates: GearTemplateMap;
 let config: SimulationConfig;
 let weaponData: ReturnType<typeof loadWeapons>;
 let attackSpeedData: ReturnType<typeof loadAttackSpeed>;
-let mapleWarriorData: ReturnType<typeof loadMapleWarrior>;
+let mwData: ReturnType<typeof loadMW>;
 
 beforeAll(() => {
   weaponData = loadWeapons();
   attackSpeedData = loadAttackSpeed();
-  mapleWarriorData = loadMapleWarrior();
+  mwData = loadMW();
 
   const discovery = discoverClassesAndTiers();
   classDataMap = discovery.classDataMap;
@@ -51,7 +51,7 @@ describe('End-to-end: brandish-buff-20 proposal', () => {
       gearTemplates,
       weaponData,
       attackSpeedData,
-      mapleWarriorData
+      mwData
     );
     const report = renderComparisonReport(result);
 
@@ -101,7 +101,7 @@ describe('End-to-end: warrior-rebalance proposal', () => {
       gearTemplates,
       weaponData,
       attackSpeedData,
-      mapleWarriorData
+      mwData
     );
 
     // Hero goes up (Brandish buffed 260→280)
@@ -141,10 +141,10 @@ describe('End-to-end: warrior-rebalance proposal', () => {
     const rebalance = loadProposal('warrior-rebalance.json');
 
     const report1 = renderComparisonReport(
-      compareProposal(brandish, config, classDataMap, gearTemplates, weaponData, attackSpeedData, mapleWarriorData)
+      compareProposal(brandish, config, classDataMap, gearTemplates, weaponData, attackSpeedData, mwData)
     );
     const report2 = renderComparisonReport(
-      compareProposal(rebalance, config, classDataMap, gearTemplates, weaponData, attackSpeedData, mapleWarriorData)
+      compareProposal(rebalance, config, classDataMap, gearTemplates, weaponData, attackSpeedData, mwData)
     );
 
     // Reports should be different
@@ -172,7 +172,7 @@ describe('Baseline mode', () => {
       gearTemplates,
       weaponData,
       attackSpeedData,
-      mapleWarriorData
+      mwData
     );
     baselineReport = renderBaselineReport(baselineResults);
   });
@@ -248,7 +248,7 @@ describe('Special mechanics', () => {
       gearTemplates,
       weaponData,
       attackSpeedData,
-      mapleWarriorData
+      mwData
     );
   });
 
@@ -307,7 +307,7 @@ describe('Multi-scenario baseline', () => {
           sharpEyes: false,
           echoActive: false,
           speedInfusion: false,
-          mapleWarriorLevel: 0,
+          mwLevel: 0,
           attackPotion: 0,
         },
       },
@@ -321,7 +321,7 @@ describe('Multi-scenario baseline', () => {
       gearTemplates,
       weaponData,
       attackSpeedData,
-      mapleWarriorData
+      mwData
     );
     const report = renderBaselineReport(results);
 
@@ -356,7 +356,7 @@ describe('Ranking integrity', () => {
       gearTemplates,
       weaponData,
       attackSpeedData,
-      mapleWarriorData
+      mwData
     );
 
     // Group deltas by (scenario, tier)
