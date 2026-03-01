@@ -43,7 +43,7 @@ export function BuildExplorer({ state }: BuildExplorerProps) {
         )}
       </div>
 
-      <SupportClassNote classNames={[selectedClass]} />
+      <SupportClassNote classNames={[formatClassName(selectedClass)]} />
 
       {template && (
         <div className="mb-6 flex gap-4 text-xs text-text-dim">
