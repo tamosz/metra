@@ -15,12 +15,12 @@ A balance simulator for MapleRoyals staff and community. Every number traces bac
 - 4 scenarios (Buffed, Unbuffed, No-Echo, Bossing 50% PDR)
 - Balance audit: automated outlier detection across scenarios and tiers
 - Pre-commit hooks, comprehensive test coverage
+- Deployed on Vercel: https://metra-ten.vercel.app
 
 ## Phase 2: Public Launch + Build Explorer
 
 Deploy and make it useful for real players.
 
-- Deploy static site on Vercel
 - Gear/stat overrides with sliders/inputs (start from templates, real-time DPS recalc)
 - Shareable builds via URL encoding
 - UX polish: mobile layout, tooltips, class icons, onboarding
