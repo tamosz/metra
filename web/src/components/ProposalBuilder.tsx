@@ -91,7 +91,7 @@ export function ProposalBuilder({ proposalState, simulation }: ProposalBuilderPr
         />
       )}
 
-      <div className="mb-4 grid grid-cols-2 gap-3">
+      <div className="mb-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
         <Input label="Name" value={proposal.name} onChange={setName} placeholder="e.g. Brandish Buff" />
         <Input label="Author" value={proposal.author} onChange={setAuthor} placeholder="Your name" />
       </div>
@@ -237,7 +237,7 @@ function AddChangeForm({
   const labelClass = 'mb-1 block text-[11px] font-medium uppercase tracking-wide text-text-muted';
 
   return (
-    <div className="mt-2 grid items-end gap-2" style={{ gridTemplateColumns: '1fr 1fr 120px 100px 80px' }}>
+    <div className="mt-2 grid items-end gap-2 grid-cols-1 sm:grid-cols-2 lg:grid-cols-[1fr_1fr_120px_100px_80px]">
       <div>
         <label className={labelClass}>Class</label>
         <select
