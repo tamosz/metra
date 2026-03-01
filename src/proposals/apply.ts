@@ -4,7 +4,7 @@ import type { Proposal } from './types.js';
 /** Valid numeric/string fields that a proposal can modify on a SkillEntry. */
 const VALID_SKILL_FIELDS: ReadonlySet<string> = new Set([
   'basePower', 'multiplier', 'hitCount', 'speedCategory', 'weaponType', 'name',
-  'attackType', 'builtInCritRate', 'builtInCritDamageBonus', 'element',
+  'attackType', 'builtInCritRate', 'builtInCritDamageBonus', 'element', 'maxTargets',
 ]);
 
 /**

@@ -28,7 +28,8 @@
       "hitCount": 1,
       "speedCategory": "Genesis",
       "weaponType": "Staff",
-      "element": "Holy"
+      "element": "Holy",
+      "maxTargets": 15
     }
   ]
 }

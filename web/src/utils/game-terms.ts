@@ -19,6 +19,16 @@ export const SCENARIO_DESCRIPTIONS: Record<string, string> = {
   'Bossing (Undead, 50% PDR)': 'Fully buffed vs undead boss (50% PDR). Holy-element skills deal 1.5x damage.',
 };
 
+/** Generate a description for a dynamic training scenario. */
+export function getScenarioDescription(name: string): string | undefined {
+  if (SCENARIO_DESCRIPTIONS[name]) return SCENARIO_DESCRIPTIONS[name];
+  const match = name.match(/^Training \((\d+) mobs?\)$/);
+  if (match) {
+    return `Fully buffed, hitting ${match[1]} mobs. AoE skills scale with target count.`;
+  }
+  return undefined;
+}
+
 export const BUFF_DESCRIPTIONS: Record<string, string> = {
   'Echo of Hero': 'Event buff: +4% total attack.',
   'Sharp Eyes': 'Party buff: +15% crit rate, +140% crit damage.',

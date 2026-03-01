@@ -406,6 +406,47 @@ describe('Ranking integrity', () => {
   });
 });
 
+describe('Multi-target training scenario', () => {
+  it('AoE skills scale by maxTargets, single-target skills unchanged', () => {
+    const trainingConfig: SimulationConfig = {
+      ...config,
+      scenarios: [
+        { name: 'Buffed' },
+        { name: 'Training (6 mobs)', targetCount: 6 },
+      ],
+    };
+    const results = runSimulation(
+      trainingConfig,
+      classDataMap,
+      gearTemplates,
+      weaponData,
+      attackSpeedData,
+      mwData
+    );
+
+    const find = (className: string, skillName: string, scenario: string) =>
+      results.find(
+        (r) => r.className === className && r.skillName === skillName && r.scenario === scenario
+      )!;
+
+    // Hero Brandish: maxTargets 3, capped at 3 even with 6 mobs
+    const heroBuffed = find('Hero', 'Brandish (Sword)', 'Buffed');
+    const heroTraining = find('Hero', 'Brandish (Sword)', 'Training (6 mobs)');
+    expect(heroTraining.dps.dps).toBeCloseTo(heroBuffed.dps.dps * 3, 0);
+
+    // NL Triple Throw: single-target (no maxTargets), unchanged
+    const nlBuffed = find('NL', 'Triple Throw 30', 'Buffed');
+    const nlTraining = find('NL', 'Triple Throw 30', 'Training (6 mobs)');
+    expect(nlTraining.dps.dps).toBe(nlBuffed.dps.dps);
+
+    // Shadower BStep+Assassinate combo: BStep has maxTargets 6, Assassinate defaults to 1
+    const shadBuffed = find('Shadower', 'BStep + Assassinate 30', 'Buffed');
+    const shadTraining = find('Shadower', 'BStep + Assassinate 30', 'Training (6 mobs)');
+    expect(shadTraining.dps.dps).toBeGreaterThan(shadBuffed.dps.dps);
+    expect(shadTraining.dps.dps).toBeLessThan(shadBuffed.dps.dps * 6);
+  });
+});
+
 describe('Proposal validation', () => {
   it('from-value mismatch throws on stale proposal', () => {
     const staleProposal: Proposal = {

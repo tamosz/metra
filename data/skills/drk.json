@@ -16,7 +16,8 @@
       "hitCount": 3,
       "speedCategory": "Crusher",
       "weaponType": "Spear",
-      "attackType": "stab"
+      "attackType": "stab",
+      "maxTargets": 3
     }
   ]
 }

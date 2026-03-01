@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { runSimulation } from '@engine/proposals/simulate.js';
 import type { SimulationConfig } from '@engine/proposals/simulate.js';
-import type { ScenarioResult } from '@engine/proposals/types.js';
+import type { ScenarioConfig, ScenarioResult } from '@engine/proposals/types.js';
 import { DEFAULT_SCENARIOS } from '@engine/scenarios.js';
 import {
   discoverClassesAndTiers,
@@ -17,14 +17,22 @@ export interface SimulationData {
   scenarios: string[];
 }
 
-export function useSimulation(): SimulationData {
+export function useSimulation(targetCount?: number): SimulationData {
   return useMemo(() => {
     const { classNames, tiers, classDataMap, gearTemplates } = discoverClassesAndTiers();
+
+    const scenarios: ScenarioConfig[] = [...DEFAULT_SCENARIOS];
+    if (targetCount != null && targetCount > 1) {
+      scenarios.push({
+        name: `Training (${targetCount} mobs)`,
+        targetCount,
+      });
+    }
 
     const config: SimulationConfig = {
       classes: classNames,
       tiers,
-      scenarios: DEFAULT_SCENARIOS,
+      scenarios,
     };
 
     const results = runSimulation(
@@ -36,7 +44,7 @@ export function useSimulation(): SimulationData {
       mwData
     );
 
-    const scenarios = DEFAULT_SCENARIOS.map((s) => s.name);
-    return { results, classNames, tiers, scenarios };
-  }, []);
+    const scenarioNames = scenarios.map((s) => s.name);
+    return { results, classNames, tiers, scenarios: scenarioNames };
+  }, [targetCount]);
 }

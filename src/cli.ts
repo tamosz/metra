@@ -30,10 +30,25 @@ export function loadProposal(path: string) {
   return validateProposal(raw);
 }
 
+function parseTargetsFlag(): number | undefined {
+  const idx = process.argv.indexOf('--targets');
+  if (idx === -1) return undefined;
+  const val = Number(process.argv[idx + 1]);
+  if (!Number.isFinite(val) || val < 1) {
+    throw new Error('--targets requires a positive integer (e.g., --targets 6)');
+  }
+  return Math.floor(val);
+}
+
 function main() {
   const auditFlag = process.argv.includes('--audit');
+  const targetCount = parseTargetsFlag();
   const args = process.argv.slice(2).filter((arg: string) => !arg.startsWith('--'));
-  const proposalPath = args[0];
+  // Also filter out the value after --targets
+  const targetsIdx = process.argv.indexOf('--targets');
+  const skipValue = targetsIdx !== -1 ? process.argv[targetsIdx + 1] : undefined;
+  const positionalArgs = args.filter((a) => a !== skipValue);
+  const proposalPath = positionalArgs[0];
 
   // Load game data
   const weaponData = loadWeapons();
@@ -41,10 +56,18 @@ function main() {
   const mwData = loadMW();
   const { classNames, tiers, classDataMap, gearTemplates } = discoverClassesAndTiers();
 
+  const scenarios: ScenarioConfig[] = [...DEFAULT_SCENARIOS];
+  if (targetCount != null && targetCount > 1) {
+    scenarios.push({
+      name: `Training (${targetCount} mobs)`,
+      targetCount,
+    });
+  }
+
   const config: SimulationConfig = {
     classes: classNames,
     tiers,
-    scenarios: DEFAULT_SCENARIOS,
+    scenarios,
   };
 
   if (!proposalPath) {

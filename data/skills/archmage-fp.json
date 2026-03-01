@@ -26,7 +26,8 @@
       "multiplier": 1,
       "hitCount": 1,
       "speedCategory": "Meteor",
-      "weaponType": "Staff"
+      "weaponType": "Staff",
+      "maxTargets": 15
     }
   ]
 }

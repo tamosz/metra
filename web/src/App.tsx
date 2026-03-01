@@ -13,8 +13,9 @@ import { getProposalFromUrl, getBuildFromUrl, getComparisonFromUrl } from './uti
 type Page = 'dashboard' | 'proposal' | 'build' | 'compare';
 
 export function App() {
-  const simulation = useSimulation();
-  const proposalState = useProposal();
+  const [targetCount, setTargetCount] = useState(1);
+  const simulation = useSimulation(targetCount > 1 ? targetCount : undefined);
+  const proposalState = useProposal(targetCount > 1 ? targetCount : undefined);
   const buildState = useBuildExplorer();
   const comparisonState = useBuildComparison();
   const [page, setPage] = useState<Page>('dashboard');
@@ -114,7 +115,13 @@ export function App() {
       </header>
 
       <main className="mx-auto max-w-[1200px] px-4 py-6 sm:px-8">
-        {page === 'dashboard' && <Dashboard simulation={simulation} />}
+        {page === 'dashboard' && (
+          <Dashboard
+            simulation={simulation}
+            targetCount={targetCount}
+            setTargetCount={setTargetCount}
+          />
+        )}
         {page === 'proposal' && (
           <>
             <ProposalBuilder proposalState={proposalState} simulation={simulation} />
