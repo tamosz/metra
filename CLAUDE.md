@@ -180,7 +180,7 @@ Two formula variants exist, configured per class via `seCritFormula`:
 - **Marksman (MM)** — Crossbow, Snipe + Strafe weave rotation (combo via `comboGroup`: 1 Snipe per 5s cycle + N Strafes as filler) and standalone Strafe (4-hit). Snipe has ~5s effective cooldown (4s programmed + ~1s server tick). DEX primary, Crossbow 3.6× multiplier, 0.9 mastery, 40% crit from Critical Shot. Shares gear with Bowmaster (Crossbow Expert +10 WATK).
 - **Corsair (Sair)** — Gun, Battleship Cannon (4-hit, 0.60s) and Rapid Fire (Hurricane-style 0.12s). DEX primary, 3.6× weapon multiplier.
 - **Buccaneer (Bucc)** — Knuckle, Demolition (8-hit, fixed 2.34s cycle) and Barrage + Demolition (multi-part combo via `comboGroup`, fixed 4.04s cycle). STR primary, 4.8× weapon multiplier.
-- **Shadower** — Dagger + Shield, Boomerang Step + Assassinate 30 (combo via `comboGroup`, 2.31s cycle) and Savage Blow (6-hit standalone). LUK primary, STR+DEX secondary (array `secondaryStat`), Dagger 3.6× multiplier, standard damage formula, Shadow Partner, no built-in crit, no Speed Infusion.
+- **Shadower** — Dagger + Shield, Boomerang Step + Assassinate 30 (combo via `comboGroup`, 2.31s cycle) and Savage Blow (6-hit standalone). LUK primary, STR+DEX secondary (array `secondaryStat`), Dagger 3.6× multiplier, standard damage formula, Shadow Partner, no built-in crit.
 
 **Future expansion targets:**
 - Arch Mage (Ice/Lightning) (magic)
@@ -195,7 +195,7 @@ Balance is evaluated across funding levels. Current tiers:
 A change that looks balanced at high funding might be wildly unbalanced at low funding, and vice versa. Always evaluate across tiers.
 
 ### Gear Template Assumptions
-All templates assume a fully buffed party scenario: MW20, Sharp Eyes, Speed Infusion, Echo of Hero, and Booster (implicit). Exception: Shadower templates have Speed Infusion disabled to match spreadsheet attack times (weapon speed 5 Dagger, effective speed 3 with Booster only). Low and mid tiers use Heartstopper (60 WATK), high tier uses Onyx Apple (100 WATK). Mage low/mid tiers use Lollipop (45 MATK). See `data/gear-assumptions.md` for the full per-slot breakdown, forum cross-references, and flagged concerns.
+All templates assume a fully buffed party scenario: MW20, Sharp Eyes, Speed Infusion, Echo of Hero, and Booster (implicit). Low and mid tiers use Heartstopper (60 WATK), high tier uses Onyx Apple (100 WATK). Mage low/mid tiers use Lollipop (45 MATK). See `data/gear-assumptions.md` for the full per-slot breakdown, forum cross-references, and flagged concerns.
 
 ### Scenarios
 Standard scenarios for comparison reports (all implemented):

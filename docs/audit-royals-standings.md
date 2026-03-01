@@ -140,26 +140,16 @@ Bucc Barrage+DS at 244k sits between DrK and Corsair. Community noted Bucc was i
 
 **Impact:** BM Hurricane moved from #9 (225k) to #8 (233k), now above Corsair Rapid Fire (228k). Low tier decreased from 113k to 105k, giving more realistic tier spread matching other classes. MM Snipe+Strafe High moved from 216k to 223k.
 
-### INVESTIGATE-2: Shadower Unbuffed Outlier (+2.7 sigma)
+### INVESTIGATE-2: Shadower Unbuffed Outlier (+2.6 sigma) — RESOLVED
 
 **Severity: MEDIUM**
-**Simulator audit flags:** Shadower BStep+Assass is the strongest outlier across ALL scenarios, especially unbuffed (Low: 131k, +2.7σ; Mid: 163k, +2.7σ; High: 200k, +2.6σ).
+**Status: RESOLVED** — SI enabled in Shadower gear templates.
 
-**Root cause (known):** Shadower gear templates have Speed Infusion **disabled** to match the source spreadsheet's attack time assumptions. When the "Unbuffed" scenario removes SI from all other classes, Shadower doesn't lose anything — it was already operating without SI. This creates a systematic advantage in cross-class unbuffed comparisons.
+**Root cause:** Shadower gear templates had Speed Infusion disabled "to match spreadsheet attack times." Investigation found this was unnecessary: BStep + Assassinate combo uses speed-independent 2.31s timing (unaffected by SI). Only Savage Blow was incorrectly modeled slower than it should be.
 
-**Community view:** A 2026 MapleRoyals guide (by Donn1e) explicitly calls Shadower "the most meta job in recent years." Community recognizes Shadower as top-tier DPS. However, Shadower being #1 *unbuffed* by a wide margin (200k vs #2 at 163k) is likely an artifact of the SI-disabled modeling choice, not a reflection of in-game reality.
+**Fix applied:** Enabled `speedInfusion: true` in all 3 Shadower gear templates. Savage Blow DPS increased ~15% (high: 159k → 183k, low: 97k → 112k). BStep + Assassinate 30 completely unchanged.
 
-**Questions to resolve:**
-1. Is the SI-disabled assumption intentional for **all** scenarios, or should it only apply to specific comparisons?
-2. Should there be a separate "Shadower with SI" variant to test the impact?
-3. Does the spreadsheet model Shadower without SI because Shadower parties don't typically have a Bucc? If so, should *all* classes lose SI for fairness, or should Shadower gain it?
-
-**Self-contained investigation task:**
-- Review the source spreadsheet's Shadower attack time assumptions
-- Calculate what Shadower DPS would be *with* SI enabled (speed 2 instead of 3)
-- Compare the SI-on vs SI-off DPS to quantify the impact
-- Document whether the SI-disabled choice is a deliberate modeling decision or an oversight
-- If it's an oversight, create a proposal to add SI-enabled Shadower variant
+**Remaining outlier:** BStep + Assassinate 30 still flags as an outlier in unbuffed scenarios (+2.6σ). This is correct game behavior — the combo's speed-independent 2.31s cycle doesn't lose anything when SI is removed, unlike speed-dependent skills on other classes. This is a genuine Shadower advantage, not a modeling artifact.
 
 ### INVESTIGATE-3: Corsair Battleship Cannon Tier Sensitivity
 
@@ -245,7 +235,7 @@ Bucc Barrage+DS at 244k sits between DrK and Corsair. Community noted Bucc was i
 
 | Class | Skill | Direction | Strongest Scenario | Peak Deviation |
 |-------|-------|-----------|--------------------|---------------|
-| Shadower | BStep + Assassinate 30 | HIGH | Unbuffed (all tiers) | +2.7σ |
+| Shadower | BStep + Assassinate 30 | HIGH | Unbuffed (all tiers) | +2.6σ |
 | Bishop | Genesis | LOW | Buffed/Bossing/No-Echo (all tiers) | -2.1σ |
 | Corsair | Battleship Cannon | HIGH | Low tier (all scenarios) | +2.0σ |
 | Bishop | Angel Ray | LOW | All scenarios, High tier | -2.0σ |
@@ -271,9 +261,9 @@ Bucc Barrage+DS at 244k sits between DrK and Corsair. Community noted Bucc was i
 **Note:** If mages are excluded, the physical-only spread narrows to:
 - Low: 85,447 to 202,986 (2.4x)
 - Mid: 112,455 to 243,215 (2.2x)
-- High: 159,536 to 331,354 (2.1x)
+- High: 165,838 to 331,354 (2.0x)
 
-This 2.1-2.4x spread among physical classes is more reasonable but still wider than the server's stated 130k-250k target range.
+This 2.0-2.4x spread among physical classes is more reasonable but still wider than the server's stated 130k-250k target range.
 
 ---
 
@@ -282,7 +272,7 @@ This 2.1-2.4x spread among physical classes is more reasonable but still wider t
 | ID | Title | Severity | Status |
 |----|-------|----------|--------|
 | INVESTIGATE-1 | Bowmaster Hurricane seems too low vs community ranking | HIGH | **Resolved** — archer weapon WATK wasn't scaling by tier (120 across all 3). Fixed: Low 105, Mid 120, High 130. BM Hurricane High 225k→233k (#9→#8). MM Snipe+Strafe High 216k→223k. |
-| INVESTIGATE-2 | Shadower unbuffed outlier from SI-disabled assumption | MEDIUM | Open |
+| INVESTIGATE-2 | Shadower unbuffed outlier from SI-disabled assumption | MEDIUM | **Resolved** — SI enabled in Shadower templates. Savage Blow DPS increased ~15%. BStep+Assn unchanged (speed-independent combo). |
 | INVESTIGATE-3 | Corsair Battleship Cannon tier sensitivity | LOW-MEDIUM | Open |
 | INVESTIGATE-4 | Mage DPS gap vs physical classes (magnitude verification) | MEDIUM | Open |
 | INVESTIGATE-5 | Hero Axe vs Sword gap verification | LOW | Open |
@@ -290,12 +280,10 @@ This 2.1-2.4x spread among physical classes is more reasonable but still wider t
 
 ### Prioritized Next Steps
 
-1. **INVESTIGATE-1 (BM Hurricane)** — Highest priority because the discrepancy vs community consensus is the largest. If Hurricane DPS is undermodeled, it distorts the entire ranking picture.
-2. **INVESTIGATE-2 (Shadower SI)** — Important for cross-class fairness in unbuffed/comparative scenarios.
-3. **INVESTIGATE-4 (Mage DPS)** — Verify the magnitude is correct before drawing balance conclusions about mages.
-4. **INVESTIGATE-6 (MM Snipe rotation)** — The small Snipe gain is counterintuitive and worth verifying.
-5. **INVESTIGATE-3 (Corsair tier sensitivity)** — Lower priority; may just be a correct reflection of Corsair's mechanics.
-6. **INVESTIGATE-5 (Hero Axe vs Sword)** — Lowest priority; the gap is small and well-explained by weapon multiplier.
+1. **INVESTIGATE-4 (Mage DPS)** — Verify the magnitude is correct before drawing balance conclusions about mages.
+2. **INVESTIGATE-6 (MM Snipe rotation)** — The small Snipe gain is counterintuitive and worth verifying.
+3. **INVESTIGATE-3 (Corsair tier sensitivity)** — Lower priority; may just be a correct reflection of Corsair's mechanics.
+4. **INVESTIGATE-5 (Hero Axe vs Sword)** — Lowest priority; the gap is small and well-explained by weapon multiplier.
 
 ---
 
