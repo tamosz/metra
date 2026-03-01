@@ -45,6 +45,14 @@ function applyPdr(dps: DpsResult, pdr: number): DpsResult {
 }
 
 /**
+ * Apply elemental damage modifier to a DPS result.
+ * Returns a new result with DPS and averageDamage scaled by the modifier.
+ */
+function applyElementModifier(dps: DpsResult, modifier: number): DpsResult {
+  return { ...dps, dps: dps.dps * modifier, averageDamage: dps.averageDamage * modifier };
+}
+
+/**
  * Run a simulation across all classes × tiers × skills × scenarios.
  * Returns a ScenarioResult for each combination.
  */
@@ -91,7 +99,11 @@ export function runSimulation(
             mapleWarriorData
           );
 
-          const effectiveDps = scenario.pdr != null ? applyPdr(dps, scenario.pdr) : dps;
+          let effectiveDps = scenario.pdr != null ? applyPdr(dps, scenario.pdr) : dps;
+          if (scenario.elementModifiers && skill.element) {
+            const mod = scenario.elementModifiers[skill.element] ?? 1;
+            if (mod !== 1) effectiveDps = applyElementModifier(effectiveDps, mod);
+          }
 
           skillResults.push({
             skill,

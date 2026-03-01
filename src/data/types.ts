@@ -66,6 +66,8 @@ export interface SkillEntry {
   /** Fixed average damage per attack, bypassing the normal damage formula.
    *  Used for skills like Snipe that deal set damage regardless of stats. */
   fixedDamage?: number;
+  /** Elemental tag for damage advantage scenarios (e.g., "Holy", "Ice", "Lightning"). */
+  element?: string;
 }
 
 /** The four primary stats in MapleStory. */
