@@ -8,8 +8,6 @@ import {
   type DiscoveryResult,
 } from '../data/bundle.js';
 import { setProposalInUrl } from '../utils/url-encoding.js';
-import { colors } from '../theme.js';
-
 const FIELD_LABELS: Record<string, string> = {
   basePower: 'Base Power',
   multiplier: 'Multiplier',
@@ -157,8 +155,7 @@ function JsonPanel({
           value={jsonInput}
           onChange={(e) => setJsonInput(e.target.value)}
           placeholder="Paste proposal JSON here..."
-          className="w-full resize-y rounded border border-border-default bg-bg-raised px-2.5 py-1.5 font-mono text-xs text-text-primary focus:border-border-active transition-colors"
-          style={{ height: 100, boxSizing: 'border-box' }}
+          className="h-[100px] w-full resize-y rounded border border-border-default bg-bg-raised px-2.5 py-1.5 font-mono text-xs text-text-primary focus:border-border-active transition-colors"
         />
         {jsonError && <div className="mt-1 text-xs text-negative">{jsonError}</div>}
         <button onClick={onImport} className="mt-2 cursor-pointer border-none bg-transparent p-0 text-xs text-accent hover:text-blue-400 transition-colors">
@@ -279,7 +276,7 @@ function AddChangeForm({
         <label className={labelClass}>
           New value
           {currentValue !== undefined && (
-            <span style={{ color: colors.textDim, fontWeight: 400 }}> (was {String(currentValue)})</span>
+            <span className="text-text-dim font-normal"> (was {String(currentValue)})</span>
           )}
         </label>
         <input
@@ -324,7 +321,6 @@ function Input({
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
         className="w-full rounded border border-border-default bg-bg-raised px-2.5 py-1.5 text-sm text-text-primary focus:border-border-active transition-colors"
-        style={{ boxSizing: 'border-box' }}
       />
     </div>
   );
