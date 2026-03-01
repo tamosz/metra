@@ -7,6 +7,7 @@ import {
   loadGearTemplate,
   discoverClassesAndTiers,
 } from './loader.js';
+import { compareTiers } from './types.js';
 
 describe('loadWeapons', () => {
   it('loads weapon types with correct multipliers', () => {
@@ -88,6 +89,23 @@ describe('loadGearTemplate', () => {
     expect(build.baseStats.STR).toBe(700);
     expect(build.totalWeaponAttack).toBe(168);
     expect(build.attackPotion).toBe(60);
+  });
+});
+
+describe('compareTiers', () => {
+  it('sorts known tiers in canonical order', () => {
+    const tiers = ['high', 'low', 'mid'];
+    expect(tiers.sort(compareTiers)).toEqual(['low', 'mid', 'high']);
+  });
+
+  it('sorts unknown tiers after known tiers', () => {
+    const tiers = ['ultra', 'low', 'high', 'mid'];
+    expect(tiers.sort(compareTiers)).toEqual(['low', 'mid', 'high', 'ultra']);
+  });
+
+  it('sorts multiple unknown tiers alphabetically', () => {
+    const tiers = ['zen', 'high', 'alpha', 'low'];
+    expect(tiers.sort(compareTiers)).toEqual(['low', 'high', 'alpha', 'zen']);
   });
 });
 

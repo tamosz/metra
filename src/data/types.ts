@@ -1,5 +1,21 @@
 /** Canonical tier ordering for display and sorting. */
-export const TIER_ORDER = ['low', 'mid', 'high'] as const;
+export const TIER_ORDER: readonly string[] = ['low', 'mid', 'high'];
+
+/**
+ * Sort comparator for tier names.
+ * Known tiers (low/mid/high) keep their canonical position.
+ * Unknown tiers sort after known tiers, alphabetically among themselves.
+ */
+export function compareTiers(a: string, b: string): number {
+  const ai = TIER_ORDER.indexOf(a);
+  const bi = TIER_ORDER.indexOf(b);
+  const aIdx = ai === -1 ? TIER_ORDER.length : ai;
+  const bIdx = bi === -1 ? TIER_ORDER.length : bi;
+  if (aIdx !== bIdx) return aIdx - bIdx;
+  // Both unknown — fall back to alphabetical
+  if (ai === -1 && bi === -1) return a.localeCompare(b);
+  return 0;
+}
 
 /** Weapon type multipliers for the v62 damage formula. */
 export interface WeaponType {
