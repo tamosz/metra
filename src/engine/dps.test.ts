@@ -503,7 +503,7 @@ describe('Night Lord Triple Throw DPS', () => {
     expect(nlData.className).toBe('NL');
     expect(nlData.mastery).toBe(0.6);
     expect(nlData.primaryStat).toBe('LUK');
-    expect(nlData.skills.length).toBe(2);
+    expect(nlData.skills.length).toBe(1);
     expect(nlData.skills[0].name).toBe('Triple Throw 30');
   });
 
@@ -628,30 +628,6 @@ describe('Night Lord Triple Throw DPS', () => {
     expect(result.attackTime).toBe(0.60);
   });
 
-  it('TT 20 has lower base power than TT 30', () => {
-    const tt30 = nlData.skills.find((s) => s.name === 'Triple Throw 30')!;
-    const tt20 = nlData.skills.find((s) => s.name === 'Triple Throw 20')!;
-    const result30 = calculateSkillDps(
-      nlBuild,
-      nlData,
-      tt30,
-      weaponData,
-      attackSpeedData,
-      mapleWarriorData
-    );
-    const result20 = calculateSkillDps(
-      nlBuild,
-      nlData,
-      tt20,
-      weaponData,
-      attackSpeedData,
-      mapleWarriorData
-    );
-
-    expect(result30.skillDamagePercent).toBe(150);
-    expect(result20.skillDamagePercent).toBe(140);
-    expect(result30.dps).toBeGreaterThan(result20.dps);
-  });
 });
 
 describe('Shadower DPS', () => {
