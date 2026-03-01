@@ -18,7 +18,7 @@ import { analyzeBalance } from './audit/analyze.js';
 import { formatAuditReport } from './audit/format.js';
 import { DEFAULT_SCENARIOS } from './scenarios.js';
 
-function loadProposal(path: string) {
+export function loadProposal(path: string) {
   const fullPath = resolve(path);
   let raw: unknown;
   try {
