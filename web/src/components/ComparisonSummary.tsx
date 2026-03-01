@@ -18,45 +18,39 @@ export function ComparisonSummary({ classA, classB, bestA, bestB, deltaPercent }
   const absDelta = Math.abs(deltaPercent);
 
   return (
-    <div style={{
-      background: '#12121a',
-      border: '1px solid #1e1e2e',
-      borderRadius: 8,
-      padding: '16px 20px',
-      marginBottom: 20,
-    }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 16 }}>
-        <div style={{ flex: 1, textAlign: 'center' }}>
-          <div style={{ fontSize: 11, color: '#666', textTransform: 'uppercase', marginBottom: 4 }}>
+    <div className="mb-5 rounded-lg border border-border-subtle bg-bg-raised px-5 py-4">
+      <div className="flex items-center justify-between gap-4">
+        <div className="flex-1 text-center">
+          <div className="mb-1 text-[11px] uppercase text-text-muted">
             Build A
           </div>
-          <div style={{ color: getClassColor(displayA), fontWeight: 600, fontSize: 15 }}>
+          <div className="text-[15px] font-semibold" style={{ color: getClassColor(displayA) }}>
             {displayA}
           </div>
-          <div style={{ fontSize: 13, color: '#ccc', marginTop: 2, fontVariantNumeric: 'tabular-nums' }}>
+          <div className="mt-0.5 text-[13px] tabular-nums text-text-primary">
             {bestA.skillName}: {Math.round(bestA.dps).toLocaleString()}
           </div>
         </div>
 
-        <div style={{ textAlign: 'center', minWidth: 140 }}>
-          <div style={{ fontSize: 11, color: '#555', marginBottom: 4 }}>vs</div>
+        <div className="min-w-[140px] text-center">
+          <div className="mb-1 text-[11px] text-text-dim">vs</div>
           {absDelta < 0.1 ? (
-            <div style={{ fontSize: 14, color: '#888', fontWeight: 500 }}>Tied</div>
+            <div className="text-sm font-medium text-text-muted">Tied</div>
           ) : (
-            <div style={{ fontSize: 14, fontWeight: 600, color: winnerColor }}>
+            <div className="text-sm font-semibold" style={{ color: winnerColor }}>
               {winnerName} +{absDelta.toFixed(1)}%
             </div>
           )}
         </div>
 
-        <div style={{ flex: 1, textAlign: 'center' }}>
-          <div style={{ fontSize: 11, color: '#666', textTransform: 'uppercase', marginBottom: 4 }}>
+        <div className="flex-1 text-center">
+          <div className="mb-1 text-[11px] uppercase text-text-muted">
             Build B
           </div>
-          <div style={{ color: getClassColor(displayB), fontWeight: 600, fontSize: 15 }}>
+          <div className="text-[15px] font-semibold" style={{ color: getClassColor(displayB) }}>
             {displayB}
           </div>
-          <div style={{ fontSize: 13, color: '#ccc', marginTop: 2, fontVariantNumeric: 'tabular-nums' }}>
+          <div className="mt-0.5 text-[13px] tabular-nums text-text-primary">
             {bestB.skillName}: {Math.round(bestB.dps).toLocaleString()}
           </div>
         </div>

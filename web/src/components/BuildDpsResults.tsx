@@ -1,6 +1,5 @@
 import type { BuildExplorerState } from '../hooks/useBuildExplorer.js';
 import { encodeBuild } from '../utils/url-encoding.js';
-import { colors } from '../theme.js';
 
 interface BuildDpsResultsProps {
   state: BuildExplorerState;
@@ -63,7 +62,7 @@ export function BuildDpsResults({ state, showCopyLink = true }: BuildDpsResultsP
                   <td className="px-3 py-2 text-right tabular-nums text-text-dim">
                     {formatDps(row.baselineDps)}
                   </td>
-                  <td className="px-3 py-2 text-right tabular-nums" style={{ color: changeColor(row.changePercent) }}>
+                  <td className={`px-3 py-2 text-right tabular-nums ${changeColorClass(row.changePercent)}`}>
                     {formatChange(row.changePercent)}
                   </td>
                 </>
@@ -92,7 +91,7 @@ function formatChange(percent: number): string {
   return `${sign}${percent.toFixed(1)}%`;
 }
 
-function changeColor(percent: number): string {
-  if (Math.abs(percent) < 0.01) return colors.textFaint;
-  return percent > 0 ? colors.positive : colors.negative;
+function changeColorClass(percent: number): string {
+  if (Math.abs(percent) < 0.01) return 'text-text-faint';
+  return percent > 0 ? 'text-positive' : 'text-negative';
 }
