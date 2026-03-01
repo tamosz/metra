@@ -86,11 +86,28 @@ describe('validateProposal', () => {
     })).toThrow('field must be a non-empty string');
   });
 
-  it('rejects change with non-number to', () => {
+  it('accepts string to value', () => {
+    const result = validateProposal({
+      ...valid,
+      changes: [{ target: 'hero.brandish-sword', field: 'speedCategory', to: 'Hurricane' }],
+    });
+    expect(result.changes[0].to).toBe('Hurricane');
+  });
+
+  it('accepts string from and to values', () => {
+    const result = validateProposal({
+      ...valid,
+      changes: [{ target: 'hero.brandish-sword', field: 'weaponType', from: '2H Sword', to: '2H Axe' }],
+    });
+    expect(result.changes[0].from).toBe('2H Sword');
+    expect(result.changes[0].to).toBe('2H Axe');
+  });
+
+  it('rejects non-number non-string to', () => {
     expect(() => validateProposal({
       ...valid,
-      changes: [{ target: 'hero.brandish-sword', field: 'basePower', to: 'high' }],
-    })).toThrow('to must be a finite number');
+      changes: [{ target: 'hero.brandish-sword', field: 'basePower', to: true }],
+    })).toThrow('to must be a finite number or string');
   });
 
   it('rejects change with NaN to', () => {
@@ -100,11 +117,11 @@ describe('validateProposal', () => {
     })).toThrow('to must be a finite number');
   });
 
-  it('rejects change with non-number from', () => {
+  it('rejects non-number non-string from', () => {
     expect(() => validateProposal({
       ...valid,
-      changes: [{ target: 'hero.brandish-sword', field: 'basePower', from: 'old', to: 280 }],
-    })).toThrow('from must be a finite number');
+      changes: [{ target: 'hero.brandish-sword', field: 'basePower', from: true, to: 280 }],
+    })).toThrow('from must be a finite number or string');
   });
 
   it('reports the change index in error messages', () => {

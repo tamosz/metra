@@ -72,18 +72,28 @@ function validateChange(data: unknown, index: number): ProposalChange {
     throw new ProposalValidationError(`${prefix}.field must be a non-empty string`);
   }
 
-  if (typeof obj.to !== 'number' || !isFinite(obj.to)) {
-    throw new ProposalValidationError(`${prefix}.to must be a finite number`);
+  if (typeof obj.to === 'number') {
+    if (!isFinite(obj.to)) {
+      throw new ProposalValidationError(`${prefix}.to must be a finite number`);
+    }
+  } else if (typeof obj.to !== 'string') {
+    throw new ProposalValidationError(`${prefix}.to must be a finite number or string`);
   }
 
-  if (obj.from !== undefined && (typeof obj.from !== 'number' || !isFinite(obj.from))) {
-    throw new ProposalValidationError(`${prefix}.from must be a finite number if provided`);
+  if (obj.from !== undefined) {
+    if (typeof obj.from === 'number') {
+      if (!isFinite(obj.from)) {
+        throw new ProposalValidationError(`${prefix}.from must be a finite number if provided`);
+      }
+    } else if (typeof obj.from !== 'string') {
+      throw new ProposalValidationError(`${prefix}.from must be a finite number or string if provided`);
+    }
   }
 
   return {
     target: obj.target,
     field: obj.field,
-    to: obj.to,
-    from: obj.from as number | undefined,
+    to: obj.to as number | string,
+    from: obj.from as number | string | undefined,
   };
 }
