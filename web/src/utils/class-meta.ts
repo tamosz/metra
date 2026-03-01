@@ -5,9 +5,9 @@
  */
 
 const SUPPORT_CLASS_NOTES: Record<string, string> = {
-  bishop:
+  Bishop:
     'Bishop\'s primary value is party utility (Holy Symbol, Heal, Resurrection, Dispel) — not solo DPS.',
-  'archmage-il':
+  'Archmage I/L':
     'Archmage I/L provides Infinity (party MP sustain), freeze utility, and strong mobbing — solo bossing DPS understates their role.',
 };
 
