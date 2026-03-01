@@ -14,6 +14,7 @@ import { renderComparisonReport } from '@engine/report/markdown.js';
 import { renderComparisonBBCode } from '@engine/report/bbcode.js';
 import { getClassColor } from '../utils/class-colors.js';
 import { setProposalInUrl } from '../utils/url-encoding.js';
+import { FilterGroup } from './FilterGroup.js';
 import { SupportClassNote } from './SupportClassNote.js';
 import { colors } from '../theme.js';
 
@@ -35,15 +36,62 @@ export function ProposalResults({ result, proposal }: ProposalResultsProps) {
     return ordered;
   }, [result.deltas]);
 
+  const tiers = useMemo(() => {
+    const seen = new Set<string>();
+    for (const d of result.deltas) seen.add(d.tier);
+    return [...seen];
+  }, [result.deltas]);
+
   const [selectedScenario, setSelectedScenario] = useState(scenarios[0] ?? 'Buffed');
+  const [selectedTier, setSelectedTier] = useState<string | 'all'>('all');
   const [copied, setCopied] = useState(false);
 
   const filtered = useMemo(
-    () => result.deltas.filter((d) => d.scenario === selectedScenario),
-    [result.deltas, selectedScenario]
+    () => result.deltas.filter((d) => {
+      if (d.scenario !== selectedScenario) return false;
+      if (selectedTier !== 'all' && d.tier !== selectedTier) return false;
+      return true;
+    }),
+    [result.deltas, selectedScenario, selectedTier]
   );
 
   const changed = filtered.filter((d) => d.change !== 0);
+
+  // Scenario impact hints: avg change% of changed rows (respecting tier filter)
+  const scenarioHints = useMemo(() => {
+    const hints: Record<string, string> = {};
+    for (const s of scenarios) {
+      const scenarioDeltas = result.deltas.filter((d) => {
+        if (d.scenario !== s) return false;
+        if (selectedTier !== 'all' && d.tier !== selectedTier) return false;
+        return d.change !== 0;
+      });
+      if (scenarioDeltas.length === 0) {
+        hints[s] = 'no change';
+      } else {
+        const avg = scenarioDeltas.reduce((sum, d) => sum + d.changePercent, 0) / scenarioDeltas.length;
+        hints[s] = `${avg > 0 ? '+' : ''}${avg.toFixed(1)}% avg`;
+      }
+    }
+    return hints;
+  }, [result.deltas, scenarios, selectedTier]);
+
+  // Summary headline
+  const summary = useMemo(() => {
+    if (changed.length === 0) return null;
+    const avg = changed.reduce((sum, d) => sum + d.changePercent, 0) / changed.length;
+    const biggest = changed.reduce((best, d) =>
+      Math.abs(d.changePercent) > Math.abs(best.changePercent) ? d : best
+    );
+    const direction = biggest.changePercent > 0 ? 'winner' : 'loser';
+    return {
+      count: changed.length,
+      avg,
+      biggestLabel: `${biggest.className} ${biggest.skillName}`,
+      biggestChange: biggest.changePercent,
+      direction,
+    };
+  }, [changed]);
 
   const handleShare = () => {
     setProposalInUrl(proposal);
@@ -82,23 +130,45 @@ export function ProposalResults({ result, proposal }: ProposalResultsProps) {
         </div>
       </div>
 
-      {scenarios.length > 1 && (
-        <div className="mb-4 flex gap-0.5">
-          {scenarios.map((s) => (
-            <button
-              key={s}
-              onClick={() => setSelectedScenario(s)}
-              className={`cursor-pointer rounded px-2.5 py-1 text-xs transition-colors ${
-                selectedScenario === s
-                  ? 'border border-border-active bg-bg-active text-text-bright'
-                  : 'border border-transparent bg-transparent text-text-dim hover:text-text-muted'
-              }`}
-            >
-              {s}
-            </button>
-          ))}
+      {summary && (
+        <div className="mb-4 text-xs text-text-muted">
+          {summary.count} skill{summary.count !== 1 ? 's' : ''} affected, avg{' '}
+          <span style={{ color: summary.avg > 0 ? colors.positive : summary.avg < 0 ? colors.negative : undefined }}>
+            {summary.avg > 0 ? '+' : ''}{summary.avg.toFixed(1)}%
+          </span>
+          , biggest {summary.direction}:{' '}
+          <span className="text-text-secondary">{summary.biggestLabel}</span>{' '}
+          <span style={{ color: summary.biggestChange > 0 ? colors.positive : colors.negative }}>
+            {summary.biggestChange > 0 ? '+' : ''}{summary.biggestChange.toFixed(1)}%
+          </span>
         </div>
       )}
+
+      <div className="mb-4 flex flex-wrap gap-4">
+        {scenarios.length > 1 && (
+          <FilterGroup
+            label="Scenario"
+            value={selectedScenario}
+            options={scenarios.map((s) => ({
+              value: s,
+              label: s,
+              annotation: scenarioHints[s],
+            }))}
+            onChange={setSelectedScenario}
+          />
+        )}
+        {tiers.length > 1 && (
+          <FilterGroup
+            label="Tier"
+            value={selectedTier}
+            options={[
+              { value: 'all', label: 'All Tiers' },
+              ...tiers.map((t) => ({ value: t, label: t.charAt(0).toUpperCase() + t.slice(1) })),
+            ]}
+            onChange={setSelectedTier}
+          />
+        )}
+      </div>
 
       <SupportClassNote classNames={[...new Set(filtered.map((d) => d.className))]} />
 
@@ -186,75 +256,119 @@ function ComparisonChart({ deltas }: { deltas: DeltaEntry[] }) {
   );
 }
 
-function DeltaTable({ deltas }: { deltas: DeltaEntry[] }) {
-  const sorted = [...deltas].sort((a, b) => {
-    const aChanged = a.change !== 0 ? 0 : 1;
-    const bChanged = b.change !== 0 ? 0 : 1;
-    if (aChanged !== bChanged) return aChanged - bChanged;
-    if (aChanged === 0) return Math.abs(b.changePercent) - Math.abs(a.changePercent);
-    return a.className.localeCompare(b.className);
-  });
-
-  const hasRanks = sorted.some((d) => d.rankBefore != null);
-  const th = 'px-3 py-2 text-[11px] uppercase tracking-wide text-text-dim font-medium';
-
+function RankCell({ before, after }: { before?: number; after?: number }) {
+  if (before == null || after == null) return <span className="text-text-faint">-</span>;
+  if (before === after) return <span className="text-text-dim">{before}</span>;
+  // Lower rank number = higher position, so improvement is before > after
+  const improved = after < before;
   return (
-    <table data-testid="delta-table" className="w-full border-collapse text-sm">
-      <thead>
-        <tr className="border-b border-border-default">
-          {hasRanks && <th className={th}>Rank</th>}
-          <th className={`${th} text-left`}>Class</th>
-          <th className={`${th} text-left`}>Skill</th>
-          <th className={`${th} text-left`}>Tier</th>
-          <th className={`${th} text-right`}>Before</th>
-          <th className={`${th} text-right`}>After</th>
-          <th className={`${th} text-right`}>Change</th>
-          <th className={`${th} text-right`}>%</th>
-        </tr>
-      </thead>
-      <tbody>
-        {sorted.map((d, i) => {
-          const isChanged = d.change !== 0;
-          return (
-            <tr key={i} className={`border-b border-border-subtle ${isChanged ? 'bg-accent/[0.03]' : ''}`}>
-              {hasRanks && (
-                <td className="px-3 py-2 text-xs text-text-dim">
-                  {formatRank(d.rankBefore, d.rankAfter)}
-                </td>
-              )}
-              <td className="px-3 py-2">{d.className}</td>
-              <td className="px-3 py-2 text-text-secondary">{d.skillName}</td>
-              <td className="px-3 py-2 text-text-muted">
-                {d.tier.charAt(0).toUpperCase() + d.tier.slice(1)}
-              </td>
-              <td className="px-3 py-2 text-right tabular-nums">
-                {formatDps(d.before)}
-              </td>
-              <td className="px-3 py-2 text-right tabular-nums">
-                {formatDps(d.after)}
-              </td>
-              <td className="px-3 py-2 text-right tabular-nums" style={{
-                color: d.change > 0 ? colors.positive : d.change < 0 ? colors.negative : colors.textFaint,
-              }}>
-                {d.change > 0 ? '+' : ''}{formatDps(d.change)}
-              </td>
-              <td className="px-3 py-2 text-right tabular-nums" style={{
-                color: d.changePercent > 0 ? colors.positive : d.changePercent < 0 ? colors.negative : colors.textFaint,
-              }}>
-                {d.changePercent > 0 ? '+' : ''}{d.changePercent.toFixed(1)}%
-              </td>
-            </tr>
-          );
-        })}
-      </tbody>
-    </table>
+    <span style={{ color: improved ? colors.positive : colors.negative }}>
+      {before}{improved ? '\u2009\u2191\u2009' : '\u2009\u2193\u2009'}{after}
+    </span>
   );
 }
 
-function formatRank(before?: number, after?: number): string {
-  if (before == null || after == null) return '-';
-  if (before === after) return String(before);
-  return `${before}\u2192${after}`;
+function DeltaTable({ deltas }: { deltas: DeltaEntry[] }) {
+  const [showUnchanged, setShowUnchanged] = useState(false);
+
+  const changedRows = useMemo(() =>
+    [...deltas]
+      .filter((d) => d.change !== 0)
+      .sort((a, b) => Math.abs(b.changePercent) - Math.abs(a.changePercent)),
+    [deltas]
+  );
+
+  const unchangedRows = useMemo(() =>
+    [...deltas]
+      .filter((d) => d.change === 0)
+      .sort((a, b) => {
+        const classCmp = a.className.localeCompare(b.className);
+        if (classCmp !== 0) return classCmp;
+        return a.skillName.localeCompare(b.skillName);
+      }),
+    [deltas]
+  );
+
+  const visibleRows = showUnchanged ? [...changedRows, ...unchangedRows] : changedRows;
+  const hasRanks = deltas.some((d) => d.rankBefore != null);
+  const th = 'px-3 py-2 text-[11px] uppercase tracking-wide text-text-dim font-medium';
+
+  return (
+    <>
+      <table data-testid="delta-table" className="w-full border-collapse text-sm">
+        <thead>
+          <tr className="border-b border-border-default">
+            {hasRanks && <th className={th}>Rank</th>}
+            <th className={`${th} text-left`}>Class</th>
+            <th className={`${th} text-left`}>Skill</th>
+            <th className={`${th} text-left`}>Tier</th>
+            <th className={`${th} text-right`}>Before</th>
+            <th className={`${th} text-right`}>After</th>
+            <th className={`${th} text-right`}>Change</th>
+            <th className={`${th} text-right`}>%</th>
+          </tr>
+        </thead>
+        <tbody>
+          {visibleRows.map((d, i) => {
+            const isChanged = d.change !== 0;
+            // Detect class group boundary for unchanged rows
+            const isFirstInClassGroup = !isChanged && i > 0 && (() => {
+              const prevIdx = i - 1;
+              if (prevIdx < changedRows.length) return false; // previous was a changed row
+              const unchangedIdx = i - changedRows.length;
+              return unchangedIdx > 0 && unchangedRows[unchangedIdx - 1].className !== d.className;
+            })();
+
+            return (
+              <tr
+                key={i}
+                className={`border-b border-border-subtle ${isChanged ? 'bg-accent/[0.03]' : ''}`}
+                style={{
+                  borderLeft: `3px solid ${getClassColor(d.className)}`,
+                  ...(isFirstInClassGroup ? { borderTopColor: colors.borderActive } : {}),
+                }}
+              >
+                {hasRanks && (
+                  <td className="px-3 py-2 text-xs">
+                    <RankCell before={d.rankBefore} after={d.rankAfter} />
+                  </td>
+                )}
+                <td className="px-3 py-2">{d.className}</td>
+                <td className="px-3 py-2 text-text-secondary">{d.skillName}</td>
+                <td className="px-3 py-2 text-text-muted">
+                  {d.tier.charAt(0).toUpperCase() + d.tier.slice(1)}
+                </td>
+                <td className="px-3 py-2 text-right tabular-nums">
+                  {formatDps(d.before)}
+                </td>
+                <td className="px-3 py-2 text-right tabular-nums">
+                  {formatDps(d.after)}
+                </td>
+                <td className="px-3 py-2 text-right tabular-nums" style={{
+                  color: d.change > 0 ? colors.positive : d.change < 0 ? colors.negative : colors.textFaint,
+                }}>
+                  {d.change > 0 ? '+' : ''}{formatDps(d.change)}
+                </td>
+                <td className="px-3 py-2 text-right tabular-nums" style={{
+                  color: d.changePercent > 0 ? colors.positive : d.changePercent < 0 ? colors.negative : colors.textFaint,
+                }}>
+                  {d.changePercent > 0 ? '+' : ''}{d.changePercent.toFixed(1)}%
+                </td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+      {unchangedRows.length > 0 && (
+        <button
+          onClick={() => setShowUnchanged(!showUnchanged)}
+          className="mt-2 cursor-pointer border-none bg-transparent p-0 text-xs text-text-dim hover:text-text-muted transition-colors"
+        >
+          {showUnchanged ? 'Hide unchanged' : `Show ${unchangedRows.length} unchanged`}
+        </button>
+      )}
+    </>
+  );
 }
 
 function formatDps(n: number): string {
