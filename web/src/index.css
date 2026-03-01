@@ -39,4 +39,8 @@
   :focus {
     outline: none;
   }
+
+  input[type='number'] {
+    -moz-appearance: textfield;
+  }
 }
