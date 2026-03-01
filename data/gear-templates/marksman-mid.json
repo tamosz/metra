@@ -1,10 +1,10 @@
 {
-  "source": "Interpolated between marksman-low and marksman-high. Same gear as bowmaster-mid. Crossbow Expert +10 WATK.",
+  "source": "Interpolated between marksman-low and marksman-high. Same gear as bowmaster-mid. Marksman Boost +15 WATK (buffed from +10 in Update #65.1).",
   "label": "Marksman Mid",
   "className": "Marksman",
   "baseStats": { "STR": 4, "DEX": 850, "INT": 4, "LUK": 4 },
   "gearStats": { "STR": 85, "DEX": 123, "INT": 0, "LUK": 0 },
-  "totalWeaponAttack": 174,
+  "totalWeaponAttack": 179,
   "weaponType": "Crossbow",
   "weaponSpeed": 6,
   "attackPotion": 60,
@@ -16,7 +16,7 @@
   "sharpEyes": true,
   "gearBreakdown": {
     "weapon":        { "DEX": 0,  "STR": 0,  "WATK": 120 },
-    "crossbowExpert": { "DEX": 0,  "STR": 0,  "WATK": 10 },
+    "crossbowExpert": { "DEX": 0,  "STR": 0,  "WATK": 15 },
     "helmet":        { "DEX": 19, "STR": 35, "WATK": 0 },
     "top":           { "DEX": 40, "STR": 8,  "WATK": 0 },
     "bottom":        { "DEX": 8,  "STR": 12, "WATK": 0 },
