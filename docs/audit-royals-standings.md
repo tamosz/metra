@@ -169,34 +169,6 @@ Bucc Barrage+DS at 244k sits between DrK and Corsair. Community noted Bucc was i
 - Check if the Axe advantage is consistent across tiers
 - Confirm 2H Axe 4.8x multiplier is MapleRoyals-verified (the gear assumptions doc says it is, citing community member Zerato)
 
-### INVESTIGATE-6: Marksman Snipe + Strafe Rotation Modeling — RESOLVED
-
-**Severity: LOW-MEDIUM**
-**Simulator:** MM Snipe+Strafe at 223k vs standalone Strafe at 218k (+1.9% gain from weaving Snipe at high tier).
-
-**Verdict: Model is correct. The small gain at high tier is expected.**
-
-The royals.ms [DPS charts thread](https://royals.ms/forum/threads/dps-charts.124709/) independently derives the same rotation our model uses:
-- 7 Strafes per Snipe cycle at speed 2 (with SI)
-- 1:7 Snipe:Strafe ratio
-- `total_dps = snipe_dps * 1/8 + strafe_dps * 7/8`
-
-Community quote: *"strafe and snipe takes 0.63 to animate, thus, it will take 7 strafes (0.63*7 = 4.41 seconds) before another snipe can be used"*
-
-**Why the gain is small at high tier:** At high funding, Strafe averages ~131k per hit (0.60s). Weaving Snipe replaces ~1.33 Strafes with one 195k Snipe:
-- Lost: 1.33 × 131k = ~174k damage
-- Gained: 195k damage
-- Net: +21k per 5s cycle = +4.1k DPS = **+1.9%**
-
-At low funding, Strafe averages ~59k, so the trade is much more favorable:
-- Lost: 1.33 × 59k = ~78k
-- Gained: 195k
-- Net: +117k per 5s cycle = +23.3k DPS = **+23.7%**
-
-This tier sensitivity is already captured in the statistical audit (1.32x high/low ratio vs 1.77x median) — Snipe's fixed 195k doesn't scale with gear, so its relative contribution shrinks at higher funding.
-
-**Minor note:** The community thread uses 0.63s Strafe animation vs our 0.60s (from the source spreadsheet). This ~0.8% difference in rotation DPS is negligible; we follow the spreadsheet.
-
 ---
 
 ## 5. Statistical Audit Summary
@@ -245,7 +217,6 @@ This ~2.1x spread among physical classes is reasonable. Corsair Battleship Canno
 |----|-------|----------|--------|
 | INVESTIGATE-4 | Mage DPS gap vs physical classes (magnitude verification) | MEDIUM | **Resolved** — formula correct, mage potions fixed (Apple → Ssiws Cheese) |
 | INVESTIGATE-5 | Hero Axe vs Sword gap verification | LOW | Open |
-| INVESTIGATE-6 | Marksman Snipe+Strafe rotation modeling | LOW-MEDIUM | **Resolved** — model correct, small gain expected at high tier |
 
 ### Prioritized Next Steps
 
