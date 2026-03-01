@@ -1,5 +1,4 @@
-import { getSupportClassNames, getSupportClassNote } from '../utils/class-meta.js';
-import { formatClassName } from '../utils/format.js';
+import { getSupportClassNames } from '../utils/class-meta.js';
 
 interface SupportClassNoteProps {
   /** Pass all class names (multi-class views) or a single class name */
@@ -17,22 +16,7 @@ export function SupportClassNote({ classNames }: SupportClassNoteProps) {
   return (
     <div className="mb-4 rounded border border-border-subtle bg-bg-raised px-4 py-3 text-xs leading-relaxed text-text-muted">
       <span className="font-medium text-text-secondary">Note: </span>
-      {supportClasses.length === 1 ? (
-        getSupportClassNote(supportClasses[0])
-      ) : (
-        <>
-          {supportClasses.map((cls) => (
-            <span key={cls} className="block mt-1">
-              <span className="text-text-secondary">{formatClassName(cls)}</span>
-              {': '}
-              {getSupportClassNote(cls)}
-            </span>
-          ))}
-        </>
-      )}
-      <span className="block mt-1 text-text-dim">
-        Rankings below reflect solo DPS only and do not account for party contribution.
-      </span>
+      Rankings below reflect solo DPS only and do not account for party contribution.
     </div>
   );
 }

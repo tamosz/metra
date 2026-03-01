@@ -1,22 +1,13 @@
 /**
- * Metadata for classes whose solo DPS rankings don't tell the full story.
+ * Classes whose solo DPS rankings don't tell the full story.
  * These classes provide significant party utility (buffs, healing, etc.)
  * that isn't captured by the DPS simulator.
  */
 
-const SUPPORT_CLASS_NOTES: Record<string, string> = {
-  Bishop:
-    'Bishop\'s primary value is party utility (Holy Symbol, Heal, Resurrection, Dispel) — not solo DPS.',
-  'Archmage I/L':
-    'Archmage I/L provides Infinity (party MP sustain), freeze utility, and strong mobbing — solo bossing DPS understates their role.',
-};
+const SUPPORT_CLASSES = new Set(['Bishop', 'Archmage I/L']);
 
 export function isSupportClass(className: string): boolean {
-  return className in SUPPORT_CLASS_NOTES;
-}
-
-export function getSupportClassNote(className: string): string | null {
-  return SUPPORT_CLASS_NOTES[className] ?? null;
+  return SUPPORT_CLASSES.has(className);
 }
 
 export function getSupportClassNames(classNames: string[]): string[] {
