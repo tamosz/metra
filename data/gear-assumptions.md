@@ -123,6 +123,57 @@ corresponding mastery passive (Bow Expert vs Crossbow Expert, both +10 WATK).
 | Bow | 3.4 | range calculator E18 |
 | Crossbow | 3.6 | range calculator E18: I31*3.6 |
 
+### Base Stats
+
+| Stat | High | Mid | Low | Notes |
+|------|------|-----|-----|-------|
+| DEX | 999 | 850 | 700 | Same pattern as warriors. |
+| STR | 4 | 4 | 4 | Dexless build. |
+
+### Weapon Speed
+
+All bows and crossbows are speed 6 (Normal). With SI + Booster, resolves to effective
+speed 2 for Strafe. Hurricane has fixed 0.12s attack time regardless of speed.
+
+### High Tier WATK Breakdown
+
+| Slot | Value | Forum range | Assessment |
+|------|-------|------------|------------|
+| Weapon (Nisrock) | 130 | 130 ATK valued at ~3.8b | Well-scrolled (~100 base + 6x 30% scrolls). |
+| Bow/Crossbow Expert | 10 | Always +10 | Passive skill, baked into template (range calculator L31). |
+| Gloves | 19 | 15-16+ late-game | Top-1%. Standardized across all classes. |
+| Cape | 17 | 10+ late-game | Top-1%. Standardized across all classes. |
+| Shoes | 13 | 7+ late-game | Top-1%. Standardized across all classes. |
+| Medal | 3 | 2-3 typical | Reasonable. |
+| Ring | 1 | 0-1 | Reasonable. |
+| **Total WATK** | **193** | | |
+
+### Low Tier WATK Breakdown
+
+| Slot | Value | Forum range | Assessment |
+|------|-------|------------|------------|
+| Weapon (Nisrock) | 105 | ~95-110 budget | Budget Nisrock (~95 base + a few 60% scrolls). |
+| Bow/Crossbow Expert | 10 | Always +10 | Passive skill. |
+| Gloves | 12 | 10-12 mid-game | Reasonable. |
+| Cape | 5 | 5-8 budget | Budget WATK cape. |
+| Shoes | 0 | 0-6 | No WATK shoes at low tier. |
+| Medal | 0 | 0-1 | Reasonable. |
+| Ring | 1 | 0-1 | Reasonable. |
+| **Total WATK** | **133** | | |
+
+### Mid Tier WATK Breakdown
+
+| Slot | Value | Notes |
+|------|-------|-------|
+| Weapon (Nisrock) | 120 | Mid-range scrolled. |
+| Bow/Crossbow Expert | 10 | Passive skill. |
+| Gloves | 17 | Standardized mid-tier C/G/S. |
+| Cape | 14 | Standardized mid-tier C/G/S. |
+| Shoes | 10 | Standardized mid-tier C/G/S. |
+| Medal | 2 | Between low (0) and high (3). |
+| Ring | 1 | Same across all tiers. |
+| **Total WATK** | **174** | |
+
 ### Marksman-Specific: Snipe
 
 Snipe deals fixed 195,000 damage per hit regardless of stats or gear. It uses the
@@ -217,6 +268,23 @@ Sources: [Axe/BW Balancing Thread](https://royals.ms/forum/threads/the-balancing
 Spear (3.0 slash / 5.0 stab) and Polearm (5.0 slash / 3.0 stab) use different multipliers
 based on attack type. Crusher stabs (Spear 5.0). Fury (Polearm) is not modeled — it's a
 mobbing skill with no sourced attack speed data.
+
+### Resolved: Archer weapon WATK calibrated by tier (Q6, March 2026)
+
+**Finding:** BM/MM weapon WATK was flat 120 across all three funding tiers. Every other
+class had proper tiered weapon values (e.g., Hero 130→140→150, DrK 127→133→139). The
+source spreadsheet has no archer gear template data — templates were adapted from warrior
+templates with a single estimated WATK that was never differentiated.
+
+**Decision:** Calibrated bow/crossbow weapon WATK using MapleRoyals forum marketplace data:
+- Low: 120 → 105 (budget Nisrock, ~95 base + a few 60% scrolls)
+- Mid: 120 → 120 (unchanged, already appropriate)
+- High: 120 → 130 (well-scrolled Nisrock, ~100 base + 6x 30% scrolls, valued at ~3.8b)
+
+BM Hurricane High moved from 225k (#9) to 233k (#8). Low tier decreased from 113k to 105k,
+giving realistic tier spread matching other classes.
+
+Sources: MapleRoyals forum marketplace listings, Nisrock price/check threads, buy threads.
 
 ---
 
