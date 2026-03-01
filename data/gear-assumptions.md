@@ -214,9 +214,9 @@ Sources: [Axe/BW Balancing Thread](https://royals.ms/forum/threads/the-balancing
 
 ### Resolved: Weapon multipliers slash/stab (Q5)
 
-Spear (3.0 slash / 5.0 stab) and Polearm (5.0 slash / 3.0 stab) now use the correct
-multiplier based on skill attack type. Crusher stabs (Spear 5.0), Fury slashes (Polearm
-5.0). Both get the optimal 5.0 multiplier when using their intended weapon.
+Spear (3.0 slash / 5.0 stab) and Polearm (5.0 slash / 3.0 stab) use different multipliers
+based on attack type. Crusher stabs (Spear 5.0). Fury (Polearm) is not modeled — it's a
+mobbing skill with no sourced attack speed data.
 
 ---
 

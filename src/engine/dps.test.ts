@@ -202,36 +202,6 @@ describe('DrK Spear Crusher DPS', () => {
   });
 });
 
-describe('DrK Fury (Polearm) DPS', () => {
-  it('Fury uses slash (default) with Polearm multiplier 5.0', () => {
-    const fury = drkData.skills.find((s) => s.name === 'Fury (Polearm)')!;
-    // Fury has no attackType set → defaults to slash
-    expect(fury.attackType).toBeUndefined();
-    const result = calculateSkillDps(
-      drkHigh,
-      drkData,
-      fury,
-      weaponData,
-      attackSpeedData,
-      mapleWarriorData
-    );
-
-    // Polearm slash = 5.0, same as Spear stab = 5.0
-    // Same base power, multiplier, hit count, speed category → same DPS
-    const crusher = drkData.skills.find((s) => s.name === 'Spear Crusher')!;
-    const crusherResult = calculateSkillDps(
-      drkHigh,
-      drkData,
-      crusher,
-      weaponData,
-      attackSpeedData,
-      mapleWarriorData
-    );
-
-    expect(result.dps).toBeCloseTo(crusherResult.dps, 0);
-  });
-});
-
 describe('Paladin Blast DPS', () => {
   it('uses addAfterMultiply SE formula', () => {
     const blast = paladinData.skills.find(
