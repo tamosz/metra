@@ -68,7 +68,7 @@ See `proposals/` for more examples.
 - `src/audit/` — statistical outlier detection
 - `web/` — React + Vite SPA (separate package.json)
 
-See [CLAUDE.md](CLAUDE.md) for detailed architecture docs and [VISION.md](VISION.md) for the roadmap.
+See [CLAUDE.md](CLAUDE.md) for detailed architecture docs and [ROADMAP.md](ROADMAP.md) for the roadmap.
 
 ## Contributing
 

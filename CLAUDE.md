@@ -130,13 +130,17 @@ Analyzes simulation results and flags statistical outliers. Pure functions, no I
 CLI: `npm run simulate -- --audit` appends the audit report after baseline rankings.
 
 ### 5. Web Interface (`/web`)
-React + Vite single-page app with its own `package.json`. Consumes the engine via `src/core.ts` (a browser-safe re-export that excludes fs-based loaders).
+React + Vite single-page app with its own `package.json`. Consumes the engine via `src/core.ts` (a browser-safe re-export that excludes fs-based loaders). Deployed to Vercel (`vercel.json` config in root).
 
-- Dashboard with baseline DPS rankings
+- Dashboard with baseline DPS rankings and multi-target training toggle
 - Interactive proposal builder (create, edit, simulate)
 - Comparison results view with per-scenario tables
 - URL sharing via lz-string compressed proposals in URL hash (`#p=<compressed>`)
 - BBCode export for royals.ms forum posts (`src/report/bbcode.ts`)
+- Custom tier editor — create funding tiers by adjusting stats/WATK from a base tier, persisted to localStorage
+- Per-class saved builds — store and recall custom character configurations via localStorage
+- Support class disclaimer — contextual note for Bishop/Archmage I/L in rankings
+- Game terminology tooltips via `utils/game-terms.ts`
 - Playwright e2e tests in `web/e2e/`
 
 ## Royals Domain Knowledge
@@ -299,6 +303,7 @@ metra/
 │   ├── index.ts                 # library entry point
 │   ├── core.ts                  # browser-safe re-exports (no fs loaders)
 │   ├── cli.ts                   # CLI entry: baseline rankings or proposal comparison
+│   ├── scenarios.ts             # DEFAULT_SCENARIOS constant (5 standard scenarios)
 │   ├── integration.test.ts      # end-to-end pipeline tests
 │   ├── audit/
 │   │   ├── index.ts             # re-exports
@@ -309,7 +314,8 @@ metra/
 │   ├── data/
 │   │   ├── types.ts             # WeaponData, AttackSpeedData, ClassSkillData, CharacterBuild, etc.
 │   │   ├── loader.ts            # JSON data loaders + discoverClassesAndTiers()
-│   │   └── loader.test.ts
+│   │   ├── loader.test.ts
+│   │   └── integrity.test.ts    # cross-file data validation (tier coverage, weapon refs)
 │   ├── engine/
 │   │   ├── index.ts             # re-exports
 │   │   ├── damage.ts            # raw damage range, range cap, adjusted range
@@ -324,6 +330,7 @@ metra/
 │   │   ├── types.ts             # Proposal, ProposalChange, ScenarioResult, DeltaEntry (with ranks), ComparisonResult
 │   │   ├── apply.ts             # apply proposal changes to skill data
 │   │   ├── apply.test.ts
+│   │   ├── validate.ts          # proposal JSON validation + ProposalValidationError
 │   │   ├── simulate.ts          # run DPS across all classes × tiers × skills, comboGroup aggregation
 │   │   ├── compare.ts           # before/after comparison with deltas and rank tracking
 │   │   └── compare.test.ts
@@ -333,7 +340,8 @@ metra/
 │   │   ├── bbcode.ts            # render reports as BBCode for royals.ms forum
 │   │   ├── bbcode.test.ts
 │   │   ├── ascii-chart.ts       # horizontal ASCII bar chart for terminal output
-│   │   └── ascii-chart.test.ts
+│   │   ├── ascii-chart.test.ts
+│   │   └── utils.ts             # shared formatting helpers (formatNumber, sortDeltas, etc.)
 │   └── sheets/
 │       ├── extract.ts           # read formulas/values from xlsx
 │       └── extract.test.ts
