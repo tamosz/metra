@@ -653,14 +653,14 @@ describe('Shadower DPS', () => {
     expect(assnResult.attackTime).toBe(2.31);
   });
 
-  it('Savage Blow uses Strafe/Snipe speed (0.69s at speed 3)', () => {
+  it('Savage Blow uses Strafe/Snipe speed (0.60s at speed 2)', () => {
     const sb = shadData.skills.find((s) => s.name === 'Savage Blow')!;
     const result = calculateSkillDps(
       shadHigh, shadData, sb, weaponData, attackSpeedData, mapleWarriorData
     );
 
-    // weaponSpeed 5 - booster 2 = speed 3 (no SI)
-    expect(result.attackTime).toBe(0.69);
+    // weaponSpeed 5 - booster 2 - SI 2 = speed 2 (capped)
+    expect(result.attackTime).toBe(0.60);
   });
 
   it('has no built-in crit (SE only at 15%)', () => {
@@ -710,7 +710,7 @@ describe('Shadower DPS', () => {
       shadHigh, shadData, sb, weaponData, attackSpeedData, mapleWarriorData
     );
 
-    expect(result.dps).toBeCloseTo(159536, -1);
+    expect(result.dps).toBeCloseTo(183467, -1);
   });
 
   it('Low tier BStep + Assn30 combo DPS', () => {
@@ -733,7 +733,7 @@ describe('Shadower DPS', () => {
       shadLow, shadData, sb, weaponData, attackSpeedData, mapleWarriorData
     );
 
-    expect(result.dps).toBeCloseTo(96960, -1);
+    expect(result.dps).toBeCloseTo(111504, -1);
   });
 
   it('High tier DPS is greater than Low tier for all skills', () => {

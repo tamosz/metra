@@ -1,5 +1,5 @@
 {
-  "source": "Interpolated between shadower-low and shadower-high. SI disabled to match spreadsheet attack times.",
+  "source": "Interpolated between shadower-low and shadower-high.",
   "label": "Shadower Mid",
   "className": "Shadower",
   "baseStats": { "STR": 15, "DEX": 30, "INT": 4, "LUK": 849 },
@@ -12,7 +12,7 @@
   "projectile": 0,
   "echoActive": true,
   "mapleWarriorLevel": 20,
-  "speedInfusion": false,
+  "speedInfusion": true,
   "sharpEyes": true,
   "shadowPartner": true,
   "gearBreakdown": {

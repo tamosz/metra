@@ -210,7 +210,7 @@ describe('Baseline mode', () => {
     expect(find('Buccaneer', 'Demolition').dps.dps).toBeCloseTo(233453, -2);
     expect(find('Buccaneer', 'Barrage + Demolition').dps.dps).toBeGreaterThan(find('Buccaneer', 'Demolition').dps.dps);
     expect(find('Shadower', 'BStep + Assassinate 30').dps.dps).toBeCloseTo(326734, -2);
-    expect(find('Shadower', 'Savage Blow').dps.dps).toBeCloseTo(159536, -2);
+    expect(find('Shadower', 'Savage Blow').dps.dps).toBeCloseTo(183467, -2);
   });
 
   it('low-tier DPS matches reference values', () => {
@@ -230,7 +230,7 @@ describe('Baseline mode', () => {
     expect(find('Buccaneer', 'Demolition').dps.dps).toBeCloseTo(135843, -2);
     expect(find('Buccaneer', 'Barrage + Demolition').dps.dps).toBeGreaterThan(find('Buccaneer', 'Demolition').dps.dps);
     expect(find('Shadower', 'BStep + Assassinate 30').dps.dps).toBeCloseTo(198577, -2);
-    expect(find('Shadower', 'Savage Blow').dps.dps).toBeCloseTo(96960, -2);
+    expect(find('Shadower', 'Savage Blow').dps.dps).toBeCloseTo(111504, -2);
   });
 });
 
