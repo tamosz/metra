@@ -54,7 +54,7 @@ Five layers. Keep them cleanly separated.
 Static game data stored as JSON files, version-controlled, human-readable and human-editable. This is the "current state of MapleRoyals."
 
 Actual files:
-- `skills/` — one file per class (`hero.json`, `hero-axe.json`, `drk.json`, `paladin.json`, `nl.json`, `bowmaster.json`, `marksman.json`, `sair.json`, `bucc.json`, `shadower.json`). Each contains mastery, stat mapping, SE crit config, and a `skills[]` array.
+- `skills/` — one file per class (`hero.json`, `hero-axe.json`, `drk.json`, `paladin.json`, `nl.json`, `bowmaster.json`, `marksman.json`, `sair.json`, `bucc.json`, `shadower.json`, `archmage-il.json`, `archmage-fp.json`, `bishop.json`). Each contains mastery, stat mapping, SE crit config, and a `skills[]` array.
 - `gear-templates/` — character builds at each funding tier (`hero-low.json`, `hero-high.json`, etc.). Include full gear breakdown, stats, buffs, and weapon info.
 - `weapons.json` — weapon type slash/stab multipliers for the damage formula.
 - `attack-speed.json` — effective speed tier → attack time lookup, keyed by skill category.
@@ -171,7 +171,7 @@ Two formula variants exist, configured per class via `seCritFormula`:
 
 ### Key Classes
 
-**Implemented (10 classes):**
+**Implemented (13 classes):**
 - **Hero** — 2H Sword, Brandish (2-hit)
 - **Hero (Axe)** — 2H Axe, Brandish (2-hit). Separate skill file and gear templates. Weapon speed 6 (no speed-5 2H Axe exists), 4.8× multiplier. Buffed DPS matches Sword (SI resolves both to speed 2); unbuffed Axe is slower.
 - **Dark Knight (DrK)** — Spear, Crusher
@@ -183,9 +183,9 @@ Two formula variants exist, configured per class via `seCritFormula`:
 - **Buccaneer (Bucc)** — Knuckle, Demolition (8-hit, fixed 2.34s cycle) and Barrage + Demolition (multi-part combo via `comboGroup`, fixed 4.04s cycle). STR primary, 4.8× weapon multiplier.
 - **Shadower** — Dagger + Shield, Boomerang Step + Assassinate 30 (combo via `comboGroup`, 2.31s cycle) and Savage Blow (6-hit standalone). LUK primary, STR+DEX secondary (array `secondaryStat`), Dagger 3.6× multiplier, standard damage formula, Shadow Partner, no built-in crit.
 
-**Future expansion targets:**
-- Arch Mage (Ice/Lightning) (magic)
-- Bishop (magic, party utility)
+- **Archmage (I/L)** — magic, Ice/Lightning spells
+- **Archmage (F/P)** — magic, Fire/Poison spells
+- **Bishop** — magic, party utility
 
 ### Funding Tiers
 Balance is evaluated across funding levels. Current tiers:
@@ -204,9 +204,10 @@ Standard scenarios for comparison reports (all implemented):
 - **Unbuffed** — no SE, Echo, SI, MW, or attack potion. Shows raw class power.
 - **No-Echo** — all buffs except Echo of Hero. Shows Echo's DPS contribution.
 - **Bossing (50% PDR)** — fully buffed with 50% Physical Damage Reduction applied. Shows sustained bossing DPS.
+- **Bossing (Undead, 50% PDR)** — fully buffed with 50% PDR and 1.5× Holy element modifier. Shows Holy-class advantage on undead bosses.
 - **Training** (planned) — kills/hr and EXP/hr at a reference map/mob.
 
-Multi-scenario support: `ScenarioConfig` can override buff flags and apply PDR. The CLI runs all 4 default scenarios. Reports render separate tables per scenario.
+Multi-scenario support: `ScenarioConfig` can override buff flags, apply PDR, and set element modifiers. The CLI runs all 5 default scenarios. Reports render separate tables per scenario.
 
 ## Tech Stack
 
@@ -263,7 +264,10 @@ metra/
 │   │   ├── marksman.json
 │   │   ├── sair.json
 │   │   ├── bucc.json
-│   │   └── shadower.json
+│   │   ├── shadower.json
+│   │   ├── archmage-il.json
+│   │   ├── archmage-fp.json
+│   │   └── bishop.json
 │   └── gear-templates/          # {class}-{tier}.json — low, mid, high per class
 │       ├── hero-{low,mid,high}.json
 │       ├── hero-axe-{low,mid,high}.json
@@ -276,6 +280,7 @@ metra/
 │       ├── bucc-{low,mid,high}.json
 │       ├── shadower-{low,mid,high}.json
 │       ├── archmage-il-{low,mid,high}.json
+│       ├── archmage-fp-{low,mid,high}.json
 │       └── bishop-{low,mid,high}.json
 ├── proposals/                   # balance change proposals
 │   ├── brandish-buff-20.json
