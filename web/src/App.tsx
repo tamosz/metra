@@ -19,7 +19,12 @@ export function App() {
   const customTiersState = useCustomTiers();
   const baseTiers = useMemo(() => discoverClassesAndTiers().tiers, []);
   const [targetCount, setTargetCount] = useState(1);
-  const simulation = useSimulation(customTiersState.tiers, targetCount > 1 ? targetCount : undefined);
+  const [elementModifiers, setElementModifiers] = useState<Record<string, number>>({});
+  const simulation = useSimulation(
+    customTiersState.tiers,
+    targetCount > 1 ? targetCount : undefined,
+    Object.keys(elementModifiers).length > 0 ? elementModifiers : undefined,
+  );
   const savedBuildsState = useSavedBuilds();
   const proposalState = useProposal(targetCount > 1 ? targetCount : undefined);
   const buildState = useBuildExplorer();
@@ -128,6 +133,8 @@ export function App() {
             baseTiers={baseTiers}
             targetCount={targetCount}
             setTargetCount={setTargetCount}
+            elementModifiers={elementModifiers}
+            setElementModifiers={setElementModifiers}
           />
         )}
         {page === 'proposal' && (

@@ -21,7 +21,11 @@ export interface SimulationData {
   customTierNames: Map<string, string>;
 }
 
-export function useSimulation(customTiers: CustomTier[] = [], targetCount?: number): SimulationData {
+export function useSimulation(
+  customTiers: CustomTier[] = [],
+  targetCount?: number,
+  elementModifiers?: Record<string, number>,
+): SimulationData {
   return useMemo(() => {
     const { classNames, tiers, classDataMap, gearTemplates } = discoverClassesAndTiers();
 
@@ -39,12 +43,15 @@ export function useSimulation(customTiers: CustomTier[] = [], targetCount?: numb
       customTierNames.set(ct.id, ct.name);
     }
 
-    const scenarios: ScenarioConfig[] = [...DEFAULT_SCENARIOS];
+    const hasElementMods = elementModifiers && Object.keys(elementModifiers).length > 0;
+    const scenarios: ScenarioConfig[] = DEFAULT_SCENARIOS.map((s) => {
+      if (!hasElementMods) return s;
+      return { ...s, elementModifiers: { ...s.elementModifiers, ...elementModifiers } };
+    });
     if (targetCount != null && targetCount > 1) {
-      scenarios.push({
-        name: `Training (${targetCount} mobs)`,
-        targetCount,
-      });
+      const training: ScenarioConfig = { name: `Training (${targetCount} mobs)`, targetCount };
+      if (hasElementMods) training.elementModifiers = { ...elementModifiers };
+      scenarios.push(training);
     }
 
     const config: SimulationConfig = {
@@ -64,5 +71,5 @@ export function useSimulation(customTiers: CustomTier[] = [], targetCount?: numb
 
     const scenarioNames = scenarios.map((s) => s.name);
     return { results, classNames, tiers: allTiers, scenarios: scenarioNames, customTierNames };
-  }, [customTiers, targetCount]);
+  }, [customTiers, targetCount, elementModifiers]);
 }

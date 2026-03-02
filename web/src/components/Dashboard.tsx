@@ -17,6 +17,8 @@ interface DashboardProps {
   baseTiers: string[];
   targetCount: number;
   setTargetCount: (n: number) => void;
+  elementModifiers: Record<string, number>;
+  setElementModifiers: (mods: Record<string, number>) => void;
 }
 
 type SortColumn = 'class' | 'skill' | 'tier' | 'dps';
@@ -35,7 +37,7 @@ function tierDisplayName(tier: string, customTierNames: Map<string, string>): st
   return tier.charAt(0).toUpperCase() + tier.slice(1);
 }
 
-export function Dashboard({ simulation, customTiers, baseTiers, targetCount, setTargetCount }: DashboardProps) {
+export function Dashboard({ simulation, customTiers, baseTiers, targetCount, setTargetCount, elementModifiers, setElementModifiers }: DashboardProps) {
   const { results, tiers, scenarios, customTierNames } = simulation;
   const [selectedScenario, setSelectedScenario] = useState('Buffed');
   const [selectedTier, setSelectedTier] = useState<string | 'all'>('all');
