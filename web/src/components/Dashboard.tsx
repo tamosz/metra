@@ -15,6 +15,7 @@ import { ElementToggles } from './ElementToggles.js';
 import { BuffToggles } from './BuffToggles.js';
 import type { BuffOverrides } from './BuffToggles.js';
 import { KbToggle } from './KbToggle.js';
+import { Tooltip } from './Tooltip.js';
 
 interface DashboardProps {
   simulation: SimulationData;
@@ -165,7 +166,7 @@ function RankingTable({
   data,
   customTierNames,
 }: {
-  data: { className: string; skillName: string; tier: string; dps: { dps: number } }[];
+  data: { className: string; skillName: string; tier: string; dps: { dps: number }; description?: string }[];
   customTierNames: Map<string, string>;
 }) {
   const [sortColumn, setSortColumn] = useState<SortColumn>('dps');
@@ -236,7 +237,10 @@ function RankingTable({
                     {r.className}
                   </span>
                 </td>
-                <td className="px-3 py-2 text-text-secondary">{r.skillName}</td>
+                <td className="px-3 py-2 text-text-secondary">
+                  {r.skillName}
+                  {r.description && <Tooltip text={r.description} />}
+                </td>
                 <td className="px-3 py-2 text-text-muted">{tierDisplayName(r.tier, customTierNames)}</td>
                 <td className="px-3 py-2 text-right tabular-nums">
                   {formatDps(r.dps.dps)}

@@ -26,6 +26,7 @@ export function DpsChart({ data }: DpsChartProps) {
     uid: `${r.className} — ${r.skillName} [${r.tier}]`,
     dps: Math.round(r.dps.dps),
     className: r.className,
+    description: r.description,
   }));
 
   if (chartData.length === 0) {
@@ -103,6 +104,11 @@ export function DpsChart({ data }: DpsChartProps) {
                   <div className="mt-1 tabular-nums">
                     {d.dps.toLocaleString()} DPS
                   </div>
+                  {d.description && (
+                    <div className="mt-1.5 border-t border-border-subtle pt-1.5 text-text-dim leading-relaxed">
+                      {d.description}
+                    </div>
+                  )}
                 </div>
               );
             }}
