@@ -7,6 +7,12 @@ import type {
   SkillEntry,
 } from '../data/types.js';
 import { calculateSkillDps, type DpsResult } from '../engine/dps.js';
+import {
+  calculateDodgeChance,
+  calculateKnockbackProbability,
+  calculateKnockbackUptime,
+  getKnockbackRecovery,
+} from '../engine/knockback.js';
 import type { ScenarioConfig, ScenarioResult } from './types.js';
 
 /** Fallback scenario when none is provided: fully buffed, no overrides. */
@@ -58,6 +64,14 @@ function applyElementModifier(dps: DpsResult, modifier: number): DpsResult {
  */
 function applyTargetCount(dps: DpsResult, effectiveTargets: number): DpsResult {
   return { ...dps, dps: dps.dps * effectiveTargets, averageDamage: dps.averageDamage * effectiveTargets };
+}
+
+/**
+ * Apply knockback uptime multiplier to a DPS result.
+ * Returns a new result with DPS and averageDamage scaled by the uptime factor.
+ */
+function applyKnockbackUptime(dps: DpsResult, uptimeMultiplier: number): DpsResult {
+  return { ...dps, dps: dps.dps * uptimeMultiplier, averageDamage: dps.averageDamage * uptimeMultiplier };
 }
 
 /**
@@ -115,6 +129,20 @@ export function runSimulation(
           if (scenario.targetCount != null && scenario.targetCount > 1) {
             const effectiveTargets = Math.min(skill.maxTargets ?? 1, scenario.targetCount);
             if (effectiveTargets > 1) effectiveDps = applyTargetCount(effectiveDps, effectiveTargets);
+          }
+          if (scenario.bossAttackInterval != null && scenario.bossAttackInterval > 0) {
+            const dodgeChance = calculateDodgeChance(
+              effectiveBuild.avoidability ?? 0,
+              scenario.bossAccuracy ?? Infinity
+            );
+            const kbProb = calculateKnockbackProbability(
+              dodgeChance,
+              classData.stanceRate ?? 0,
+              classData.shadowShifterRate ?? 0
+            );
+            const recovery = getKnockbackRecovery(skill, effectiveDps.attackTime);
+            const uptime = calculateKnockbackUptime(kbProb, scenario.bossAttackInterval, recovery);
+            effectiveDps = applyKnockbackUptime(effectiveDps, uptime);
           }
 
           skillResults.push({

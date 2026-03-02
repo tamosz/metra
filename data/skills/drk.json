@@ -8,6 +8,7 @@
   "sharpEyesCritDamageBonus": 140,
   "seCritFormula": "addBeforeMultiply",
   "damageFormula": "standard",
+  "stanceRate": 0.9,
   "skills": [
     {
       "name": "Spear Crusher",

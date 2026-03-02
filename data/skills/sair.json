@@ -25,7 +25,8 @@
       "hitCount": 1,
       "speedCategory": "Hurricane",
       "weaponType": "Gun",
-      "source": "dmg D10=200, E10=D10*1.2=240, Hurricane fixed 0.12s"
+      "knockbackRecovery": 0.5,
+      "source": "dmg D10=200, E10=D10*1.2=240, Hurricane fixed 0.12s. KB recovery lower than Hurricane — Rapid Fire can fire mid-air (data/references/knockback.md)"
     }
   ]
 }

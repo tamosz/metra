@@ -16,6 +16,7 @@ export const SCENARIO_DESCRIPTIONS: Record<string, string> = {
   Unbuffed: 'No party buffs — raw class power without SE, Echo, SI, MW, or potions.',
   'No-Echo': 'All buffs except Echo of Hero — shows how much Echo contributes.',
   'Bossing (50% PDR)': 'Fully buffed with 50% Physical Damage Reduction — sustained bossing damage.',
+  'Bossing (KB)': 'Bossing with knockback modeling — accounts for DPS lost to boss attacks interrupting your skills. Classes with Stance or Shadow Shifter lose less uptime.',
 };
 
 /** Generate a description for a dynamic training scenario. */

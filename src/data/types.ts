@@ -86,6 +86,8 @@ export interface SkillEntry {
   element?: string;
   /** Maximum number of targets this skill can hit per attack. Default 1 (single-target). */
   maxTargets?: number;
+  /** KB recovery time override (seconds). 0 for i-frame skills (Demolition, Barrage). Omit for auto-detect. */
+  knockbackRecovery?: number;
 }
 
 /** The four primary stats in Royals. */
@@ -121,6 +123,10 @@ export interface ClassSkillData {
   spellAmplification?: number;
   /** Elemental Staff/Wand bonus multiplier for mages (1.25 for Archmage, 1.0 for Bishop). Default 1. */
   weaponAmplification?: number;
+  /** Power Stance rate (0-1). Warriors 0.9, Bucc 0.9. Default 0. */
+  stanceRate?: number;
+  /** Shadow Shifter dodge rate (0-1). NL 0.30, Shadower 0.40. Default 0. */
+  shadowShifterRate?: number;
   skills: SkillEntry[];
 }
 
@@ -161,4 +167,6 @@ export interface CharacterBuild {
   sharpEyes: boolean;
   /** Whether Shadow Partner is active (1.5× damage multiplier). */
   shadowPartner?: boolean;
+  /** Character avoidability stat. Default 0 (negligible at boss level). */
+  avoidability?: number;
 }

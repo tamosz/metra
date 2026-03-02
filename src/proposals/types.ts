@@ -36,6 +36,10 @@ export interface ScenarioConfig {
   elementModifiers?: Record<string, number>;
   /** Number of mobs available. Training DPS = singleTargetDps × min(skill.maxTargets, targetCount). */
   targetCount?: number;
+  /** Boss attack interval in seconds. KB model only activates when set. */
+  bossAttackInterval?: number;
+  /** Boss accuracy value. Default: very high (dodge ≈ 0). */
+  bossAccuracy?: number;
 }
 
 /** DPS result for a single class/skill/tier combination. */
