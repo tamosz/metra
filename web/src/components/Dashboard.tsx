@@ -13,6 +13,7 @@ import { formatDps } from '../utils/format.js';
 import { ElementToggles } from './ElementToggles.js';
 import { BuffToggles } from './BuffToggles.js';
 import type { BuffOverrides } from './BuffToggles.js';
+import { KbToggle } from './KbToggle.js';
 
 interface DashboardProps {
   simulation: SimulationData;
@@ -84,6 +85,14 @@ export function Dashboard({ simulation, customTiers, baseTiers, targetCount, set
         <TargetSpinner value={targetCount} onChange={setTargetCount} />
         <ElementToggles modifiers={elementModifiers} onChange={setElementModifiers} />
         <BuffToggles overrides={buffOverrides} onChange={setBuffOverrides} />
+        <KbToggle
+          enabled={kbEnabled}
+          onToggle={setKbEnabled}
+          bossAttackInterval={bossAttackInterval}
+          onIntervalChange={setBossAttackInterval}
+          bossAccuracy={bossAccuracy}
+          onAccuracyChange={setBossAccuracy}
+        />
       </div>
 
       <SupportClassNote classNames={[...new Set(filtered.map((r) => r.className))]} />
