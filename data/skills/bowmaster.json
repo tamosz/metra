@@ -22,14 +22,14 @@
     },
     {
       "name": "Strafe",
-      "basePower": 170,
+      "basePower": 125,
       "multiplier": 1,
       "hitCount": 4,
       "speedCategory": "Strafe/Snipe",
       "weaponType": "Bow",
       "builtInCritRate": 0.40,
       "builtInCritDamageBonus": 100,
-      "source": "dmg sheet (same base as MM Strafe, 4-hit bow attack)"
+      "source": "dmg sheet D19=125, same row as MM Strafe, 4-hit bow attack"
     }
   ]
 }
