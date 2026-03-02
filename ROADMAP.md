@@ -31,6 +31,7 @@ A balance simulator for Royals staff and community. Every number traces back to 
 ## Phase 3: Advanced Analysis
 
 **Quick wins:**
+- Archer projectile WATK: Bowmaster and Marksman gear templates have `projectile: 0` — need to add arrow/bolt WATK values at each tier (the engine already supports this via the `projectile` field)
 - Weapon-specific gear templates: BW/Axe variants with accurate base WATK (BW weapons have higher base WATK than swords at the same tier, partially offsetting the lower effective multiplier from swing/stab ratio — currently both use the same template, which understates BW Paladin DPS)
 - Marginal gain calculator ("what should I upgrade next?" — DPS per WATK, per stat point)
 - Accuracy/miss rate against high-level bosses
