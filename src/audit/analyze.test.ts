@@ -102,17 +102,17 @@ describe('analyzeBalance', () => {
   });
 
   it('detects tier sensitivity outliers', () => {
-    // Most classes scale 2x from low to high. One class scales 4x.
+    // Most classes scale 2x from low to perfect. One class scales 4x.
     const results = [
-      makeResult({ className: 'A', skillName: 'S1', tier: 'high', dps: 200000 }),
+      makeResult({ className: 'A', skillName: 'S1', tier: 'perfect', dps: 200000 }),
       makeResult({ className: 'A', skillName: 'S1', tier: 'low', dps: 100000 }),
-      makeResult({ className: 'B', skillName: 'S2', tier: 'high', dps: 200000 }),
+      makeResult({ className: 'B', skillName: 'S2', tier: 'perfect', dps: 200000 }),
       makeResult({ className: 'B', skillName: 'S2', tier: 'low', dps: 100000 }),
-      makeResult({ className: 'C', skillName: 'S3', tier: 'high', dps: 200000 }),
+      makeResult({ className: 'C', skillName: 'S3', tier: 'perfect', dps: 200000 }),
       makeResult({ className: 'C', skillName: 'S3', tier: 'low', dps: 100000 }),
-      makeResult({ className: 'D', skillName: 'S4', tier: 'high', dps: 200000 }),
+      makeResult({ className: 'D', skillName: 'S4', tier: 'perfect', dps: 200000 }),
       makeResult({ className: 'D', skillName: 'S4', tier: 'low', dps: 100000 }),
-      makeResult({ className: 'Outlier', skillName: 'BigScale', tier: 'high', dps: 400000 }),
+      makeResult({ className: 'Outlier', skillName: 'BigScale', tier: 'perfect', dps: 400000 }),
       makeResult({ className: 'Outlier', skillName: 'BigScale', tier: 'low', dps: 100000 }),
     ];
     const audit = analyzeBalance(results);

@@ -4,7 +4,7 @@
   "className": "Hero",
   "baseStats": { "STR": 999, "DEX": 23, "INT": 4, "LUK": 4 },
   "gearStats": { "STR": 174, "DEX": 102, "INT": 0, "LUK": 0 },
-  "totalWeaponAttack": 203,
+  "totalWeaponAttack": 193,
   "weaponType": "2H Sword",
   "weaponSpeed": 5,
   "attackPotion": 100,
@@ -15,7 +15,7 @@
   "speedInfusion": true,
   "sharpEyes": true,
   "gearBreakdown": {
-    "weapon":    { "STR": 21, "DEX": 0,  "WATK": 150 },
+    "weapon":    { "STR": 21, "DEX": 0,  "WATK": 140 },
     "helmet":    { "STR": 21, "DEX": 40, "WATK": 0 },
     "top":       { "STR": 60, "DEX": 8,  "WATK": 0 },
     "earring":   { "STR": 15, "DEX": 0,  "WATK": 0 },

@@ -64,7 +64,7 @@ describe('End-to-end: brandish-buff-20 proposal', () => {
     const heroDelta = result.deltas.find(
       (d) => d.className === 'Hero' && d.skillName === 'Brandish (Sword)' && d.tier === 'high'
     )!;
-    expect(Math.abs(heroDelta.after - 264916.78889)).toBeLessThan(1);
+    expect(Math.abs(heroDelta.after - 255667)).toBeLessThan(1);
     expect(heroDelta.changePercent).toBeCloseTo(7.1, 0);
 
     // DrK unchanged
@@ -196,18 +196,18 @@ describe('Baseline mode', () => {
         (r) => r.className === className && r.skillName === skillName && r.tier === 'high'
       )!;
 
-    expect(find('Hero', 'Brandish (Sword)').dps.dps).toBeCloseTo(247314, -2);
+    expect(find('Hero', 'Brandish (Sword)').dps.dps).toBeCloseTo(238679, -2);
     expect(find('Hero (Axe)', 'Brandish').dps.dps).toBeCloseTo(221170, -2);
-    expect(find('DrK', 'Spear Crusher').dps.dps).toBeCloseTo(251906, -2);
-    expect(find('Paladin', 'Blast (Holy, Sword)').dps.dps).toBeCloseTo(192932, -2);
+    expect(find('DrK', 'Spear Crusher').dps.dps).toBeCloseTo(247754, -2);
+    expect(find('Paladin', 'Blast (Holy, Sword)').dps.dps).toBeCloseTo(186195, -2);
     expect(find('NL', 'Triple Throw').dps.dps).toBeCloseTo(292314, -2);
     expect(find('Bowmaster', 'Hurricane').dps.dps).toBeCloseTo(233073, -2);
     expect(find('Marksman', 'Strafe (MM)').dps.dps).toBeCloseTo(232748, -2);
     expect(find('Marksman', 'Snipe + Strafe').dps.dps).toBeCloseTo(234586, -2);
-    expect(find('Corsair', 'Battleship Cannon').dps.dps).toBeCloseTo(350586, -2);
-    expect(find('Corsair', 'Rapid Fire').dps.dps).toBeCloseTo(241520, -2);
+    expect(find('Corsair', 'Battleship Cannon').dps.dps).toBeCloseTo(343657, -2);
+    expect(find('Corsair', 'Rapid Fire').dps.dps).toBeCloseTo(236746, -2);
     expect(find('Buccaneer', 'Barrage + Demolition').dps.dps).toBeGreaterThan(200000);
-    expect(find('Shadower', 'BStep + Assassinate').dps.dps).toBeCloseTo(326734, -2);
+    expect(find('Shadower', 'BStep + Assassinate').dps.dps).toBeCloseTo(322080, -2);
   });
 
   it('mid-tier DPS matches reference values', () => {
