@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { BlockMath, InlineMath } from 'react-katex';
-import { weaponData } from '../data/bundle.js';
+import { weaponData, discoveredData } from '../data/bundle.js';
+import type { ClassSkillData } from '@engine/data/types.js';
 
 const SECTIONS = [
   { id: 'stats', label: 'Stat Calculation' },
@@ -23,11 +24,160 @@ function SectionHeading({ label }: { label: string }) {
   );
 }
 
-function PlaceholderSection({ id, label }: { id: string; label: string }) {
+function DpsFormulaSection() {
   return (
-    <section id={id} className="mb-16 scroll-mt-8">
-      <SectionHeading label={label} />
-      <p className="text-text-muted text-sm">Content coming in next tasks.</p>
+    <section id="dps" className="mb-16 scroll-mt-8">
+      <SectionHeading label="DPS Formula" />
+
+      <p className="text-text-secondary text-sm mb-4 leading-relaxed">
+        The final pipeline combining everything into damage per second.
+      </p>
+
+      <h4 className="text-sm font-semibold text-text-bright mt-8 mb-3">Skill Damage Percent</h4>
+
+      <div className="my-6">
+        <BlockMath math="\text{skillDmg\%} = \text{basePower} \times \text{multiplier}" />
+      </div>
+
+      <h4 className="text-sm font-semibold text-text-bright mt-8 mb-3">Average Damage per Attack</h4>
+
+      <p className="text-text-secondary text-sm mb-4 leading-relaxed">
+        Weighted by crit rate, using adjusted ranges that account for the damage cap:
+      </p>
+
+      <div className="my-6">
+        <BlockMath math="\text{avgDmg} = \left( \frac{\text{skillDmg\%}}{100} \times (1 - \text{critRate}) \times \text{adjRange}_{\text{normal}} + \frac{\text{critDmg\%}}{100} \times \text{critRate} \times \text{adjRange}_{\text{crit}} \right) \times \text{hitCount}" />
+      </div>
+
+      <p className="text-text-secondary text-sm mb-4 leading-relaxed">
+        For magic skills, the multiplier is used directly (not divided by 100).
+      </p>
+
+      <h4 className="text-sm font-semibold text-text-bright mt-8 mb-3">Shadow Partner</h4>
+
+      <p className="text-text-secondary text-sm mb-4 leading-relaxed">
+        Night Lord and Shadower have a Shadow Partner clone that deals 50% of attack damage,
+        so total damage is 1.5x:
+      </p>
+
+      <div className="my-6">
+        <BlockMath math="\text{avgDmg}_{\text{SP}} = \text{avgDmg} \times 1.5" />
+      </div>
+
+      <h4 className="text-sm font-semibold text-text-bright mt-8 mb-3">Final DPS</h4>
+
+      <div className="my-6">
+        <BlockMath math="\text{DPS} = \frac{\text{avgDmg}}{\text{attackTime}}" />
+      </div>
+
+      <h4 className="text-sm font-semibold text-text-bright mt-8 mb-3">Multi-Target Scaling</h4>
+
+      <p className="text-text-secondary text-sm mb-4 leading-relaxed">
+        For AoE skills, effective targets = <InlineMath math="\min(\text{maxTargets},\ \text{targetCount})" />.
+        DPS is multiplied by effective targets.
+      </p>
+
+      <h4 className="text-sm font-semibold text-text-bright mt-8 mb-3">Combo Groups</h4>
+
+      <p className="text-text-secondary text-sm mb-4 leading-relaxed">
+        Some classes use skill rotations (e.g., Marksman Snipe + Strafe weave, Buccaneer Barrage
+        + Demolition). Skills sharing a combo group have their individual DPS contributions summed
+        into a single combined DPS value. Each sub-skill uses the total rotation cycle time as its
+        attack time.
+      </p>
+    </section>
+  );
+}
+
+function getNotables(classData: ClassSkillData): string[] {
+  const notes: string[] = [];
+  if (classData.stanceRate && classData.stanceRate > 0) {
+    notes.push(`Stance (${Math.round(classData.stanceRate * 100)}%)`);
+  }
+  if (classData.shadowShifterRate && classData.shadowShifterRate > 0) {
+    notes.push(`Shadow Shifter (${Math.round(classData.shadowShifterRate * 100)}%)`);
+  }
+  // Shadow Partner / Berserk — hardcoded, no explicit data field
+  const name = classData.className.toLowerCase();
+  if (name === 'nl' || name === 'shadower') {
+    notes.push('Shadow Partner');
+  }
+  if (name === 'drk') {
+    notes.push('Berserk (2.1×)');
+  }
+  if (classData.spellAmplification && classData.spellAmplification !== 1) {
+    notes.push(`Spell Amp (${classData.spellAmplification})`);
+  }
+  if (classData.weaponAmplification && classData.weaponAmplification !== 1) {
+    notes.push(`Weapon Amp (${classData.weaponAmplification})`);
+  }
+  // Built-in crit from skills
+  const critSkills = classData.skills.filter((s) => s.builtInCritRate && s.builtInCritRate > 0);
+  if (critSkills.length > 0) {
+    const rate = critSkills[0].builtInCritRate!;
+    notes.push(`Built-in crit (${Math.round(rate * 100)}%)`);
+  }
+  return notes;
+}
+
+function ClassReferenceSection() {
+  const entries = Array.from(discoveredData.classDataMap.entries()).sort((a, b) =>
+    a[0].localeCompare(b[0])
+  );
+
+  return (
+    <section id="class-reference" className="mb-16 scroll-mt-8">
+      <SectionHeading label="Class Reference" />
+
+      <p className="text-text-secondary text-sm mb-4 leading-relaxed">
+        Per-class configuration used by the simulator, populated from the data files.
+      </p>
+
+      <div className="overflow-x-auto">
+        <table className="w-full border-collapse text-sm">
+          <thead>
+            <tr className="bg-bg-surface border-b border-border-default">
+              <th className="px-3 py-2 text-left font-medium text-text-dim">Class</th>
+              <th className="px-3 py-2 text-left font-medium text-text-dim">Formula</th>
+              <th className="px-3 py-2 text-right font-medium text-text-dim">Mastery</th>
+              <th className="px-3 py-2 text-left font-medium text-text-dim">Primary</th>
+              <th className="px-3 py-2 text-left font-medium text-text-dim">Secondary</th>
+              <th className="px-3 py-2 text-left font-medium text-text-dim">Crit Formula</th>
+              <th className="px-3 py-2 text-left font-medium text-text-dim">Notable</th>
+            </tr>
+          </thead>
+          <tbody>
+            {entries.map(([key, classData]) => {
+              const secondary = Array.isArray(classData.secondaryStat)
+                ? classData.secondaryStat.join('/')
+                : classData.secondaryStat;
+              const critFormula =
+                classData.seCritFormula === 'addAfterMultiply' ? 'addAfterMultiply' : '\u2014';
+              const notables = getNotables(classData);
+
+              return (
+                <tr key={key} className="border-b border-border-default/50">
+                  <td className="px-3 py-1.5 font-medium text-text-primary">
+                    {classData.className}
+                  </td>
+                  <td className="px-3 py-1.5 text-text-secondary">
+                    {classData.damageFormula ?? 'standard'}
+                  </td>
+                  <td className="px-3 py-1.5 text-right text-text-secondary tabular-nums">
+                    {classData.mastery}
+                  </td>
+                  <td className="px-3 py-1.5 text-text-secondary">{classData.primaryStat}</td>
+                  <td className="px-3 py-1.5 text-text-secondary">{secondary}</td>
+                  <td className="px-3 py-1.5 text-text-secondary text-xs">{critFormula}</td>
+                  <td className="px-3 py-1.5 text-text-secondary text-xs">
+                    {notables.length > 0 ? notables.join(', ') : '\u2014'}
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
     </section>
   );
 }
@@ -436,8 +586,8 @@ export function FormulasPage() {
         <CriticalDamageSection />
         <AttackSpeedSection />
         <DamageCapSection />
-        <PlaceholderSection id="dps" label="DPS Formula" />
-        <PlaceholderSection id="class-reference" label="Class Reference" />
+        <DpsFormulaSection />
+        <ClassReferenceSection />
       </div>
     </div>
   );
