@@ -22,11 +22,15 @@ export function App() {
   const [targetCount, setTargetCount] = useState(1);
   const [elementModifiers, setElementModifiers] = useState<Record<string, number>>({});
   const [buffOverrides, setBuffOverrides] = useState<BuffOverrides>({});
+  const [kbEnabled, setKbEnabled] = useState(false);
+  const [bossAttackInterval, setBossAttackInterval] = useState(1.5);
+  const [bossAccuracy, setBossAccuracy] = useState(250);
   const simulation = useSimulation(
     customTiersState.tiers,
     targetCount > 1 ? targetCount : undefined,
     Object.keys(elementModifiers).length > 0 ? elementModifiers : undefined,
     Object.keys(buffOverrides).length > 0 ? buffOverrides : undefined,
+    kbEnabled ? { bossAttackInterval, bossAccuracy } : undefined,
   );
   const savedBuildsState = useSavedBuilds();
   const proposalState = useProposal(targetCount > 1 ? targetCount : undefined);
@@ -140,6 +144,12 @@ export function App() {
             setElementModifiers={setElementModifiers}
             buffOverrides={buffOverrides}
             setBuffOverrides={setBuffOverrides}
+            kbEnabled={kbEnabled}
+            setKbEnabled={setKbEnabled}
+            bossAttackInterval={bossAttackInterval}
+            setBossAttackInterval={setBossAttackInterval}
+            bossAccuracy={bossAccuracy}
+            setBossAccuracy={setBossAccuracy}
           />
         )}
         {page === 'proposal' && (

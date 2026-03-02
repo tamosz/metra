@@ -24,6 +24,12 @@ interface DashboardProps {
   setElementModifiers: (mods: Record<string, number>) => void;
   buffOverrides: BuffOverrides;
   setBuffOverrides: (overrides: BuffOverrides) => void;
+  kbEnabled: boolean;
+  setKbEnabled: (enabled: boolean) => void;
+  bossAttackInterval: number;
+  setBossAttackInterval: (n: number) => void;
+  bossAccuracy: number;
+  setBossAccuracy: (n: number) => void;
 }
 
 type SortColumn = 'class' | 'skill' | 'tier' | 'dps';
@@ -42,7 +48,7 @@ function tierDisplayName(tier: string, customTierNames: Map<string, string>): st
   return tier.charAt(0).toUpperCase() + tier.slice(1);
 }
 
-export function Dashboard({ simulation, customTiers, baseTiers, targetCount, setTargetCount, elementModifiers, setElementModifiers, buffOverrides, setBuffOverrides }: DashboardProps) {
+export function Dashboard({ simulation, customTiers, baseTiers, targetCount, setTargetCount, elementModifiers, setElementModifiers, buffOverrides, setBuffOverrides, kbEnabled, setKbEnabled, bossAttackInterval, setBossAttackInterval, bossAccuracy, setBossAccuracy }: DashboardProps) {
   const { results, tiers, customTierNames } = simulation;
   const [selectedTier, setSelectedTier] = useState<string | 'all'>('all');
 

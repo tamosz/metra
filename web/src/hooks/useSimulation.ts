@@ -13,6 +13,11 @@ import type { CustomTier } from '../types/custom-tier.js';
 import { generateCustomTierTemplates } from '../utils/custom-tier.js';
 import type { BuffOverrides } from '../components/BuffToggles.js';
 
+export interface KbConfig {
+  bossAttackInterval: number;
+  bossAccuracy: number;
+}
+
 export interface SimulationData {
   results: ScenarioResult[];
   classNames: string[];
@@ -26,6 +31,7 @@ export function useSimulation(
   targetCount?: number,
   elementModifiers?: Record<string, number>,
   buffOverrides?: BuffOverrides,
+  kbConfig?: KbConfig,
 ): SimulationData {
   return useMemo(() => {
     const { classNames, tiers, classDataMap, gearTemplates } = discoveredData;
@@ -50,6 +56,10 @@ export function useSimulation(
     const scenario: ScenarioConfig = { name: 'Baseline' };
     if (hasElementMods) scenario.elementModifiers = { ...elementModifiers };
     if (hasBuffOverrides) scenario.overrides = { ...buffOverrides };
+    if (kbConfig) {
+      scenario.bossAttackInterval = kbConfig.bossAttackInterval;
+      scenario.bossAccuracy = kbConfig.bossAccuracy;
+    }
     const scenarios: ScenarioConfig[] = [scenario];
     if (targetCount != null && targetCount > 1) {
       const training: ScenarioConfig = { name: `Training (${targetCount} mobs)`, targetCount };
@@ -74,5 +84,5 @@ export function useSimulation(
     );
 
     return { results, classNames, tiers: allTiers, customTierNames };
-  }, [customTiers, targetCount, elementModifiers, buffOverrides]);
+  }, [customTiers, targetCount, elementModifiers, buffOverrides, kbConfig]);
 }
