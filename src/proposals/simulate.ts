@@ -111,6 +111,11 @@ export function runSimulation(
           if (scenario.elementModifiers && skill.element) {
             const mod = scenario.elementModifiers[skill.element] ?? 1;
             if (mod !== 1) effectiveDps = applyElementModifier(effectiveDps, mod);
+          } else if (scenario.elementModifiers && skill.elementOptions) {
+            const bestMod = Math.max(
+              ...skill.elementOptions.map(e => scenario.elementModifiers![e] ?? 1)
+            );
+            if (bestMod !== 1) effectiveDps = applyElementModifier(effectiveDps, bestMod);
           }
           if (scenario.targetCount != null && scenario.targetCount > 1) {
             const effectiveTargets = Math.min(skill.maxTargets ?? 1, scenario.targetCount);

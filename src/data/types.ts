@@ -84,6 +84,9 @@ export interface SkillEntry {
   fixedDamage?: number;
   /** Elemental tag for damage advantage scenarios (e.g., "Holy", "Ice", "Lightning"). */
   element?: string;
+  /** List of elements the skill can adapt to (e.g., Paladin F/I/L Charge picks the best).
+   *  Mutually exclusive with `element` — a skill has a fixed element or adaptive options, not both. */
+  elementOptions?: string[];
   /** Maximum number of targets this skill can hit per attack. Default 1 (single-target). */
   maxTargets?: number;
 }
