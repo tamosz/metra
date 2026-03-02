@@ -29,8 +29,8 @@ beforeAll(() => {
 });
 
 describe('class and tier coverage', () => {
-  it('every class has templates for all 3 tiers (low, mid, high)', () => {
-    const requiredTiers = ['low', 'mid', 'high'];
+  it('every class has templates for all 4 tiers (low, mid, high, perfect)', () => {
+    const requiredTiers = ['low', 'mid', 'high', 'perfect'];
     for (const className of classNames) {
       for (const tier of requiredTiers) {
         const key = `${className}-${tier}`;

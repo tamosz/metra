@@ -1,5 +1,5 @@
 /** Canonical tier ordering for display and sorting. */
-export const TIER_ORDER: readonly string[] = ['low', 'mid', 'high'];
+export const TIER_ORDER: readonly string[] = ['low', 'mid', 'high', 'perfect'];
 
 /**
  * Sort comparator for tier names.
