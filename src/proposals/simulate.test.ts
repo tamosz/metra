@@ -650,3 +650,82 @@ describe('targetCount (multi-target scaling)', () => {
     expect(blizzTraining.dps.dps).toBeCloseTo(blizzBuffed.dps.dps * 6, 0);
   });
 });
+
+describe('elementOptions (adaptive element selection)', () => {
+  it('picks the best element when multiple are toggled', () => {
+    const config: SimulationConfig = {
+      classes: ['paladin'],
+      tiers: ['high'],
+      scenarios: [
+        { name: 'Buffed' },
+        { name: 'Mixed', elementModifiers: { Fire: 1.5, Ice: 0.5 } },
+      ],
+    };
+
+    const results = runSimulation(
+      config, classDataMap, gearTemplates,
+      weaponData, attackSpeedData, mwData
+    );
+
+    const buffed = results.find(
+      r => r.skillName === 'Blast (F/I/L Charge, Sword)' && r.scenario === 'Buffed'
+    )!;
+    const mixed = results.find(
+      r => r.skillName === 'Blast (F/I/L Charge, Sword)' && r.scenario === 'Mixed'
+    )!;
+
+    // Should pick Fire (1.5x) over Ice (0.5x) and Lightning (neutral)
+    expect(mixed.dps.dps).toBeCloseTo(buffed.dps.dps * 1.5, 0);
+  });
+
+  it('is unaffected when only non-matching elements are toggled', () => {
+    const config: SimulationConfig = {
+      classes: ['paladin'],
+      tiers: ['high'],
+      scenarios: [
+        { name: 'Buffed' },
+        { name: 'Holy Only', elementModifiers: { Holy: 1.5 } },
+      ],
+    };
+
+    const results = runSimulation(
+      config, classDataMap, gearTemplates,
+      weaponData, attackSpeedData, mwData
+    );
+
+    const buffed = results.find(
+      r => r.skillName === 'Blast (F/I/L Charge, Sword)' && r.scenario === 'Buffed'
+    )!;
+    const holyOnly = results.find(
+      r => r.skillName === 'Blast (F/I/L Charge, Sword)' && r.scenario === 'Holy Only'
+    )!;
+
+    // Holy is not in elementOptions, so F/I/L Charge is unaffected
+    expect(holyOnly.dps.dps).toBe(buffed.dps.dps);
+  });
+
+  it('applies a single matching element correctly', () => {
+    const config: SimulationConfig = {
+      classes: ['paladin'],
+      tiers: ['high'],
+      scenarios: [
+        { name: 'Buffed' },
+        { name: 'Ice Weak', elementModifiers: { Ice: 1.5 } },
+      ],
+    };
+
+    const results = runSimulation(
+      config, classDataMap, gearTemplates,
+      weaponData, attackSpeedData, mwData
+    );
+
+    const buffed = results.find(
+      r => r.skillName === 'Blast (F/I/L Charge, BW)' && r.scenario === 'Buffed'
+    )!;
+    const iceWeak = results.find(
+      r => r.skillName === 'Blast (F/I/L Charge, BW)' && r.scenario === 'Ice Weak'
+    )!;
+
+    expect(iceWeak.dps.dps).toBeCloseTo(buffed.dps.dps * 1.5, 0);
+  });
+});
