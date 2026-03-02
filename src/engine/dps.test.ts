@@ -1183,7 +1183,7 @@ describe('Bowmaster DPS', () => {
     expect(bmData.primaryStat).toBe('DEX');
     expect(bmData.secondaryStat).toBe('STR');
     expect(bmData.damageFormula).toBe('standard');
-    expect(bmData.skills.length).toBe(2);
+    expect(bmData.skills.length).toBe(1);
   });
 
   it('Hurricane uses fixed 0.12s attack time', () => {
