@@ -121,7 +121,7 @@ function computeTierSensitivities(results: ScenarioResult[]): TierSensitivity[] 
     if (ratioStdDev === 0) continue;
 
     for (const entry of scenarioEntries) {
-      const deviation = entry.ratio - medianRatio;
+      const deviation = entry.ratio - meanRatio;
       const deviationsFromMean = (entry.ratio - meanRatio) / ratioStdDev;
       if (Math.abs(deviationsFromMean) > OUTLIER_THRESHOLD) {
         sensitivities.push({

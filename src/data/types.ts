@@ -114,7 +114,7 @@ export interface ClassSkillData {
    * Which damage formula to use.
    * - "standard" (default): warrior-style (primary * weapMult + secondary) * totalAtk / 100
    * - "throwingStar": NL-style 5.0 * LUK * totalAtk / 100
-   * Future: "bow", "magic"
+   * - "magic": mage TMA-based formula with spell/weapon amplification
    */
   damageFormula?: 'standard' | 'throwingStar' | 'magic';
   /** Element Amplification multiplier for mages (1.4 for Archmage, 1.0 for Bishop). Default 1. */

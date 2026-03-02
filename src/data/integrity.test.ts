@@ -143,6 +143,45 @@ describe('gear template stat consistency', () => {
   });
 });
 
+describe('class data value ranges', () => {
+  it('every class has mastery > 0 and <= 1', () => {
+    for (const [, classData] of classDataMap) {
+      expect(
+        classData.mastery,
+        `${classData.className} has mastery ${classData.mastery} which is not > 0`
+      ).toBeGreaterThan(0);
+      expect(
+        classData.mastery,
+        `${classData.className} has mastery ${classData.mastery} which is not <= 1`
+      ).toBeLessThanOrEqual(1);
+    }
+  });
+
+  it('every class seCritFormula is a valid enum value', () => {
+    const validFormulas = new Set(['addBeforeMultiply', 'addAfterMultiply']);
+    for (const [, classData] of classDataMap) {
+      if (classData.seCritFormula != null) {
+        expect(
+          validFormulas.has(classData.seCritFormula),
+          `${classData.className} has invalid seCritFormula "${classData.seCritFormula}"`
+        ).toBe(true);
+      }
+    }
+  });
+
+  it('every class damageFormula is a valid enum value', () => {
+    const validFormulas = new Set(['standard', 'throwingStar', 'magic']);
+    for (const [, classData] of classDataMap) {
+      if (classData.damageFormula != null) {
+        expect(
+          validFormulas.has(classData.damageFormula),
+          `${classData.className} has invalid damageFormula "${classData.damageFormula}"`
+        ).toBe(true);
+      }
+    }
+  });
+});
+
 describe('class skill data consistency', () => {
   it('every class has at least one skill', () => {
     for (const [, classData] of classDataMap) {

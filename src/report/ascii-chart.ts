@@ -25,7 +25,7 @@ export function renderAsciiChart(
   const lines: string[] = [];
   for (const entry of sorted) {
     const barLength = maxValue > 0
-      ? Math.round((entry.value / maxValue) * maxWidth)
+      ? Math.max(0, Math.round((entry.value / maxValue) * maxWidth))
       : 0;
     const bar = FULL_BLOCK.repeat(barLength);
     const label = entry.label.padEnd(maxLabelLength);

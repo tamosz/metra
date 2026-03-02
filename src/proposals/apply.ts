@@ -5,6 +5,7 @@ import type { Proposal } from './types.js';
 const VALID_SKILL_FIELDS: ReadonlySet<string> = new Set([
   'basePower', 'multiplier', 'hitCount', 'speedCategory', 'weaponType', 'name',
   'attackType', 'builtInCritRate', 'builtInCritDamageBonus', 'element', 'maxTargets',
+  'fixedDamage', 'comboGroup', 'attackRatio',
 ]);
 
 /**

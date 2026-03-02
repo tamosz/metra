@@ -67,7 +67,7 @@ describe('Hero Brandish (Sword) DPS', () => {
     // Verify intermediate values
     expect(result.attackTime).toBe(0.63);
     expect(result.skillDamagePercent).toBe(494);
-    expect(result.seDamagePercent).toBe(760);
+    expect(result.critDamagePercent).toBe(760);
     expect(result.damageRange.max).toBe(18831);
     expect(result.damageRange.min).toBe(10352);
     expect(result.damageRange.average).toBe(14591.5);
@@ -148,7 +148,7 @@ describe('DrK Spear Crusher DPS', () => {
     // Berserk multiplier updated from 2.0 to 2.1 per royals.ms Update #68
     expect(result.attackTime).toBe(0.81);
     expect(result.skillDamagePercent).toBe(357);
-    expect(result.seDamagePercent).toBe(651);
+    expect(result.critDamagePercent).toBe(651);
     expect(result.damageRange.max).toBe(19655);
     expect(result.damageRange.min).toBe(14259);
     expect(result.damageRange.average).toBe(16957);
@@ -191,7 +191,7 @@ describe('DrK Spear Crusher DPS', () => {
     );
 
     // SE damage% = (170 + 140) * 2.1 = 651
-    expect(result.seDamagePercent).toBe(651);
+    expect(result.critDamagePercent).toBe(651);
     // Normal damage% = 170 * 2.1 = 357
     expect(result.skillDamagePercent).toBe(357);
   });
@@ -217,7 +217,7 @@ describe('Paladin Blast DPS', () => {
     );
 
     // Paladin SE: basePower * multiplier + bonus = 580 * 1.4 + 140 = 952
-    expect(result.seDamagePercent).toBe(952);
+    expect(result.critDamagePercent).toBe(952);
     // Normal: 580 * 1.4 = 812
     expect(result.skillDamagePercent).toBe(812);
   });
@@ -280,7 +280,7 @@ describe('Paladin Blast DPS', () => {
     expect(result.attackTime).toBe(0.63);
     expect(result.skillDamagePercent).toBe(754);
     // SE: 580 * 1.3 + 140 = 894
-    expect(result.seDamagePercent).toBe(894);
+    expect(result.critDamagePercent).toBe(894);
   });
 });
 
@@ -303,7 +303,7 @@ describe('Paladin BW Blast DPS', () => {
     // Same base power and multiplier as Sword variant
     expect(result.skillDamagePercent).toBe(812);
     // SE: 580 * 1.4 + 140 = 952 (addAfterMultiply)
-    expect(result.seDamagePercent).toBe(952);
+    expect(result.critDamagePercent).toBe(952);
     // 2H BW weighted: 4.8*0.6 + 3.4*0.4 = 4.24 (3:2 swing/stab ratio)
     // max = floor((1272 * 4.24 + 127) * 315 / 100) = 17388
     // min = floor((1272 * 4.24 * 0.9 * 0.6 + 127) * 315 / 100) = 9574
@@ -328,7 +328,7 @@ describe('Paladin BW Blast DPS', () => {
     expect(result.attackTime).toBe(0.63);
     expect(result.skillDamagePercent).toBe(754);
     // SE: 580 * 1.3 + 140 = 894
-    expect(result.seDamagePercent).toBe(894);
+    expect(result.critDamagePercent).toBe(894);
     // Same damage range as Holy BW (same weapon type, same gear, same attackRatio)
     expect(result.damageRange.max).toBe(17388);
     expect(result.damageRange.min).toBe(9574);
@@ -512,7 +512,7 @@ describe('Night Lord Triple Throw DPS', () => {
     // Normal: 150 * 1 = 150
     expect(result.skillDamagePercent).toBe(150);
     // Crit (addBeforeMultiply): (150 + 100 + 140) * 1 = 390
-    expect(result.seDamagePercent).toBe(390);
+    expect(result.critDamagePercent).toBe(390);
   });
 
   it('computes crit damage% without SE (built-in crit only)', () => {
@@ -529,7 +529,7 @@ describe('Night Lord Triple Throw DPS', () => {
 
     // Without SE: crit bonus = 100 only (built-in), no SE bonus
     // (150 + 100) * 1 = 250
-    expect(result.seDamagePercent).toBe(250);
+    expect(result.critDamagePercent).toBe(250);
   });
 
   it('uses 0.65 crit rate with SE (0.50 built-in + 0.15 SE)', () => {
@@ -672,7 +672,7 @@ describe('Shadower DPS', () => {
     // Normal: 600 * 1 = 600
     expect(result.skillDamagePercent).toBe(600);
     // SE (addBeforeMultiply): (600 + 140) * 1 = 740
-    expect(result.seDamagePercent).toBe(740);
+    expect(result.critDamagePercent).toBe(740);
   });
 
   it('Shadow Partner multiplies DPS by 1.5', () => {
@@ -794,7 +794,7 @@ describe('Marksman DPS', () => {
     expect(result.attackTime).toBe(0.60);
     expect(result.skillDamagePercent).toBe(125);
     // SE: (125 + 100 + 140) * 1 = 365
-    expect(result.seDamagePercent).toBe(365);
+    expect(result.critDamagePercent).toBe(365);
     expect(result.dps).toBeCloseTo(232748, -1);
   });
 
@@ -821,7 +821,7 @@ describe('Marksman DPS', () => {
     expect(result.damageRange.min).toBe(195000);
     expect(result.averageDamage).toBe(195000);
     expect(result.skillDamagePercent).toBe(0);
-    expect(result.seDamagePercent).toBe(0);
+    expect(result.critDamagePercent).toBe(0);
   });
 
   it('Snipe DPS = 39,000 (195000 / 5.0s rotation cycle)', () => {
@@ -933,7 +933,7 @@ describe('Archmage I/L DPS', () => {
     expect(result.attackTime).toBe(0.69);
     expect(result.skillDamagePercent).toBe(210);
     // SE crit: (210 + 140) * 1 = 350
-    expect(result.seDamagePercent).toBe(350);
+    expect(result.critDamagePercent).toBe(350);
     expect(result.dps).toBeCloseTo(92400, -1);
   });
 
@@ -958,7 +958,7 @@ describe('Archmage I/L DPS', () => {
     expect(result.attackTime).toBe(3.06);
     expect(result.skillDamagePercent).toBe(570);
     // SE crit: (570 + 140) * 1 = 710
-    expect(result.seDamagePercent).toBe(710);
+    expect(result.critDamagePercent).toBe(710);
     expect(result.dps).toBeCloseTo(53184, -1);
   });
 
@@ -1030,7 +1030,7 @@ describe('Bishop DPS', () => {
     expect(result.attackTime).toBe(0.81);
     expect(result.skillDamagePercent).toBe(240);
     // SE: (240 + 140) * 1 = 380
-    expect(result.seDamagePercent).toBe(380);
+    expect(result.critDamagePercent).toBe(380);
     expect(result.dps).toBeCloseTo(50750, -1);
   });
 
@@ -1069,6 +1069,89 @@ describe('Bishop DPS', () => {
       );
       const low = calculateSkillDps(
         bishopLow, bishopData, skill, weaponData, attackSpeedData, mwData
+      );
+      expect(high.dps).toBeGreaterThan(low.dps);
+    }
+  });
+});
+
+describe('Archmage F/P DPS', () => {
+  let fpData: ClassSkillData;
+  let fpHigh: CharacterBuild;
+  let fpLow: CharacterBuild;
+
+  beforeAll(() => {
+    fpData = loadClassSkills('Archmage F/P');
+    fpHigh = loadGearTemplate('archmage-fp-high');
+    fpLow = loadGearTemplate('archmage-fp-low');
+  });
+
+  it('loads Archmage F/P skill data correctly', () => {
+    expect(fpData.className).toBe('Archmage F/P');
+    expect(fpData.mastery).toBe(0.6);
+    expect(fpData.primaryStat).toBe('INT');
+    expect(fpData.damageFormula).toBe('magic');
+    expect(fpData.spellAmplification).toBe(1.4);
+    expect(fpData.weaponAmplification).toBe(1.25);
+    expect(fpData.skills.length).toBe(2);
+  });
+
+  it('Paralyze High tier DPS ~100,050', () => {
+    const para = fpData.skills.find((s) => s.name === 'Paralyze')!;
+    const result = calculateSkillDps(
+      fpHigh, fpData, para, weaponData, attackSpeedData, mwData
+    );
+
+    expect(result.attackTime).toBe(0.72);
+    expect(result.skillDamagePercent).toBe(240);
+    // SE crit: (240 + 140) * 1 = 380
+    expect(result.critDamagePercent).toBe(380);
+    expect(result.damageRange.max).toBe(300);
+    expect(result.damageRange.min).toBe(252);
+    expect(result.dps).toBeCloseTo(100050, -1);
+  });
+
+  it('Paralyze Low tier DPS ~45,313', () => {
+    const para = fpData.skills.find((s) => s.name === 'Paralyze')!;
+    const result = calculateSkillDps(
+      fpLow, fpData, para, weaponData, attackSpeedData, mwData
+    );
+
+    expect(result.attackTime).toBe(0.72);
+    expect(result.damageRange.max).toBe(140);
+    expect(result.damageRange.min).toBe(110);
+    expect(result.dps).toBeCloseTo(45313, -1);
+  });
+
+  it('Meteor High tier DPS ~53,184', () => {
+    const meteor = fpData.skills.find((s) => s.name === 'Meteor')!;
+    const result = calculateSkillDps(
+      fpHigh, fpData, meteor, weaponData, attackSpeedData, mwData
+    );
+
+    expect(result.attackTime).toBe(3.06);
+    expect(result.skillDamagePercent).toBe(570);
+    // SE crit: (570 + 140) * 1 = 710
+    expect(result.critDamagePercent).toBe(710);
+    expect(result.dps).toBeCloseTo(53184, -1);
+  });
+
+  it('Meteor Low tier DPS ~24,142', () => {
+    const meteor = fpData.skills.find((s) => s.name === 'Meteor')!;
+    const result = calculateSkillDps(
+      fpLow, fpData, meteor, weaponData, attackSpeedData, mwData
+    );
+
+    expect(result.dps).toBeCloseTo(24142, -1);
+  });
+
+  it('High tier DPS is greater than Low tier', () => {
+    for (const skill of fpData.skills) {
+      const high = calculateSkillDps(
+        fpHigh, fpData, skill, weaponData, attackSpeedData, mwData
+      );
+      const low = calculateSkillDps(
+        fpLow, fpData, skill, weaponData, attackSpeedData, mwData
       );
       expect(high.dps).toBeGreaterThan(low.dps);
     }
@@ -1128,7 +1211,7 @@ describe('Bowmaster DPS', () => {
     // basePower 100, multiplier 1 → skillDmg% = 100
     expect(result.skillDamagePercent).toBe(100);
     // addBeforeMultiply: (100 + 100 + 140) * 1 = 340
-    expect(result.seDamagePercent).toBe(340);
+    expect(result.critDamagePercent).toBe(340);
   });
 
   it('Hurricane High tier DPS ~233,073', () => {
@@ -1212,7 +1295,7 @@ describe('Hero (Axe) DPS', () => {
     expect(result.attackTime).toBe(0.63);
     expect(result.skillDamagePercent).toBe(494);
     // SE: (260 + 140) * 1.9 = 760
-    expect(result.seDamagePercent).toBe(760);
+    expect(result.critDamagePercent).toBe(760);
     expect(result.dps).toBeCloseTo(257772, -2);
   });
 
@@ -1291,7 +1374,7 @@ describe('Corsair DPS', () => {
     // basePower 380, multiplier 1.2 → 456
     expect(result.skillDamagePercent).toBe(456);
     // SE: (380 + 140) * 1.2 = 624
-    expect(result.seDamagePercent).toBe(624);
+    expect(result.critDamagePercent).toBe(624);
     expect(result.dps).toBeCloseTo(350586, -2);
   });
 
@@ -1325,7 +1408,7 @@ describe('Corsair DPS', () => {
     // basePower 200, multiplier 1.2 → 240
     expect(result.skillDamagePercent).toBe(240);
     // SE: (200 + 140) * 1.2 = 408
-    expect(result.seDamagePercent).toBe(408);
+    expect(result.critDamagePercent).toBe(408);
     // Same damage range as Cannon (same weapon/class)
     expect(result.damageRange.max).toBe(14108);
     expect(result.dps).toBeCloseTo(241520, -2);
@@ -1411,7 +1494,7 @@ describe('Buccaneer DPS', () => {
     // basePower 500, multiplier 1.0 → 500
     expect(result.skillDamagePercent).toBe(500);
     // SE: (500 + 140) * 1.0 = 640
-    expect(result.seDamagePercent).toBe(640);
+    expect(result.critDamagePercent).toBe(640);
     expect(result.dps).toBeCloseTo(247417, -2);
   });
 
