@@ -119,10 +119,86 @@ Built-in crit rates:
 - Bowmaster/Marksman (Critical Shot): 40% rate, +100 damage bonus
 - All others: 0% (SE-only)
 
+### Open question: Paladin addAfterMultiply consistency
+
+**Identified:** 2026-03-03
+
+The spreadsheet uses `addAfterMultiply` only for Paladin (G28: `=D28*1.4+140`). Every
+other class uses `addBeforeMultiply` (e.g., Hero G15: `=(D15+140)*1.9`). This means the
+charge multiplier does not amplify the SE crit bonus for Paladin, but Berserk/Combo
+multipliers do amplify it for DrK/Hero.
+
+The Ayumilove pre-BB formula compilation treats elemental charge as a "Skill Modifier"
+on the damage range, separate from skill% + crit bonus. Under that model, both formulas
+would give `addBeforeMultiply`: `(580 + 140) * 1.4 = 1008`, not `580 * 1.4 + 140 = 952`.
+
+Impact: ~1% total DPS (56 percentage points on crit hits at 15% crit rate). The current
+implementation faithfully reproduces the spreadsheet. Needs forum or in-game verification
+to determine whether the spreadsheet is intentional or a bug.
+
 ## Damage Cap
 
 **Source:** Source spreadsheet, standard v62 mechanic
-**Used in:** `src/engine/damage.ts`
+**Used in:** `src/engine/damage.ts`, `src/engine/dps.ts`
 
 Damage cap is 199,999 per line. When max damage exceeds the cap, the adjusted average
-range accounts for the truncated distribution.
+range accounts for the truncated distribution (see `calculateAdjustedRange` in damage.ts).
+
+The DPS pipeline computes range caps for both normal and crit hits:
+```
+rangeCap      = 199999 / (skillDamagePercent / 100)
+rangeCapCrit  = 199999 / (critDamagePercent / 100)
+```
+
+If either cap falls below the max damage range, `calculateAdjustedRange` models the
+uniform distribution with a hard ceiling — hits that would exceed the cap are pinned to it.
+
+### Known limitation: element modifiers bypass damage cap
+
+**Identified:** 2026-03-03
+**Affects:** `src/proposals/simulate.ts` (applyElementModifier), web element toggles
+
+Element modifiers (e.g., 1.5× Holy weakness) are applied as a post-calculation multiplier
+on the final DPS value. This skips the damage cap interaction — the engine doesn't
+recalculate adjusted ranges with the elemental damage% factored in.
+
+In reality, elemental advantage increases the effective skill damage%, which lowers the
+range cap and causes more hits to be capped. The current approach overestimates DPS
+when elemental advantage pushes per-hit damage past the 199,999 cap.
+
+**Example — Paladin Blast (Holy, Sword) at High tier vs Holy-weak boss:**
+
+Without element modifier (base calculation, cap-aware):
+```
+skillDmg% = 812, max hit = 18,831 × 8.12 = 152,908  → under cap, no capping
+DPS = 192,932
+```
+
+With 1.5× element modifier (naive post-calc, current behavior):
+```
+DPS = 192,932 × 1.5 = 289,398
+```
+
+With 1.5× element modifier (proper cap-aware calculation):
+```
+skillDmg% = 1218, max hit = 18,831 × 12.18 = 229,362  → OVER cap
+rangeCap = 199,999 / 12.18 = 16,420
+adjustedRange (normal) = 14,247  (vs uncapped 14,592)
+adjustedRange (crit)   = 13,218  (vs uncapped 14,592)
+DPS ≈ 279,093
+```
+
+**Overestimate: ~3.6%** (289,398 vs 279,093)
+
+This only matters when:
+1. The class has high base damage (High tier, high multiplier)
+2. An element modifier pushes effective skill% high enough to hit the cap
+3. The skill is single-hit (multi-hit skills spread damage across lines)
+
+Most affected: Paladin Blast with Holy advantage at High tier. Less affected at Mid/Low
+tiers (lower stats → lower base range → cap not reached). Multi-hit skills like Brandish,
+Triple Throw, and Strafe are unlikely to hit the cap per line.
+
+To fix this properly, the element modifier would need to be folded into the skill damage%
+before the adjusted range calculation in `calculateAverageDamage`, rather than applied
+as a post-multiplier in simulate.ts.
