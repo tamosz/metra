@@ -10,7 +10,7 @@ const BUFFS = [
   { key: 'attackPotion' as const, label: 'Pot', offValue: 0 as const, tooltip: 'Attack Potion' },
 ] as const;
 
-const STYLE_ON = 'border border-transparent bg-transparent text-text-dim hover:text-text-muted';
+const STYLE_ON = 'border border-emerald-700/50 bg-emerald-950/40 text-emerald-400';
 const STYLE_OFF = 'border border-red-700/50 bg-red-950/40 text-red-400';
 
 interface BuffTogglesProps {
