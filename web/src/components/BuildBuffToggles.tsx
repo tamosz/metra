@@ -13,7 +13,6 @@ export function BuildBuffToggles({ state }: BuildBuffTogglesProps) {
   const { template, overrides, setOverride, resetField, classData } = state;
   if (!template || !classData) return null;
 
-  const showShadowPartner = template.shadowPartner !== undefined;
   const isMage = classData.damageFormula === 'magic';
   const mwOverridden = 'mwLevel' in overrides;
 
@@ -50,17 +49,6 @@ export function BuildBuffToggles({ state }: BuildBuffTogglesProps) {
             resetField={resetField}
           />
         )}
-        {showShadowPartner && (
-          <BuffCheckbox
-            label="Shadow Partner"
-            overrideKey="shadowPartner"
-            template={template}
-            overrides={overrides}
-            setOverride={setOverride}
-            resetField={resetField}
-          />
-        )}
-
         {/* MW Level */}
         <div className={`flex items-center gap-2 py-0.5 pl-2 ${mwOverridden ? 'border-l-2 border-accent' : 'border-l-2 border-transparent'}`}>
           <span className="flex w-[120px] items-center text-xs text-text-secondary">
@@ -102,7 +90,7 @@ export function BuildBuffToggles({ state }: BuildBuffTogglesProps) {
   );
 }
 
-type BooleanOverrideKey = 'echoActive' | 'sharpEyes' | 'speedInfusion' | 'shadowPartner';
+type BooleanOverrideKey = 'echoActive' | 'sharpEyes' | 'speedInfusion';
 
 function BuffCheckbox({
   label,

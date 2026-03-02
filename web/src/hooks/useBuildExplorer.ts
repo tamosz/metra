@@ -24,7 +24,6 @@ export interface BuildOverrides {
   echoActive: boolean;
   sharpEyes: boolean;
   speedInfusion: boolean;
-  shadowPartner: boolean;
   mwLevel: number;
 }
 
@@ -74,7 +73,6 @@ function mergeOverrides(template: CharacterBuild, overrides: Partial<BuildOverri
     echoActive: overrides.echoActive ?? template.echoActive,
     sharpEyes: overrides.sharpEyes ?? template.sharpEyes,
     speedInfusion: overrides.speedInfusion ?? template.speedInfusion,
-    shadowPartner: overrides.shadowPartner ?? template.shadowPartner,
     mwLevel: overrides.mwLevel ?? template.mwLevel,
   };
 }
