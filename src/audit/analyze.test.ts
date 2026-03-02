@@ -14,6 +14,8 @@ function makeDpsResult(dps: number): DpsResult {
     adjustedRangeCrit: 0,
     averageDamage: dps,
     dps,
+    uncappedDps: dps,
+    capLossPercent: 0,
   };
 }
 

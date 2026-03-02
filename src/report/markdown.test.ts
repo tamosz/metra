@@ -244,6 +244,8 @@ function mockDpsResult(dps: number): DpsResult {
     adjustedRangeCrit: 1800,
     averageDamage: dps * 0.63,
     dps,
+    uncappedDps: dps,
+    capLossPercent: 0,
   };
 }
 

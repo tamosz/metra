@@ -1676,5 +1676,86 @@ describe('DPS result structure', () => {
     expect(result.damageRange.max).toBeGreaterThan(result.damageRange.min);
     expect(result.averageDamage).toBeGreaterThan(0);
     expect(result.dps).toBeGreaterThan(0);
+    expect(typeof result.uncappedDps).toBe('number');
+    expect(result.capLossPercent).toBeGreaterThanOrEqual(0);
+  });
+});
+
+describe('uncapped DPS fields', () => {
+  it('Hero high-tier Brandish has capLossPercent >= 0 and uncappedDps close to dps (not hitting cap)', () => {
+    const brandish = heroData.skills.find(
+      (s) => s.name === 'Brandish (Sword)'
+    )!;
+    const result = calculateSkillDps(
+      heroHigh,
+      heroData,
+      brandish,
+      weaponData,
+      attackSpeedData,
+      mwData
+    );
+
+    // Hero high-tier range (10352-18831) is well below rangeCap (~40486)
+    // so capped and uncapped should be approximately equal
+    expect(result.uncappedDps).toBeCloseTo(result.dps, 0);
+    expect(result.capLossPercent).toBeGreaterThanOrEqual(0);
+    expect(result.capLossPercent).toBeLessThanOrEqual(100);
+  });
+
+  it('low-tier class well below the cap has capLossPercent === 0 and uncappedDps === dps', () => {
+    const brandish = heroData.skills.find(
+      (s) => s.name === 'Brandish (Sword)'
+    )!;
+    const result = calculateSkillDps(
+      heroLow,
+      heroData,
+      brandish,
+      weaponData,
+      attackSpeedData,
+      mwData
+    );
+
+    // Low tier damage range is well below the cap, so no capping occurs
+    expect(result.capLossPercent).toBe(0);
+    expect(result.uncappedDps).toBe(result.dps);
+  });
+
+  it('capLossPercent matches (uncappedDps - dps) / uncappedDps * 100', () => {
+    const brandish = heroData.skills.find(
+      (s) => s.name === 'Brandish (Sword)'
+    )!;
+    const result = calculateSkillDps(
+      heroHigh,
+      heroData,
+      brandish,
+      weaponData,
+      attackSpeedData,
+      mwData
+    );
+
+    const expectedCapLoss = result.uncappedDps > 0
+      ? ((result.uncappedDps - result.dps) / result.uncappedDps) * 100
+      : 0;
+    expect(result.capLossPercent).toBeCloseTo(expectedCapLoss, 10);
+  });
+
+  it('fixedDamage skills have uncappedDps === dps and capLossPercent === 0', () => {
+    // Marksman Snipe uses fixedDamage
+    const mmData = loadClassSkills('Marksman');
+    const mmHigh = loadGearTemplate('marksman-high');
+    const snipe = mmData.skills.find((s) => s.name === 'Snipe')!;
+    expect(snipe.fixedDamage).toBeDefined();
+
+    const result = calculateSkillDps(
+      mmHigh,
+      mmData,
+      snipe,
+      weaponData,
+      attackSpeedData,
+      mwData
+    );
+
+    expect(result.uncappedDps).toBe(result.dps);
+    expect(result.capLossPercent).toBe(0);
   });
 });
