@@ -78,7 +78,7 @@ describe('loadGearTemplate', () => {
     const build = loadGearTemplate('hero-high');
     expect(build.className).toBe('Hero');
     expect(build.baseStats.STR).toBe(999);
-    expect(build.totalWeaponAttack).toBe(203);
+    expect(build.totalWeaponAttack).toBe(193);
     expect(build.attackPotion).toBe(100);
     expect(build.mwLevel).toBe(20);
   });

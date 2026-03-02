@@ -101,8 +101,8 @@ describe('compareProposal', () => {
     expect(heroBrandishHigh.change).toBeGreaterThan(0);
     expect(heroBrandishHigh.changePercent).toBeGreaterThan(0);
 
-    // After C/G/S standardization: Brandish +20 High DPS
-    expect(heroBrandishHigh.after).toBeCloseTo(264917, -1);
+    // After weapon WATK correction (203→193): Brandish +20 High DPS
+    expect(heroBrandishHigh.after).toBeCloseTo(255667, -1);
 
     // DrK should be unchanged
     const drkCrusherHigh = result.deltas.find(

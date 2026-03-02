@@ -23,12 +23,14 @@ Cross-referenced against Royals forum guides:
 | Speed Infusion | Always active | SI from Buccaneer. |
 | Echo of Hero | Always active | Nearly universal buff (4% WATK). Both tiers assume it. |
 | Booster | Always active (implicit) | No field in CharacterBuild; hardcoded as -2 weapon speed in engine. |
-| Tiers | Low, Mid, High | Budget → mid-funded → endgame. |
+| Tiers | Low, Mid, High, Perfect | Budget → mid-funded → endgame → theoretical max. |
 | Low potion | 60 WATK (Heartstopper) | 1 min duration. Standard for bossing comparisons. |
 | Mid potion | 60 WATK (Heartstopper) | Same as low — mid-tier players don't regularly Apple. |
 | High potion (physical) | 100 WATK (Onyx Apple) | 10 min. Standard endgame bossing potion. |
 | High potion (mage) | 220 MATK (Ssiws Cheese) | Mage-specific endgame potion. Community confirmed: "Mages use Ssiws Cheese or Subani's Mystic Cauldron (not stoppers/apples)" ([DPS charts thread](https://royals.ms/forum/threads/dps-charts.124709/)). Source spreadsheet E8 formula lists mage-only potions: Lollipop (45), Graham Pie (120), Subani (200), Ssiws Cheese (220). |
 | Mid mage potion | 45 MATK (Lollipop) | Same as low — Stopper gives 0 MATK for mages. |
+| Perfect potion (physical) | 100 WATK (Onyx Apple) | Same as high. |
+| Perfect potion (mage) | 220 MATK (Ssiws Cheese) | Same as high. |
 
 **Implications:**
 - Booster cannot be toggled off — unboosted scenarios are not modeled.
@@ -36,14 +38,45 @@ Cross-referenced against Royals forum guides:
 
 ---
 
-## 2. Warrior Assumptions (Hero, DrK, Paladin, Paladin BW)
+## 2. Godly System
+
+MapleRoyals adds a "godly" mechanic: every stat on equipment can roll up to +5 over the
+original MapleStory max clean value. This applies to WATK/MATK, STR, DEX, LUK, INT, and
+all other equipment stats.
+
+**Example:** Stonetooth Sword original MS max clean = 106, godly = 111.
+
+**Theoretical max weapon WATK** = godly clean + 7 upgrade slots × 5 WATK (30% dark scroll)
+= godly + 35.
+
+| Weapon | Class | MS Max Clean | Godly (+5) | +35 scrolling | Theoretical Max |
+|--------|-------|:---:|:---:|:---:|:---:|
+| Stonetooth Sword | Hero, Paladin | 106 | 111 | +35 | 146 |
+| Dragon Battle Axe | Hero (Axe) | 112 | 117 | +35 | 152 |
+| Sky Ski | DrK | 99 | 104 | +35 | 139 |
+| Dragon Flame | Paladin (BW) | 117 | 122 | +35 | 157 |
+| Dragon Purple Claw | NL | 55 | 60 | +35 | 95 |
+| White Nisrock | Bowmaster | 100 | 105 | +35 | 140 |
+| Dark Neschere | Marksman | 103 | 108 | +35 | 143 |
+| Concerto | Corsair | 79 | 84 | +35 | 119 |
+| Dragon Slash Claw | Buccaneer | 83 | 88 | +35 | 123 |
+| Dragon Kanzir | Shadower | 105 | 110 | +35 | 145 |
+| Elemental Wand 5 | Mages | 150 | 155 | +35 | 190 MATK |
+
+The perfect tier uses theoretical max weapon WATK (godly clean + 7× 30% scroll). This is
+achievable in principle but extremely rare and expensive in practice — it represents the
+hard ceiling of character power, not a typical endgame character.
+
+---
+
+## 3. Warrior Assumptions (Hero, DrK, Paladin, Paladin BW)
 
 ### Base Stats
 
-| Stat | High | Mid | Low | Notes |
-|------|------|-----|-----|-------|
-| STR | 999 | 850 | 700 | High = lv200 cap. Mid = ~lv185. Low = ~lv160-170. |
-| DEX | 23 | 22 | 22 | Natural DEX from leveling (dexless build). |
+| Stat | Perfect | High | Mid | Low | Notes |
+|------|---------|------|-----|-----|-------|
+| STR | 999 | 999 | 850 | 700 | Perfect/High = lv200 cap. Mid = ~lv185. Low = ~lv160-170. |
+| DEX | 23 | 23 | 22 | 22 | Natural DEX from leveling (dexless build). |
 
 ### Weapon Speed
 
@@ -69,16 +102,35 @@ weapon.
 
 | Slot | Hero/Paladin | DrK | Forum "endgame" range | Assessment |
 |------|-------------|-----|----------------------|------------|
-| Weapon | 150 | 139 | ST Sword ~145-150; Sky Ski ~120+ | Hero near-perfect. DrK reasonable. |
+| Weapon | 140 | 134 | ST Sword ~135-145; Sky Ski ~120+ | ~1 failed scroll below perfect (godly+34). |
 | Gloves | 19 | 19 | 15-16+ late-game, 21 godly | Top-1%. Standardized across all classes. |
 | Cape | 17 | 17 | 10+ late-game, 18-20 godly | Top-1%. Standardized across all classes. |
 | Shoes | 13 | 13 | 7+ late-game, 17 is high | Top-1%. Standardized across all classes. |
 | Medal | 3 | 3 | 2-3 typical | Reasonable. |
 | Ring | 1 | 1 | 0-1 | Reasonable. |
-| **Total** | **203** | **192** | | |
+| **Total** | **193** | **187** | | |
 
 High tier models a top-1% character. Cape/Glove/Shoe standardized to 19/17/13 across
 all classes (warriors, thieves, archers, pirates) for consistent cross-class comparison.
+
+### Perfect Tier WATK Breakdown
+
+| Slot | Hero/Paladin | DrK | Hero (Axe) | Paladin (BW) | Notes |
+|------|-------------|-----|-----------|-------------|-------|
+| Weapon | 146 | 139 | 152 | 157 | Theoretical max: godly clean + 7× 30% scroll. |
+| Gloves | 22 | 22 | 22 | 22 | Perfect tier C/G/S: 22/20/18. |
+| Cape | 20 | 20 | 20 | 20 | |
+| Shoes | 18 | 18 | 18 | 18 | |
+| Medal | 3 | 3 | 3 | 3 | Same as high. |
+| Ring | 1 | 1 | 1 | 1 | Same as high. |
+| **Total** | **210** | **203** | **216** | **221** | |
+
+Perfect tier C/G/S: Glove 22 / Cape 20 / Shoe 18 (total 60 WATK). These represent
+theoretical godly maxes on accessories — achievable in principle, extremely rare in practice.
+
+Estimated gear stats at perfect tier: STR ~244, DEX ~132 (godly stat gear + perfect
+scrolling, approximately +70 primary / +30 secondary over high tier). These are estimates
+— no authoritative source for perfect-tier stat distribution exists.
 
 ### Low Tier WATK Breakdown
 
@@ -120,13 +172,15 @@ speed of 2H Blunt Weapons. The endgame 2H BW is **Dragon Flame** (lv110, Horntai
 - Speed 7 (Slow) — one speed tier slower than 2H Sword (Normal 6)
 - Same scroll values as 2H Sword (+5 per 30%, +2 per 60%)
 
-Dragon Flame has +6 WATK over Stonetooth at equivalent scrolling, applied consistently:
+Dragon Flame has +11 WATK over Stonetooth at godly clean (122 vs 111) and maintains
+a consistent edge at each scrolling tier:
 
 | Tier | Sword WATK | BW WATK | Delta | Source |
 |------|-----------|---------|-------|--------|
 | Low | 130 | 136 | +6 | Budget Dragon Flame (107 clean + budget scrolling) |
 | Mid | 140 | 146 | +6 | Mid-range scrolled Dragon Flame |
-| High | 150 | 156 | +6 | Well-scrolled Dragon Flame (~117 perf + endgame scrolling) |
+| High | 140 | 156 | +16 | High Sword ~1 failed slot below perfect; BW godly 122 + ~34 scroll |
+| Perfect | 146 | 157 | +11 | Theoretical max: godly clean + 7× 30% scroll |
 
 Non-weapon WATK (C/G/S, medal, ring) is identical to Paladin (Sword).
 
@@ -143,13 +197,14 @@ Sources:
 
 ---
 
-## 3. Archer Assumptions (Bowmaster, Marksman)
+## 4. Archer Assumptions (Bowmaster, Marksman)
 
 ### Shared Gear
 
-Bowmaster and Marksman share identical gear templates — same stats, same WATK values,
-same scrolling tier. The only difference is weapon type (Bow vs Crossbow) and the
-corresponding mastery passive (Bow Expert vs Crossbow Expert, both +10 WATK).
+Bowmaster and Marksman share identical stat gear and scrolling tier. The only differences
+are weapon type (Bow vs Crossbow) and the mastery passive: Bow Expert (+10 WATK) vs
+Crossbow Expert / Marksman Boost (+15 WATK, buffed in Update #65.1). This gives Marksman
++5 WATK over Bowmaster at every tier.
 
 ### Weapon Multiplier
 
@@ -172,42 +227,55 @@ speed 2 for Strafe. Hurricane has fixed 0.12s attack time regardless of speed.
 
 ### High Tier WATK Breakdown
 
-| Slot | Value | Forum range | Assessment |
-|------|-------|------------|------------|
-| Weapon (Nisrock) | 130 | 130 ATK valued at ~3.8b | Well-scrolled (~100 base + 6x 30% scrolls). |
-| Bow/Crossbow Expert | 10 | Always +10 | Passive skill, baked into template (range calculator L31). |
-| Gloves | 19 | 15-16+ late-game | Top-1%. Standardized across all classes. |
-| Cape | 17 | 10+ late-game | Top-1%. Standardized across all classes. |
-| Shoes | 13 | 7+ late-game | Top-1%. Standardized across all classes. |
-| Medal | 3 | 2-3 typical | Reasonable. |
-| Ring | 1 | 0-1 | Reasonable. |
-| **Total WATK** | **193** | | |
+| Slot | Bowmaster | Marksman | Forum range | Assessment |
+|------|----------|---------|------------|------------|
+| Weapon | 130 | 130 | 130 ATK valued at ~3.8b | Well-scrolled (~100 base + 6x 30% scrolls). |
+| Bow/Crossbow Expert | 10 | 15 | Always +10/+15 | Passive skill. BM +10 (Bow Expert). MM +15 (Marksman Boost, buffed in Update #65.1). |
+| Gloves | 19 | 19 | 15-16+ late-game | Top-1%. Standardized across all classes. |
+| Cape | 17 | 17 | 10+ late-game | Top-1%. Standardized across all classes. |
+| Shoes | 13 | 13 | 7+ late-game | Top-1%. Standardized across all classes. |
+| Medal | 3 | 3 | 2-3 typical | Reasonable. |
+| Ring | 1 | 1 | 0-1 | Reasonable. |
+| **Total WATK** | **193** | **198** | | |
 
 ### Low Tier WATK Breakdown
 
-| Slot | Value | Forum range | Assessment |
-|------|-------|------------|------------|
-| Weapon (Nisrock) | 105 | ~95-110 budget | Budget Nisrock (~95 base + a few 60% scrolls). |
-| Bow/Crossbow Expert | 10 | Always +10 | Passive skill. |
-| Gloves | 12 | 10-12 mid-game | Reasonable. |
-| Cape | 5 | 5-8 budget | Budget WATK cape. |
-| Shoes | 0 | 0-6 | No WATK shoes at low tier. |
-| Medal | 0 | 0-1 | Reasonable. |
-| Ring | 1 | 0-1 | Reasonable. |
-| **Total WATK** | **133** | | |
+| Slot | Bowmaster | Marksman | Forum range | Assessment |
+|------|----------|---------|------------|------------|
+| Weapon | 105 | 105 | ~95-110 budget | Budget bow/crossbow (~95 base + a few 60% scrolls). |
+| Bow/Crossbow Expert | 10 | 15 | Always +10/+15 | Passive skill. |
+| Gloves | 12 | 12 | 10-12 mid-game | Reasonable. |
+| Cape | 5 | 5 | 5-8 budget | Budget WATK cape. |
+| Shoes | 0 | 0 | 0-6 | No WATK shoes at low tier. |
+| Medal | 0 | 0 | 0-1 | Reasonable. |
+| Ring | 1 | 1 | 0-1 | Reasonable. |
+| **Total WATK** | **133** | **138** | | |
 
 ### Mid Tier WATK Breakdown
 
-| Slot | Value | Notes |
-|------|-------|-------|
-| Weapon (Nisrock) | 120 | Mid-range scrolled. |
-| Bow/Crossbow Expert | 10 | Passive skill. |
-| Gloves | 17 | Standardized mid-tier C/G/S. |
-| Cape | 14 | Standardized mid-tier C/G/S. |
-| Shoes | 10 | Standardized mid-tier C/G/S. |
-| Medal | 2 | Between low (0) and high (3). |
-| Ring | 1 | Same across all tiers. |
-| **Total WATK** | **174** | |
+| Slot | Bowmaster | Marksman | Notes |
+|------|----------|---------|-------|
+| Weapon | 120 | 120 | Mid-range scrolled. |
+| Bow/Crossbow Expert | 10 | 15 | Passive skill. |
+| Gloves | 17 | 17 | Standardized mid-tier C/G/S. |
+| Cape | 14 | 14 | Standardized mid-tier C/G/S. |
+| Shoes | 10 | 10 | Standardized mid-tier C/G/S. |
+| Medal | 2 | 2 | Between low (0) and high (3). |
+| Ring | 1 | 1 | Same across all tiers. |
+| **Total WATK** | **174** | **179** | |
+
+### Perfect Tier WATK Breakdown
+
+| Slot | Bowmaster | Marksman | Notes |
+|------|----------|---------|-------|
+| Weapon | 140 | 143 | Theoretical max: godly clean + 7× 30% scroll. |
+| Bow/Crossbow Expert | 10 | 15 | MM gets +15 from Crossbow Expert at perfect tier. |
+| Gloves | 22 | 22 | Perfect tier C/G/S: 22/20/18. |
+| Cape | 20 | 20 | |
+| Shoes | 18 | 18 | |
+| Medal | 3 | 3 | Same as high. |
+| Ring | 1 | 1 | Same as high. |
+| **Total WATK** | **214** | **222** | |
 
 ### Marksman-Specific: Snipe
 
@@ -218,7 +286,7 @@ Modeled without cooldown (sustained DPS ceiling). At 0.6s attack time, Snipe DPS
 
 ---
 
-## 4. Night Lord Assumptions
+## 5. Night Lord Assumptions
 
 ### Base Stats
 
@@ -264,9 +332,111 @@ Always active. Reasonable — NL always uses SP for DPS (1.5x multiplier).
 NL high tier C/G/S standardized from 21/18/17 to 19/17/13, aligning with all other
 classes. Low tier unchanged.
 
+### Perfect Tier WATK Breakdown
+
+At perfect tier, NL upgrades from Raven's Claw to **Dragon Purple Claw** (godly clean 60,
+theoretical max 95 WATK). RC tops out at 91 (77 clean godly + 14 scroll) — Dragon Purple
+Claw's theoretical max exceeds it by 4 WATK.
+
+| Slot | Value | Notes |
+|------|-------|-------|
+| Weapon (Dragon Purple Claw) | 95 | Godly clean 60 + 7× 30% scroll. |
+| Gloves | 22 | Perfect tier C/G/S: 22/20/18. |
+| Cape | 20 | |
+| Shoes | 18 | |
+| Medal | 3 | Same as high. |
+| Ring | 1 | Same as high. |
+| Stars | 30 (Balanced Fury) | Unchanged from high. |
+| **Total WATK** | **159** | |
+
 ---
 
-## 5. Research Findings (February 2026)
+## 6. Corsair Assumptions
+
+### Base Stats
+
+| Stat | Perfect | High | Mid | Low | Notes |
+|------|---------|------|-----|-----|-------|
+| DEX | 999 | 999 | 850 | 700 | Same pattern as archers. |
+| STR | 4 | 4 | 4 | 4 | Dexless build. |
+
+### Weapon Multiplier
+
+3.6× (Gun). Same as Crossbow.
+
+### WATK Breakdown
+
+| Slot | Perfect | High | Mid | Low | Notes |
+|------|---------|------|-----|-----|-------|
+| Weapon (Concerto) | 119 | 114 | 113 | 107 | Perfect = godly 84 + 35 scroll. |
+| Gloves | 22 | 19 | 17 | 15 | C/G/S per tier. |
+| Cape | 20 | 17 | 14 | 10 | |
+| Shoes | 18 | 13 | 10 | 6 | |
+| Medal | 3 | 3 | 2 | 0 | |
+| Ring | 1 | 1 | 1 | 1 | |
+| **Total WATK** | **183** | **167** | **157** | **139** | |
+
+---
+
+## 7. Buccaneer Assumptions
+
+### Base Stats
+
+| Stat | Perfect | High | Mid | Low | Notes |
+|------|---------|------|-----|-----|-------|
+| STR | 999 | 999 | 850 | 700 | Same pattern as warriors. |
+| DEX | 23 | 23 | 22 | 22 | Natural DEX from leveling. |
+
+### Weapon Multiplier
+
+4.8× (Knuckle).
+
+### WATK Breakdown
+
+| Slot | Perfect | High | Mid | Low | Notes |
+|------|---------|------|-----|-----|-------|
+| Weapon (Dragon Slash Claw) | 123 | 118 | 116 | 105 | Perfect = godly 88 + 35 scroll. |
+| Gloves | 22 | 19 | 17 | 12 | C/G/S per tier. |
+| Cape | 20 | 17 | 14 | 12 | |
+| Shoes | 18 | 13 | 10 | 10 | |
+| Medal | 3 | 3 | 2 | 0 | |
+| Ring | 1 | 1 | 1 | 0 | |
+| **Total WATK** | **187** | **171** | **160** | **139** | |
+
+---
+
+## 8. Shadower Assumptions
+
+### Base Stats
+
+| Stat | Perfect | High | Mid | Low | Notes |
+|------|---------|------|-----|-----|-------|
+| LUK | 999 | 999 | 850 | 700 | Same pattern as NL. |
+| STR | 20 | 20 | 20 | 20 | Secondary stat (with DEX). |
+| DEX | 20 | 20 | 20 | 20 | Secondary stat. |
+
+### Weapon Multiplier
+
+3.6× (Dagger). Shadow Partner always active (1.5× multiplier).
+
+### WATK Breakdown
+
+Shadower uses Dagger + Shield, so both weapon and shield contribute WATK.
+
+| Slot | Perfect | High | Mid | Low | Notes |
+|------|---------|------|-----|-----|-------|
+| Weapon (Dragon Kanzir) | 145 | 140 | 135 | 125 | Perfect = godly 110 + 35 scroll. |
+| Shield | 48 | 43 | 37 | 31 | Perfect = godly Dark Impenetrable + perfect scrolling. |
+| Gloves | 22 | 19 | 17 | 15 | C/G/S per tier (Shadower uses thief gloves). |
+| Cape | 20 | 17 | 14 | 11 | |
+| Shoes | 18 | 13 | 10 | 9 | |
+| Medal | 0 | 0 | 0 | 0 | Shadower medals provide stats, not WATK. |
+| Ring | 1 | 1 | 1 | 1 | |
+| **Total WATK** | **254** | **233** | **214** | **192** | |
+
+---
+
+## 9. Research Findings (February 2026)
 
 ### Resolved: Stonetooth speed (Q3)
 
@@ -321,9 +491,33 @@ giving realistic tier spread matching other classes.
 
 Sources: Royals forum marketplace listings, Nisrock price/check threads, buy threads.
 
+### Resolved: High tier weapon values corrected (Q7, March 2026)
+
+**Finding:** When adding perfect tier templates, 6 high tier weapon WATK values were found
+to be inconsistent with the godly system. High tier is intended to model a top-1% character
+— near-perfect gear, not theoretical maximum. The corrected values sit approximately one
+failed scroll slot below the godly cap (i.e., godly clean + ~6× 30% scroll instead of 7×).
+
+**Corrected values (weapon WATK only):**
+
+| Class | Old High | New High | Perfect | Rationale |
+|-------|----------|----------|---------|-----------|
+| Hero/Paladin | 150 | 140 | 146 | Stonetooth: godly 111 + ~29 scroll (vs 35 perfect) |
+| DrK | 139 | 134 | 139 | Sky Ski: godly 104 + ~30 scroll |
+| Corsair | 120 | 114 | 119 | Concerto: godly 84 + ~30 scroll |
+| Buccaneer | 128 | 118 | 123 | Dragon Slash Claw: godly 88 + ~30 scroll |
+| Shadower (dagger) | 145 | 140 | 145 | Dragon Kanzir: godly 110 + ~30 scroll |
+
+These corrections ground high tier at ~1 failed scroll slot below perfect, giving each
+class a realistic tier gap. Hero Axe and Paladin BW were unaffected (already reasonable).
+
+Note: DrK high weapon (134) still falls 5 WATK below DrK perfect (139 = godly Sky Ski).
+Sky Ski's lower godly cap (104) means 139 is also the theoretical max, so high ≈ perfect
+for DrK weapon.
+
 ---
 
-## 6. Resolved Design Decisions
+## 10. Resolved Design Decisions
 
 ### Resolved: C/G/S standardized to 19/17/13 (Q1, February 2026)
 

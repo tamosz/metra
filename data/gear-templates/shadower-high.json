@@ -4,7 +4,7 @@
   "className": "Shadower",
   "baseStats": { "STR": 4, "DEX": 14, "INT": 4, "LUK": 933 },
   "gearStats": { "STR": 78, "DEX": 135, "INT": 0, "LUK": 135 },
-  "totalWeaponAttack": 238,
+  "totalWeaponAttack": 233,
   "weaponType": "Dagger",
   "weaponSpeed": 5,
   "attackPotion": 100,
@@ -16,7 +16,7 @@
   "sharpEyes": true,
   "shadowPartner": true,
   "gearBreakdown": {
-    "weapon":    { "LUK": 21, "DEX": 0,  "STR": 0,  "WATK": 145 },
+    "weapon":    { "LUK": 21, "DEX": 0,  "STR": 0,  "WATK": 140 },
     "shield":    { "LUK": 0,  "DEX": 0,  "STR": 21, "WATK": 43 },
     "helmet":    { "LUK": 17, "DEX": 47, "STR": 17, "WATK": 0 },
     "top":       { "LUK": 32, "DEX": 7,  "STR": 0,  "WATK": 0 },
