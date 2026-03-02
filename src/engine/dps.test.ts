@@ -1759,3 +1759,103 @@ describe('uncapped DPS fields', () => {
     expect(result.capLossPercent).toBe(0);
   });
 });
+
+describe('element modifier × damage cap interaction', () => {
+  it('Paladin Blast with 1.5x holy weakness hits the cap', () => {
+    const blast = paladinData.skills.find(
+      (s) => s.name === 'Blast (Holy, Sword)'
+    )!;
+
+    // Without element modifier — no cap loss (established baseline)
+    const base = calculateSkillDps(
+      paladinHigh, paladinData, blast,
+      weaponData, attackSpeedData, mwData
+    );
+    expect(base.capLossPercent).toBe(0);
+
+    // With 1.5x element modifier — should now hit the cap
+    // rangeCap = 199,999 / (8.12 * 1.5) = 16,420 which is below max damage 18,173
+    const withElement = calculateSkillDps(
+      paladinHigh, paladinData, blast,
+      weaponData, attackSpeedData, mwData,
+      1.5
+    );
+
+    expect(withElement.capLossPercent).toBeGreaterThan(0);
+    expect(withElement.dps).toBeLessThan(withElement.uncappedDps);
+  });
+
+  it('element modifier 1.0 produces same results as no element modifier', () => {
+    const blast = paladinData.skills.find(
+      (s) => s.name === 'Blast (Holy, Sword)'
+    )!;
+
+    const base = calculateSkillDps(
+      paladinHigh, paladinData, blast,
+      weaponData, attackSpeedData, mwData
+    );
+    const withOne = calculateSkillDps(
+      paladinHigh, paladinData, blast,
+      weaponData, attackSpeedData, mwData,
+      1.0
+    );
+
+    expect(withOne.dps).toBe(base.dps);
+    expect(withOne.uncappedDps).toBe(base.uncappedDps);
+    expect(withOne.capLossPercent).toBe(base.capLossPercent);
+  });
+
+  it('uncappedDps scales linearly with element modifier', () => {
+    const blast = paladinData.skills.find(
+      (s) => s.name === 'Blast (Holy, Sword)'
+    )!;
+
+    const base = calculateSkillDps(
+      paladinHigh, paladinData, blast,
+      weaponData, attackSpeedData, mwData
+    );
+    const withElement = calculateSkillDps(
+      paladinHigh, paladinData, blast,
+      weaponData, attackSpeedData, mwData,
+      1.5
+    );
+
+    // Uncapped DPS should scale exactly by the element modifier
+    expect(withElement.uncappedDps).toBeCloseTo(base.uncappedDps * 1.5, 5);
+  });
+
+  it('capped DPS is less than naive uncapped × element scaling', () => {
+    const blast = paladinData.skills.find(
+      (s) => s.name === 'Blast (Holy, Sword)'
+    )!;
+
+    const base = calculateSkillDps(
+      paladinHigh, paladinData, blast,
+      weaponData, attackSpeedData, mwData
+    );
+    const withElement = calculateSkillDps(
+      paladinHigh, paladinData, blast,
+      weaponData, attackSpeedData, mwData,
+      1.5
+    );
+
+    // The cap should eat into some of the element-boosted damage
+    expect(withElement.dps).toBeLessThan(base.dps * 1.5);
+  });
+
+  it('element resistance (0.5x) does not introduce cap loss', () => {
+    const blast = paladinData.skills.find(
+      (s) => s.name === 'Blast (Holy, Sword)'
+    )!;
+
+    const withResist = calculateSkillDps(
+      paladinHigh, paladinData, blast,
+      weaponData, attackSpeedData, mwData,
+      0.5
+    );
+
+    // 0.5x reduces damage, so it moves further from cap, not closer
+    expect(withResist.capLossPercent).toBe(0);
+    expect(withResist.dps).toBe(withResist.uncappedDps);
+  });
+});

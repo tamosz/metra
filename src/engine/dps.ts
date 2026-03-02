@@ -133,6 +133,10 @@ function toEffectiveMultiplier(damagePercent: number, isMagic: boolean): number 
 /**
  * Compute average damage per attack including crit weighting, range caps,
  * and Shadow Partner.
+ *
+ * elementModifier scales per-line damage (e.g. 1.5× for elemental weakness)
+ * and must be factored into range cap calculation so the 199,999 cap applies
+ * to final per-line damage (range × skillMultiplier × elementModifier).
  */
 function calculateAverageDamage(
   damageRange: DamageRange,
@@ -141,10 +145,11 @@ function calculateAverageDamage(
   totalCritRate: number,
   hitCount: number,
   isMagic: boolean,
-  shadowPartner: boolean | undefined
+  shadowPartner: boolean | undefined,
+  elementModifier: number = 1
 ): { adjustedRangeNormal: number; adjustedRangeCrit: number; averageDamage: number; uncappedAverageDamage: number } {
-  const skillMultiplier = toEffectiveMultiplier(skillDamagePercent, isMagic);
-  const critMultiplier = toEffectiveMultiplier(critDamagePercent, isMagic);
+  const skillMultiplier = toEffectiveMultiplier(skillDamagePercent, isMagic) * elementModifier;
+  const critMultiplier = toEffectiveMultiplier(critDamagePercent, isMagic) * elementModifier;
 
   const rangeCap = DAMAGE_CAP / skillMultiplier;
   const rangeCapCrit = DAMAGE_CAP / critMultiplier;
@@ -197,7 +202,8 @@ export function calculateSkillDps(
   skill: SkillEntry,
   weaponData: WeaponData,
   attackSpeedData: AttackSpeedData,
-  mwData: MWData
+  mwData: MWData,
+  elementModifier: number = 1
 ): DpsResult {
   const si = classData.damageFormula === 'magic' ? false : build.speedInfusion;
   const effectiveSpeed = resolveEffectiveWeaponSpeed(build.weaponSpeed, si);
@@ -229,7 +235,7 @@ export function calculateSkillDps(
   const isMagic = (classData.damageFormula ?? 'standard') === 'magic';
   const { adjustedRangeNormal, adjustedRangeCrit, averageDamage, uncappedAverageDamage } = calculateAverageDamage(
     damageRange, skillDamagePercent, critDamagePercent, totalCritRate,
-    skill.hitCount, isMagic, build.shadowPartner
+    skill.hitCount, isMagic, build.shadowPartner, elementModifier
   );
 
   const dps = averageDamage / attackTime;

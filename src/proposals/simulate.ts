@@ -52,13 +52,6 @@ function applyPdr(dps: DpsResult, pdr: number): DpsResult {
   return { ...dps, dps: dps.dps * factor, averageDamage: dps.averageDamage * factor, uncappedDps: dps.uncappedDps * factor };
 }
 
-/**
- * Apply elemental damage modifier to a DPS result.
- * Returns a new result with DPS and averageDamage scaled by the modifier.
- */
-function applyElementModifier(dps: DpsResult, modifier: number): DpsResult {
-  return { ...dps, dps: dps.dps * modifier, averageDamage: dps.averageDamage * modifier, uncappedDps: dps.uncappedDps * modifier };
-}
 
 /**
  * Apply multi-target scaling to a DPS result.
@@ -116,25 +109,28 @@ export function runSimulation(
         const skillResultsByName = new Map<string, ScenarioResult>();
 
         for (const skill of classData.skills) {
+          // Compute element modifier before DPS calculation so it interacts
+          // with the per-line damage cap (199,999).
+          let elementModifier = 1;
+          if (scenario.elementModifiers && skill.element) {
+            elementModifier = scenario.elementModifiers[skill.element] ?? 1;
+          } else if (scenario.elementModifiers && skill.elementOptions) {
+            elementModifier = Math.max(
+              ...skill.elementOptions.map(e => scenario.elementModifiers![e] ?? 1)
+            );
+          }
+
           const dps = calculateSkillDps(
             effectiveBuild,
             classData,
             skill,
             weaponData,
             attackSpeedData,
-            mwData
+            mwData,
+            elementModifier
           );
 
           let effectiveDps = scenario.pdr != null ? applyPdr(dps, scenario.pdr) : dps;
-          if (scenario.elementModifiers && skill.element) {
-            const mod = scenario.elementModifiers[skill.element] ?? 1;
-            if (mod !== 1) effectiveDps = applyElementModifier(effectiveDps, mod);
-          } else if (scenario.elementModifiers && skill.elementOptions) {
-            const bestMod = Math.max(
-              ...skill.elementOptions.map(e => scenario.elementModifiers![e] ?? 1)
-            );
-            if (bestMod !== 1) effectiveDps = applyElementModifier(effectiveDps, bestMod);
-          }
           if (scenario.targetCount != null && scenario.targetCount > 1) {
             const effectiveTargets = Math.min(skill.maxTargets ?? 1, scenario.targetCount);
             if (effectiveTargets > 1) effectiveDps = applyTargetCount(effectiveDps, effectiveTargets);

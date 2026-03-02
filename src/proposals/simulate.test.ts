@@ -379,7 +379,7 @@ describe('runSimulation PDR', () => {
 });
 
 describe('elementModifiers', () => {
-  it('Holy 1.5x multiplies Holy-element skill DPS by 1.5', () => {
+  it('Holy 1.5x boosts Holy-element skill DPS (capped below naive 1.5x)', () => {
     const config: SimulationConfig = {
       classes: ['paladin'],
       tiers: ['high'],
@@ -401,7 +401,13 @@ describe('elementModifiers', () => {
       r => r.skillName === 'Blast (Holy, Sword)' && r.scenario === 'Holy Advantage'
     )!;
 
-    expect(holy.dps.dps).toBeCloseTo(buffed.dps.dps * 1.5, 0);
+    // Element is applied inside the damage cap, so some per-line damage
+    // hits 199,999 and the boost is less than a full 1.5x
+    expect(holy.dps.dps).toBeGreaterThan(buffed.dps.dps);
+    expect(holy.dps.dps).toBeLessThan(buffed.dps.dps * 1.5);
+    // Uncapped DPS still scales linearly by element modifier
+    expect(holy.dps.uncappedDps).toBeCloseTo(buffed.dps.uncappedDps * 1.5, 0);
+    expect(holy.dps.capLossPercent).toBeGreaterThan(0);
   });
 
   it('non-elemental skills unaffected by elementModifiers', () => {
@@ -435,6 +441,7 @@ describe('elementModifiers', () => {
       tiers: ['high'],
       scenarios: [
         { name: 'Buffed' },
+        { name: 'Holy Only', elementModifiers: { Holy: 1.5 } },
         { name: 'Undead Boss', pdr: 0.5, elementModifiers: { Holy: 1.5 } },
       ],
     };
@@ -444,15 +451,15 @@ describe('elementModifiers', () => {
       weaponData, attackSpeedData, mwData
     );
 
-    const buffed = results.find(
-      r => r.skillName === 'Blast (Holy, Sword)' && r.scenario === 'Buffed'
+    const holyOnly = results.find(
+      r => r.skillName === 'Blast (Holy, Sword)' && r.scenario === 'Holy Only'
     )!;
     const undead = results.find(
       r => r.skillName === 'Blast (Holy, Sword)' && r.scenario === 'Undead Boss'
     )!;
 
-    // 0.5 PDR * 1.5 Holy = 0.75x net
-    expect(undead.dps.dps).toBeCloseTo(buffed.dps.dps * 0.75, 0);
+    // PDR is a linear multiplier on the element-capped result
+    expect(undead.dps.dps).toBeCloseTo(holyOnly.dps.dps * 0.5, 0);
   });
 
   it('element resistance (0.5x) reduces elemental skill DPS', () => {
@@ -741,8 +748,11 @@ describe('elementOptions (adaptive element selection)', () => {
       r => r.skillName === 'Blast (F/I/L Charge, Sword)' && r.scenario === 'Mixed'
     )!;
 
-    // Should pick Fire (1.5x) over Ice (0.5x) and Lightning (neutral)
-    expect(mixed.dps.dps).toBeCloseTo(buffed.dps.dps * 1.5, 0);
+    // Should pick Fire (1.5x) over Ice (0.5x) and Lightning (neutral).
+    // Element interacts with damage cap, so capped DPS < naive 1.5x.
+    expect(mixed.dps.dps).toBeGreaterThan(buffed.dps.dps);
+    expect(mixed.dps.dps).toBeLessThan(buffed.dps.dps * 1.5);
+    expect(mixed.dps.uncappedDps).toBeCloseTo(buffed.dps.uncappedDps * 1.5, 0);
   });
 
   it('is unaffected when only non-matching elements are toggled', () => {
@@ -793,7 +803,10 @@ describe('elementOptions (adaptive element selection)', () => {
       r => r.skillName === 'Blast (F/I/L Charge, BW)' && r.scenario === 'Ice Weak'
     )!;
 
-    expect(iceWeak.dps.dps).toBeCloseTo(buffed.dps.dps * 1.5, 0);
+    // Element interacts with damage cap, so capped DPS < naive 1.5x
+    expect(iceWeak.dps.dps).toBeGreaterThan(buffed.dps.dps);
+    expect(iceWeak.dps.dps).toBeLessThan(buffed.dps.dps * 1.5);
+    expect(iceWeak.dps.uncappedDps).toBeCloseTo(buffed.dps.uncappedDps * 1.5, 0);
   });
 });
 
