@@ -225,24 +225,24 @@ describe('analyzeBalance', () => {
       // Buffed: all equal → no outliers
       makeResult({ className: 'A', skillName: 'S1', scenario: 'Buffed', dps: 100000 }),
       makeResult({ className: 'B', skillName: 'S2', scenario: 'Buffed', dps: 100000 }),
-      // Unbuffed: big spread → outlier
-      makeResult({ className: 'A', skillName: 'S1', scenario: 'Unbuffed', dps: 50000 }),
-      makeResult({ className: 'B', skillName: 'S2', scenario: 'Unbuffed', dps: 50000 }),
-      makeResult({ className: 'C', skillName: 'S3', scenario: 'Unbuffed', dps: 50000 }),
-      makeResult({ className: 'D', skillName: 'S4', scenario: 'Unbuffed', dps: 50000 }),
-      makeResult({ className: 'E', skillName: 'S5', scenario: 'Unbuffed', dps: 150000 }),
+      // Scenario B: big spread → outlier
+      makeResult({ className: 'A', skillName: 'S1', scenario: 'Scenario B', dps: 50000 }),
+      makeResult({ className: 'B', skillName: 'S2', scenario: 'Scenario B', dps: 50000 }),
+      makeResult({ className: 'C', skillName: 'S3', scenario: 'Scenario B', dps: 50000 }),
+      makeResult({ className: 'D', skillName: 'S4', scenario: 'Scenario B', dps: 50000 }),
+      makeResult({ className: 'E', skillName: 'S5', scenario: 'Scenario B', dps: 150000 }),
     ];
     const audit = analyzeBalance(results);
     // Should have groups for both scenarios
     const buffedGroups = audit.groups.filter((g) => g.scenario === 'Buffed');
-    const unbuffedGroups = audit.groups.filter((g) => g.scenario === 'Unbuffed');
+    const scenarioBGroups = audit.groups.filter((g) => g.scenario === 'Scenario B');
     expect(buffedGroups).toHaveLength(1);
-    expect(unbuffedGroups).toHaveLength(1);
-    // Outlier should only be in Unbuffed
+    expect(scenarioBGroups).toHaveLength(1);
+    // Outlier should only be in Scenario B
     const buffedOutliers = audit.outliers.filter((o) => o.scenario === 'Buffed');
-    const unbuffedOutliers = audit.outliers.filter((o) => o.scenario === 'Unbuffed');
+    const scenarioBOutliers = audit.outliers.filter((o) => o.scenario === 'Scenario B');
     expect(buffedOutliers).toHaveLength(0);
-    expect(unbuffedOutliers.length).toBeGreaterThanOrEqual(1);
+    expect(scenarioBOutliers.length).toBeGreaterThanOrEqual(1);
   });
 
   it('handles two entries in a group (pair)', () => {

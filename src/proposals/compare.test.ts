@@ -220,7 +220,7 @@ describe('compareProposal with multiple scenarios', () => {
     const scenarios: ScenarioConfig[] = [
       { name: 'Buffed' },
       {
-        name: 'Unbuffed',
+        name: 'No Buffs',
         overrides: {
           sharpEyes: false,
           echoActive: false,
@@ -263,27 +263,27 @@ describe('compareProposal with multiple scenarios', () => {
     const buffedDelta = result.deltas.find(
       (d) => d.skillName === 'Brandish (Sword)' && d.scenario === 'Buffed'
     )!;
-    const unbuffedDelta = result.deltas.find(
-      (d) => d.skillName === 'Brandish (Sword)' && d.scenario === 'Unbuffed'
+    const noBuffsDelta = result.deltas.find(
+      (d) => d.skillName === 'Brandish (Sword)' && d.scenario === 'No Buffs'
     )!;
 
     expect(buffedDelta).toBeDefined();
-    expect(unbuffedDelta).toBeDefined();
+    expect(noBuffsDelta).toBeDefined();
 
     // Both should show positive change
     expect(buffedDelta.change).toBeGreaterThan(0);
-    expect(unbuffedDelta.change).toBeGreaterThan(0);
+    expect(noBuffsDelta.change).toBeGreaterThan(0);
 
-    // Buffed DPS should be higher than unbuffed DPS (before and after)
-    expect(buffedDelta.before).toBeGreaterThan(unbuffedDelta.before);
-    expect(buffedDelta.after).toBeGreaterThan(unbuffedDelta.after);
+    // Buffed DPS should be higher than no-buffs DPS (before and after)
+    expect(buffedDelta.before).toBeGreaterThan(noBuffsDelta.before);
+    expect(buffedDelta.after).toBeGreaterThan(noBuffsDelta.after);
   });
 
-  it('unbuffed scenario removes SE, Echo, MW, SI, and attack potion effects', () => {
+  it('no-buffs scenario removes SE, Echo, MW, SI, and attack potion effects', () => {
     const scenarios: ScenarioConfig[] = [
       { name: 'Buffed' },
       {
-        name: 'Unbuffed',
+        name: 'No Buffs',
         overrides: {
           sharpEyes: false,
           echoActive: false,
@@ -320,24 +320,24 @@ describe('compareProposal with multiple scenarios', () => {
     const buffedBrandish = result.deltas.find(
       (d) => d.skillName === 'Brandish (Sword)' && d.scenario === 'Buffed'
     )!;
-    const unbuffedBrandish = result.deltas.find(
-      (d) => d.skillName === 'Brandish (Sword)' && d.scenario === 'Unbuffed'
+    const noBuffsBrandish = result.deltas.find(
+      (d) => d.skillName === 'Brandish (Sword)' && d.scenario === 'No Buffs'
     )!;
 
     // No changes applied, so before === after for both
     expect(buffedBrandish.change).toBe(0);
-    expect(unbuffedBrandish.change).toBe(0);
+    expect(noBuffsBrandish.change).toBe(0);
 
-    // Unbuffed DPS should be significantly lower (no SE, Echo, MW, SI, potion)
-    expect(unbuffedBrandish.before).toBeLessThan(buffedBrandish.before);
-    // Rough sanity check: unbuffed should be at least 20% lower
-    expect(unbuffedBrandish.before).toBeLessThan(buffedBrandish.before * 0.8);
+    // No Buffs DPS should be significantly lower (no SE, Echo, MW, SI, potion)
+    expect(noBuffsBrandish.before).toBeLessThan(buffedBrandish.before);
+    // Rough sanity check: no-buffs should be at least 20% lower
+    expect(noBuffsBrandish.before).toBeLessThan(buffedBrandish.before * 0.8);
   });
 
-  it('no-echo scenario only removes Echo effect', () => {
+  it('echo-off scenario only removes Echo effect', () => {
     const scenarios: ScenarioConfig[] = [
       { name: 'Buffed' },
-      { name: 'No-Echo', overrides: { echoActive: false } },
+      { name: 'Echo Off', overrides: { echoActive: false } },
     ];
 
     const multiConfig: SimulationConfig = {
@@ -365,14 +365,14 @@ describe('compareProposal with multiple scenarios', () => {
     const buffedBrandish = result.deltas.find(
       (d) => d.skillName === 'Brandish (Sword)' && d.scenario === 'Buffed'
     )!;
-    const noEchoBrandish = result.deltas.find(
-      (d) => d.skillName === 'Brandish (Sword)' && d.scenario === 'No-Echo'
+    const echoOffBrandish = result.deltas.find(
+      (d) => d.skillName === 'Brandish (Sword)' && d.scenario === 'Echo Off'
     )!;
 
-    // No-Echo should be slightly lower (Echo is 4% WATK)
-    expect(noEchoBrandish.before).toBeLessThan(buffedBrandish.before);
+    // Echo Off should be slightly lower (Echo is 4% WATK)
+    expect(echoOffBrandish.before).toBeLessThan(buffedBrandish.before);
     // But not drastically lower — within ~10%
-    expect(noEchoBrandish.before).toBeGreaterThan(buffedBrandish.before * 0.9);
+    expect(echoOffBrandish.before).toBeGreaterThan(buffedBrandish.before * 0.9);
   });
 
   it('bossing scenario applies PDR to DPS', () => {

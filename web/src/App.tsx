@@ -12,6 +12,7 @@ import { useCustomTiers } from './hooks/useCustomTiers.js';
 import { useSavedBuilds } from './hooks/useSavedBuilds.js';
 import { discoveredData } from './data/bundle.js';
 import { getProposalFromUrl, getBuildFromUrl, getComparisonFromUrl } from './utils/url-encoding.js';
+import type { BuffOverrides } from './components/BuffToggles.js';
 
 type Page = 'dashboard' | 'proposal' | 'build' | 'compare';
 
@@ -20,10 +21,12 @@ export function App() {
   const baseTiers = discoveredData.tiers;
   const [targetCount, setTargetCount] = useState(1);
   const [elementModifiers, setElementModifiers] = useState<Record<string, number>>({});
+  const [buffOverrides, setBuffOverrides] = useState<BuffOverrides>({});
   const simulation = useSimulation(
     customTiersState.tiers,
     targetCount > 1 ? targetCount : undefined,
     Object.keys(elementModifiers).length > 0 ? elementModifiers : undefined,
+    Object.keys(buffOverrides).length > 0 ? buffOverrides : undefined,
   );
   const savedBuildsState = useSavedBuilds();
   const proposalState = useProposal(targetCount > 1 ? targetCount : undefined);
@@ -135,6 +138,8 @@ export function App() {
             setTargetCount={setTargetCount}
             elementModifiers={elementModifiers}
             setElementModifiers={setElementModifiers}
+            buffOverrides={buffOverrides}
+            setBuffOverrides={setBuffOverrides}
           />
         )}
         {page === 'proposal' && (

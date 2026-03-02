@@ -129,15 +129,15 @@ describe('sortDeltas', () => {
 describe('groupDeltasByScenario', () => {
   it('groups deltas preserving insertion order', () => {
     const buffedDelta = makeDelta({ scenario: 'Buffed' });
-    const unbuffedDelta = makeDelta({ scenario: 'Unbuffed' });
+    const bossingDelta = makeDelta({ scenario: 'Bossing (50% PDR)' });
     const buffedDelta2 = makeDelta({ scenario: 'Buffed', className: 'DrK' });
 
-    const groups = groupDeltasByScenario([buffedDelta, unbuffedDelta, buffedDelta2]);
+    const groups = groupDeltasByScenario([buffedDelta, bossingDelta, buffedDelta2]);
 
     expect(groups).toHaveLength(2);
     expect(groups[0].scenario).toBe('Buffed');
     expect(groups[0].deltas).toHaveLength(2);
-    expect(groups[1].scenario).toBe('Unbuffed');
+    expect(groups[1].scenario).toBe('Bossing (50% PDR)');
     expect(groups[1].deltas).toHaveLength(1);
   });
 
@@ -157,23 +157,23 @@ describe('groupDeltasByScenario', () => {
 describe('groupResultsByScenario', () => {
   it('groups results by scenario name preserving insertion order', () => {
     const buffedResult = makeResult({ scenario: 'Buffed', className: 'Hero' });
-    const unbuffedResult = makeResult({ scenario: 'Unbuffed', className: 'Hero' });
+    const bossingResult = makeResult({ scenario: 'Bossing (50% PDR)', className: 'Hero' });
     const buffedResult2 = makeResult({ scenario: 'Buffed', className: 'DrK' });
-    const noEchoResult = makeResult({ scenario: 'No-Echo', className: 'Hero' });
+    const bossingKbResult = makeResult({ scenario: 'Bossing (KB)', className: 'Hero' });
 
     const groups = groupResultsByScenario([
       buffedResult,
-      unbuffedResult,
+      bossingResult,
       buffedResult2,
-      noEchoResult,
+      bossingKbResult,
     ]);
 
     expect(groups).toHaveLength(3);
     expect(groups[0].scenario).toBe('Buffed');
     expect(groups[0].results).toHaveLength(2);
-    expect(groups[1].scenario).toBe('Unbuffed');
+    expect(groups[1].scenario).toBe('Bossing (50% PDR)');
     expect(groups[1].results).toHaveLength(1);
-    expect(groups[2].scenario).toBe('No-Echo');
+    expect(groups[2].scenario).toBe('Bossing (KB)');
     expect(groups[2].results).toHaveLength(1);
   });
 });
