@@ -200,7 +200,7 @@ describe('Baseline mode', () => {
     expect(find('Hero (Axe)', 'Brandish').dps.dps).toBeCloseTo(257772, -2);
     expect(find('DrK', 'Spear Crusher').dps.dps).toBeCloseTo(251906, -2);
     expect(find('Paladin', 'Blast (Holy, Sword)').dps.dps).toBeCloseTo(192932, -2);
-    expect(find('NL', 'Triple Throw 30').dps.dps).toBeCloseTo(292314, -2);
+    expect(find('NL', 'Triple Throw').dps.dps).toBeCloseTo(292314, -2);
     expect(find('Bowmaster', 'Hurricane').dps.dps).toBeCloseTo(233073, -2);
     expect(find('Marksman', 'Strafe (MM)').dps.dps).toBeCloseTo(232748, -2);
     expect(find('Marksman', 'Snipe + Strafe').dps.dps).toBeCloseTo(234586, -2);
@@ -208,7 +208,7 @@ describe('Baseline mode', () => {
     expect(find('Corsair', 'Rapid Fire').dps.dps).toBeCloseTo(241520, -2);
     expect(find('Buccaneer', 'Demolition').dps.dps).toBeCloseTo(247417, -2);
     expect(find('Buccaneer', 'Barrage + Demolition').dps.dps).toBeGreaterThan(find('Buccaneer', 'Demolition').dps.dps);
-    expect(find('Shadower', 'BStep + Assassinate 30').dps.dps).toBeCloseTo(326734, -2);
+    expect(find('Shadower', 'BStep + Assassinate').dps.dps).toBeCloseTo(326734, -2);
     expect(find('Shadower', 'Savage Blow').dps.dps).toBeCloseTo(183467, -2);
   });
 
@@ -222,7 +222,7 @@ describe('Baseline mode', () => {
     expect(find('Hero (Axe)', 'Brandish').dps.dps).toBeCloseTo(174755, -2);
     expect(find('DrK', 'Spear Crusher').dps.dps).toBeCloseTo(172570, -2);
     expect(find('Paladin', 'Blast (Holy, Sword)').dps.dps).toBeCloseTo(130807, -2);
-    expect(find('NL', 'Triple Throw 30').dps.dps).toBeCloseTo(194891, -2);
+    expect(find('NL', 'Triple Throw').dps.dps).toBeCloseTo(194891, -2);
     expect(find('Bowmaster', 'Hurricane').dps.dps).toBeCloseTo(157112, -2);
     expect(find('Marksman', 'Strafe (MM)').dps.dps).toBeCloseTo(157515, -2);
     expect(find('Marksman', 'Snipe + Strafe').dps.dps).toBeCloseTo(171366, -2);
@@ -230,7 +230,7 @@ describe('Baseline mode', () => {
     expect(find('Corsair', 'Rapid Fire').dps.dps).toBeCloseTo(165076, -2);
     expect(find('Buccaneer', 'Demolition').dps.dps).toBeCloseTo(163986, -2);
     expect(find('Buccaneer', 'Barrage + Demolition').dps.dps).toBeGreaterThan(find('Buccaneer', 'Demolition').dps.dps);
-    expect(find('Shadower', 'BStep + Assassinate 30').dps.dps).toBeCloseTo(239830, -2);
+    expect(find('Shadower', 'BStep + Assassinate').dps.dps).toBeCloseTo(239830, -2);
     expect(find('Shadower', 'Savage Blow').dps.dps).toBeCloseTo(134668, -2);
   });
 
@@ -250,7 +250,7 @@ describe('Baseline mode', () => {
     expect(find('Corsair', 'Rapid Fire').dps.dps).toBeCloseTo(124036, -2);
     expect(find('Buccaneer', 'Demolition').dps.dps).toBeCloseTo(121362, -2);
     expect(find('Buccaneer', 'Barrage + Demolition').dps.dps).toBeGreaterThan(find('Buccaneer', 'Demolition').dps.dps);
-    expect(find('Shadower', 'BStep + Assassinate 30').dps.dps).toBeCloseTo(198577, -2);
+    expect(find('Shadower', 'BStep + Assassinate').dps.dps).toBeCloseTo(198577, -2);
     expect(find('Shadower', 'Savage Blow').dps.dps).toBeCloseTo(111504, -2);
   });
 });
@@ -302,7 +302,7 @@ describe('Special mechanics', () => {
     expect(shadHigh).toHaveLength(2);
     expect(shadLow).toHaveLength(2);
     expect(shadHigh.map((r) => r.skillName).sort()).toEqual(
-      ['BStep + Assassinate 30', 'Savage Blow']
+      ['BStep + Assassinate', 'Savage Blow']
     );
   });
 
@@ -433,13 +433,13 @@ describe('Multi-target training scenario', () => {
     expect(heroTraining.dps.dps).toBeCloseTo(heroBuffed.dps.dps * 3, 0);
 
     // NL Triple Throw: single-target (no maxTargets), unchanged
-    const nlBuffed = find('NL', 'Triple Throw 30', 'Buffed');
-    const nlTraining = find('NL', 'Triple Throw 30', 'Training (6 mobs)');
+    const nlBuffed = find('NL', 'Triple Throw', 'Buffed');
+    const nlTraining = find('NL', 'Triple Throw', 'Training (6 mobs)');
     expect(nlTraining.dps.dps).toBe(nlBuffed.dps.dps);
 
     // Shadower BStep+Assassinate combo: BStep has maxTargets 6, Assassinate defaults to 1
-    const shadBuffed = find('Shadower', 'BStep + Assassinate 30', 'Buffed');
-    const shadTraining = find('Shadower', 'BStep + Assassinate 30', 'Training (6 mobs)');
+    const shadBuffed = find('Shadower', 'BStep + Assassinate', 'Buffed');
+    const shadTraining = find('Shadower', 'BStep + Assassinate', 'Training (6 mobs)');
     expect(shadTraining.dps.dps).toBeGreaterThan(shadBuffed.dps.dps);
     expect(shadTraining.dps.dps).toBeLessThan(shadBuffed.dps.dps * 6);
   });

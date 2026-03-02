@@ -127,7 +127,7 @@ describe('compareProposal', () => {
     const nlTtHigh = result.deltas.find(
       (d) =>
         d.className === 'NL' &&
-        d.skillName === 'Triple Throw 30' &&
+        d.skillName === 'Triple Throw' &&
         d.tier === 'high'
     )!;
     expect(nlTtHigh.change).toBe(0);
@@ -209,7 +209,7 @@ describe('compareProposal', () => {
 
     // NL unaffected
     const nlDelta = result.deltas.find(
-      (d) => d.className === 'NL' && d.skillName === 'Triple Throw 30' && d.tier === 'high'
+      (d) => d.className === 'NL' && d.skillName === 'Triple Throw' && d.tier === 'high'
     )!;
     expect(nlDelta.change).toBe(0);
   });

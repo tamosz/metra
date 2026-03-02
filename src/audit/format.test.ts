@@ -90,7 +90,7 @@ function makeGroup(overrides: Partial<GroupSummary> = {}): GroupSummary {
 
 function makeOutlier(overrides: Partial<OutlierEntry> = {}): OutlierEntry {
   return {
-    className: 'NL', skillName: 'Triple Throw 30',
+    className: 'NL', skillName: 'Triple Throw',
     scenario: 'Buffed', tier: 'high', dps: 350000,
     deviations: 2.5, direction: 'over' as const, ...overrides,
   };
@@ -98,7 +98,7 @@ function makeOutlier(overrides: Partial<OutlierEntry> = {}): OutlierEntry {
 
 function makeTierSensitivity(overrides: Partial<TierSensitivity> = {}): TierSensitivity {
   return {
-    className: 'NL', skillName: 'Triple Throw 30', scenario: 'Buffed',
+    className: 'NL', skillName: 'Triple Throw', scenario: 'Buffed',
     highDps: 300000, lowDps: 100000, ratio: 3.0,
     medianRatio: 2.0, deviation: 1.0, ...overrides,
   };

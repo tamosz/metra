@@ -366,7 +366,7 @@ describe('Paladin BW Blast DPS', () => {
 
 describe('NL Gear Template DPS', () => {
   it('High tier damage range matches computed values', () => {
-    const tt = nlData.skills.find((s) => s.name === 'Triple Throw 30')!;
+    const tt = nlData.skills.find((s) => s.name === 'Triple Throw')!;
     const result = calculateSkillDps(
       nlHigh,
       nlData,
@@ -385,7 +385,7 @@ describe('NL Gear Template DPS', () => {
   });
 
   it('Low tier damage range matches computed values', () => {
-    const tt = nlData.skills.find((s) => s.name === 'Triple Throw 30')!;
+    const tt = nlData.skills.find((s) => s.name === 'Triple Throw')!;
     const result = calculateSkillDps(
       nlLow,
       nlData,
@@ -404,7 +404,7 @@ describe('NL Gear Template DPS', () => {
   });
 
   it('High tier DPS is greater than Low tier', () => {
-    const tt = nlData.skills.find((s) => s.name === 'Triple Throw 30')!;
+    const tt = nlData.skills.find((s) => s.name === 'Triple Throw')!;
     const highResult = calculateSkillDps(
       nlHigh,
       nlData,
@@ -428,7 +428,7 @@ describe('NL Gear Template DPS', () => {
   });
 
   it('uses attack time 0.60s', () => {
-    const tt = nlData.skills.find((s) => s.name === 'Triple Throw 30')!;
+    const tt = nlData.skills.find((s) => s.name === 'Triple Throw')!;
     const result = calculateSkillDps(
       nlHigh,
       nlData,
@@ -474,11 +474,11 @@ describe('Night Lord Triple Throw DPS', () => {
     expect(nlData.mastery).toBe(0.6);
     expect(nlData.primaryStat).toBe('LUK');
     expect(nlData.skills.length).toBe(1);
-    expect(nlData.skills[0].name).toBe('Triple Throw 30');
+    expect(nlData.skills[0].name).toBe('Triple Throw');
   });
 
   it('uses throwing star range formula (not standard)', () => {
-    const tt = nlData.skills.find((s) => s.name === 'Triple Throw 30')!;
+    const tt = nlData.skills.find((s) => s.name === 'Triple Throw')!;
     const result = calculateSkillDps(
       nlBuild,
       nlData,
@@ -499,7 +499,7 @@ describe('Night Lord Triple Throw DPS', () => {
   });
 
   it('computes crit damage% with built-in + SE bonuses', () => {
-    const tt = nlData.skills.find((s) => s.name === 'Triple Throw 30')!;
+    const tt = nlData.skills.find((s) => s.name === 'Triple Throw')!;
     const result = calculateSkillDps(
       nlBuild,
       nlData,
@@ -516,7 +516,7 @@ describe('Night Lord Triple Throw DPS', () => {
   });
 
   it('computes crit damage% without SE (built-in crit only)', () => {
-    const tt = nlData.skills.find((s) => s.name === 'Triple Throw 30')!;
+    const tt = nlData.skills.find((s) => s.name === 'Triple Throw')!;
     const noSeBuild = { ...nlBuild, sharpEyes: false };
     const result = calculateSkillDps(
       noSeBuild,
@@ -533,7 +533,7 @@ describe('Night Lord Triple Throw DPS', () => {
   });
 
   it('uses 0.65 crit rate with SE (0.50 built-in + 0.15 SE)', () => {
-    const tt = nlData.skills.find((s) => s.name === 'Triple Throw 30')!;
+    const tt = nlData.skills.find((s) => s.name === 'Triple Throw')!;
     const result = calculateSkillDps(
       nlBuild,
       nlData,
@@ -561,7 +561,7 @@ describe('Night Lord Triple Throw DPS', () => {
   });
 
   it('Shadow Partner multiplies DPS by 1.5', () => {
-    const tt = nlData.skills.find((s) => s.name === 'Triple Throw 30')!;
+    const tt = nlData.skills.find((s) => s.name === 'Triple Throw')!;
     const withSp = calculateSkillDps(
       nlBuild,
       nlData,
@@ -584,7 +584,7 @@ describe('Night Lord Triple Throw DPS', () => {
   });
 
   it('uses Triple Throw attack speed (0.60s at speed 2)', () => {
-    const tt = nlData.skills.find((s) => s.name === 'Triple Throw 30')!;
+    const tt = nlData.skills.find((s) => s.name === 'Triple Throw')!;
     const result = calculateSkillDps(
       nlBuild,
       nlData,
@@ -640,7 +640,7 @@ describe('Shadower DPS', () => {
 
   it('BStep + Assn30 use combo cycle time (2.31s)', () => {
     const bstep = shadData.skills.find((s) => s.name === 'Boomerang Step')!;
-    const assn = shadData.skills.find((s) => s.name === 'Assassinate 30')!;
+    const assn = shadData.skills.find((s) => s.name === 'Assassinate')!;
     const bstepResult = calculateSkillDps(
       shadHigh, shadData, bstep, weaponData, attackSpeedData, mwData
     );
@@ -690,7 +690,7 @@ describe('Shadower DPS', () => {
 
   it('High tier BStep + Assn30 combo DPS', () => {
     const bstep = shadData.skills.find((s) => s.name === 'Boomerang Step')!;
-    const assn = shadData.skills.find((s) => s.name === 'Assassinate 30')!;
+    const assn = shadData.skills.find((s) => s.name === 'Assassinate')!;
     const bstepDps = calculateSkillDps(
       shadHigh, shadData, bstep, weaponData, attackSpeedData, mwData
     ).dps;
@@ -715,7 +715,7 @@ describe('Shadower DPS', () => {
 
   it('Low tier BStep + Assn30 combo DPS', () => {
     const bstep = shadData.skills.find((s) => s.name === 'Boomerang Step')!;
-    const assn = shadData.skills.find((s) => s.name === 'Assassinate 30')!;
+    const assn = shadData.skills.find((s) => s.name === 'Assassinate')!;
     const bstepDps = calculateSkillDps(
       shadLow, shadData, bstep, weaponData, attackSpeedData, mwData
     ).dps;

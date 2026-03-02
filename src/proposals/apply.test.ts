@@ -140,13 +140,13 @@ describe('applyProposal', () => {
       name: 'TT crit nerf',
       author: 'test',
       changes: [
-        { target: 'nl.triple-throw-30', field: 'builtInCritRate', from: 0.50, to: 0.40 },
-        { target: 'nl.triple-throw-30', field: 'builtInCritDamageBonus', from: 100, to: 80 },
+        { target: 'nl.triple-throw', field: 'builtInCritRate', from: 0.50, to: 0.40 },
+        { target: 'nl.triple-throw', field: 'builtInCritDamageBonus', from: 100, to: 80 },
       ],
     };
 
     const modified = applyProposal(nlDataMap, proposal);
-    const tt = modified.get('nl')!.skills.find((s) => s.name === 'Triple Throw 30')!;
+    const tt = modified.get('nl')!.skills.find((s) => s.name === 'Triple Throw')!;
     expect(tt.builtInCritRate).toBe(0.40);
     expect(tt.builtInCritDamageBonus).toBe(80);
   });

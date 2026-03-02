@@ -10,7 +10,7 @@
   "damageFormula": "throwingStar",
   "skills": [
     {
-      "name": "Triple Throw 30",
+      "name": "Triple Throw",
       "basePower": 150,
       "multiplier": 1,
       "hitCount": 3,
