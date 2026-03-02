@@ -6,7 +6,6 @@ describe('getScenarioDescription', () => {
     expect(getScenarioDescription('Buffed')).toContain('All party buffs');
     expect(getScenarioDescription('Unbuffed')).toContain('No party buffs');
     expect(getScenarioDescription('No-Echo')).toContain('Echo of Hero');
-    expect(getScenarioDescription('Bossing (50% PDR)')).toContain('50%');
   });
 
   it('returns dynamic description for Training (N mobs)', () => {

@@ -16,11 +16,7 @@ export const DEFAULT_SCENARIOS: ScenarioConfig[] = [
     name: 'No-Echo',
     overrides: { echoActive: false },
   },
-  {
-    name: 'Bossing (50% PDR)',
-    pdr: 0.5,
-  },
-  {
+{
     name: 'Bossing (KB)',
     pdr: 0.5,
     bossAttackInterval: 1.5,

@@ -352,7 +352,11 @@ describe('Multi-scenario baseline', () => {
 
     // Combo DPS is halved with 50% PDR
     const comboPdr = results.find(
-      (r) => r.className === 'Marksman' && r.skillName === 'Snipe + Strafe' && r.scenario === 'Bossing (50% PDR)' && r.tier === 'high'
+      (r) =>
+        r.className === 'Marksman' &&
+        r.skillName === 'Snipe + Strafe' &&
+        r.scenario === 'Bossing (50% PDR)' &&
+        r.tier === 'high'
     )!;
     expect(comboPdr.dps.dps).toBeCloseTo(117293, -2);
   });
