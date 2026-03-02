@@ -1,0 +1,68 @@
+import { describe, it, expect } from 'vitest';
+import { calculateMarginalGains } from './marginal.js';
+import { loadWeapons, loadAttackSpeed, loadMW, loadClassSkills, loadGearTemplate } from '../data/loader.js';
+
+const weaponData = loadWeapons();
+const attackSpeedData = loadAttackSpeed();
+const mwData = loadMW();
+
+describe('calculateMarginalGains', () => {
+  it('returns gains for WATK, primary, and secondary stats', () => {
+    const classData = loadClassSkills('hero');
+    const build = loadGearTemplate('hero-high');
+    const skill = classData.skills.find(s => s.name === 'Brandish (Sword)')!;
+
+    const gains = calculateMarginalGains(build, classData, skill, weaponData, attackSpeedData, mwData);
+
+    // Should have 3 entries: WATK, STR (primary), DEX (secondary)
+    expect(gains).toHaveLength(3);
+    expect(gains.map(g => g.stat)).toEqual(expect.arrayContaining(['WATK', 'STR', 'DEX']));
+
+    // All gains should be positive
+    for (const g of gains) {
+      expect(g.dpsGain).toBeGreaterThan(0);
+      expect(g.percentGain).toBeGreaterThan(0);
+      expect(g.currentValue).toBeGreaterThan(0);
+    }
+
+    // Should be sorted by dpsGain descending
+    for (let i = 1; i < gains.length; i++) {
+      expect(gains[i - 1].dpsGain).toBeGreaterThanOrEqual(gains[i].dpsGain);
+    }
+  });
+
+  it('shows WATK for mages (maps to MATK internally)', () => {
+    const classData = loadClassSkills('archmage-il');
+    const build = loadGearTemplate('archmage-il-high');
+    const skill = classData.skills.find(s => s.name === 'Chain Lightning')!;
+
+    const gains = calculateMarginalGains(build, classData, skill, weaponData, attackSpeedData, mwData);
+
+    expect(gains.map(g => g.stat)).toEqual(expect.arrayContaining(['WATK', 'INT', 'LUK']));
+  });
+
+  it('lists each secondary stat separately for multi-secondary classes', () => {
+    const classData = loadClassSkills('shadower');
+    const build = loadGearTemplate('shadower-high');
+    const skill = classData.skills.find(s => s.name === 'Savage Blow')!;
+
+    const gains = calculateMarginalGains(build, classData, skill, weaponData, attackSpeedData, mwData);
+
+    // Shadower: WATK, LUK (primary), STR (secondary), DEX (secondary)
+    expect(gains).toHaveLength(4);
+    expect(gains.map(g => g.stat)).toEqual(expect.arrayContaining(['WATK', 'LUK', 'STR', 'DEX']));
+  });
+
+  it('returns zero gain for fixedDamage skills', () => {
+    const classData = loadClassSkills('marksman');
+    const build = loadGearTemplate('marksman-high');
+    const snipe = classData.skills.find(s => s.name === 'Snipe')!;
+
+    const gains = calculateMarginalGains(build, classData, snipe, weaponData, attackSpeedData, mwData);
+
+    // Snipe has fixedDamage — all stat gains should be 0
+    for (const g of gains) {
+      expect(g.dpsGain).toBe(0);
+    }
+  });
+});
