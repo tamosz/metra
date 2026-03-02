@@ -16,7 +16,6 @@ import { renderAsciiChart } from './report/ascii-chart.js';
 import { capitalize } from './report/utils.js';
 import { analyzeBalance } from './audit/analyze.js';
 import { formatAuditReport } from './audit/format.js';
-import { DEFAULT_SCENARIOS } from './scenarios.js';
 
 export function loadProposal(path: string) {
   const fullPath = resolve(path);
@@ -40,14 +39,39 @@ export function parseTargetsFlag(): number | undefined {
   return Math.floor(val);
 }
 
+export function parseKbFlags(): { bossAttackInterval: number; bossAccuracy: number } | undefined {
+  if (!process.argv.includes('--kb')) return undefined;
+  const intervalIdx = process.argv.indexOf('--kb-interval');
+  const accuracyIdx = process.argv.indexOf('--kb-accuracy');
+  const interval = intervalIdx !== -1 ? Number(process.argv[intervalIdx + 1]) : 1.5;
+  const accuracy = accuracyIdx !== -1 ? Number(process.argv[accuracyIdx + 1]) : 250;
+  if (!Number.isFinite(interval) || interval <= 0) {
+    throw new Error('--kb-interval requires a positive number (e.g., --kb-interval 1.5)');
+  }
+  if (!Number.isFinite(accuracy) || accuracy < 1) {
+    throw new Error('--kb-accuracy requires a positive integer (e.g., --kb-accuracy 250)');
+  }
+  return { bossAttackInterval: interval, bossAccuracy: accuracy };
+}
+
 function main() {
   const auditFlag = process.argv.includes('--audit');
   const targetCount = parseTargetsFlag();
-  const args = process.argv.slice(2).filter((arg: string) => !arg.startsWith('--'));
-  // Also filter out the value after --targets
-  const targetsIdx = process.argv.indexOf('--targets');
-  const skipValue = targetsIdx !== -1 ? process.argv[targetsIdx + 1] : undefined;
-  const positionalArgs = args.filter((a) => a !== skipValue);
+  const kbConfig = parseKbFlags();
+
+  // Filter out flags and their values to get positional args (proposal paths)
+  const skipValues = new Set<string>();
+  const flagsWithValues = ['--targets', '--kb-interval', '--kb-accuracy'];
+  for (const flag of flagsWithValues) {
+    const idx = process.argv.indexOf(flag);
+    if (idx !== -1 && process.argv[idx + 1]) {
+      skipValues.add(process.argv[idx + 1]);
+    }
+  }
+  const positionalArgs = process.argv
+    .slice(2)
+    .filter((arg: string) => !arg.startsWith('--'))
+    .filter((arg: string) => !skipValues.has(arg));
   const proposalPath = positionalArgs[0];
 
   // Load game data
@@ -56,7 +80,12 @@ function main() {
   const mwData = loadMW();
   const { classNames, tiers, classDataMap, gearTemplates } = discoverClassesAndTiers();
 
-  const scenarios: ScenarioConfig[] = [...DEFAULT_SCENARIOS];
+  const baseline: ScenarioConfig = { name: kbConfig ? 'Baseline (KB)' : 'Baseline' };
+  if (kbConfig) {
+    baseline.bossAttackInterval = kbConfig.bossAttackInterval;
+    baseline.bossAccuracy = kbConfig.bossAccuracy;
+  }
+  const scenarios: ScenarioConfig[] = [baseline];
   if (targetCount != null && targetCount > 1) {
     scenarios.push({
       name: `Training (${targetCount} mobs)`,

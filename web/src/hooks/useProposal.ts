@@ -2,7 +2,7 @@ import { useState, useMemo, useCallback } from 'react';
 import { compareProposal } from '@engine/proposals/compare.js';
 import type { SimulationConfig } from '@engine/proposals/simulate.js';
 import type { Proposal, ProposalChange, ComparisonResult, ScenarioConfig } from '@engine/proposals/types.js';
-import { DEFAULT_SCENARIOS } from '@engine/scenarios.js';
+
 import {
   discoveredData,
   weaponData,
@@ -76,7 +76,7 @@ export function useProposal(targetCount?: number): ProposalState {
     setSimulating(true);
     setTimeout(() => {
       const { classNames, tiers, classDataMap, gearTemplates } = discoveredData;
-      const scenarios: ScenarioConfig[] = [...DEFAULT_SCENARIOS];
+      const scenarios: ScenarioConfig[] = [{ name: 'Baseline' }];
       if (targetCount != null && targetCount > 1) {
         scenarios.push({ name: `Training (${targetCount} mobs)`, targetCount });
       }

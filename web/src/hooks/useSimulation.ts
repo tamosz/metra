@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { runSimulation } from '@engine/proposals/simulate.js';
 import type { SimulationConfig } from '@engine/proposals/simulate.js';
 import type { ScenarioConfig, ScenarioResult } from '@engine/proposals/types.js';
-import { DEFAULT_SCENARIOS } from '@engine/scenarios.js';
+
 import {
   discoveredData,
   weaponData,
@@ -13,11 +13,15 @@ import type { CustomTier } from '../types/custom-tier.js';
 import { generateCustomTierTemplates } from '../utils/custom-tier.js';
 import type { BuffOverrides } from '../components/BuffToggles.js';
 
+export interface KbConfig {
+  bossAttackInterval: number;
+  bossAccuracy: number;
+}
+
 export interface SimulationData {
   results: ScenarioResult[];
   classNames: string[];
   tiers: string[];
-  scenarios: string[];
   /** Maps custom tier IDs to their display names. */
   customTierNames: Map<string, string>;
 }
@@ -27,6 +31,7 @@ export function useSimulation(
   targetCount?: number,
   elementModifiers?: Record<string, number>,
   buffOverrides?: BuffOverrides,
+  kbConfig?: KbConfig,
 ): SimulationData {
   return useMemo(() => {
     const { classNames, tiers, classDataMap, gearTemplates } = discoveredData;
@@ -47,16 +52,15 @@ export function useSimulation(
 
     const hasElementMods = elementModifiers && Object.keys(elementModifiers).length > 0;
     const hasBuffOverrides = buffOverrides && Object.keys(buffOverrides).length > 0;
-    const scenarios: ScenarioConfig[] = DEFAULT_SCENARIOS.map((s) => {
-      let merged = s;
-      if (hasElementMods) {
-        merged = { ...merged, elementModifiers: { ...merged.elementModifiers, ...elementModifiers } };
-      }
-      if (hasBuffOverrides) {
-        merged = { ...merged, overrides: { ...merged.overrides, ...buffOverrides } };
-      }
-      return merged;
-    });
+    // Build a single scenario from controls
+    const scenario: ScenarioConfig = { name: 'Baseline' };
+    if (hasElementMods) scenario.elementModifiers = { ...elementModifiers };
+    if (hasBuffOverrides) scenario.overrides = { ...buffOverrides };
+    if (kbConfig) {
+      scenario.bossAttackInterval = kbConfig.bossAttackInterval;
+      scenario.bossAccuracy = kbConfig.bossAccuracy;
+    }
+    const scenarios: ScenarioConfig[] = [scenario];
     if (targetCount != null && targetCount > 1) {
       const training: ScenarioConfig = { name: `Training (${targetCount} mobs)`, targetCount };
       if (hasElementMods) training.elementModifiers = { ...elementModifiers };
@@ -79,7 +83,6 @@ export function useSimulation(
       mwData
     );
 
-    const scenarioNames = scenarios.map((s) => s.name);
-    return { results, classNames, tiers: allTiers, scenarios: scenarioNames, customTierNames };
-  }, [customTiers, targetCount, elementModifiers, buffOverrides]);
+    return { results, classNames, tiers: allTiers, customTierNames };
+  }, [customTiers, targetCount, elementModifiers, buffOverrides, kbConfig]);
 }

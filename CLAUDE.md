@@ -37,6 +37,12 @@ npm run simulate -- --targets 6
 # Run a proposal with training scenario
 npm run simulate -- --targets 6 proposals/brandish-buff-20.json
 
+# Run baseline with knockback modeling
+npm run simulate -- --kb
+
+# Run baseline with custom boss parameters
+npm run simulate -- --kb --kb-interval 2.0 --kb-accuracy 270
+
 # Run baseline with balance audit (outlier detection)
 npm run simulate -- --audit
 
@@ -118,7 +124,7 @@ A proposal is a JSON file that describes one or more changes:
 
 The pipeline: `apply.ts` patches the skill data → `simulate.ts` runs DPS across all classes/tiers/scenarios → `compare.ts` produces before/after deltas with rank tracking → `markdown.ts` or `bbcode.ts` renders a report. When no proposal is given, the CLI runs in **baseline mode**: it simulates all classes and renders a ranked DPS table with an ASCII bar chart.
 
-**Scenarios:** `ScenarioConfig` defines evaluation conditions (buff overrides, PDR, targetCount). Proposals say *what changes*; scenarios say *under what conditions to evaluate*. PDR is applied as a post-calculation multiplier: `effectiveDps = dps * (1 - pdr)`. `targetCount` enables multi-target training simulation.
+**Simulation controls:** `ScenarioConfig` defines evaluation conditions (buff overrides, element modifiers, targetCount, knockback parameters). Conditions are composed from individual toggles rather than predefined scenario presets. `targetCount` enables multi-target training simulation.
 
 ### 4. Balance Audit (`/src/audit`)
 Analyzes simulation results and flags statistical outliers. Pure functions, no I/O.
@@ -132,7 +138,7 @@ CLI: `npm run simulate -- --audit` appends the audit report after baseline ranki
 ### 5. Web Interface (`/web`)
 React + Vite single-page app with its own `package.json`. Consumes the engine via `src/core.ts` (a browser-safe re-export that excludes fs-based loaders). Deployed to Vercel (`vercel.json` config in root).
 
-- Dashboard with baseline DPS rankings and multi-target training toggle
+- Dashboard with baseline DPS rankings and composable filter controls (buff toggles, element toggles, KB toggle with boss parameters, target count)
 - Interactive proposal builder (create, edit, simulate)
 - Comparison results view with per-scenario tables
 - URL sharing via lz-string compressed proposals in URL hash (`#p=<compressed>`)
@@ -209,17 +215,14 @@ A change that looks balanced at high funding might be wildly unbalanced at low f
 ### Gear Template Assumptions
 All templates assume a fully buffed party scenario: MW20, Sharp Eyes, Speed Infusion, Echo of Hero, and Booster (implicit). Low and mid tiers use Heartstopper (60 WATK), high tier uses Onyx Apple (100 WATK). Mage low/mid tiers use Lollipop (45 MATK). See `data/gear-assumptions.md` for the full per-slot breakdown, forum cross-references, and flagged concerns.
 
-### Scenarios
-Standard scenarios for comparison reports (all implemented):
-- **Buffed** — all buffs on (MW, SE, SI, Echo, attack potions). Primary comparison metric.
-- **Unbuffed** — no SE, Echo, SI, MW, or attack potion. Shows raw class power.
-- **No-Echo** — all buffs except Echo of Hero. Shows Echo's DPS contribution.
-- **Bossing (50% PDR)** — fully buffed with 50% Physical Damage Reduction applied. Shows sustained bossing DPS.
-- **Training** (planned) — kills/hr and EXP/hr at a reference map/mob.
+### Simulation Controls
+All simulation conditions are composed from individual toggles rather than predefined scenarios:
+- **Buff toggles** — SE, Echo, SI, MW, Attack Potion. Each can be toggled on/off independently.
+- **Element toggles** (web only) — Holy, Fire, Ice, Lightning, Poison. Each cycles neutral → weak (1.5×) → strong (0.5×).
+- **KB toggle** — Knockback modeling. When enabled, accounts for DPS lost to boss attacks interrupting skills. Classes with Stance (warriors, Bucc) or Shadow Shifter (NL, Shadower) lose less uptime. Configurable boss attack interval (default 1.5s) and accuracy (default 250). CLI: `--kb` flag with optional `--kb-interval` and `--kb-accuracy`.
+- **Target count** — Multi-target training simulation. AoE skills scale with `min(maxTargets, targetCount)`. CLI: `--targets N`.
 
-Multi-scenario support: `ScenarioConfig` can override buff flags, apply PDR, and set element modifiers. The CLI runs all 4 default scenarios. Reports render separate tables per scenario.
-
-**Element toggles (web only):** Dashboard filter bar has composable element toggles (Holy, Fire, Ice, Lightning, Poison). Each cycles neutral → weak (1.5×) → strong (0.5×). These overlay onto any selected scenario via `elementModifiers` on `ScenarioConfig`.
+`ScenarioConfig` in the engine still supports buff overrides, element modifiers, target count, and knockback parameters — these are built on-the-fly from the active toggles rather than selected from a list.
 
 ## Tech Stack
 
@@ -304,7 +307,6 @@ metra/
 │   ├── index.ts                 # library entry point
 │   ├── core.ts                  # browser-safe re-exports (no fs loaders)
 │   ├── cli.ts                   # CLI entry: baseline rankings or proposal comparison
-│   ├── scenarios.ts             # DEFAULT_SCENARIOS constant (4 standard scenarios)
 │   ├── integration.test.ts      # end-to-end pipeline tests
 │   ├── audit/
 │   │   ├── index.ts             # re-exports
