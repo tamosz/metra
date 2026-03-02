@@ -18,22 +18,17 @@ A balance simulator for Royals staff and community. Every number traces back to 
 - 4 scenarios (Buffed, Unbuffed, No-Echo, Bossing 50% PDR) + composable element toggles
 - Multi-target simulation: per-skill `maxTargets` + per-scenario `targetCount` for training/AoE comparisons
 - Balance audit: automated outlier detection across scenarios and tiers
+- Custom funding tiers: delta-based tier editor with localStorage persistence
 - Pre-commit hooks, comprehensive test coverage
 - Deployed on Vercel: https://metra-ten.vercel.app
 
-## Phase 2: Custom Funding Tiers
-
-- Custom funding tiers beyond low/mid/high
-
-## Phase 3: Community Features
-
-> Don't build social infra before there's an audience. Phase 2 first.
+## Phase 2: Community Features
 
 - Proposal gallery: browse, search, filter, share
 - Diff visualization: bar chart overlays, bump charts for rank changes
 - If there's demand: voting, comments, proposal versioning (needs a backend)
 
-## Phase 4: Advanced Analysis
+## Phase 3: Advanced Analysis
 
 **Quick wins:**
 - Marginal gain calculator ("what should I upgrade next?" — DPS per WATK, per stat point)
@@ -51,11 +46,11 @@ A balance simulator for Royals staff and community. Every number traces back to 
 ## Architecture
 
 ```
-Phase 1–2 (now):
+Now:
   Static site (Vercel) ← Vite build ← React SPA
   Engine runs client-side (no server needed)
 
-Phase 3 (if community features need persistence):
+Phase 2 (if community features need persistence):
   Static site (Vercel) ← React SPA
        ↕ lightweight backend (TBD)
   Social data: proposals, votes, comments
