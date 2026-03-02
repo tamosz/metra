@@ -48,7 +48,8 @@ function applyScenarioOverrides(
  * Returns a new result with DPS and averageDamage scaled by (1 - pdr).
  */
 function applyPdr(dps: DpsResult, pdr: number): DpsResult {
-  return { ...dps, dps: dps.dps * (1 - pdr), averageDamage: dps.averageDamage * (1 - pdr) };
+  const factor = 1 - pdr;
+  return { ...dps, dps: dps.dps * factor, averageDamage: dps.averageDamage * factor, uncappedDps: dps.uncappedDps * factor };
 }
 
 /**
@@ -56,7 +57,7 @@ function applyPdr(dps: DpsResult, pdr: number): DpsResult {
  * Returns a new result with DPS and averageDamage scaled by the modifier.
  */
 function applyElementModifier(dps: DpsResult, modifier: number): DpsResult {
-  return { ...dps, dps: dps.dps * modifier, averageDamage: dps.averageDamage * modifier };
+  return { ...dps, dps: dps.dps * modifier, averageDamage: dps.averageDamage * modifier, uncappedDps: dps.uncappedDps * modifier };
 }
 
 /**
@@ -64,7 +65,7 @@ function applyElementModifier(dps: DpsResult, modifier: number): DpsResult {
  * effectiveTargets = min(skill.maxTargets, scenario.targetCount).
  */
 function applyTargetCount(dps: DpsResult, effectiveTargets: number): DpsResult {
-  return { ...dps, dps: dps.dps * effectiveTargets, averageDamage: dps.averageDamage * effectiveTargets };
+  return { ...dps, dps: dps.dps * effectiveTargets, averageDamage: dps.averageDamage * effectiveTargets, uncappedDps: dps.uncappedDps * effectiveTargets };
 }
 
 /**
@@ -72,7 +73,7 @@ function applyTargetCount(dps: DpsResult, effectiveTargets: number): DpsResult {
  * Returns a new result with DPS and averageDamage scaled by the uptime factor.
  */
 function applyKnockbackUptime(dps: DpsResult, uptimeMultiplier: number): DpsResult {
-  return { ...dps, dps: dps.dps * uptimeMultiplier, averageDamage: dps.averageDamage * uptimeMultiplier };
+  return { ...dps, dps: dps.dps * uptimeMultiplier, averageDamage: dps.averageDamage * uptimeMultiplier, uncappedDps: dps.uncappedDps * uptimeMultiplier };
 }
 
 /**
@@ -222,6 +223,8 @@ function aggregateComboGroups(
     const first = groupResults[0];
     const totalDps = groupResults.reduce((sum, r) => sum + r.dps.dps, 0);
     const totalAvgDamage = groupResults.reduce((sum, r) => sum + r.dps.averageDamage, 0);
+    const totalUncappedDps = groupResults.reduce((sum, r) => sum + r.dps.uncappedDps, 0);
+    const capLossPercent = totalUncappedDps > 0 ? ((totalUncappedDps - totalDps) / totalUncappedDps) * 100 : 0;
 
     output.push({
       className: first.className,
@@ -233,6 +236,8 @@ function aggregateComboGroups(
         skillName: groupName,
         dps: totalDps,
         averageDamage: totalAvgDamage,
+        uncappedDps: totalUncappedDps,
+        capLossPercent,
       },
     });
   }

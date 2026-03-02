@@ -4,11 +4,13 @@ import {
   formatChange,
   formatPercent,
   formatRank,
+  formatCapLoss,
   capitalize,
   sortDeltas,
   groupDeltasByScenario,
   groupResultsByScenario,
 } from './utils.js';
+import type { BaselineReportOptions } from './markdown.js';
 
 /**
  * Render a ComparisonResult as BBCode for royals.ms forums (Xenforo).
@@ -51,8 +53,12 @@ export function renderComparisonBBCode(result: ComparisonResult): string {
 /**
  * Render a baseline DPS ranking as BBCode.
  */
-export function renderBaselineBBCode(results: ScenarioResult[]): string {
+export function renderBaselineBBCode(
+  results: ScenarioResult[],
+  options?: BaselineReportOptions,
+): string {
   const lines: string[] = [];
+  const showCapLoss = options?.showCapLoss ?? true;
 
   lines.push('[b]DPS Rankings[/b]');
   lines.push('');
@@ -62,7 +68,7 @@ export function renderBaselineBBCode(results: ScenarioResult[]): string {
   for (const group of groups) {
     lines.push(`[b]${group.scenario}[/b]`);
     lines.push('[code]');
-    renderBaselineCodeTable(lines, group.results);
+    renderBaselineCodeTable(lines, group.results, showCapLoss);
     lines.push('[/code]');
     lines.push('');
   }
@@ -131,7 +137,11 @@ function renderCodeTable(lines: string[], deltas: DeltaEntry[]): void {
   }
 }
 
-function renderBaselineCodeTable(lines: string[], results: ScenarioResult[]): void {
+function renderBaselineCodeTable(
+  lines: string[],
+  results: ScenarioResult[],
+  showCapLoss: boolean,
+): void {
   const sorted = [...results].sort((a, b) => b.dps.dps - a.dps.dps);
 
   const rows = sorted.map((r, i) => ({
@@ -140,6 +150,7 @@ function renderBaselineCodeTable(lines: string[], results: ScenarioResult[]): vo
     skillName: r.skillName,
     tier: capitalize(r.tier),
     dps: formatNumber(r.dps.dps),
+    capLoss: formatCapLoss(r.dps.capLossPercent),
   }));
 
   const cols = {
@@ -148,25 +159,30 @@ function renderBaselineCodeTable(lines: string[], results: ScenarioResult[]): vo
     skillName: Math.max(5, ...rows.map((r) => r.skillName.length)),
     tier: Math.max(4, ...rows.map((r) => r.tier.length)),
     dps: Math.max(3, ...rows.map((r) => r.dps.length)),
+    capLoss: Math.max(8, ...rows.map((r) => r.capLoss.length)),
   };
 
-  const header = [
+  const headerParts = [
     '#'.padStart(cols.rank),
     'Class'.padEnd(cols.className),
     'Skill'.padEnd(cols.skillName),
     'Tier'.padEnd(cols.tier),
     'DPS'.padStart(cols.dps),
-  ].join('  ');
+  ];
+  if (showCapLoss) headerParts.push('Cap Loss'.padStart(cols.capLoss));
+  const header = headerParts.join('  ');
   lines.push(header);
   lines.push('-'.repeat(header.length));
 
   for (const row of rows) {
-    lines.push([
+    const parts = [
       row.rank.padStart(cols.rank),
       row.className.padEnd(cols.className),
       row.skillName.padEnd(cols.skillName),
       row.tier.padEnd(cols.tier),
       row.dps.padStart(cols.dps),
-    ].join('  '));
+    ];
+    if (showCapLoss) parts.push(row.capLoss.padStart(cols.capLoss));
+    lines.push(parts.join('  '));
   }
 }

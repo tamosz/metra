@@ -12,12 +12,12 @@ test.describe('dashboard', () => {
 
   test('buff toggle changes DPS values', async ({ page }) => {
     const table = page.getByTestId('ranking-table');
-    const firstDpsBefore = await table.locator('tbody tr:first-child td:last-child').textContent();
+    const firstDpsBefore = await table.locator('tbody tr:first-child td:nth-child(5)').textContent();
 
     // Turn off SE
     await page.getByRole('button', { name: 'SE' }).click();
 
-    const firstDpsAfter = await table.locator('tbody tr:first-child td:last-child').textContent();
+    const firstDpsAfter = await table.locator('tbody tr:first-child td:nth-child(5)').textContent();
     expect(firstDpsAfter).not.toBe(firstDpsBefore);
   });
 
@@ -38,7 +38,7 @@ test.describe('dashboard', () => {
 
   test('rankings sorted by DPS descending', async ({ page }) => {
     const table = page.getByTestId('ranking-table');
-    const dpsTexts = await table.locator('tbody tr td:last-child').allTextContents();
+    const dpsTexts = await table.locator('tbody tr td:nth-child(5)').allTextContents();
     const dpsValues = dpsTexts.map((t) => Number(t.replace(/,/g, '')));
 
     for (let i = 1; i < dpsValues.length; i++) {
@@ -58,12 +58,12 @@ test.describe('dashboard', () => {
 
   test('KB toggle changes DPS values', async ({ page }) => {
     const table = page.getByTestId('ranking-table');
-    const firstDpsBefore = await table.locator('tbody tr:first-child td:last-child').textContent();
+    const firstDpsBefore = await table.locator('tbody tr:first-child td:nth-child(5)').textContent();
 
     // Enable KB modeling
     await page.getByRole('button', { name: 'KB' }).click();
 
-    const firstDpsAfter = await table.locator('tbody tr:first-child td:last-child').textContent();
+    const firstDpsAfter = await table.locator('tbody tr:first-child td:nth-child(5)').textContent();
     expect(firstDpsAfter).not.toBe(firstDpsBefore);
   });
 
@@ -73,7 +73,7 @@ test.describe('dashboard', () => {
 
     // Get baseline DPS
     const table = page.getByTestId('ranking-table');
-    const dpsBefore = await table.locator('tbody tr td:last-child').allTextContents();
+    const dpsBefore = await table.locator('tbody tr td:nth-child(5)').allTextContents();
 
     // Click to set Holy weak (1.5x)
     await holyButton.click();
@@ -88,7 +88,7 @@ test.describe('dashboard', () => {
     await expect(holyButton).not.toHaveClass(/emerald|red/);
 
     // DPS should be back to baseline
-    const dpsAfter = await table.locator('tbody tr td:last-child').allTextContents();
+    const dpsAfter = await table.locator('tbody tr td:nth-child(5)').allTextContents();
     expect(dpsAfter).toEqual(dpsBefore);
   });
 });

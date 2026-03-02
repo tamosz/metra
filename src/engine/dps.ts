@@ -46,6 +46,10 @@ export interface DpsResult {
   averageDamage: number;
   /** DPS (average damage / attack time). */
   dps: number;
+  /** DPS without the per-line damage cap. */
+  uncappedDps: number;
+  /** Percentage of DPS lost to the cap (0-100). */
+  capLossPercent: number;
 }
 
 /**
@@ -138,7 +142,7 @@ function calculateAverageDamage(
   hitCount: number,
   isMagic: boolean,
   shadowPartner: boolean | undefined
-): { adjustedRangeNormal: number; adjustedRangeCrit: number; averageDamage: number } {
+): { adjustedRangeNormal: number; adjustedRangeCrit: number; averageDamage: number; uncappedAverageDamage: number } {
   const skillMultiplier = toEffectiveMultiplier(skillDamagePercent, isMagic);
   const critMultiplier = toEffectiveMultiplier(critDamagePercent, isMagic);
 
@@ -149,21 +153,28 @@ function calculateAverageDamage(
   const adjustedRangeCrit = calculateAdjustedRange(damageRange, rangeCapCrit);
 
   let averageDamage: number;
+  let uncappedAverageDamage: number;
   if (totalCritRate > 0) {
     const normalRate = 1 - totalCritRate;
     averageDamage =
       (skillMultiplier * normalRate * adjustedRangeNormal +
         critMultiplier * totalCritRate * adjustedRangeCrit) *
       hitCount;
+    uncappedAverageDamage =
+      (skillMultiplier * normalRate + critMultiplier * totalCritRate) *
+      damageRange.average *
+      hitCount;
   } else {
     averageDamage = skillMultiplier * adjustedRangeNormal * hitCount;
+    uncappedAverageDamage = skillMultiplier * damageRange.average * hitCount;
   }
 
   if (shadowPartner) {
     averageDamage *= SHADOW_PARTNER_MULTIPLIER;
+    uncappedAverageDamage *= SHADOW_PARTNER_MULTIPLIER;
   }
 
-  return { adjustedRangeNormal, adjustedRangeCrit, averageDamage };
+  return { adjustedRangeNormal, adjustedRangeCrit, averageDamage, uncappedAverageDamage };
 }
 
 /**
@@ -196,6 +207,7 @@ export function calculateSkillDps(
   // adjustedRangeNormal are set to 0 because they don't apply — only averageDamage and dps are meaningful.
   if (skill.fixedDamage != null) {
     const totalDamage = skill.fixedDamage * skill.hitCount;
+    const dps = totalDamage / attackTime;
     return {
       skillName: skill.name,
       attackTime,
@@ -205,7 +217,9 @@ export function calculateSkillDps(
       adjustedRangeNormal: 0,
       adjustedRangeCrit: 0,
       averageDamage: totalDamage,
-      dps: totalDamage / attackTime,
+      dps,
+      uncappedDps: dps,
+      capLossPercent: 0,
     };
   }
 
@@ -213,10 +227,16 @@ export function calculateSkillDps(
   const { critDamagePercent, totalCritRate } = calculateCritDamage(skill, classData, build.sharpEyes);
   const damageRange = calculateBaseDamageRange(build, classData, skill, weaponData, mwData);
   const isMagic = (classData.damageFormula ?? 'standard') === 'magic';
-  const { adjustedRangeNormal, adjustedRangeCrit, averageDamage } = calculateAverageDamage(
+  const { adjustedRangeNormal, adjustedRangeCrit, averageDamage, uncappedAverageDamage } = calculateAverageDamage(
     damageRange, skillDamagePercent, critDamagePercent, totalCritRate,
     skill.hitCount, isMagic, build.shadowPartner
   );
+
+  const dps = averageDamage / attackTime;
+  const uncappedDps = uncappedAverageDamage / attackTime;
+  // Math.max guards against negative values from floating point non-associativity
+  // when the cap doesn't actually apply (a*x + b*x vs (a+b)*x).
+  const capLossPercent = uncappedDps > 0 ? Math.max(0, ((uncappedDps - dps) / uncappedDps) * 100) : 0;
 
   return {
     skillName: skill.name,
@@ -227,6 +247,8 @@ export function calculateSkillDps(
     adjustedRangeNormal,
     adjustedRangeCrit,
     averageDamage,
-    dps: averageDamage / attackTime,
+    dps,
+    uncappedDps,
+    capLossPercent,
   };
 }

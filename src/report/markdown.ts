@@ -4,11 +4,16 @@ import {
   formatChange,
   formatPercent,
   formatRank,
+  formatCapLoss,
   capitalize,
   sortDeltas,
   groupDeltasByScenario,
   groupResultsByScenario,
 } from './utils.js';
+
+export interface BaselineReportOptions {
+  showCapLoss?: boolean;
+}
 
 /**
  * Render a ComparisonResult as a Markdown report.
@@ -106,8 +111,12 @@ function renderDeltaTable(lines: string[], deltas: DeltaEntry[]): void {
  * Render a baseline DPS ranking report (no proposal).
  * Groups by scenario, sorts by DPS descending, adds rank column.
  */
-export function renderBaselineReport(results: ScenarioResult[]): string {
+export function renderBaselineReport(
+  results: ScenarioResult[],
+  options?: BaselineReportOptions,
+): string {
   const lines: string[] = [];
+  const showCapLoss = options?.showCapLoss ?? true;
 
   lines.push('# DPS Rankings');
   lines.push('');
@@ -117,16 +126,25 @@ export function renderBaselineReport(results: ScenarioResult[]): string {
   for (const group of scenarioGroups) {
     lines.push(`## ${group.scenario}`);
     lines.push('');
-    renderBaselineTable(lines, group.results);
+    renderBaselineTable(lines, group.results, showCapLoss);
     lines.push('');
   }
 
   return lines.join('\n');
 }
 
-function renderBaselineTable(lines: string[], results: ScenarioResult[]): void {
-  lines.push('| Rank | Class | Skill | Tier | DPS |');
-  lines.push('|-----:|-------|-------|------|----:|');
+function renderBaselineTable(
+  lines: string[],
+  results: ScenarioResult[],
+  showCapLoss: boolean,
+): void {
+  if (showCapLoss) {
+    lines.push('| Rank | Class | Skill | Tier | DPS | Cap Loss |');
+    lines.push('|-----:|-------|-------|------|----:|---------:|');
+  } else {
+    lines.push('| Rank | Class | Skill | Tier | DPS |');
+    lines.push('|-----:|-------|-------|------|----:|');
+  }
 
   const sorted = [...results].sort((a, b) => b.dps.dps - a.dps.dps);
   for (let i = 0; i < sorted.length; i++) {
@@ -138,6 +156,9 @@ function renderBaselineTable(lines: string[], results: ScenarioResult[]): void {
       capitalize(r.tier),
       formatNumber(r.dps.dps),
     ];
+    if (showCapLoss) {
+      row.push(formatCapLoss(r.dps.capLossPercent));
+    }
     lines.push('| ' + row.join(' | ') + ' |');
   }
 }

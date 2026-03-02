@@ -13,6 +13,8 @@ function mockDpsResult(dps: number) {
     adjustedRangeCrit: 1800,
     averageDamage: dps * 0.63,
     dps,
+    uncappedDps: dps,
+    capLossPercent: 0,
   };
 }
 
@@ -149,6 +151,47 @@ describe('renderComparisonBBCode', () => {
     expect(bbcode).toContain('[b]Bossing (50% PDR)[/b]');
     const codeBlocks = bbcode.match(/\[code\]/g);
     expect(codeBlocks).toHaveLength(2);
+  });
+});
+
+describe('renderBaselineBBCode cap loss column', () => {
+  it('includes Cap Loss column header by default', () => {
+    const results: ScenarioResult[] = [
+      { className: 'Hero', skillName: 'Brandish', tier: 'high', scenario: 'Buffed', dps: mockDpsResult(300000) },
+    ];
+
+    const bbcode = renderBaselineBBCode(results);
+    expect(bbcode).toContain('Cap Loss');
+  });
+
+  it('shows cap loss values in table rows', () => {
+    const dps = mockDpsResult(300000);
+    dps.capLossPercent = 8.5;
+    const results: ScenarioResult[] = [
+      { className: 'Hero', skillName: 'Brandish', tier: 'high', scenario: 'Buffed', dps },
+    ];
+
+    const bbcode = renderBaselineBBCode(results);
+    expect(bbcode).toContain('8.5%');
+  });
+
+  it('shows dash for negligible cap loss', () => {
+    const results: ScenarioResult[] = [
+      { className: 'Hero', skillName: 'Brandish', tier: 'high', scenario: 'Buffed', dps: mockDpsResult(100000) },
+    ];
+
+    const bbcode = renderBaselineBBCode(results);
+    const heroLine = bbcode.split('\n').find((l) => l.includes('Hero'));
+    expect(heroLine).toContain('-');
+  });
+
+  it('omits Cap Loss column when showCapLoss is false', () => {
+    const results: ScenarioResult[] = [
+      { className: 'Hero', skillName: 'Brandish', tier: 'high', scenario: 'Buffed', dps: mockDpsResult(300000) },
+    ];
+
+    const bbcode = renderBaselineBBCode(results, { showCapLoss: false });
+    expect(bbcode).not.toContain('Cap Loss');
   });
 });
 

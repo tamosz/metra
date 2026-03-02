@@ -60,6 +60,6 @@ export type {
 } from './proposals/types.js';
 
 // Report (renderers are pure functions, no fs)
-export { renderComparisonReport, renderBaselineReport } from './report/markdown.js';
+export { renderComparisonReport, renderBaselineReport, type BaselineReportOptions } from './report/markdown.js';
 export { renderAsciiChart } from './report/ascii-chart.js';
 export { renderComparisonBBCode, renderBaselineBBCode } from './report/bbcode.js';
