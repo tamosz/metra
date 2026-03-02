@@ -62,7 +62,7 @@ export function BuildBuffToggles({ state }: BuildBuffTogglesProps) {
         )}
 
         {/* MW Level */}
-        <div className={`flex items-center gap-2 py-0.5 pl-2 ${mwOverridden ? 'border-l-2 border-blue-400' : 'border-l-2 border-transparent'}`}>
+        <div className={`flex items-center gap-2 py-0.5 pl-2 ${mwOverridden ? 'border-l-2 border-accent' : 'border-l-2 border-transparent'}`}>
           <span className="flex w-[120px] items-center text-xs text-text-secondary">
             MW Level
             <Tooltip text={BUFF_DESCRIPTIONS['MW Level']} />
@@ -78,7 +78,7 @@ export function BuildBuffToggles({ state }: BuildBuffTogglesProps) {
               }
             }}
             className={`cursor-pointer rounded border border-border-default bg-bg-raised px-1.5 py-0.5 text-sm focus:border-border-active transition-colors ${
-              mwOverridden ? 'text-blue-400' : 'text-text-primary'
+              mwOverridden ? 'text-accent' : 'text-text-primary'
             }`}
           >
             {MW_LEVELS.map((level) => (
@@ -90,7 +90,7 @@ export function BuildBuffToggles({ state }: BuildBuffTogglesProps) {
           {mwOverridden && (
             <span
               onClick={() => resetField('mwLevel')}
-              className="cursor-pointer select-none text-[11px] text-blue-400"
+              className="cursor-pointer select-none text-[11px] text-accent"
               title="Click to reset"
             >
               ({template.mwLevel})
@@ -124,7 +124,7 @@ function BuffCheckbox({
   const currentValue = (overrides[overrideKey] as boolean | undefined) ?? templateValue;
 
   return (
-    <label className={`flex cursor-pointer items-center gap-2 py-0.5 pl-2 ${isOverridden ? 'border-l-2 border-blue-400' : 'border-l-2 border-transparent'}`}>
+    <label className={`flex cursor-pointer items-center gap-2 py-0.5 pl-2 ${isOverridden ? 'border-l-2 border-accent' : 'border-l-2 border-transparent'}`}>
       <input
         type="checkbox"
         checked={currentValue}
@@ -136,9 +136,9 @@ function BuffCheckbox({
             setOverride(overrideKey, newValue);
           }
         }}
-        className="accent-blue-400"
+        className="accent-accent"
       />
-      <span className={`text-xs ${isOverridden ? 'text-blue-400' : 'text-text-secondary'}`}>
+      <span className={`text-xs ${isOverridden ? 'text-accent' : 'text-text-secondary'}`}>
         {label}
       </span>
       {BUFF_DESCRIPTIONS[label] && <Tooltip text={BUFF_DESCRIPTIONS[label]} />}

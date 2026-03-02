@@ -5,7 +5,7 @@ import { BuildBuffToggles } from './BuildBuffToggles.js';
 import { BuildDpsResults } from './BuildDpsResults.js';
 import { ComparisonSummary } from './ComparisonSummary.js';
 import { encodeComparison } from '../utils/url-encoding.js';
-import { formatClassName } from '../utils/format.js';
+import { formatClassName, formatChange, changeColorClass } from '../utils/format.js';
 
 interface BuildComparisonProps {
   state: BuildComparisonState;
@@ -197,13 +197,3 @@ function Select({ label, value, options, onChange }: {
   );
 }
 
-function formatChange(percent: number): string {
-  if (Math.abs(percent) < 0.01) return '0.0%';
-  const sign = percent > 0 ? '+' : '';
-  return `${sign}${percent.toFixed(1)}%`;
-}
-
-function changeColorClass(percent: number): string {
-  if (Math.abs(percent) < 0.01) return 'text-text-dim';
-  return percent > 0 ? 'text-positive' : 'text-negative';
-}

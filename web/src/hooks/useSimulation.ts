@@ -4,7 +4,7 @@ import type { SimulationConfig } from '@engine/proposals/simulate.js';
 import type { ScenarioConfig, ScenarioResult } from '@engine/proposals/types.js';
 import { DEFAULT_SCENARIOS } from '@engine/scenarios.js';
 import {
-  discoverClassesAndTiers,
+  discoveredData,
   weaponData,
   attackSpeedData,
   mwData,
@@ -23,7 +23,7 @@ export interface SimulationData {
 
 export function useSimulation(customTiers: CustomTier[] = [], targetCount?: number): SimulationData {
   return useMemo(() => {
-    const { classNames, tiers, classDataMap, gearTemplates } = discoverClassesAndTiers();
+    const { classNames, tiers, classDataMap, gearTemplates } = discoveredData;
 
     // Merge custom tier templates into the gear templates map
     const allTiers = [...tiers];

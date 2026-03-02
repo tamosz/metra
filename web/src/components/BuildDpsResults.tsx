@@ -1,5 +1,6 @@
 import type { BuildExplorerState } from '../hooks/useBuildExplorer.js';
 import { encodeBuild } from '../utils/url-encoding.js';
+import { formatDps, formatChange, changeColorClass } from '../utils/format.js';
 
 interface BuildDpsResultsProps {
   state: BuildExplorerState;
@@ -81,17 +82,3 @@ export function BuildDpsResults({ state, showCopyLink = true }: BuildDpsResultsP
   );
 }
 
-function formatDps(n: number): string {
-  return Math.round(n).toLocaleString();
-}
-
-function formatChange(percent: number): string {
-  if (Math.abs(percent) < 0.01) return '0.0%';
-  const sign = percent > 0 ? '+' : '';
-  return `${sign}${percent.toFixed(1)}%`;
-}
-
-function changeColorClass(percent: number): string {
-  if (Math.abs(percent) < 0.01) return 'text-text-faint';
-  return percent > 0 ? 'text-positive' : 'text-negative';
-}

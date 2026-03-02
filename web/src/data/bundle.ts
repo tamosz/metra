@@ -119,3 +119,5 @@ export function discoverClassesAndTiers(): DiscoveryResult {
 
   return { classNames, tiers: tierArray, classDataMap, gearTemplates };
 }
+
+export const discoveredData = discoverClassesAndTiers();

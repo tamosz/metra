@@ -15,6 +15,7 @@ const CLASS_COLORS: Record<string, string> = {
   Shadower: '#8855e0',
   Bishop: '#f0e070',
   'Archmage I/L': '#60b0f0',
+  'Archmage F/P': '#e07040',
 };
 
 const DEFAULT_COLOR = '#888888';

@@ -3,7 +3,7 @@ import { calculateSkillDps } from '@engine/engine/dps.js';
 import type { CharacterBuild, ClassSkillData, SkillEntry } from '@engine/data/types.js';
 import type { DpsResult } from '@engine/engine/dps.js';
 import {
-  discoverClassesAndTiers,
+  discoveredData,
   weaponData,
   attackSpeedData,
   mwData,
@@ -111,7 +111,7 @@ function computeSkillDps(
 }
 
 export function useBuildExplorer(): BuildExplorerState {
-  const discovery = useMemo(() => discoverClassesAndTiers(), []);
+  const discovery = discoveredData;
   const { classNames, tiers, classDataMap, gearTemplates } = discovery;
 
   const [selectedClass, setSelectedClass] = useState(classNames[0] ?? '');

@@ -136,7 +136,7 @@ function StatInput({
   const incSpinner = useSpinner(increment);
 
   return (
-    <div className={`flex items-center gap-2 py-0.5 pl-2 ${isOverridden ? 'border-l-2 border-blue-400' : 'border-l-2 border-transparent'}`}>
+    <div className={`flex items-center gap-2 py-0.5 pl-2 ${isOverridden ? 'border-l-2 border-accent' : 'border-l-2 border-transparent'}`}>
       <span className="w-20 shrink-0 text-xs text-text-muted">{label}</span>
       <div className="flex items-stretch overflow-hidden rounded border border-border-default">
         <button
@@ -155,7 +155,7 @@ function StatInput({
             if (!isNaN(v)) onChange(v);
           }}
           className={`w-[48px] border-x border-border-default bg-bg-raised px-1 py-1 text-center text-sm tabular-nums focus:border-border-active transition-colors [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${
-            isOverridden ? 'text-blue-400' : 'text-text-primary'
+            isOverridden ? 'text-accent' : 'text-text-primary'
           }`}
         />
         <button
@@ -170,7 +170,7 @@ function StatInput({
       <span
         onClick={isOverridden ? onReset : undefined}
         className={`text-[11px] tabular-nums select-none ${
-          isOverridden ? 'cursor-pointer text-blue-400' : 'cursor-default text-text-faint'
+          isOverridden ? 'cursor-pointer text-accent' : 'cursor-default text-text-faint'
         }`}
         title={isOverridden ? 'Click to reset' : 'Template value'}
       >
