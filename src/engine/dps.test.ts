@@ -276,8 +276,8 @@ describe('Paladin Blast DPS', () => {
       mwData
     );
 
-    // F/I/L charge uses Strafe/Snipe speed (0.60s at speed 2)
-    expect(result.attackTime).toBe(0.60);
+    // F/I/L charge uses Blast speed (0.63s at speed 2)
+    expect(result.attackTime).toBe(0.63);
     expect(result.skillDamagePercent).toBe(754);
     // SE: 580 * 1.3 + 140 = 894
     expect(result.seDamagePercent).toBe(894);
@@ -1092,7 +1092,7 @@ describe('Bowmaster DPS', () => {
     expect(bmData.primaryStat).toBe('DEX');
     expect(bmData.secondaryStat).toBe('STR');
     expect(bmData.damageFormula).toBe('standard');
-    expect(bmData.skills.length).toBe(1);
+    expect(bmData.skills.length).toBe(2);
   });
 
   it('Hurricane uses fixed 0.12s attack time', () => {

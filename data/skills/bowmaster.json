@@ -19,6 +19,17 @@
       "builtInCritRate": 0.40,
       "builtInCritDamageBonus": 100,
       "source": "dmg sheet D14=100, E14=100 (100*1), C14=0.12s fixed, N14 crit: 0.40 built-in from Critical Shot"
+    },
+    {
+      "name": "Strafe",
+      "basePower": 170,
+      "multiplier": 1,
+      "hitCount": 4,
+      "speedCategory": "Strafe/Snipe",
+      "weaponType": "Bow",
+      "builtInCritRate": 0.40,
+      "builtInCritDamageBonus": 100,
+      "source": "dmg sheet (same base as MM Strafe, 4-hit bow attack)"
     }
   ]
 }
