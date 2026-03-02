@@ -2,6 +2,7 @@ import { useState, useMemo, useEffect, useCallback } from 'react';
 import { DpsChart } from './DpsChart.js';
 import { FilterGroup } from './FilterGroup.js';
 import { SupportClassNote } from './SupportClassNote.js';
+import { TierAssumptions } from './TierAssumptions.js';
 import type { SimulationData } from '../hooks/useSimulation.js';
 import type { CustomTiersState } from '../hooks/useCustomTiers.js';
 import { compareTiers } from '@engine/data/types.js';
@@ -92,6 +93,8 @@ export function Dashboard({ simulation, customTiers, baseTiers, targetCount, set
         <ElementToggles modifiers={elementModifiers} onChange={setElementModifiers} />
         <BuffToggles overrides={buffOverrides} onChange={setBuffOverrides} />
       </div>
+
+      <TierAssumptions />
 
       <SupportClassNote classNames={[...new Set(filtered.map((r) => r.className))]} />
 
