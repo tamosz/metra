@@ -12,7 +12,6 @@ interface MarginalGainsTableProps {
 
 export function MarginalGainsTable({ build, classData }: MarginalGainsTableProps) {
   const { bestSkill, gains } = useMemo(() => {
-    // Find the highest-DPS skill (aggregate comboGroups)
     let bestSingle: SkillEntry | null = null;
     let bestDps = 0;
 
@@ -44,7 +43,6 @@ export function MarginalGainsTable({ build, classData }: MarginalGainsTableProps
       }
     }
 
-    // Calculate marginal gains for the best skill/combo
     let marginalGains: MarginalGain[];
     let skillLabel: string;
 
@@ -55,7 +53,6 @@ export function MarginalGainsTable({ build, classData }: MarginalGainsTableProps
       const gainsBySubSkill = group.skills.map(skill =>
         calculateMarginalGains(build, classData, skill, weaponData, attackSpeedData, mwData)
       );
-      // Aggregate: sum dpsGain for each stat across sub-skills
       const statMap = new Map<string, MarginalGain>();
       for (const subGains of gainsBySubSkill) {
         for (const g of subGains) {
@@ -67,7 +64,6 @@ export function MarginalGainsTable({ build, classData }: MarginalGainsTableProps
           }
         }
       }
-      // Recompute percentGain from aggregated dpsGain
       marginalGains = [...statMap.values()].map(g => ({
         ...g,
         percentGain: bestDps > 0 ? (g.dpsGain / bestDps) * 100 : 0,

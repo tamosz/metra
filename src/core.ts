@@ -27,6 +27,7 @@ export {
   DEFAULT_KB_RECOVERY,
   CHANNEL_KB_RECOVERY,
 } from './engine/knockback.js';
+export { calculateMarginalGains, type MarginalGain } from './engine/marginal.js';
 
 // Constants
 export { TIER_ORDER, compareTiers } from './data/types.js';
