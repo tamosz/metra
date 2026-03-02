@@ -14,9 +14,10 @@ import { colors } from '../theme.js';
 
 interface DpsChartProps {
   data: ScenarioResult[];
+  capEnabled: boolean;
 }
 
-export function DpsChart({ data }: DpsChartProps) {
+export function DpsChart({ data, capEnabled }: DpsChartProps) {
   const isMobile = useIsMobile();
 
   const chartData = data.map((r) => ({
@@ -24,7 +25,7 @@ export function DpsChart({ data }: DpsChartProps) {
     sublabel: r.tier.charAt(0).toUpperCase() + r.tier.slice(1),
     // Unique key for Recharts YAxis — includes tier to avoid duplicate labels
     uid: `${r.className} — ${r.skillName} [${r.tier}]`,
-    dps: Math.round(r.dps.dps),
+    dps: Math.round(capEnabled ? r.dps.dps : r.dps.uncappedDps),
     className: r.className,
   }));
 

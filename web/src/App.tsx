@@ -25,6 +25,7 @@ export function App() {
   const [kbEnabled, setKbEnabled] = useState(false);
   const [bossAttackInterval, setBossAttackInterval] = useState(1.5);
   const [bossAccuracy, setBossAccuracy] = useState(250);
+  const [capEnabled, setCapEnabled] = useState(true);
   const simulation = useSimulation(
     customTiersState.tiers,
     targetCount > 1 ? targetCount : undefined,
@@ -150,6 +151,8 @@ export function App() {
             setBossAttackInterval={setBossAttackInterval}
             bossAccuracy={bossAccuracy}
             setBossAccuracy={setBossAccuracy}
+            capEnabled={capEnabled}
+            setCapEnabled={setCapEnabled}
           />
         )}
         {page === 'proposal' && (

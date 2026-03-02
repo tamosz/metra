@@ -15,6 +15,8 @@ import { ElementToggles } from './ElementToggles.js';
 import { BuffToggles } from './BuffToggles.js';
 import type { BuffOverrides } from './BuffToggles.js';
 import { KbToggle } from './KbToggle.js';
+import { CapToggle } from './CapToggle.js';
+import type { DpsResult } from '@engine/engine/dps.js';
 
 interface DashboardProps {
   simulation: SimulationData;
@@ -32,9 +34,11 @@ interface DashboardProps {
   setBossAttackInterval: (n: number) => void;
   bossAccuracy: number;
   setBossAccuracy: (n: number) => void;
+  capEnabled: boolean;
+  setCapEnabled: (enabled: boolean) => void;
 }
 
-type SortColumn = 'class' | 'skill' | 'tier' | 'dps';
+type SortColumn = 'class' | 'skill' | 'tier' | 'dps' | 'capLoss';
 type SortDirection = 'asc' | 'desc';
 
 const COLUMN_DEFAULTS: Record<SortColumn, SortDirection> = {
@@ -42,6 +46,7 @@ const COLUMN_DEFAULTS: Record<SortColumn, SortDirection> = {
   skill: 'asc',
   tier: 'asc',
   dps: 'desc',
+  capLoss: 'desc',
 };
 
 function tierDisplayName(tier: string, customTierNames: Map<string, string>): string {
@@ -50,7 +55,7 @@ function tierDisplayName(tier: string, customTierNames: Map<string, string>): st
   return tier.charAt(0).toUpperCase() + tier.slice(1);
 }
 
-export function Dashboard({ simulation, customTiers, baseTiers, targetCount, setTargetCount, elementModifiers, setElementModifiers, buffOverrides, setBuffOverrides, kbEnabled, setKbEnabled, bossAttackInterval, setBossAttackInterval, bossAccuracy, setBossAccuracy }: DashboardProps) {
+export function Dashboard({ simulation, customTiers, baseTiers, targetCount, setTargetCount, elementModifiers, setElementModifiers, buffOverrides, setBuffOverrides, kbEnabled, setKbEnabled, bossAttackInterval, setBossAttackInterval, bossAccuracy, setBossAccuracy, capEnabled, setCapEnabled }: DashboardProps) {
   const { results, tiers, customTierNames } = simulation;
   const [selectedTier, setSelectedTier] = useState<string | 'all'>('all');
 
@@ -64,8 +69,8 @@ export function Dashboard({ simulation, customTiers, baseTiers, targetCount, set
         if (selectedTier !== 'all' && r.tier !== selectedTier) return false;
         return true;
       })
-      .sort((a, b) => b.dps.dps - a.dps.dps);
-  }, [results, selectedTier, targetCount]);
+      .sort((a, b) => capEnabled ? b.dps.dps - a.dps.dps : b.dps.uncappedDps - a.dps.uncappedDps);
+  }, [results, selectedTier, targetCount, capEnabled]);
 
   return (
     <div>
@@ -94,16 +99,17 @@ export function Dashboard({ simulation, customTiers, baseTiers, targetCount, set
           bossAccuracy={bossAccuracy}
           onAccuracyChange={setBossAccuracy}
         />
+        <CapToggle enabled={capEnabled} onToggle={setCapEnabled} />
       </div>
 
       <TierAssumptions />
 
       <SupportClassNote classNames={[...new Set(filtered.map((r) => r.className))]} />
 
-      <DpsChart data={filtered} />
+      <DpsChart data={filtered} capEnabled={capEnabled} />
 
       <div className="mt-6">
-        <RankingTable data={filtered} customTierNames={customTierNames} />
+        <RankingTable data={filtered} customTierNames={customTierNames} capEnabled={capEnabled} />
       </div>
     </div>
   );
@@ -164,9 +170,11 @@ function SortArrow({ direction }: { direction: SortDirection }) {
 function RankingTable({
   data,
   customTierNames,
+  capEnabled,
 }: {
-  data: { className: string; skillName: string; tier: string; dps: { dps: number } }[];
+  data: { className: string; skillName: string; tier: string; dps: DpsResult }[];
   customTierNames: Map<string, string>;
+  capEnabled: boolean;
 }) {
   const [sortColumn, setSortColumn] = useState<SortColumn>('dps');
   const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
@@ -180,6 +188,8 @@ function RankingTable({
     }
   };
 
+  const getDps = (r: typeof data[0]) => capEnabled ? r.dps.dps : r.dps.uncappedDps;
+
   const sorted = useMemo(() => {
     const dir = sortDirection === 'asc' ? 1 : -1;
     return [...data].sort((a, b) => {
@@ -187,13 +197,15 @@ function RankingTable({
         case 'class': return dir * a.className.localeCompare(b.className);
         case 'skill': return dir * a.skillName.localeCompare(b.skillName);
         case 'tier': return dir * compareTiers(a.tier, b.tier);
-        case 'dps': return dir * (a.dps.dps - b.dps.dps);
+        case 'dps': return dir * (getDps(a) - getDps(b));
+        case 'capLoss': return dir * (a.dps.capLossPercent - b.dps.capLossPercent);
       }
     });
-  }, [data, sortColumn, sortDirection]);
+  }, [data, sortColumn, sortDirection, capEnabled]);
 
   const thBase = 'px-3 py-2 text-[11px] uppercase tracking-wide text-text-dim font-medium';
   const thSortable = `${thBase} cursor-pointer select-none`;
+  const columnCount = capEnabled ? 6 : 5;
 
   return (
     <>
@@ -214,12 +226,17 @@ function RankingTable({
             <th className={`${thSortable} text-right`} onClick={() => handleSort('dps')}>
               DPS{sortColumn === 'dps' && <SortArrow direction={sortDirection} />}
             </th>
+            {capEnabled && (
+              <th className={`${thSortable} text-right`} onClick={() => handleSort('capLoss')}>
+                Cap Loss{sortColumn === 'capLoss' && <SortArrow direction={sortDirection} />}
+              </th>
+            )}
           </tr>
         </thead>
         <tbody>
           {sorted.length === 0 ? (
             <tr>
-              <td colSpan={5} className="px-3 py-6 text-center text-sm text-text-dim">
+              <td colSpan={columnCount} className="px-3 py-6 text-center text-sm text-text-dim">
                 No results for this filter combination
               </td>
             </tr>
@@ -239,8 +256,13 @@ function RankingTable({
                 <td className="px-3 py-2 text-text-secondary">{r.skillName}</td>
                 <td className="px-3 py-2 text-text-muted">{tierDisplayName(r.tier, customTierNames)}</td>
                 <td className="px-3 py-2 text-right tabular-nums">
-                  {formatDps(r.dps.dps)}
+                  {formatDps(getDps(r))}
                 </td>
+                {capEnabled && (
+                  <td className="px-3 py-2 text-right tabular-nums text-text-muted">
+                    {r.dps.capLossPercent < 0.05 ? '-' : `${r.dps.capLossPercent.toFixed(1)}%`}
+                  </td>
+                )}
               </tr>
             ))
           )}
