@@ -135,7 +135,7 @@ describe('renderComparisonBBCode', () => {
           className: 'Hero',
           skillName: 'Brandish',
           tier: 'high',
-          scenario: 'Unbuffed',
+          scenario: 'Bossing (50% PDR)',
           before: 50000,
           after: 55000,
           change: 5000,
@@ -146,7 +146,7 @@ describe('renderComparisonBBCode', () => {
 
     const bbcode = renderComparisonBBCode(result);
     expect(bbcode).toContain('[b]Buffed[/b]');
-    expect(bbcode).toContain('[b]Unbuffed[/b]');
+    expect(bbcode).toContain('[b]Bossing (50% PDR)[/b]');
     const codeBlocks = bbcode.match(/\[code\]/g);
     expect(codeBlocks).toHaveLength(2);
   });
@@ -173,13 +173,13 @@ describe('renderBaselineBBCode', () => {
   it('contains all scenario names from input', () => {
     const results: ScenarioResult[] = [
       { className: 'Hero', skillName: 'Brandish', tier: 'high', scenario: 'Buffed', dps: mockDpsResult(300000) },
-      { className: 'Hero', skillName: 'Brandish', tier: 'high', scenario: 'Unbuffed', dps: mockDpsResult(150000) },
       { className: 'Hero', skillName: 'Brandish', tier: 'high', scenario: 'Bossing (50% PDR)', dps: mockDpsResult(150000) },
+      { className: 'Hero', skillName: 'Brandish', tier: 'high', scenario: 'Bossing (KB)', dps: mockDpsResult(150000) },
     ];
 
     const bbcode = renderBaselineBBCode(results);
     expect(bbcode).toContain('[b]Buffed[/b]');
-    expect(bbcode).toContain('[b]Unbuffed[/b]');
     expect(bbcode).toContain('[b]Bossing (50% PDR)[/b]');
+    expect(bbcode).toContain('[b]Bossing (KB)[/b]');
   });
 });

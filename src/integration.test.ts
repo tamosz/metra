@@ -317,7 +317,7 @@ describe('Multi-scenario baseline', () => {
     const scenarios: ScenarioConfig[] = [
       { name: 'Buffed' },
       {
-        name: 'Unbuffed',
+        name: 'No Buffs',
         overrides: {
           sharpEyes: false,
           echoActive: false,
@@ -341,7 +341,7 @@ describe('Multi-scenario baseline', () => {
     const report = renderBaselineReport(results);
 
     expect(report).toContain('## Buffed');
-    expect(report).toContain('## Unbuffed');
+    expect(report).toContain('## No Buffs');
     expect(report).toContain('## Bossing (50% PDR)');
 
     // Snipe + Strafe combo DPS in buffed scenario

@@ -154,7 +154,7 @@ describe('renderComparisonReport with multiple scenarios', () => {
           className: 'Hero',
           skillName: 'Brandish (Sword)',
           tier: 'high',
-          scenario: 'Unbuffed',
+          scenario: 'Bossing (50% PDR)',
           before: 120000,
           after: 130000,
           change: 10000,
@@ -167,7 +167,7 @@ describe('renderComparisonReport with multiple scenarios', () => {
 
     // Should have scenario-named headings, not "DPS Comparison"
     expect(report).toContain('## Buffed');
-    expect(report).toContain('## Unbuffed');
+    expect(report).toContain('## Bossing (50% PDR)');
     expect(report).not.toContain('## DPS Comparison');
 
     // Each section should have its own table header
@@ -203,7 +203,7 @@ describe('renderComparisonReport with multiple scenarios', () => {
           className: 'Hero',
           skillName: 'Brandish',
           tier: 'high',
-          scenario: 'Unbuffed',
+          scenario: 'Bossing (50% PDR)',
           before: 50000,
           after: 50000,
           change: 0,
@@ -213,7 +213,7 @@ describe('renderComparisonReport with multiple scenarios', () => {
           className: 'Hero',
           skillName: 'Brandish',
           tier: 'high',
-          scenario: 'No-Echo',
+          scenario: 'Bossing (KB)',
           before: 90000,
           after: 90000,
           change: 0,
@@ -225,11 +225,11 @@ describe('renderComparisonReport with multiple scenarios', () => {
     const report = renderComparisonReport(result);
 
     const buffedIndex = report.indexOf('## Buffed');
-    const unbuffedIndex = report.indexOf('## Unbuffed');
-    const noEchoIndex = report.indexOf('## No-Echo');
+    const bossingPdrIndex = report.indexOf('## Bossing (50% PDR)');
+    const bossingKbIndex = report.indexOf('## Bossing (KB)');
 
-    expect(buffedIndex).toBeLessThan(unbuffedIndex);
-    expect(unbuffedIndex).toBeLessThan(noEchoIndex);
+    expect(buffedIndex).toBeLessThan(bossingPdrIndex);
+    expect(bossingPdrIndex).toBeLessThan(bossingKbIndex);
   });
 });
 
@@ -282,13 +282,13 @@ describe('renderBaselineReport', () => {
   it('groups multiple scenarios into separate sections', () => {
     const results: ScenarioResult[] = [
       { className: 'Hero', skillName: 'Brandish', tier: 'high', scenario: 'Buffed', dps: mockDpsResult(300000) },
-      { className: 'Hero', skillName: 'Brandish', tier: 'high', scenario: 'Unbuffed', dps: mockDpsResult(150000) },
+      { className: 'Hero', skillName: 'Brandish', tier: 'high', scenario: 'Bossing (50% PDR)', dps: mockDpsResult(150000) },
     ];
 
     const report = renderBaselineReport(results);
 
     expect(report).toContain('## Buffed');
-    expect(report).toContain('## Unbuffed');
+    expect(report).toContain('## Bossing (50% PDR)');
     const tableHeaders = report.match(/\| Rank \| Class \| Skill \| Tier \| DPS \|/g);
     expect(tableHeaders).toHaveLength(2);
   });

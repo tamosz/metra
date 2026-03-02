@@ -87,7 +87,7 @@ describe('runSimulation basics', () => {
     const config: SimulationConfig = {
       classes: ['hero'],
       tiers: ['low', 'high'],
-      scenarios: [{ name: 'Buffed' }, { name: 'Unbuffed' }],
+      scenarios: [{ name: 'Buffed' }, { name: 'Bossing (50% PDR)', pdr: 0.5 }],
     };
 
     const results = runSimulation(
@@ -151,14 +151,14 @@ describe('runSimulation error handling', () => {
 });
 
 describe('runSimulation scenario overrides', () => {
-  it('unbuffed scenario produces lower DPS than buffed', () => {
+  it('no-buffs scenario produces lower DPS than buffed', () => {
     const config: SimulationConfig = {
       classes: ['hero'],
       tiers: ['high'],
       scenarios: [
         { name: 'Buffed' },
         {
-          name: 'Unbuffed',
+          name: 'No Buffs',
           overrides: {
             sharpEyes: false,
             echoActive: false,
@@ -178,22 +178,22 @@ describe('runSimulation scenario overrides', () => {
     const buffed = results.find(
       r => r.skillName === 'Brandish (Sword)' && r.scenario === 'Buffed'
     )!;
-    const unbuffed = results.find(
-      r => r.skillName === 'Brandish (Sword)' && r.scenario === 'Unbuffed'
+    const noBuffs = results.find(
+      r => r.skillName === 'Brandish (Sword)' && r.scenario === 'No Buffs'
     )!;
 
-    expect(buffed.dps.dps).toBeGreaterThan(unbuffed.dps.dps);
-    // Unbuffed should be at least 20% lower
-    expect(unbuffed.dps.dps).toBeLessThan(buffed.dps.dps * 0.8);
+    expect(buffed.dps.dps).toBeGreaterThan(noBuffs.dps.dps);
+    // No Buffs should be at least 20% lower
+    expect(noBuffs.dps.dps).toBeLessThan(buffed.dps.dps * 0.8);
   });
 
-  it('no-echo scenario produces slightly lower DPS (within ~10%)', () => {
+  it('echo-off scenario produces slightly lower DPS (within ~10%)', () => {
     const config: SimulationConfig = {
       classes: ['hero'],
       tiers: ['high'],
       scenarios: [
         { name: 'Buffed' },
-        { name: 'No-Echo', overrides: { echoActive: false } },
+        { name: 'Echo Off', overrides: { echoActive: false } },
       ],
     };
 
@@ -205,12 +205,12 @@ describe('runSimulation scenario overrides', () => {
     const buffed = results.find(
       r => r.skillName === 'Brandish (Sword)' && r.scenario === 'Buffed'
     )!;
-    const noEcho = results.find(
-      r => r.skillName === 'Brandish (Sword)' && r.scenario === 'No-Echo'
+    const echoOff = results.find(
+      r => r.skillName === 'Brandish (Sword)' && r.scenario === 'Echo Off'
     )!;
 
-    expect(noEcho.dps.dps).toBeLessThan(buffed.dps.dps);
-    expect(noEcho.dps.dps).toBeGreaterThan(buffed.dps.dps * 0.9);
+    expect(echoOff.dps.dps).toBeLessThan(buffed.dps.dps);
+    expect(echoOff.dps.dps).toBeGreaterThan(buffed.dps.dps * 0.9);
   });
 
   it('overrides do not mutate the original build objects', () => {
