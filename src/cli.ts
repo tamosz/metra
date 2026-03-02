@@ -56,6 +56,7 @@ export function parseKbFlags(): { bossAttackInterval: number; bossAccuracy: numb
 
 function main() {
   const auditFlag = process.argv.includes('--audit');
+  const uncapped = process.argv.includes('--uncapped');
   const targetCount = parseTargetsFlag();
   const kbConfig = parseKbFlags();
 
@@ -80,7 +81,9 @@ function main() {
   const mwData = loadMW();
   const { classNames, tiers, classDataMap, gearTemplates } = discoverClassesAndTiers();
 
-  const baseline: ScenarioConfig = { name: kbConfig ? 'Baseline (KB, experimental)' : 'Baseline' };
+  const baseline: ScenarioConfig = {
+    name: uncapped ? 'Baseline (Uncapped)' : (kbConfig ? 'Baseline (KB, experimental)' : 'Baseline'),
+  };
   if (kbConfig) {
     baseline.bossAttackInterval = kbConfig.bossAttackInterval;
     baseline.bossAccuracy = kbConfig.bossAccuracy;
@@ -110,12 +113,19 @@ function main() {
       mwData
     );
 
-    const report = renderBaselineReport(results);
+    const displayResults = uncapped
+      ? results.map(r => ({
+          ...r,
+          dps: { ...r.dps, dps: r.dps.uncappedDps },
+        }))
+      : results;
+
+    const report = renderBaselineReport(displayResults, { showCapLoss: !uncapped });
     console.log(report);
 
     // ASCII chart for the first scenario
-    const firstScenario = results[0]?.scenario;
-    const firstScenarioResults = results.filter((r) => r.scenario === firstScenario);
+    const firstScenario = displayResults[0]?.scenario;
+    const firstScenarioResults = displayResults.filter((r) => r.scenario === firstScenario);
     if (firstScenarioResults.length > 0) {
       console.log(renderAsciiChart(
         firstScenarioResults.map((r) => ({
@@ -126,7 +136,7 @@ function main() {
     }
 
     if (auditFlag) {
-      const audit = analyzeBalance(results);
+      const audit = analyzeBalance(displayResults);
       console.log(formatAuditReport(audit));
     }
     return;
