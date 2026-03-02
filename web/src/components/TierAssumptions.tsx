@@ -22,6 +22,7 @@ export function TierAssumptions() {
                 <th className="px-3 py-2 text-left font-medium text-text-dim">Low (~Lv165)</th>
                 <th className="px-3 py-2 text-left font-medium text-text-dim">Mid (~Lv185)</th>
                 <th className="px-3 py-2 text-left font-medium text-text-dim">High (Lv200)</th>
+                <th className="px-3 py-2 text-left font-medium text-text-dim">Perfect (Lv200)</th>
               </tr>
             </thead>
             <tbody>
@@ -30,11 +31,13 @@ export function TierAssumptions() {
                 <td className="px-3 py-1.5 text-text-secondary">Budget</td>
                 <td className="px-3 py-1.5 text-text-secondary">Well-scrolled</td>
                 <td className="px-3 py-1.5 text-text-secondary">Near-perfect</td>
+                <td className="px-3 py-1.5 text-text-secondary">Theoretical max</td>
               </tr>
               <tr className="border-b border-border-subtle">
                 <td className="px-3 py-1.5 font-medium text-text-muted">Potion</td>
                 <td className="px-3 py-1.5 text-text-secondary">Stopper</td>
                 <td className="px-3 py-1.5 text-text-secondary">Stopper</td>
+                <td className="px-3 py-1.5 text-text-secondary">Apple</td>
                 <td className="px-3 py-1.5 text-text-secondary">Apple</td>
               </tr>
               <tr>
@@ -42,6 +45,7 @@ export function TierAssumptions() {
                 <td className="px-3 py-1.5 text-text-secondary tabular-nums">15 / 12 / 10</td>
                 <td className="px-3 py-1.5 text-text-secondary tabular-nums">17 / 14 / 10</td>
                 <td className="px-3 py-1.5 text-text-secondary tabular-nums">19 / 17 / 13</td>
+                <td className="px-3 py-1.5 text-text-secondary tabular-nums">22 / 20 / 18</td>
               </tr>
             </tbody>
           </table>
