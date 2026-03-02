@@ -17,7 +17,8 @@
       "multiplier": 1,
       "hitCount": 1,
       "speedCategory": "Paralyze",
-      "weaponType": "Staff"
+      "weaponType": "Staff",
+      "element": "Poison"
     },
     {
       "name": "Meteor",
@@ -27,6 +28,7 @@
       "hitCount": 1,
       "speedCategory": "Meteor",
       "weaponType": "Staff",
+      "element": "Fire",
       "maxTargets": 15
     }
   ]
