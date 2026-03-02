@@ -13,23 +13,6 @@ describe('useSimulation', () => {
     expect(result.current.tiers).toContain('high');
   });
 
-  it('includes default scenarios', () => {
-    const { result } = renderHook(() => useSimulation());
-
-    expect(result.current.scenarios).toEqual([
-      'Bossing (KB)',
-    ]);
-  });
-
-  it('returns results for every scenario', () => {
-    const { result } = renderHook(() => useSimulation());
-
-    const scenariosInResults = new Set(result.current.results.map((r) => r.scenario));
-    for (const scenario of result.current.scenarios) {
-      expect(scenariosInResults.has(scenario)).toBe(true);
-    }
-  });
-
   it('each result has positive DPS', () => {
     const { result } = renderHook(() => useSimulation());
 

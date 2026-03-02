@@ -10,11 +10,12 @@ test.describe('dashboard', () => {
     await expect(page.getByTestId('dps-chart').locator('svg')).toBeVisible();
   });
 
-  test('scenario filter changes DPS values', async ({ page }) => {
+  test('buff toggle changes DPS values', async ({ page }) => {
     const table = page.getByTestId('ranking-table');
     const firstDpsBefore = await table.locator('tbody tr:first-child td:last-child').textContent();
 
-    await page.getByRole('button', { name: 'Unbuffed' }).click();
+    // Turn off SE
+    await page.getByRole('button', { name: 'SE' }).click();
 
     const firstDpsAfter = await table.locator('tbody tr:first-child td:last-child').textContent();
     expect(firstDpsAfter).not.toBe(firstDpsBefore);
