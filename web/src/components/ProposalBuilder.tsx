@@ -153,12 +153,30 @@ function JsonPanel({
   jsonError: string;
   onImport: () => void;
 }) {
+  const [copied, setCopied] = useState(false);
+  const jsonText = JSON.stringify(proposal, null, 2);
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(jsonText).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1500);
+    });
+  };
+
   return (
     <div className="mb-4 rounded-lg border border-border-default bg-bg-raised p-4">
       <div className="mb-3">
-        <div className="mb-1 text-xs text-text-muted">Export (current proposal)</div>
+        <div className="mb-1 flex items-center justify-between">
+          <span className="text-xs text-text-muted">Export (current proposal)</span>
+          <button
+            onClick={handleCopy}
+            className="cursor-pointer border-none bg-transparent p-0 text-xs text-accent hover:text-blue-400 transition-colors"
+          >
+            {copied ? 'Copied!' : 'Copy'}
+          </button>
+        </div>
         <pre data-testid="json-export" className="m-0 max-h-[200px] overflow-auto rounded bg-bg p-3 text-xs text-text-secondary">
-          {JSON.stringify(proposal, null, 2)}
+          {jsonText}
         </pre>
       </div>
       <div>
