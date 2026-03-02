@@ -2,8 +2,8 @@ import { describe, it, expect } from 'vitest';
 import { DEFAULT_SCENARIOS } from './scenarios.js';
 
 describe('DEFAULT_SCENARIOS', () => {
-  it('has 5 scenarios', () => {
-    expect(DEFAULT_SCENARIOS).toHaveLength(5);
+  it('has 3 scenarios', () => {
+    expect(DEFAULT_SCENARIOS).toHaveLength(3);
   });
 
   it('each scenario has a non-empty name', () => {
@@ -39,8 +39,6 @@ describe('DEFAULT_SCENARIOS', () => {
   it('includes expected scenario names', () => {
     const names = DEFAULT_SCENARIOS.map((s) => s.name);
     expect(names).toContain('Buffed');
-    expect(names).toContain('Unbuffed');
-    expect(names).toContain('No-Echo');
     expect(names).toContain('Bossing (50% PDR)');
     expect(names).toContain('Bossing (KB)');
   });
@@ -56,16 +54,5 @@ describe('DEFAULT_SCENARIOS', () => {
     expect(kb.pdr).toBe(0.5);
     expect(kb.bossAttackInterval).toBe(1.5);
     expect(kb.bossAccuracy).toBe(250);
-  });
-
-  it('Unbuffed scenario disables SE, Echo, SI, MW, and potion', () => {
-    const unbuffed = DEFAULT_SCENARIOS.find((s) => s.name === 'Unbuffed')!;
-    expect(unbuffed.overrides).toMatchObject({
-      sharpEyes: false,
-      echoActive: false,
-      speedInfusion: false,
-      mwLevel: 0,
-      attackPotion: 0,
-    });
   });
 });
