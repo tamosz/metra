@@ -423,9 +423,9 @@ describe('comboGroup aggregation', () => {
       weaponData, attackSpeedData, mwData
     );
 
-    // Bucc has 5 raw skills: 1 Demolition + 4 Barrage+Demo sub-skills
-    // After aggregation: 1 Demolition + 1 Barrage+Demo = 2
-    expect(results.length).toBe(2);
+    // Bucc has 4 Barrage+Demo sub-skills (standalone Demolition is hidden)
+    // After aggregation: 1 Barrage+Demo = 1
+    expect(results.length).toBe(1);
   });
 
   it('aggregated result uses the comboGroup name as skillName', () => {
@@ -463,7 +463,7 @@ describe('comboGroup aggregation', () => {
     expect(combo.dps.dps).toBeGreaterThan(233000);
   });
 
-  it('non-combo skills pass through unchanged', () => {
+  it('hidden skills are excluded from simulation', () => {
     const config: SimulationConfig = {
       classes: ['bucc'],
       tiers: ['high'],
@@ -475,12 +475,8 @@ describe('comboGroup aggregation', () => {
       weaponData, attackSpeedData, mwData
     );
 
-    const demolition = results.find(r => r.skillName === 'Demolition')!;
-    expect(demolition).toBeDefined();
-    expect(demolition.className).toBe('Buccaneer');
-    expect(demolition.tier).toBe('high');
-    // Reference value: ~247,417 DPS
-    expect(demolition.dps.dps).toBeCloseTo(247417, -2);
+    const demolition = results.find(r => r.skillName === 'Demolition');
+    expect(demolition).toBeUndefined();
   });
 
   it('produces correct count across tiers and scenarios', () => {
@@ -495,8 +491,8 @@ describe('comboGroup aggregation', () => {
       weaponData, attackSpeedData, mwData
     );
 
-    // 2 skills after aggregation × 2 tiers × 2 scenarios = 8
-    expect(results.length).toBe(8);
+    // 1 skill after aggregation (hidden Demolition excluded) × 2 tiers × 2 scenarios = 4
+    expect(results.length).toBe(4);
   });
 });
 

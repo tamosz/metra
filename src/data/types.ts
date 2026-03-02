@@ -89,6 +89,8 @@ export interface SkillEntry {
   elementOptions?: string[];
   /** Maximum number of targets this skill can hit per attack. Default 1 (single-target). */
   maxTargets?: number;
+  /** If true, skill is excluded from simulation output (e.g., standalone Demolition when combo is strictly better). */
+  hidden?: boolean;
   /** KB recovery time override (seconds). 0 for i-frame skills (Demolition, Barrage). Omit for auto-detect. */
   knockbackRecovery?: number;
 }

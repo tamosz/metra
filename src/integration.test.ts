@@ -206,8 +206,7 @@ describe('Baseline mode', () => {
     expect(find('Marksman', 'Snipe + Strafe').dps.dps).toBeCloseTo(234586, -2);
     expect(find('Corsair', 'Battleship Cannon').dps.dps).toBeCloseTo(350586, -2);
     expect(find('Corsair', 'Rapid Fire').dps.dps).toBeCloseTo(241520, -2);
-    expect(find('Buccaneer', 'Demolition').dps.dps).toBeCloseTo(247417, -2);
-    expect(find('Buccaneer', 'Barrage + Demolition').dps.dps).toBeGreaterThan(find('Buccaneer', 'Demolition').dps.dps);
+    expect(find('Buccaneer', 'Barrage + Demolition').dps.dps).toBeGreaterThan(200000);
     expect(find('Shadower', 'BStep + Assassinate').dps.dps).toBeCloseTo(326734, -2);
     expect(find('Shadower', 'Savage Blow').dps.dps).toBeCloseTo(183467, -2);
   });
@@ -228,8 +227,7 @@ describe('Baseline mode', () => {
     expect(find('Marksman', 'Snipe + Strafe').dps.dps).toBeCloseTo(171366, -2);
     expect(find('Corsair', 'Battleship Cannon').dps.dps).toBeCloseTo(239622, -2);
     expect(find('Corsair', 'Rapid Fire').dps.dps).toBeCloseTo(165076, -2);
-    expect(find('Buccaneer', 'Demolition').dps.dps).toBeCloseTo(163986, -2);
-    expect(find('Buccaneer', 'Barrage + Demolition').dps.dps).toBeGreaterThan(find('Buccaneer', 'Demolition').dps.dps);
+    expect(find('Buccaneer', 'Barrage + Demolition').dps.dps).toBeGreaterThan(130000);
     expect(find('Shadower', 'BStep + Assassinate').dps.dps).toBeCloseTo(239830, -2);
     expect(find('Shadower', 'Savage Blow').dps.dps).toBeCloseTo(134668, -2);
   });
@@ -248,8 +246,7 @@ describe('Baseline mode', () => {
     expect(find('Marksman', 'Snipe + Strafe').dps.dps).toBeCloseTo(127777, -2);
     expect(find('Corsair', 'Battleship Cannon').dps.dps).toBeCloseTo(180049, -2);
     expect(find('Corsair', 'Rapid Fire').dps.dps).toBeCloseTo(124036, -2);
-    expect(find('Buccaneer', 'Demolition').dps.dps).toBeCloseTo(121362, -2);
-    expect(find('Buccaneer', 'Barrage + Demolition').dps.dps).toBeGreaterThan(find('Buccaneer', 'Demolition').dps.dps);
+    expect(find('Buccaneer', 'Barrage + Demolition').dps.dps).toBeGreaterThan(100000);
     expect(find('Shadower', 'BStep + Assassinate').dps.dps).toBeCloseTo(198577, -2);
     expect(find('Shadower', 'Savage Blow').dps.dps).toBeCloseTo(111504, -2);
   });
@@ -284,14 +281,14 @@ describe('Special mechanics', () => {
     );
   });
 
-  it('comboGroup aggregates Buccaneer to 2 results per tier', () => {
+  it('comboGroup aggregates Buccaneer to 1 result per tier (standalone Demolition hidden)', () => {
     const buccResults = buffedResults.filter((r) => r.className === 'Buccaneer');
     const buccHigh = buccResults.filter((r) => r.tier === 'high');
     const buccLow = buccResults.filter((r) => r.tier === 'low');
-    expect(buccHigh).toHaveLength(2);
-    expect(buccLow).toHaveLength(2);
-    expect(buccHigh.map((r) => r.skillName).sort()).toEqual(
-      ['Barrage + Demolition', 'Demolition']
+    expect(buccHigh).toHaveLength(1);
+    expect(buccLow).toHaveLength(1);
+    expect(buccHigh.map((r) => r.skillName)).toEqual(
+      ['Barrage + Demolition']
     );
   });
 

@@ -112,6 +112,7 @@ export function runSimulation(
         // Compute DPS for each individual skill
         const skillResults: { skill: SkillEntry; result: ScenarioResult }[] = [];
         for (const skill of classData.skills) {
+          if (skill.hidden) continue;
           const dps = calculateSkillDps(
             effectiveBuild,
             classData,

@@ -18,7 +18,8 @@
       "speedCategory": "Demolition",
       "weaponType": "Knuckle",
       "source": "dmg D21=500, E21=500*1.0, N21 hitCount=8, O21=N21/2.34",
-      "knockbackRecovery": 0
+      "knockbackRecovery": 0,
+      "hidden": true
     },
     {
       "name": "Barrage + Demolition (Normal Hits)",
