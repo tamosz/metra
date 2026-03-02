@@ -23,3 +23,12 @@ export {
 } from './attack-speed.js';
 
 export { calculateSkillDps, type DpsResult } from './dps.js';
+
+export {
+  calculateDodgeChance,
+  calculateKnockbackProbability,
+  calculateKnockbackUptime,
+  getKnockbackRecovery,
+  DEFAULT_KB_RECOVERY,
+  CHANNEL_KB_RECOVERY,
+} from './knockback.js';

@@ -19,6 +19,14 @@ export {
   resolveEffectiveWeaponSpeed,
   lookupAttackTime,
 } from './engine/attack-speed.js';
+export {
+  calculateDodgeChance,
+  calculateKnockbackProbability,
+  calculateKnockbackUptime,
+  getKnockbackRecovery,
+  DEFAULT_KB_RECOVERY,
+  CHANNEL_KB_RECOVERY,
+} from './engine/knockback.js';
 
 // Constants
 export { TIER_ORDER, compareTiers } from './data/types.js';

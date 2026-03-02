@@ -2,8 +2,8 @@ import { describe, it, expect } from 'vitest';
 import { DEFAULT_SCENARIOS } from './scenarios.js';
 
 describe('DEFAULT_SCENARIOS', () => {
-  it('has 4 scenarios', () => {
-    expect(DEFAULT_SCENARIOS).toHaveLength(4);
+  it('has 5 scenarios', () => {
+    expect(DEFAULT_SCENARIOS).toHaveLength(5);
   });
 
   it('each scenario has a non-empty name', () => {
@@ -42,12 +42,20 @@ describe('DEFAULT_SCENARIOS', () => {
     expect(names).toContain('Unbuffed');
     expect(names).toContain('No-Echo');
     expect(names).toContain('Bossing (50% PDR)');
+    expect(names).toContain('Bossing (KB)');
   });
 
   it('Buffed scenario has no overrides or pdr', () => {
     const buffed = DEFAULT_SCENARIOS.find((s) => s.name === 'Buffed')!;
     expect(buffed.overrides).toBeUndefined();
     expect(buffed.pdr).toBeUndefined();
+  });
+
+  it('Bossing (KB) scenario has PDR, attack interval, and accuracy', () => {
+    const kb = DEFAULT_SCENARIOS.find((s) => s.name === 'Bossing (KB)')!;
+    expect(kb.pdr).toBe(0.5);
+    expect(kb.bossAttackInterval).toBe(1.5);
+    expect(kb.bossAccuracy).toBe(250);
   });
 
   it('Unbuffed scenario disables SE, Echo, SI, MW, and potion', () => {

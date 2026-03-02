@@ -8,6 +8,7 @@
   "sharpEyesCritDamageBonus": 140,
   "seCritFormula": "addBeforeMultiply",
   "damageFormula": "standard",
+  "shadowShifterRate": 0.40,
   "skills": [
     {
       "name": "Boomerang Step",
