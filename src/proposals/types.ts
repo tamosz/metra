@@ -49,6 +49,8 @@ export interface ScenarioResult {
   tier: string;
   scenario: string;
   dps: DpsResult;
+  /** Tooltip description for mixed rotation entries. */
+  description?: string;
 }
 
 /** Delta between before and after for a single scenario. */

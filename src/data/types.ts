@@ -95,6 +95,24 @@ export interface SkillEntry {
   knockbackRecovery?: number;
 }
 
+/** A component of a mixed rotation: a skill and what fraction of time is spent on it. */
+export interface MixedRotationComponent {
+  /** Skill name (must match a SkillEntry.name in the same class). */
+  skill: string;
+  /** Fraction of time spent on this skill (0–1). All weights in a rotation should sum to 1. */
+  weight: number;
+}
+
+/** A time-weighted mix of skills, representing a practical rotation estimate. */
+export interface MixedRotation {
+  /** Display name for the rotation (appears in charts/tables). */
+  name: string;
+  /** Tooltip text explaining the assumptions behind the rotation estimate. */
+  description: string;
+  /** Component skills and their time weights. */
+  components: MixedRotationComponent[];
+}
+
 /** The four primary stats in Royals. */
 export type StatName = 'STR' | 'DEX' | 'INT' | 'LUK';
 
@@ -133,6 +151,8 @@ export interface ClassSkillData {
   /** Shadow Shifter dodge rate (0-1). NL 0.30, Shadower 0.40. Default 0. */
   shadowShifterRate?: number;
   skills: SkillEntry[];
+  /** Optional mixed rotation estimates (time-weighted skill blends, not fixed rotation cycles). */
+  mixedRotations?: MixedRotation[];
 }
 
 /** A character's gear and stat setup for simulation. */
