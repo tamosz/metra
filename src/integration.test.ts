@@ -208,7 +208,6 @@ describe('Baseline mode', () => {
     expect(find('Corsair', 'Rapid Fire').dps.dps).toBeCloseTo(241520, -2);
     expect(find('Buccaneer', 'Barrage + Demolition').dps.dps).toBeGreaterThan(200000);
     expect(find('Shadower', 'BStep + Assassinate').dps.dps).toBeCloseTo(326734, -2);
-    expect(find('Shadower', 'Savage Blow').dps.dps).toBeCloseTo(183467, -2);
   });
 
   it('mid-tier DPS matches reference values', () => {
@@ -229,7 +228,6 @@ describe('Baseline mode', () => {
     expect(find('Corsair', 'Rapid Fire').dps.dps).toBeCloseTo(165076, -2);
     expect(find('Buccaneer', 'Barrage + Demolition').dps.dps).toBeGreaterThan(130000);
     expect(find('Shadower', 'BStep + Assassinate').dps.dps).toBeCloseTo(239830, -2);
-    expect(find('Shadower', 'Savage Blow').dps.dps).toBeCloseTo(134668, -2);
   });
 
   it('low-tier DPS matches reference values', () => {
@@ -248,7 +246,6 @@ describe('Baseline mode', () => {
     expect(find('Corsair', 'Rapid Fire').dps.dps).toBeCloseTo(124036, -2);
     expect(find('Buccaneer', 'Barrage + Demolition').dps.dps).toBeGreaterThan(100000);
     expect(find('Shadower', 'BStep + Assassinate').dps.dps).toBeCloseTo(198577, -2);
-    expect(find('Shadower', 'Savage Blow').dps.dps).toBeCloseTo(111504, -2);
   });
 });
 
@@ -292,14 +289,14 @@ describe('Special mechanics', () => {
     );
   });
 
-  it('comboGroup aggregates Shadower to 2 results per tier', () => {
+  it('comboGroup aggregates Shadower to 1 result per tier (Savage Blow hidden)', () => {
     const shadResults = buffedResults.filter((r) => r.className === 'Shadower');
     const shadHigh = shadResults.filter((r) => r.tier === 'high');
     const shadLow = shadResults.filter((r) => r.tier === 'low');
-    expect(shadHigh).toHaveLength(2);
-    expect(shadLow).toHaveLength(2);
-    expect(shadHigh.map((r) => r.skillName).sort()).toEqual(
-      ['BStep + Assassinate', 'Savage Blow']
+    expect(shadHigh).toHaveLength(1);
+    expect(shadLow).toHaveLength(1);
+    expect(shadHigh.map((r) => r.skillName)).toEqual(
+      ['BStep + Assassinate']
     );
   });
 

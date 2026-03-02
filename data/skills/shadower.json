@@ -38,7 +38,8 @@
       "hitCount": 6,
       "speedCategory": "Strafe/Snipe",
       "weaponType": "Dagger",
-      "source": "dmg D46=80, E46=80*1.0, N46 hitCount=6, C46=0.72"
+      "source": "dmg D46=80, E46=80*1.0, N46 hitCount=6, C46=0.72",
+      "hidden": true
     }
   ]
 }
