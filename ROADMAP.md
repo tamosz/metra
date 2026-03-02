@@ -43,7 +43,10 @@ A balance simulator for Royals staff and community. Every number traces back to 
 **Hard problems:**
 - Party DPS modeling (Bishop's value is party buffs, not solo DPS — biggest analytical blind spot, but genuinely hard to model well)
 - Training efficiency (kills/hr, EXP/hr on reference mobs — AoE modeling done via `maxTargets`, still needs mob data)
-- Boss modeling (HP thresholds, PDR, phases)
+- Boss encounter simulation — Patchwerk-style sustained DPS with real-world interruptions:
+  - Knockback modeling: characters get hit periodically and lose attack uptime to knockback. Factors in dodge rate (class-dependent) and Stance (warriors). A class with 90% Stance loses far less uptime than a thief with no knockback protection.
+  - Variable mob count phases: boss encounters like Zakum/Horntail have phases with multiple targetable parts. AoE skills get higher effective DPS during multi-body phases but not for the full fight. Configurable as a timeline of phase durations and target counts.
+  - These are separate toggleable config options — knockback settings independent of phase configuration.
 
 ## Architecture
 
