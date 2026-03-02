@@ -10,6 +10,7 @@ import { ClassIcon } from './icons/index.js';
 import { WelcomeBanner } from './WelcomeBanner.js';
 import { CustomTierList } from './CustomTierList.js';
 import { useSpinner } from '../hooks/useSpinner.js';
+import { ElementToggles } from './ElementToggles.js';
 
 interface DashboardProps {
   simulation: SimulationData;
@@ -83,6 +84,7 @@ export function Dashboard({ simulation, customTiers, baseTiers, targetCount, set
           onChange={setSelectedTier}
         />
         <TargetSpinner value={targetCount} onChange={setTargetCount} />
+        <ElementToggles modifiers={elementModifiers} onChange={setElementModifiers} />
       </div>
 
       <SupportClassNote classNames={[...new Set(filtered.map((r) => r.className))]} />
