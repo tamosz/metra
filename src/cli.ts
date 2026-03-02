@@ -70,8 +70,8 @@ function main() {
   }
   const positionalArgs = process.argv
     .slice(2)
-    .filter((arg) => !arg.startsWith('--'))
-    .filter((arg) => !skipValues.has(arg));
+    .filter((arg: string) => !arg.startsWith('--'))
+    .filter((arg: string) => !skipValues.has(arg));
   const proposalPath = positionalArgs[0];
 
   // Load game data
