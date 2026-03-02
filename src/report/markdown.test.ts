@@ -332,6 +332,48 @@ describe('renderBaselineReport content accuracy', () => {
   });
 });
 
+describe('renderBaselineReport cap loss column', () => {
+  it('includes Cap Loss column header by default', () => {
+    const results: ScenarioResult[] = [
+      { className: 'Hero', skillName: 'Brandish', tier: 'high', scenario: 'Buffed', dps: mockDpsResult(300000) },
+    ];
+
+    const report = renderBaselineReport(results);
+    expect(report).toContain('| Rank | Class | Skill | Tier | DPS | Cap Loss |');
+  });
+
+  it('shows cap loss values in table rows', () => {
+    const dps = mockDpsResult(300000);
+    dps.capLossPercent = 12.3;
+    const results: ScenarioResult[] = [
+      { className: 'Hero', skillName: 'Brandish', tier: 'high', scenario: 'Buffed', dps },
+    ];
+
+    const report = renderBaselineReport(results);
+    expect(report).toContain('12.3%');
+  });
+
+  it('shows dash for negligible cap loss', () => {
+    const results: ScenarioResult[] = [
+      { className: 'Hero', skillName: 'Brandish', tier: 'high', scenario: 'Buffed', dps: mockDpsResult(100000) },
+    ];
+
+    const report = renderBaselineReport(results);
+    const heroLine = report.split('\n').find((l) => l.includes('Hero'));
+    expect(heroLine).toContain('| - |');
+  });
+
+  it('omits Cap Loss column when showCapLoss is false', () => {
+    const results: ScenarioResult[] = [
+      { className: 'Hero', skillName: 'Brandish', tier: 'high', scenario: 'Buffed', dps: mockDpsResult(300000) },
+    ];
+
+    const report = renderBaselineReport(results, { showCapLoss: false });
+    expect(report).not.toContain('Cap Loss');
+    expect(report).toContain('| Rank | Class | Skill | Tier | DPS |');
+  });
+});
+
 describe('renderComparisonReport content accuracy', () => {
   it('negative changes show minus prefix', () => {
     const result: ComparisonResult = {

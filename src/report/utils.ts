@@ -41,6 +41,14 @@ export function capitalize(s: string): string {
 }
 
 /**
+ * Format cap loss percentage. Returns '-' for negligible loss (<0.05%).
+ */
+export function formatCapLoss(percent: number): string {
+  if (percent < 0.05) return '-';
+  return percent.toFixed(1) + '%';
+}
+
+/**
  * Sort deltas: changed entries first (by absolute % desc), then unchanged.
  * Within unchanged group, sort by class then tier.
  */
