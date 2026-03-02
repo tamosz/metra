@@ -11,6 +11,7 @@ import {
 } from '../data/bundle.js';
 import type { CustomTier } from '../types/custom-tier.js';
 import { generateCustomTierTemplates } from '../utils/custom-tier.js';
+import type { BuffOverrides } from '../components/BuffToggles.js';
 
 export interface SimulationData {
   results: ScenarioResult[];
@@ -25,6 +26,7 @@ export function useSimulation(
   customTiers: CustomTier[] = [],
   targetCount?: number,
   elementModifiers?: Record<string, number>,
+  buffOverrides?: BuffOverrides,
 ): SimulationData {
   return useMemo(() => {
     const { classNames, tiers, classDataMap, gearTemplates } = discoveredData;
@@ -44,13 +46,21 @@ export function useSimulation(
     }
 
     const hasElementMods = elementModifiers && Object.keys(elementModifiers).length > 0;
+    const hasBuffOverrides = buffOverrides && Object.keys(buffOverrides).length > 0;
     const scenarios: ScenarioConfig[] = DEFAULT_SCENARIOS.map((s) => {
-      if (!hasElementMods) return s;
-      return { ...s, elementModifiers: { ...s.elementModifiers, ...elementModifiers } };
+      let merged = s;
+      if (hasElementMods) {
+        merged = { ...merged, elementModifiers: { ...merged.elementModifiers, ...elementModifiers } };
+      }
+      if (hasBuffOverrides) {
+        merged = { ...merged, overrides: { ...merged.overrides, ...buffOverrides } };
+      }
+      return merged;
     });
     if (targetCount != null && targetCount > 1) {
       const training: ScenarioConfig = { name: `Training (${targetCount} mobs)`, targetCount };
       if (hasElementMods) training.elementModifiers = { ...elementModifiers };
+      if (hasBuffOverrides) training.overrides = { ...buffOverrides };
       scenarios.push(training);
     }
 
@@ -71,5 +81,5 @@ export function useSimulation(
 
     const scenarioNames = scenarios.map((s) => s.name);
     return { results, classNames, tiers: allTiers, scenarios: scenarioNames, customTierNames };
-  }, [customTiers, targetCount, elementModifiers]);
+  }, [customTiers, targetCount, elementModifiers, buffOverrides]);
 }
