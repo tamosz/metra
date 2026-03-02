@@ -20,6 +20,7 @@
   "exclude": [
     "node_modules",
     "../src/cli.ts",
+    "../src/cli.test.ts",
     "../src/sheets/**",
     "../src/data/loader.ts",
     "../src/data/loader.test.ts",
