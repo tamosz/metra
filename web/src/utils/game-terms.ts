@@ -12,7 +12,7 @@ export const GAME_TERMS: Record<string, string> = {
 };
 
 export const SCENARIO_DESCRIPTIONS: Record<string, string> = {
-  'Bossing (KB)': 'Bossing with knockback modeling — accounts for DPS lost to boss attacks interrupting your skills. Classes with Stance or Shadow Shifter lose less uptime.',
+  'Bossing (KB)': 'Bossing with knockback modeling (experimental) — accounts for DPS lost to boss attacks interrupting your skills. Classes with Stance or Shadow Shifter lose less uptime.',
 };
 
 /** Generate a description for a dynamic training scenario. */

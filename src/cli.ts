@@ -80,7 +80,7 @@ function main() {
   const mwData = loadMW();
   const { classNames, tiers, classDataMap, gearTemplates } = discoverClassesAndTiers();
 
-  const baseline: ScenarioConfig = { name: kbConfig ? 'Baseline (KB)' : 'Baseline' };
+  const baseline: ScenarioConfig = { name: kbConfig ? 'Baseline (KB, experimental)' : 'Baseline' };
   if (kbConfig) {
     baseline.bossAttackInterval = kbConfig.bossAttackInterval;
     baseline.bossAccuracy = kbConfig.bossAccuracy;
