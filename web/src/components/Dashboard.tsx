@@ -1,11 +1,10 @@
-import { useState, useMemo, useEffect, useCallback } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 import { DpsChart } from './DpsChart.js';
 import { FilterGroup } from './FilterGroup.js';
 import { SupportClassNote } from './SupportClassNote.js';
 import type { SimulationData } from '../hooks/useSimulation.js';
 import type { CustomTiersState } from '../hooks/useCustomTiers.js';
 import { compareTiers } from '@engine/data/types.js';
-import { getScenarioDescription } from '../utils/game-terms.js';
 import { ClassIcon } from './icons/index.js';
 import { WelcomeBanner } from './WelcomeBanner.js';
 import { CustomTierList } from './CustomTierList.js';
@@ -44,27 +43,21 @@ function tierDisplayName(tier: string, customTierNames: Map<string, string>): st
 }
 
 export function Dashboard({ simulation, customTiers, baseTiers, targetCount, setTargetCount, elementModifiers, setElementModifiers, buffOverrides, setBuffOverrides }: DashboardProps) {
-  const { results, tiers, scenarios, customTierNames } = simulation;
-  const [selectedScenario, setSelectedScenario] = useState(scenarios[0] ?? 'Bossing (KB)');
+  const { results, tiers, customTierNames } = simulation;
   const [selectedTier, setSelectedTier] = useState<string | 'all'>('all');
 
-  // Auto-select Training scenario when target count changes
-  useEffect(() => {
-    if (targetCount > 1) {
-      const trainingScenario = scenarios.find((s) => s.startsWith('Training'));
-      if (trainingScenario) setSelectedScenario(trainingScenario);
-    } else if (selectedScenario.startsWith('Training')) {
-      setSelectedScenario(scenarios[0] ?? 'Bossing (KB)');
-    }
-  }, [targetCount, scenarios]);
-
   const filtered = useMemo(() => {
-    return results.filter((r) => {
-      if (r.scenario !== selectedScenario) return false;
-      if (selectedTier !== 'all' && r.tier !== selectedTier) return false;
-      return true;
-    }).sort((a, b) => b.dps.dps - a.dps.dps);
-  }, [results, selectedScenario, selectedTier]);
+    const activeScenario = targetCount > 1
+      ? results.find((r) => r.scenario.startsWith('Training'))?.scenario
+      : results[0]?.scenario;
+    return results
+      .filter((r) => {
+        if (r.scenario !== activeScenario) return false;
+        if (selectedTier !== 'all' && r.tier !== selectedTier) return false;
+        return true;
+      })
+      .sort((a, b) => b.dps.dps - a.dps.dps);
+  }, [results, selectedTier, targetCount]);
 
   return (
     <div>
@@ -73,12 +66,6 @@ export function Dashboard({ simulation, customTiers, baseTiers, targetCount, set
       <CustomTierList customTiers={customTiers} baseTiers={baseTiers} />
 
       <div className="mb-6 flex items-center gap-4">
-        <FilterGroup
-          label="Scenario"
-          value={selectedScenario}
-          options={scenarios.map((s) => ({ value: s, label: s, tooltip: getScenarioDescription(s) }))}
-          onChange={setSelectedScenario}
-        />
         <FilterGroup
           label="Tier"
           value={selectedTier}

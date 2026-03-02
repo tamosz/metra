@@ -17,7 +17,6 @@ export interface SimulationData {
   results: ScenarioResult[];
   classNames: string[];
   tiers: string[];
-  scenarios: string[];
   /** Maps custom tier IDs to their display names. */
   customTierNames: Map<string, string>;
 }
@@ -74,7 +73,6 @@ export function useSimulation(
       mwData
     );
 
-    const scenarioNames = scenarios.map((s) => s.name);
-    return { results, classNames, tiers: allTiers, scenarios: scenarioNames, customTierNames };
+    return { results, classNames, tiers: allTiers, customTierNames };
   }, [customTiers, targetCount, elementModifiers, buffOverrides]);
 }
