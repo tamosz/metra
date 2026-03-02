@@ -56,6 +56,17 @@ test.describe('dashboard', () => {
     expect(barCount).toBe(rowCount);
   });
 
+  test('KB toggle changes DPS values', async ({ page }) => {
+    const table = page.getByTestId('ranking-table');
+    const firstDpsBefore = await table.locator('tbody tr:first-child td:last-child').textContent();
+
+    // Enable KB modeling
+    await page.getByRole('button', { name: 'KB' }).click();
+
+    const firstDpsAfter = await table.locator('tbody tr:first-child td:last-child').textContent();
+    expect(firstDpsAfter).not.toBe(firstDpsBefore);
+  });
+
   test('element toggle cycles through states and affects DPS', async ({ page }) => {
     const holyButton = page.getByRole('button', { name: 'Ho' });
     await expect(holyButton).toBeVisible();
