@@ -82,7 +82,7 @@ Pure functions. No side effects, no I/O. Takes game data + a character build, ou
 - `damage.ts` — raw damage range (min/max), throwing star range (NL/Shad), range cap from damage cap, adjusted range for capped distributions.
 - `buffs.ts` — MW stat boost, Echo of Hero WATK bonus, total attack/stat aggregation.
 - `attack-speed.ts` — weapon speed resolution (base speed + booster + SI), attack time lookup by skill category.
-- `dps.ts` — full DPS pipeline: attack time → skill damage% → crit damage% → range caps → adjusted ranges → average damage → DPS. Uses `skill.weaponType` (not build) for weapon multiplier lookup, enabling weapon variants within the same class/tier. Supports built-in crit (additive with SE), throwing star formula (branches on `weaponType === 'Claw'`), Shadow Partner (1.5× multiplier), and `fixedDamage` (bypasses damage formula for skills like Snipe).
+- `dps.ts` — full DPS pipeline: attack time → skill damage% → crit damage% → range caps → adjusted ranges → average damage → DPS. Uses `skill.weaponType` (not build) for weapon multiplier lookup, enabling weapon variants within the same class/tier. Supports built-in crit (additive with SE), throwing star formula (branches on `weaponType === 'Claw'`), Shadow Partner (1.5× multiplier), `fixedDamage` (bypasses damage formula for skills like Snipe), and `elementModifier` (factored into range cap so the 199,999 per-line cap applies to final damage including element).
 - `index.ts` — re-exports.
 
 **Simulation features:**
@@ -218,7 +218,7 @@ All templates assume a fully buffed party scenario: MW20, Sharp Eyes, Speed Infu
 ### Simulation Controls
 All simulation conditions are composed from individual toggles rather than predefined scenarios:
 - **Buff toggles** — SE, Echo, SI, MW, Attack Potion. Each can be toggled on/off independently.
-- **Element toggles** (web only) — Holy, Fire, Ice, Lightning, Poison. Each cycles neutral → weak (1.5×) → strong (0.5×).
+- **Element toggles** (web only) — Holy, Fire, Ice, Lightning, Poison. Each cycles neutral → weak (1.5×) → strong (0.5×). Element modifiers are passed into `calculateSkillDps` so they interact with the per-line damage cap (199,999).
 - **KB toggle** — Knockback modeling. When enabled, accounts for DPS lost to boss attacks interrupting skills. Classes with Stance (warriors, Bucc) or Shadow Shifter (NL, Shadower) lose less uptime. Configurable boss attack interval (default 1.5s) and accuracy (default 250). CLI: `--kb` flag with optional `--kb-interval` and `--kb-accuracy`.
 - **Target count** — Multi-target training simulation. AoE skills scale with `min(maxTargets, targetCount)`. CLI: `--targets N`.
 
