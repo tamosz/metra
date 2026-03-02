@@ -112,7 +112,8 @@ export function useBuildExplorer(): BuildExplorerState {
   const discovery = discoveredData;
   const { classNames, tiers, classDataMap, gearTemplates } = discovery;
 
-  const [selectedClass, setSelectedClass] = useState(classNames[0] ?? '');
+  const defaultClass = classNames.includes('hero') ? 'hero' : classNames[0] ?? '';
+  const [selectedClass, setSelectedClass] = useState(defaultClass);
   const [selectedTier, setSelectedTier] = useState(tiers[0] ?? '');
   const [overrides, setOverrides] = useState<Partial<BuildOverrides>>({});
 

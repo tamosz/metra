@@ -6,6 +6,8 @@ export function formatClassName(name: string): string {
     'bucc': 'Buccaneer',
     'hero-axe': 'Hero (Axe)',
     'mm': 'Marksman',
+    'archmage-il': 'Archmage I/L',
+    'archmage-fp': 'Archmage F/P',
   };
   if (special[name]) return special[name];
   return name.split('-').map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');

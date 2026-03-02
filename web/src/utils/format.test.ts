@@ -9,6 +9,8 @@ describe('formatClassName', () => {
   it('maps bucc to Buccaneer', () => { expect(formatClassName('bucc')).toBe('Buccaneer'); });
   it('maps hero-axe to Hero (Axe)', () => { expect(formatClassName('hero-axe')).toBe('Hero (Axe)'); });
   it('maps mm to Marksman', () => { expect(formatClassName('mm')).toBe('Marksman'); });
+  it('maps archmage-il to Archmage I/L', () => { expect(formatClassName('archmage-il')).toBe('Archmage I/L'); });
+  it('maps archmage-fp to Archmage F/P', () => { expect(formatClassName('archmage-fp')).toBe('Archmage F/P'); });
 
   // Fallback capitalization
   it('capitalizes hero', () => { expect(formatClassName('hero')).toBe('Hero'); });
