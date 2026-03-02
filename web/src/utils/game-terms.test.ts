@@ -4,8 +4,6 @@ import { getScenarioDescription } from './game-terms.js';
 describe('getScenarioDescription', () => {
   it('returns static description for known scenarios', () => {
     expect(getScenarioDescription('Buffed')).toContain('All party buffs');
-    expect(getScenarioDescription('Unbuffed')).toContain('No party buffs');
-    expect(getScenarioDescription('No-Echo')).toContain('Echo of Hero');
     expect(getScenarioDescription('Bossing (50% PDR)')).toContain('50%');
   });
 

@@ -13,8 +13,6 @@ export const GAME_TERMS: Record<string, string> = {
 
 export const SCENARIO_DESCRIPTIONS: Record<string, string> = {
   Buffed: 'All party buffs active: MW20, SE, SI, Echo, and attack potions.',
-  Unbuffed: 'No party buffs — raw class power without SE, Echo, SI, MW, or potions.',
-  'No-Echo': 'All buffs except Echo of Hero — shows how much Echo contributes.',
   'Bossing (50% PDR)': 'Fully buffed with 50% Physical Damage Reduction — sustained bossing damage.',
   'Bossing (KB)': 'Bossing with knockback modeling — accounts for DPS lost to boss attacks interrupting your skills. Classes with Stance or Shadow Shifter lose less uptime.',
 };
