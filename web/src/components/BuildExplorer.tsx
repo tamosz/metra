@@ -5,6 +5,7 @@ import { BuildStatEditor } from './BuildStatEditor.js';
 import { BuildBuffToggles } from './BuildBuffToggles.js';
 import { BuildDpsResults } from './BuildDpsResults.js';
 import { SupportClassNote } from './SupportClassNote.js';
+import { MarginalGainsTable } from './MarginalGainsTable.js';
 import { formatClassName } from '../utils/format.js';
 
 interface BuildExplorerProps {
@@ -144,6 +145,12 @@ export function BuildExplorer({ state, savedBuilds }: BuildExplorerProps) {
           </div>
           <div>
             <BuildDpsResults state={state} />
+            {state.effectiveBuild && state.classData && (
+              <MarginalGainsTable
+                build={state.effectiveBuild}
+                classData={state.classData}
+              />
+            )}
           </div>
         </div>
       )}
