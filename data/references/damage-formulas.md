@@ -84,6 +84,15 @@ them. Confirmed by StrategyWiki, Ayumilove, and community member Zerato.
 BW Blast uses a 3:2 swing/stab ratio → effective multiplier = 0.6 * 4.8 + 0.4 * 3.4 = 4.24.
 Modeled via `attackRatio` on SkillEntry.
 
+### Brandish Slash/Stab Ratio
+
+**Source:** [Hero's Damage Stability](https://royals.ms/forum/threads/heros-damage-stability.200652/), [Warrior 2H Weapon Balancing](https://royals.ms/forum/threads/warrior-2h-weapon-balancing.163124/), [MapleMaths](https://royals.ms/forum/threads/maplemaths-calculating-x-stats-y-w-atk.210953/)
+**Accessed:** 2026-03-02
+**Used in:** `data/skills/hero-axe.json`
+
+Brandish does 1 slash + 1 stab per attack. For swords (slash=stab=4.6) this has no effect. For axes, the effective multiplier is 0.5 * 4.8 + 0.5 * 3.4 = 4.1, making axes ~10.9% weaker than swords at equal WATK. In practice the gap is ~2-3% because endgame axes have slightly higher base WATK.
+Modeled via `attackRatio: { slash: 0.5, stab: 0.5 }` on SkillEntry.
+
 ## Crit Damage Formulas
 
 **Source:** Source spreadsheet dmg sheet G columns

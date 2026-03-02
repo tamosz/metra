@@ -1269,9 +1269,10 @@ describe('Hero (Axe) DPS', () => {
     expect(axeData.skills.length).toBe(1);
   });
 
-  it('Brandish uses 2H Axe 4.8x multiplier', () => {
+  it('Brandish uses 2H Axe 50/50 slash/stab (effective 4.1x)', () => {
     const brandish = axeData.skills.find((s) => s.name === 'Brandish')!;
     expect(brandish.weaponType).toBe('2H Axe');
+    expect(brandish.attackRatio).toEqual({ slash: 0.5, stab: 0.5 });
 
     const result = calculateSkillDps(
       axeHigh, axeData, brandish, weaponData, attackSpeedData, mwData
@@ -1279,14 +1280,14 @@ describe('Hero (Axe) DPS', () => {
 
     // STR: floor(999*1.1) + 174 = 1272, DEX: floor(23*1.1) + 102 = 127
     // totalAttack = 203 + 100 + floor(303*0.04) = 315
-    // 2H Axe 4.8x
-    // max = floor((1272 * 4.8 + 127) * 315 / 100) = 19632
-    // min = floor((1272 * 4.8 * 0.9 * 0.6 + 127) * 315 / 100) = 10785
-    expect(result.damageRange.max).toBe(19632);
-    expect(result.damageRange.min).toBe(10785);
+    // 2H Axe effective multiplier: 0.5*4.8 + 0.5*3.4 = 4.1
+    // max = floor((1272 * 4.1 + 127) * 315 / 100) = 16827
+    // min = floor((1272 * 4.1 * 0.9 * 0.6 + 127) * 315 / 100) = 9271
+    expect(result.damageRange.max).toBe(16827);
+    expect(result.damageRange.min).toBe(9271);
   });
 
-  it('Brandish High tier DPS ~257,772', () => {
+  it('Brandish High tier DPS ~221,170', () => {
     const brandish = axeData.skills.find((s) => s.name === 'Brandish')!;
     const result = calculateSkillDps(
       axeHigh, axeData, brandish, weaponData, attackSpeedData, mwData
@@ -1296,22 +1297,22 @@ describe('Hero (Axe) DPS', () => {
     expect(result.skillDamagePercent).toBe(494);
     // SE: (260 + 140) * 1.9 = 760
     expect(result.critDamagePercent).toBe(760);
-    expect(result.dps).toBeCloseTo(257772, -2);
+    expect(result.dps).toBeCloseTo(221170, -2);
   });
 
-  it('Brandish Low tier DPS ~132,712', () => {
+  it('Brandish Low tier DPS ~113,983', () => {
     const brandish = axeData.skills.find((s) => s.name === 'Brandish')!;
     const result = calculateSkillDps(
       axeLow, axeData, brandish, weaponData, attackSpeedData, mwData
     );
 
     expect(result.attackTime).toBe(0.63);
-    expect(result.damageRange.max).toBe(10093);
-    expect(result.damageRange.min).toBe(5567);
-    expect(result.dps).toBeCloseTo(132712, -2);
+    expect(result.damageRange.max).toBe(8658);
+    expect(result.damageRange.min).toBe(4792);
+    expect(result.dps).toBeCloseTo(113983, -2);
   });
 
-  it('Axe Brandish has higher damage range than Sword (4.8 > 4.6 multiplier)', () => {
+  it('Axe Brandish has lower damage than Sword (effective 4.1 vs 4.6 multiplier)', () => {
     const axeBrandish = axeData.skills.find((s) => s.name === 'Brandish')!;
     const swordBrandish = heroData.skills.find((s) => s.name === 'Brandish (Sword)')!;
 
@@ -1322,10 +1323,11 @@ describe('Hero (Axe) DPS', () => {
       heroHigh, heroData, swordBrandish, weaponData, attackSpeedData, mwData
     );
 
-    // Same stats, same attack time — only weapon multiplier differs
+    // Same stats, same attack time — but Brandish is 1 slash + 1 stab,
+    // giving Axe effective 4.1 vs Sword's uniform 4.6
     expect(axeResult.attackTime).toBe(swordResult.attackTime);
-    expect(axeResult.damageRange.max).toBeGreaterThan(swordResult.damageRange.max);
-    expect(axeResult.dps).toBeGreaterThan(swordResult.dps);
+    expect(axeResult.damageRange.max).toBeLessThan(swordResult.damageRange.max);
+    expect(axeResult.dps).toBeLessThan(swordResult.dps);
   });
 });
 

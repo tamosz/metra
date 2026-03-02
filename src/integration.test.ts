@@ -197,7 +197,7 @@ describe('Baseline mode', () => {
       )!;
 
     expect(find('Hero', 'Brandish (Sword)').dps.dps).toBeCloseTo(247314, -2);
-    expect(find('Hero (Axe)', 'Brandish').dps.dps).toBeCloseTo(257772, -2);
+    expect(find('Hero (Axe)', 'Brandish').dps.dps).toBeCloseTo(221170, -2);
     expect(find('DrK', 'Spear Crusher').dps.dps).toBeCloseTo(251906, -2);
     expect(find('Paladin', 'Blast (Holy, Sword)').dps.dps).toBeCloseTo(192932, -2);
     expect(find('NL', 'Triple Throw').dps.dps).toBeCloseTo(292314, -2);
@@ -219,7 +219,7 @@ describe('Baseline mode', () => {
       )!;
 
     expect(find('Hero', 'Brandish (Sword)').dps.dps).toBeCloseTo(167678, -2);
-    expect(find('Hero (Axe)', 'Brandish').dps.dps).toBeCloseTo(174755, -2);
+    expect(find('Hero (Axe)', 'Brandish').dps.dps).toBeCloseTo(150000, -2);
     expect(find('DrK', 'Spear Crusher').dps.dps).toBeCloseTo(172570, -2);
     expect(find('Paladin', 'Blast (Holy, Sword)').dps.dps).toBeCloseTo(130807, -2);
     expect(find('NL', 'Triple Throw').dps.dps).toBeCloseTo(194891, -2);

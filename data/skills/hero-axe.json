@@ -1,5 +1,5 @@
 {
-  "source": "dmg sheet rows 15-18 (Brandish), range calculator D7 (mastery). Split from hero.json for correct weapon speed modeling.",
+  "source": "dmg sheet rows 15-18 (Brandish), range calculator D7 (mastery). Split from hero.json for correct weapon speed modeling. Brandish is 1 slash + 1 stab per attack (https://royals.ms/forum/threads/heros-damage-stability.200652/, https://royals.ms/forum/threads/warrior-2h-weapon-balancing.163124/).",
   "className": "Hero (Axe)",
   "mastery": 0.6,
   "primaryStat": "STR",
@@ -16,6 +16,7 @@
       "hitCount": 2,
       "speedCategory": "Brandish",
       "weaponType": "2H Axe",
+      "attackRatio": { "slash": 0.5, "stab": 0.5 },
       "maxTargets": 3
     }
   ]
