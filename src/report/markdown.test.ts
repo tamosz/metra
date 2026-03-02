@@ -239,9 +239,9 @@ function mockDpsResult(dps: number): DpsResult {
     attackTime: 0.63,
     damageRange: { min: 1000, max: 2000, average: 1500 },
     skillDamagePercent: 494,
-    seDamagePercent: 600,
+    critDamagePercent: 600,
     adjustedRangeNormal: 1500,
-    adjustedRangeSe: 1800,
+    adjustedRangeCrit: 1800,
     averageDamage: dps * 0.63,
     dps,
   };

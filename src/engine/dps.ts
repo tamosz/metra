@@ -36,12 +36,12 @@ export interface DpsResult {
   damageRange: DamageRange;
   /** Skill damage% without crit. */
   skillDamagePercent: number;
-  /** Skill damage% with SE crit. */
-  seDamagePercent: number;
+  /** Skill damage% with crit (built-in + SE). */
+  critDamagePercent: number;
   /** Adjusted range for normal (non-crit) hits. */
   adjustedRangeNormal: number;
-  /** Adjusted range for SE crit hits. */
-  adjustedRangeSe: number;
+  /** Adjusted range for crit hits. */
+  adjustedRangeCrit: number;
   /** Average damage per attack (all lines). */
   averageDamage: number;
   /** DPS (average damage / attack time). */
@@ -201,9 +201,9 @@ export function calculateSkillDps(
       attackTime,
       damageRange: { min: skill.fixedDamage, max: skill.fixedDamage, average: skill.fixedDamage },
       skillDamagePercent: 0,
-      seDamagePercent: 0,
+      critDamagePercent: 0,
       adjustedRangeNormal: 0,
-      adjustedRangeSe: 0,
+      adjustedRangeCrit: 0,
       averageDamage: totalDamage,
       dps: totalDamage / attackTime,
     };
@@ -223,9 +223,9 @@ export function calculateSkillDps(
     attackTime,
     damageRange,
     skillDamagePercent,
-    seDamagePercent: critDamagePercent,
+    critDamagePercent,
     adjustedRangeNormal,
-    adjustedRangeSe: adjustedRangeCrit,
+    adjustedRangeCrit,
     averageDamage,
     dps: averageDamage / attackTime,
   };

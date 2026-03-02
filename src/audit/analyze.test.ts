@@ -9,9 +9,9 @@ function makeDpsResult(dps: number): DpsResult {
     damageRange: { min: 1000, max: 2000, average: 1500 },
     attackTime: 0.6,
     skillDamagePercent: 100,
-    seDamagePercent: 0,
+    critDamagePercent: 0,
     adjustedRangeNormal: 1500,
-    adjustedRangeSe: 0,
+    adjustedRangeCrit: 0,
     averageDamage: dps,
     dps,
   };

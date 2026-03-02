@@ -9,8 +9,8 @@ import type {
 import { calculateSkillDps, type DpsResult } from '../engine/dps.js';
 import type { ScenarioConfig, ScenarioResult } from './types.js';
 
-/** Default scenario: fully buffed, no overrides. */
-const DEFAULT_SCENARIOS: ScenarioConfig[] = [{ name: 'Buffed' }];
+/** Fallback scenario when none is provided: fully buffed, no overrides. */
+const FALLBACK_SCENARIO: ScenarioConfig[] = [{ name: 'Buffed' }];
 
 /** Configuration for which classes/tiers to simulate. */
 export interface SimulationConfig {
@@ -72,7 +72,7 @@ export function runSimulation(
   attackSpeedData: AttackSpeedData,
   mwData: MWData
 ): ScenarioResult[] {
-  const scenarios = config.scenarios ?? DEFAULT_SCENARIOS;
+  const scenarios = config.scenarios ?? FALLBACK_SCENARIO;
   const results: ScenarioResult[] = [];
 
   for (const scenario of scenarios) {
