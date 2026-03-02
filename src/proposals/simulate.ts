@@ -4,6 +4,7 @@ import type {
   WeaponData,
   AttackSpeedData,
   MWData,
+  MixedRotation,
   SkillEntry,
 } from '../data/types.js';
 import { calculateSkillDps, type DpsResult } from '../engine/dps.js';
@@ -111,8 +112,9 @@ export function runSimulation(
 
         // Compute DPS for each individual skill
         const skillResults: { skill: SkillEntry; result: ScenarioResult }[] = [];
+        const skillResultsByName = new Map<string, ScenarioResult>();
+
         for (const skill of classData.skills) {
-          if (skill.hidden) continue;
           const dps = calculateSkillDps(
             effectiveBuild,
             classData,
@@ -151,21 +153,37 @@ export function runSimulation(
             effectiveDps = applyKnockbackUptime(effectiveDps, uptime);
           }
 
-          skillResults.push({
-            skill,
-            result: {
-              className: classData.className,
-              skillName: skill.name,
-              tier,
-              scenario: scenario.name,
-              dps: effectiveDps,
-            },
-          });
+          const result: ScenarioResult = {
+            className: classData.className,
+            skillName: skill.name,
+            tier,
+            scenario: scenario.name,
+            dps: effectiveDps,
+          };
+
+          // Store all skills (including hidden) for mixed rotation lookups
+          skillResultsByName.set(skill.name, result);
+
+          if (!skill.hidden) {
+            skillResults.push({ skill, result });
+          }
         }
 
         // Aggregate comboGroup skills: sum DPS for skills sharing the same group
         const grouped = aggregateComboGroups(skillResults);
         results.push(...grouped);
+
+        // Process mixed rotations
+        if (classData.mixedRotations) {
+          const mixedResults = processMixedRotations(
+            classData.mixedRotations,
+            skillResultsByName,
+            classData.className,
+            tier,
+            scenario.name,
+          );
+          results.push(...mixedResults);
+        }
       }
     }
   }
@@ -215,6 +233,64 @@ function aggregateComboGroups(
         skillName: groupName,
         dps: totalDps,
         averageDamage: totalAvgDamage,
+      },
+    });
+  }
+
+  return output;
+}
+
+/**
+ * Process mixed rotations: create synthetic results by weighting
+ * already-computed individual skill DPS values.
+ * Unlike comboGroups (fixed rotation cycles), mixed rotations represent
+ * time-weighted estimates of how much each skill is used in practice.
+ */
+function processMixedRotations(
+  mixedRotations: MixedRotation[],
+  allSkillResults: Map<string, ScenarioResult>,
+  className: string,
+  tier: string,
+  scenario: string,
+): ScenarioResult[] {
+  const output: ScenarioResult[] = [];
+
+  for (const rotation of mixedRotations) {
+    const componentResults: { result: ScenarioResult; weight: number }[] = [];
+    let valid = true;
+
+    for (const component of rotation.components) {
+      const result = allSkillResults.get(component.skill);
+      if (!result) {
+        valid = false;
+        break;
+      }
+      componentResults.push({ result, weight: component.weight });
+    }
+
+    if (!valid || componentResults.length === 0) continue;
+
+    const weightedDps = componentResults.reduce(
+      (sum, { result, weight }) => sum + result.dps.dps * weight,
+      0,
+    );
+    const weightedAvgDamage = componentResults.reduce(
+      (sum, { result, weight }) => sum + result.dps.averageDamage * weight,
+      0,
+    );
+
+    const first = componentResults[0].result;
+    output.push({
+      className,
+      skillName: rotation.name,
+      tier,
+      scenario,
+      description: rotation.description,
+      dps: {
+        ...first.dps,
+        skillName: rotation.name,
+        dps: weightedDps,
+        averageDamage: weightedAvgDamage,
       },
     });
   }

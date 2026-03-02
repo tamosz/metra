@@ -17,6 +17,75 @@ import { runSimulation } from './simulate.js';
 import type { SimulationConfig, GearTemplateMap } from './simulate.js';
 import type { ScenarioConfig } from './types.js';
 
+function makeMixedRotationFixtures() {
+  const classData: ClassSkillData = {
+    className: 'TestClass',
+    mastery: 0.6,
+    primaryStat: 'DEX',
+    secondaryStat: 'STR',
+    sharpEyesCritRate: 0.15,
+    sharpEyesCritDamageBonus: 140,
+    seCritFormula: 'addBeforeMultiply',
+    damageFormula: 'standard',
+    skills: [
+      {
+        name: 'Skill A',
+        basePower: 380,
+        multiplier: 1.2,
+        hitCount: 4,
+        speedCategory: 'Battleship Cannon',
+        weaponType: 'Gun',
+      },
+      {
+        name: 'Skill B',
+        basePower: 200,
+        multiplier: 1.2,
+        hitCount: 1,
+        speedCategory: 'Hurricane',
+        weaponType: 'Gun',
+      },
+    ],
+    mixedRotations: [
+      {
+        name: 'Mixed A+B',
+        description: 'Test mixed rotation',
+        components: [
+          { skill: 'Skill A', weight: 0.8 },
+          { skill: 'Skill B', weight: 0.2 },
+        ],
+      },
+    ],
+  };
+
+  const build: CharacterBuild = {
+    className: 'TestClass',
+    baseStats: { STR: 4, DEX: 700, INT: 4, LUK: 4 },
+    gearStats: { STR: 40, DEX: 200, INT: 0, LUK: 0 },
+    totalWeaponAttack: 100,
+    weaponType: 'Gun',
+    weaponSpeed: 5,
+    attackPotion: 60,
+    projectile: 0,
+    echoActive: true,
+    mwLevel: 20,
+    speedInfusion: true,
+    sharpEyes: true,
+  };
+
+  const weaponData: WeaponData = {
+    types: [{ name: 'Gun', slashMultiplier: 3.6, stabMultiplier: 3.6 }],
+  };
+
+  const attackSpeedData: AttackSpeedData = {
+    categories: ['Battleship Cannon', 'Hurricane'],
+    entries: [{ speed: 2, times: { 'Battleship Cannon': 0.6, Hurricane: 0.12 } }],
+  };
+
+  const mwData: MWData = [{ level: 20, multiplier: 1.1 }];
+
+  return { classData, build, weaponData, attackSpeedData, mwData };
+}
+
 let weaponData: WeaponData;
 let attackSpeedData: AttackSpeedData;
 let mwData: MWData;
@@ -725,5 +794,65 @@ describe('elementOptions (adaptive element selection)', () => {
     )!;
 
     expect(iceWeak.dps.dps).toBeCloseTo(buffed.dps.dps * 1.5, 0);
+  });
+});
+
+describe('mixed rotations', () => {
+  it('creates a weighted DPS entry from component skills', () => {
+    const { classData, build, weaponData, attackSpeedData, mwData } = makeMixedRotationFixtures();
+    const classDataMap = new Map([['testclass', classData]]);
+    const gearTemplates = new Map([['testclass-high', build]]);
+    const config: SimulationConfig = { classes: ['testclass'], tiers: ['high'] };
+
+    const results = runSimulation(config, classDataMap, gearTemplates, weaponData, attackSpeedData, mwData);
+
+    const skillA = results.find(r => r.skillName === 'Skill A');
+    const skillB = results.find(r => r.skillName === 'Skill B');
+    const mixed = results.find(r => r.skillName === 'Mixed A+B');
+
+    expect(skillA).toBeDefined();
+    expect(skillB).toBeDefined();
+    expect(mixed).toBeDefined();
+
+    const expectedDps = skillA!.dps.dps * 0.8 + skillB!.dps.dps * 0.2;
+    expect(mixed!.dps.dps).toBeCloseTo(expectedDps, 0);
+    expect(mixed!.description).toBe('Test mixed rotation');
+    expect(mixed!.className).toBe('TestClass');
+    expect(mixed!.tier).toBe('high');
+  });
+
+  it('applies element modifiers to mixed rotation components', () => {
+    const { classData, build, weaponData, attackSpeedData, mwData } = makeMixedRotationFixtures();
+    classData.skills[0].element = 'Fire';
+
+    const classDataMap = new Map([['testclass', classData]]);
+    const gearTemplates = new Map([['testclass-high', build]]);
+    const config: SimulationConfig = {
+      classes: ['testclass'],
+      tiers: ['high'],
+      scenarios: [{ name: 'Test', elementModifiers: { Fire: 1.5 } }],
+    };
+
+    const results = runSimulation(config, classDataMap, gearTemplates, weaponData, attackSpeedData, mwData);
+
+    const skillA = results.find(r => r.skillName === 'Skill A');
+    const skillB = results.find(r => r.skillName === 'Skill B');
+    const mixed = results.find(r => r.skillName === 'Mixed A+B');
+
+    expect(mixed).toBeDefined();
+    const expectedDps = skillA!.dps.dps * 0.8 + skillB!.dps.dps * 0.2;
+    expect(mixed!.dps.dps).toBeCloseTo(expectedDps, 0);
+  });
+
+  it('classes without mixedRotations produce no extra results', () => {
+    const { classData, build, weaponData, attackSpeedData, mwData } = makeMixedRotationFixtures();
+    delete (classData as any).mixedRotations;
+
+    const classDataMap = new Map([['testclass', classData]]);
+    const gearTemplates = new Map([['testclass-high', build]]);
+    const config: SimulationConfig = { classes: ['testclass'], tiers: ['high'] };
+
+    const results = runSimulation(config, classDataMap, gearTemplates, weaponData, attackSpeedData, mwData);
+    expect(results).toHaveLength(2); // Just Skill A and Skill B
   });
 });
