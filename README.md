@@ -92,3 +92,11 @@ npm run setup
 - React + Vite (web app)
 - Playwright (e2e tests)
 - No build step for engine/CLI — runs directly via tsx
+
+## Acknowledgments
+
+The simulation engine was translated from a spreadsheet calculator by Tim, Shiyui, and Geyforlife. Game mechanics data sourced from the [royals.ms forum](https://royals.ms/forum).
+
+## License
+
+[MIT](LICENSE)
