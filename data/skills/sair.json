@@ -28,5 +28,15 @@
       "knockbackRecovery": 0.5,
       "source": "dmg D10=200, E10=D10*1.2=240, Hurricane fixed 0.12s. KB recovery lower than Hurricane — Rapid Fire can fire mid-air (data/references/knockback.md)"
     }
+  ],
+  "mixedRotations": [
+    {
+      "name": "Practical Bossing",
+      "description": "Estimated 80/20 Cannon/RF split — assumes typical endgame bossing with periodic Battleship destruction (90s cooldown at level 1, 164k HP at level 200)",
+      "components": [
+        { "skill": "Battleship Cannon", "weight": 0.8 },
+        { "skill": "Rapid Fire", "weight": 0.2 }
+      ]
+    }
   ]
 }
