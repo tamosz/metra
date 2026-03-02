@@ -45,7 +45,7 @@ function tierDisplayName(tier: string, customTierNames: Map<string, string>): st
 
 export function Dashboard({ simulation, customTiers, baseTiers, targetCount, setTargetCount, elementModifiers, setElementModifiers, buffOverrides, setBuffOverrides }: DashboardProps) {
   const { results, tiers, scenarios, customTierNames } = simulation;
-  const [selectedScenario, setSelectedScenario] = useState('Buffed');
+  const [selectedScenario, setSelectedScenario] = useState(scenarios[0] ?? 'Bossing (KB)');
   const [selectedTier, setSelectedTier] = useState<string | 'all'>('all');
 
   // Auto-select Training scenario when target count changes
@@ -54,7 +54,7 @@ export function Dashboard({ simulation, customTiers, baseTiers, targetCount, set
       const trainingScenario = scenarios.find((s) => s.startsWith('Training'));
       if (trainingScenario) setSelectedScenario(trainingScenario);
     } else if (selectedScenario.startsWith('Training')) {
-      setSelectedScenario('Buffed');
+      setSelectedScenario(scenarios[0] ?? 'Bossing (KB)');
     }
   }, [targetCount, scenarios]);
 

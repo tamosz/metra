@@ -2,8 +2,8 @@ import { describe, it, expect } from 'vitest';
 import { DEFAULT_SCENARIOS } from './scenarios.js';
 
 describe('DEFAULT_SCENARIOS', () => {
-  it('has 3 scenarios', () => {
-    expect(DEFAULT_SCENARIOS).toHaveLength(3);
+  it('has 1 scenario', () => {
+    expect(DEFAULT_SCENARIOS).toHaveLength(1);
   });
 
   it('each scenario has a non-empty name', () => {
@@ -38,15 +38,7 @@ describe('DEFAULT_SCENARIOS', () => {
 
   it('includes expected scenario names', () => {
     const names = DEFAULT_SCENARIOS.map((s) => s.name);
-    expect(names).toContain('Buffed');
-    expect(names).toContain('Bossing (50% PDR)');
     expect(names).toContain('Bossing (KB)');
-  });
-
-  it('Buffed scenario has no overrides or pdr', () => {
-    const buffed = DEFAULT_SCENARIOS.find((s) => s.name === 'Buffed')!;
-    expect(buffed.overrides).toBeUndefined();
-    expect(buffed.pdr).toBeUndefined();
   });
 
   it('Bossing (KB) scenario has PDR, attack interval, and accuracy', () => {

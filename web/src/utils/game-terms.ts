@@ -12,8 +12,6 @@ export const GAME_TERMS: Record<string, string> = {
 };
 
 export const SCENARIO_DESCRIPTIONS: Record<string, string> = {
-  Buffed: 'All party buffs active: MW20, SE, SI, Echo, and attack potions.',
-  'Bossing (50% PDR)': 'Fully buffed with 50% Physical Damage Reduction — sustained bossing damage.',
   'Bossing (KB)': 'Bossing with knockback modeling — accounts for DPS lost to boss attacks interrupting your skills. Classes with Stance or Shadow Shifter lose less uptime.',
 };
 

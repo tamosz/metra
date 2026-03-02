@@ -3,8 +3,7 @@ import { getScenarioDescription } from './game-terms.js';
 
 describe('getScenarioDescription', () => {
   it('returns static description for known scenarios', () => {
-    expect(getScenarioDescription('Buffed')).toContain('All party buffs');
-    expect(getScenarioDescription('Bossing (50% PDR)')).toContain('50%');
+    expect(getScenarioDescription('Bossing (KB)')).toContain('knockback');
   });
 
   it('returns dynamic description for Training (N mobs)', () => {

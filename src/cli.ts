@@ -84,11 +84,12 @@ function main() {
     const report = renderBaselineReport(results);
     console.log(report);
 
-    // ASCII chart for the first scenario (Buffed)
-    const buffedResults = results.filter((r) => r.scenario === 'Buffed');
-    if (buffedResults.length > 0) {
+    // ASCII chart for the first scenario
+    const firstScenario = results[0]?.scenario;
+    const firstScenarioResults = results.filter((r) => r.scenario === firstScenario);
+    if (firstScenarioResults.length > 0) {
       console.log(renderAsciiChart(
-        buffedResults.map((r) => ({
+        firstScenarioResults.map((r) => ({
           label: `${r.className} ${r.skillName} (${capitalize(r.tier)})`,
           value: r.dps.dps,
         }))

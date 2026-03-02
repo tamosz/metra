@@ -13,12 +13,10 @@ describe('useSimulation', () => {
     expect(result.current.tiers).toContain('high');
   });
 
-  it('includes all 3 default scenarios', () => {
+  it('includes default scenarios', () => {
     const { result } = renderHook(() => useSimulation());
 
     expect(result.current.scenarios).toEqual([
-      'Buffed',
-      'Bossing (50% PDR)',
       'Bossing (KB)',
     ]);
   });
