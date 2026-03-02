@@ -300,6 +300,40 @@ describe('Special mechanics', () => {
     );
   });
 
+  it('comboGroup aggregation sums uncappedDps and computes capLossPercent', () => {
+    const buccCombo = buffedResults.find(
+      (r) => r.className === 'Buccaneer' && r.skillName === 'Barrage + Demolition' && r.tier === 'high'
+    )!;
+    expect(buccCombo.dps.uncappedDps).toBeGreaterThan(0);
+    expect(buccCombo.dps.capLossPercent).toBeGreaterThanOrEqual(0);
+    // uncappedDps should be >= dps (cap can only reduce damage)
+    expect(buccCombo.dps.uncappedDps).toBeGreaterThanOrEqual(buccCombo.dps.dps);
+    // combo uncappedDps should be the sum of sub-skill uncappedDps, not just the first skill's value
+    // Barrage + Demolition has 2 sub-skills so total should be significantly more than a single sub-skill
+    expect(buccCombo.dps.uncappedDps).toBeGreaterThan(100000);
+  });
+
+  it('post-multipliers scale uncappedDps (PDR scenario)', () => {
+    const pdrScenarios: ScenarioConfig[] = [
+      { name: 'Buffed' },
+      { name: 'PDR 50%', pdr: 0.5 },
+    ];
+    const pdrConfig: SimulationConfig = { ...config, scenarios: pdrScenarios };
+    const pdrResults = runSimulation(
+      pdrConfig, classDataMap, gearTemplates, weaponData, attackSpeedData, mwData
+    );
+    const heroBuffed = pdrResults.find(
+      (r) => r.className === 'Hero' && r.skillName === 'Brandish (Sword)' && r.scenario === 'Buffed' && r.tier === 'high'
+    )!;
+    const heroPdr = pdrResults.find(
+      (r) => r.className === 'Hero' && r.skillName === 'Brandish (Sword)' && r.scenario === 'PDR 50%' && r.tier === 'high'
+    )!;
+    // uncappedDps should be halved by PDR just like dps
+    expect(heroPdr.dps.uncappedDps).toBeCloseTo(heroBuffed.dps.uncappedDps * 0.5, 0);
+    // capLossPercent should remain the same (linear scaling preserves ratio)
+    expect(heroPdr.dps.capLossPercent).toBeCloseTo(heroBuffed.dps.capLossPercent, 5);
+  });
+
   it('Hurricane and Rapid Fire use 0.12s attack time', () => {
     const hurricane = buffedResults.find(
       (r) => r.className === 'Bowmaster' && r.skillName === 'Hurricane'
