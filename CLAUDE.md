@@ -215,10 +215,11 @@ Standard scenarios for comparison reports (all implemented):
 - **Unbuffed** — no SE, Echo, SI, MW, or attack potion. Shows raw class power.
 - **No-Echo** — all buffs except Echo of Hero. Shows Echo's DPS contribution.
 - **Bossing (50% PDR)** — fully buffed with 50% Physical Damage Reduction applied. Shows sustained bossing DPS.
-- **Bossing (Undead, 50% PDR)** — fully buffed with 50% PDR and 1.5× Holy element modifier. Shows Holy-class advantage on undead bosses.
 - **Training** (planned) — kills/hr and EXP/hr at a reference map/mob.
 
-Multi-scenario support: `ScenarioConfig` can override buff flags, apply PDR, and set element modifiers. The CLI runs all 5 default scenarios. Reports render separate tables per scenario.
+Multi-scenario support: `ScenarioConfig` can override buff flags, apply PDR, and set element modifiers. The CLI runs all 4 default scenarios. Reports render separate tables per scenario.
+
+**Element toggles (web only):** Dashboard filter bar has composable element toggles (Holy, Fire, Ice, Lightning, Poison). Each cycles neutral → weak (1.5×) → strong (0.5×). These overlay onto any selected scenario via `elementModifiers` on `ScenarioConfig`.
 
 ## Tech Stack
 
@@ -303,7 +304,7 @@ metra/
 │   ├── index.ts                 # library entry point
 │   ├── core.ts                  # browser-safe re-exports (no fs loaders)
 │   ├── cli.ts                   # CLI entry: baseline rankings or proposal comparison
-│   ├── scenarios.ts             # DEFAULT_SCENARIOS constant (5 standard scenarios)
+│   ├── scenarios.ts             # DEFAULT_SCENARIOS constant (4 standard scenarios)
 │   ├── integration.test.ts      # end-to-end pipeline tests
 │   ├── audit/
 │   │   ├── index.ts             # re-exports

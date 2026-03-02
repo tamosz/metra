@@ -11,6 +11,7 @@ import { WelcomeBanner } from './WelcomeBanner.js';
 import { CustomTierList } from './CustomTierList.js';
 import { useSpinner } from '../hooks/useSpinner.js';
 import { formatDps } from '../utils/format.js';
+import { ElementToggles } from './ElementToggles.js';
 
 interface DashboardProps {
   simulation: SimulationData;
@@ -18,6 +19,8 @@ interface DashboardProps {
   baseTiers: string[];
   targetCount: number;
   setTargetCount: (n: number) => void;
+  elementModifiers: Record<string, number>;
+  setElementModifiers: (mods: Record<string, number>) => void;
 }
 
 type SortColumn = 'class' | 'skill' | 'tier' | 'dps';
@@ -36,7 +39,7 @@ function tierDisplayName(tier: string, customTierNames: Map<string, string>): st
   return tier.charAt(0).toUpperCase() + tier.slice(1);
 }
 
-export function Dashboard({ simulation, customTiers, baseTiers, targetCount, setTargetCount }: DashboardProps) {
+export function Dashboard({ simulation, customTiers, baseTiers, targetCount, setTargetCount, elementModifiers, setElementModifiers }: DashboardProps) {
   const { results, tiers, scenarios, customTierNames } = simulation;
   const [selectedScenario, setSelectedScenario] = useState('Buffed');
   const [selectedTier, setSelectedTier] = useState<string | 'all'>('all');
@@ -82,6 +85,7 @@ export function Dashboard({ simulation, customTiers, baseTiers, targetCount, set
           onChange={setSelectedTier}
         />
         <TargetSpinner value={targetCount} onChange={setTargetCount} />
+        <ElementToggles modifiers={elementModifiers} onChange={setElementModifiers} />
       </div>
 
       <SupportClassNote classNames={[...new Set(filtered.map((r) => r.className))]} />

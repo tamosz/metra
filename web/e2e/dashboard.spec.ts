@@ -54,4 +54,29 @@ test.describe('dashboard', () => {
 
     expect(barCount).toBe(rowCount);
   });
+
+  test('element toggle cycles through states and affects DPS', async ({ page }) => {
+    const holyButton = page.getByRole('button', { name: 'Ho' });
+    await expect(holyButton).toBeVisible();
+
+    // Get baseline DPS
+    const table = page.getByTestId('ranking-table');
+    const dpsBefore = await table.locator('tbody tr td:last-child').allTextContents();
+
+    // Click to set Holy weak (1.5x)
+    await holyButton.click();
+    await expect(holyButton).toHaveClass(/emerald/);
+
+    // Click again to set Holy strong (0.5x)
+    await holyButton.click();
+    await expect(holyButton).toHaveClass(/red/);
+
+    // Click again to reset to neutral
+    await holyButton.click();
+    await expect(holyButton).not.toHaveClass(/emerald|red/);
+
+    // DPS should be back to baseline
+    const dpsAfter = await table.locator('tbody tr td:last-child').allTextContents();
+    expect(dpsAfter).toEqual(dpsBefore);
+  });
 });

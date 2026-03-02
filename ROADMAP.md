@@ -15,7 +15,7 @@ A balance simulator for Royals staff and community. Every number traces back to 
 - Shareable builds via URL encoding (`#b=` for builds, `#c=` for comparisons)
 - UX: mobile layout, tooltips, class icons, onboarding banner, support class disclaimers
 - 3 funding tiers (low, mid, high)
-- 5 scenarios (Buffed, Unbuffed, No-Echo, Bossing 50% PDR, Bossing Undead 50% PDR)
+- 4 scenarios (Buffed, Unbuffed, No-Echo, Bossing 50% PDR) + composable element toggles
 - Multi-target simulation: per-skill `maxTargets` + per-scenario `targetCount` for training/AoE comparisons
 - Balance audit: automated outlier detection across scenarios and tiers
 - Pre-commit hooks, comprehensive test coverage
