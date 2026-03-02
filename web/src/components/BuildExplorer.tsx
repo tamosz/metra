@@ -62,7 +62,7 @@ export function BuildExplorer({ state, savedBuilds }: BuildExplorerProps) {
         {hasOverrides && (
           <button
             onClick={resetOverrides}
-            className="cursor-pointer rounded border border-red-500/30 bg-transparent px-3 py-1.5 text-xs text-red-400 transition-colors hover:bg-red-500/10"
+            className="cursor-pointer rounded border border-negative/30 bg-transparent px-3 py-1.5 text-xs text-negative transition-colors hover:bg-negative/10"
           >
             Reset All
           </button>
@@ -117,7 +117,7 @@ export function BuildExplorer({ state, savedBuilds }: BuildExplorerProps) {
               <button
                 key={b.id}
                 onClick={() => savedBuilds.remove(b.id)}
-                className="cursor-pointer border-none bg-transparent px-1 py-0.5 text-[10px] text-red-400/50 transition-colors hover:text-red-400"
+                className="cursor-pointer border-none bg-transparent px-1 py-0.5 text-[10px] text-negative/50 transition-colors hover:text-negative"
                 title={`Delete "${b.name}"`}
               >
                 x {b.name}

@@ -10,6 +10,7 @@ import { ClassIcon } from './icons/index.js';
 import { WelcomeBanner } from './WelcomeBanner.js';
 import { CustomTierList } from './CustomTierList.js';
 import { useSpinner } from '../hooks/useSpinner.js';
+import { formatDps } from '../utils/format.js';
 
 interface DashboardProps {
   simulation: SimulationData;
@@ -140,10 +141,6 @@ function TargetSpinner({ value, onChange }: { value: number; onChange: (n: numbe
       </div>
     </div>
   );
-}
-
-function formatDps(n: number): string {
-  return Math.round(n).toLocaleString();
 }
 
 function SortArrow({ direction }: { direction: SortDirection }) {

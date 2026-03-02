@@ -1,10 +1,11 @@
-import { useState, useMemo } from 'react';
+import { useState, useRef } from 'react';
 import type { ProposalState } from '../hooks/useProposal.js';
 import type { SimulationData } from '../hooks/useSimulation.js';
 import type { ProposalChange, Proposal } from '@engine/proposals/types.js';
 import { skillSlug } from '@engine/proposals/apply.js';
+import { validateProposal } from '@engine/proposals/validate.js';
 import {
-  discoverClassesAndTiers,
+  discoveredData,
   type DiscoveryResult,
 } from '../data/bundle.js';
 import { setProposalInUrl } from '../utils/url-encoding.js';
@@ -41,7 +42,20 @@ export function ProposalBuilder({ proposalState, simulation }: ProposalBuilderPr
   const [showJson, setShowJson] = useState(false);
   const [jsonInput, setJsonInput] = useState('');
   const [jsonError, setJsonError] = useState('');
-  const discovery = useMemo(() => discoverClassesAndTiers(), []);
+  const discovery = discoveredData;
+  const changeIdCounter = useRef(0);
+  const [changeKeys, setChangeKeys] = useState<number[]>([]);
+
+  const handleAddChange = (change: ProposalChange) => {
+    addChange(change);
+    const id = changeIdCounter.current++;
+    setChangeKeys((prev) => [...prev, id]);
+  };
+
+  const handleRemoveChange = (index: number) => {
+    removeChange(index);
+    setChangeKeys((prev) => prev.filter((_, i) => i !== index));
+  };
 
   const handleSimulate = () => {
     simulate();
@@ -52,16 +66,15 @@ export function ProposalBuilder({ proposalState, simulation }: ProposalBuilderPr
 
   const handleImportJson = () => {
     try {
-      const parsed = JSON.parse(jsonInput) as Proposal;
-      if (!parsed.name || !parsed.changes) {
-        setJsonError('Invalid proposal format');
-        return;
-      }
-      proposalState.loadProposal(parsed);
+      const raw = JSON.parse(jsonInput);
+      const validated = validateProposal(raw);
+      proposalState.loadProposal(validated);
+      const keys = validated.changes.map(() => changeIdCounter.current++);
+      setChangeKeys(keys);
       setJsonError('');
       setShowJson(false);
-    } catch {
-      setJsonError('Invalid JSON');
+    } catch (e) {
+      setJsonError(e instanceof SyntaxError ? 'Invalid JSON' : (e as Error).message);
     }
   };
 
@@ -107,10 +120,10 @@ export function ProposalBuilder({ proposalState, simulation }: ProposalBuilderPr
       </div>
 
       {proposal.changes.map((change, i) => (
-        <ChangeRow key={i} change={change} discovery={discovery} onRemove={() => removeChange(i)} />
+        <ChangeRow key={changeKeys[i] ?? i} change={change} discovery={discovery} onRemove={() => handleRemoveChange(i)} />
       ))}
 
-      <AddChangeForm simulation={simulation} discovery={discovery} onAdd={addChange} />
+      <AddChangeForm simulation={simulation} discovery={discovery} onAdd={handleAddChange} />
 
       <div className="mt-6 flex gap-3">
         <button

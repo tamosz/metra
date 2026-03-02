@@ -1,11 +1,11 @@
 import { describe, it, expect } from 'vitest';
 import { applyCustomTierToTemplate, generateCustomTierTemplates } from './custom-tier.js';
-import { discoverClassesAndTiers } from '../data/bundle.js';
+import { discoveredData } from '../data/bundle.js';
 import type { CustomTier } from '../types/custom-tier.js';
 import { DEFAULT_ADJUSTMENTS } from '../types/custom-tier.js';
 
 describe('applyCustomTierToTemplate', () => {
-  const { classDataMap, gearTemplates } = discoverClassesAndTiers();
+  const { classDataMap, gearTemplates } = discoveredData;
 
   it('applies primary stat delta to Hero (STR class)', () => {
     const heroMid = gearTemplates.get('hero-mid')!;
@@ -89,7 +89,7 @@ describe('applyCustomTierToTemplate', () => {
 });
 
 describe('generateCustomTierTemplates', () => {
-  const { classNames, classDataMap, gearTemplates } = discoverClassesAndTiers();
+  const { classNames, classDataMap, gearTemplates } = discoveredData;
 
   it('generates entries for all classes', () => {
     const customTier: CustomTier = {

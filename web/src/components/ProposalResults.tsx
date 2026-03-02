@@ -21,6 +21,7 @@ import { useIsMobile } from '../hooks/useIsMobile.js';
 import { getScenarioDescription } from '../utils/game-terms.js';
 import { ClassIcon } from './icons/index.js';
 import { colors } from '../theme.js';
+import { formatDps } from '../utils/format.js';
 
 function rankSort(a: DeltaEntry, b: DeltaEntry): number {
   const tierCmp = compareTiers(a.tier, b.tier);
@@ -388,6 +389,3 @@ function DeltaTable({ deltas, showTierGroups }: { deltas: DeltaEntry[]; showTier
   );
 }
 
-function formatDps(n: number): string {
-  return Math.round(n).toLocaleString();
-}

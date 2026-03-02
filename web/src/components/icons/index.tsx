@@ -24,6 +24,7 @@ const CLASS_ICON_MAP: Record<string, React.ComponentType<{ size?: number; color?
   Buccaneer: FistIcon,
   Shadower: DaggerIcon,
   'Archmage I/L': StaffLightningIcon,
+  'Archmage F/P': StaffLightningIcon,
   Bishop: StaffCrossIcon,
 };
 

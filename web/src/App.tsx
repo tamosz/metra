@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 import { Dashboard } from './components/Dashboard.js';
 import { ProposalBuilder } from './components/ProposalBuilder.js';
 import { ProposalResults } from './components/ProposalResults.js';
@@ -10,14 +10,14 @@ import { useBuildExplorer } from './hooks/useBuildExplorer.js';
 import { useBuildComparison } from './hooks/useBuildComparison.js';
 import { useCustomTiers } from './hooks/useCustomTiers.js';
 import { useSavedBuilds } from './hooks/useSavedBuilds.js';
-import { discoverClassesAndTiers } from './data/bundle.js';
+import { discoveredData } from './data/bundle.js';
 import { getProposalFromUrl, getBuildFromUrl, getComparisonFromUrl } from './utils/url-encoding.js';
 
 type Page = 'dashboard' | 'proposal' | 'build' | 'compare';
 
 export function App() {
   const customTiersState = useCustomTiers();
-  const baseTiers = useMemo(() => discoverClassesAndTiers().tiers, []);
+  const baseTiers = discoveredData.tiers;
   const [targetCount, setTargetCount] = useState(1);
   const simulation = useSimulation(customTiersState.tiers, targetCount > 1 ? targetCount : undefined);
   const savedBuildsState = useSavedBuilds();
