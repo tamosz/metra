@@ -12,6 +12,8 @@ import { CustomTierList } from './CustomTierList.js';
 import { useSpinner } from '../hooks/useSpinner.js';
 import { formatDps } from '../utils/format.js';
 import { ElementToggles } from './ElementToggles.js';
+import { BuffToggles } from './BuffToggles.js';
+import type { BuffOverrides } from './BuffToggles.js';
 
 interface DashboardProps {
   simulation: SimulationData;
@@ -21,6 +23,8 @@ interface DashboardProps {
   setTargetCount: (n: number) => void;
   elementModifiers: Record<string, number>;
   setElementModifiers: (mods: Record<string, number>) => void;
+  buffOverrides: BuffOverrides;
+  setBuffOverrides: (overrides: BuffOverrides) => void;
 }
 
 type SortColumn = 'class' | 'skill' | 'tier' | 'dps';
@@ -39,7 +43,7 @@ function tierDisplayName(tier: string, customTierNames: Map<string, string>): st
   return tier.charAt(0).toUpperCase() + tier.slice(1);
 }
 
-export function Dashboard({ simulation, customTiers, baseTiers, targetCount, setTargetCount, elementModifiers, setElementModifiers }: DashboardProps) {
+export function Dashboard({ simulation, customTiers, baseTiers, targetCount, setTargetCount, elementModifiers, setElementModifiers, buffOverrides, setBuffOverrides }: DashboardProps) {
   const { results, tiers, scenarios, customTierNames } = simulation;
   const [selectedScenario, setSelectedScenario] = useState('Buffed');
   const [selectedTier, setSelectedTier] = useState<string | 'all'>('all');
@@ -86,6 +90,7 @@ export function Dashboard({ simulation, customTiers, baseTiers, targetCount, set
         />
         <TargetSpinner value={targetCount} onChange={setTargetCount} />
         <ElementToggles modifiers={elementModifiers} onChange={setElementModifiers} />
+        <BuffToggles overrides={buffOverrides} onChange={setBuffOverrides} />
       </div>
 
       <SupportClassNote classNames={[...new Set(filtered.map((r) => r.className))]} />
