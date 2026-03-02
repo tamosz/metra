@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect, useCallback } from 'react';
 import { DpsChart } from './DpsChart.js';
 import { FilterGroup } from './FilterGroup.js';
 import { SupportClassNote } from './SupportClassNote.js';
@@ -9,6 +9,7 @@ import { getScenarioDescription } from '../utils/game-terms.js';
 import { ClassIcon } from './icons/index.js';
 import { WelcomeBanner } from './WelcomeBanner.js';
 import { CustomTierList } from './CustomTierList.js';
+import { useSpinner } from '../hooks/useSpinner.js';
 
 interface DashboardProps {
   simulation: SimulationData;
@@ -63,7 +64,7 @@ export function Dashboard({ simulation, customTiers, baseTiers, targetCount, set
 
       <CustomTierList customTiers={customTiers} baseTiers={baseTiers} />
 
-      <div className="mb-6 flex flex-wrap gap-4">
+      <div className="mb-6 flex items-center gap-4">
         <FilterGroup
           label="Scenario"
           value={selectedScenario}
@@ -79,20 +80,7 @@ export function Dashboard({ simulation, customTiers, baseTiers, targetCount, set
           ]}
           onChange={setSelectedTier}
         />
-        <div className="flex items-end gap-1.5">
-          <label className="text-[11px] font-medium uppercase tracking-wide text-text-dim">Targets</label>
-          <input
-            type="number"
-            min={1}
-            max={15}
-            value={targetCount}
-            onChange={(e) => {
-              const v = Math.max(1, Math.min(15, Math.floor(Number(e.target.value) || 1)));
-              setTargetCount(v);
-            }}
-            className="w-14 rounded border border-border-default bg-bg-raised px-2 py-1 text-sm text-text-primary text-center tabular-nums focus:border-border-active transition-colors"
-          />
-        </div>
+        <TargetSpinner value={targetCount} onChange={setTargetCount} />
       </div>
 
       <SupportClassNote classNames={[...new Set(filtered.map((r) => r.className))]} />
@@ -101,6 +89,54 @@ export function Dashboard({ simulation, customTiers, baseTiers, targetCount, set
 
       <div className="mt-6">
         <RankingTable data={filtered} customTierNames={customTierNames} />
+      </div>
+    </div>
+  );
+}
+
+function TargetSpinner({ value, onChange }: { value: number; onChange: (n: number) => void }) {
+  const clamp = (n: number) => Math.max(1, Math.min(15, n));
+
+  const decrement = useCallback(() => {
+    onChange(clamp(value - 1));
+  }, [value, onChange]);
+
+  const increment = useCallback(() => {
+    onChange(clamp(value + 1));
+  }, [value, onChange]);
+
+  const decSpinner = useSpinner(decrement);
+  const incSpinner = useSpinner(increment);
+
+  return (
+    <div className="flex flex-col gap-1">
+      <span className="text-[11px] font-medium uppercase tracking-wide text-text-dim">Targets</span>
+      <div className="flex items-stretch overflow-hidden rounded border border-border-default">
+        <button
+          type="button"
+          tabIndex={-1}
+          className="flex h-6 w-5 items-center justify-center bg-bg-raised text-xs text-text-faint hover:bg-bg-active hover:text-text-muted"
+          {...decSpinner}
+        >
+          &minus;
+        </button>
+        <input
+          type="number"
+          value={value}
+          onChange={(e) => {
+            const v = parseInt(e.target.value, 10);
+            if (!isNaN(v)) onChange(clamp(v));
+          }}
+          className="w-[36px] border-x border-border-default bg-bg-raised px-1 py-1 text-center text-sm tabular-nums text-text-primary focus:border-border-active transition-colors [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+        />
+        <button
+          type="button"
+          tabIndex={-1}
+          className="flex h-6 w-5 items-center justify-center bg-bg-raised text-xs text-text-faint hover:bg-bg-active hover:text-text-muted"
+          {...incSpinner}
+        >
+          +
+        </button>
       </div>
     </div>
   );
