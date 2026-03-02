@@ -32,6 +32,7 @@ beforeAll(() => {
     ['hero', loadClassSkills('Hero')],
     ['bucc', loadClassSkills('Bucc')],
     ['paladin', loadClassSkills('Paladin')],
+    ['paladin-bw', loadClassSkills('paladin-bw')],
     ['shadower', loadClassSkills('Shadower')],
     ['archmage-il', loadClassSkills('Archmage I/L')],
     ['nl', loadClassSkills('NL')],
@@ -43,6 +44,7 @@ beforeAll(() => {
     ['bucc-low', loadGearTemplate('bucc-low')],
     ['bucc-high', loadGearTemplate('bucc-high')],
     ['paladin-high', loadGearTemplate('paladin-high')],
+    ['paladin-bw-high', loadGearTemplate('paladin-bw-high')],
     ['shadower-high', loadGearTemplate('shadower-high')],
     ['archmage-il-high', loadGearTemplate('archmage-il-high')],
     ['nl-high', loadGearTemplate('nl-high')],
@@ -702,7 +704,7 @@ describe('elementOptions (adaptive element selection)', () => {
 
   it('applies a single matching element correctly', () => {
     const config: SimulationConfig = {
-      classes: ['paladin'],
+      classes: ['paladin-bw'],
       tiers: ['high'],
       scenarios: [
         { name: 'Buffed' },

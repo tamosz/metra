@@ -55,7 +55,8 @@ appear on the marketplace).
 | Hero | Stonetooth Sword | 150 | 130 | 5 |
 | Hero (Axe) | 2H Axe | 150 | 130 | 6 |
 | DrK | Sky Ski | 139 | 127 | 6 |
-| Paladin | 2H Sword / 2H BW | 150 / 150 | 130 / 130 | 6 |
+| Paladin (Sword) | 2H Sword | 150 | 130 | 6 |
+| Paladin (BW) | Dragon Flame (2H BW) | 156 | 136 | 7 |
 | NL | Raven's Claw | 91 | 76 | 4 |
 | BM/MM | Bow / Crossbow | 130 | 105 | 6 |
 | Corsair | Gun | — | — | 5 |
@@ -75,6 +76,27 @@ appear on the marketplace).
 - Dragon Claymore: theoretically higher WATK but speed 6, extremely rare
 
 130 WATK was chosen for low tier as genuine budget — confirmed "mid-range" by Paladin guide.
+
+### 2H BW Weapon — Dragon Flame
+
+**Source:** [Comprehensive Paladin Guide](https://royals.ms/forum/threads/comprehensive-paladin-guide-haplopelma.161247/)
+**Source:** [Warrior 2H Weapon Balancing](https://royals.ms/forum/threads/warrior-2h-weapon-balancing.163124/)
+**Source:** [Sword vs BW Essay](https://royals.ms/forum/threads/sword-vs-bw-an-essay-on-the-futility-of-dps.159790/)
+**Source:** [117 Dragon Flame listing](https://royals.ms/forum/threads/s-130-18luk-dragon-kanzir-117-perfect-dragom-flame.236826/)
+**Accessed:** 2026-03-02
+**Used in:** `data/gear-templates/paladin-bw-*.json`
+
+Dragon Flame (lv110 HT drop) is the only viable endgame 2H BW:
+- Clean WATK: ~107 avg, ~117 perfect
+- Speed 7 (Slow) — one tier slower than 2H Sword (Normal 6)
+- Same scroll values as 2H Sword (+5 WATK per 30% scroll)
+- +6 clean WATK over Stonetooth Sword (~101 avg, ~111 perfect)
+- Perfect 117 Dragon Flame sells for ~1.2b (cheap vs Stonetooth at similar scroll level)
+
+Other 2H BWs considered and rejected:
+- The Morningstar (lv80): speed 6 but only ~92-101 clean WATK — too low for endgame
+- Golden Smith Hammer (lv100): speed 7, ~102-112 clean — inferior to Dragon Flame
+- Maple Pyrope Maul (lv77): event weapon, ~91 clean — too low
 
 ## Throwing Stars
 

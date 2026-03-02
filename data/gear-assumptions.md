@@ -36,7 +36,7 @@ Cross-referenced against Royals forum guides:
 
 ---
 
-## 2. Warrior Assumptions (Hero, DrK, Paladin)
+## 2. Warrior Assumptions (Hero, DrK, Paladin, Paladin BW)
 
 ### Base Stats
 
@@ -52,7 +52,12 @@ Hero weapon per community consensus. With SI active, speed 5 and speed 6 both re
 effective speed 2 (0.63s Brandish), so buffed DPS is identical. Without SI, Stonetooth at
 speed 5 yields 0.69s vs 0.75s for speed 6 — an 8.7% DPS advantage in unbuffed scenarios.
 
-DrK/Paladin templates use weapon speed 6 (Normal), correct for Sky Ski and 2H BW/Sword.
+DrK/Paladin (Sword) templates use weapon speed 6 (Normal), correct for Sky Ski and 2H Sword.
+
+Paladin (BW) templates use weapon speed 7 (Slow), correct for Dragon Flame — the only
+viable endgame 2H BW. With SI+Booster, speed 7 resolves to effective speed 3 (0.69s Blast)
+vs Sword's speed 2 (0.63s Blast). Without SI, speed 5 (0.81s) vs speed 4 (0.75s). The
+speed disadvantage is a significant BW DPS penalty.
 
 ### Gear — Hero & Paladin share identical gear
 
@@ -106,6 +111,35 @@ physical classes. Between low (~37) and high (49).
 
 Low tier uses STR 10 / DEX 10 pendant (basic HTP or Deputy Star). Mid tier uses ~16/16
 (partially scrolled HTP). High tier uses STR 22 / DEX 23 (near-perfect HTP).
+
+### Paladin (BW) Weapon — Dragon Flame
+
+Paladin (BW) is split from Paladin (Sword) to model the higher weapon WATK and slower
+speed of 2H Blunt Weapons. The endgame 2H BW is **Dragon Flame** (lv110, Horntail drop):
+- Clean WATK: ~107 avg, ~117 perfect (vs Stonetooth ~101 avg, ~111 perfect)
+- Speed 7 (Slow) — one speed tier slower than 2H Sword (Normal 6)
+- Same scroll values as 2H Sword (+5 per 30%, +2 per 60%)
+
+Dragon Flame has +6 WATK over Stonetooth at equivalent scrolling, applied consistently:
+
+| Tier | Sword WATK | BW WATK | Delta | Source |
+|------|-----------|---------|-------|--------|
+| Low | 130 | 136 | +6 | Budget Dragon Flame (107 clean + budget scrolling) |
+| Mid | 140 | 146 | +6 | Mid-range scrolled Dragon Flame |
+| High | 150 | 156 | +6 | Well-scrolled Dragon Flame (~117 perf + endgame scrolling) |
+
+Non-weapon WATK (C/G/S, medal, ring) is identical to Paladin (Sword).
+
+The community considers 2H BW "VASTLY underpowered" vs 2H Sword
+([Paladin Guide](https://royals.ms/forum/threads/comprehensive-paladin-guide-haplopelma.161247/)).
+The +6 WATK partially offsets the lower effective multiplier (4.24 vs 4.6) and slower
+speed, but BW remains behind Sword in DPS.
+
+Sources:
+[Sword vs BW Essay](https://royals.ms/forum/threads/sword-vs-bw-an-essay-on-the-futility-of-dps.159790/),
+[Paladin BW vs Sword](https://royals.ms/forum/threads/paladin-bw-vs-sword.147362/),
+[117 Dragon Flame listing](https://royals.ms/forum/threads/s-130-18luk-dragon-kanzir-117-perfect-dragom-flame.236826/),
+[Warrior 2H Weapon Balancing](https://royals.ms/forum/threads/warrior-2h-weapon-balancing.163124/)
 
 ---
 
