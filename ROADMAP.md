@@ -31,6 +31,7 @@ A balance simulator for Royals staff and community. Every number traces back to 
 ## Phase 3: Advanced Analysis
 
 **Quick wins:**
+- Weapon-specific gear templates: BW/Axe variants with accurate base WATK (BW weapons have higher base WATK than swords at the same tier, partially offsetting the lower effective multiplier from swing/stab ratio — currently both use the same template, which understates BW Paladin DPS)
 - Marginal gain calculator ("what should I upgrade next?" — DPS per WATK, per stat point)
 - Accuracy/miss rate against high-level bosses
 - Buff uptime/sustain (Berserk HP drain, Battleship HP, buff recasting)
