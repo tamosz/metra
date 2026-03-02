@@ -25,7 +25,7 @@ export function KbToggle({ enabled, onToggle, bossAttackInterval, onIntervalChan
         </button>
         {enabled && (
           <>
-            <label className="flex items-center gap-1 text-[11px] text-text-dim">
+            <label className="flex items-center gap-1 text-[11px] text-text-dim" title="How often the boss hits you (seconds between attacks)">
               Interval
               <input
                 type="number"
@@ -39,7 +39,7 @@ export function KbToggle({ enabled, onToggle, bossAttackInterval, onIntervalChan
                 className="w-[48px] rounded border border-border-default bg-bg-raised px-1 py-0.5 text-center text-xs tabular-nums text-text-primary focus:border-border-active transition-colors [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
               />
             </label>
-            <label className="flex items-center gap-1 text-[11px] text-text-dim">
+            <label className="flex items-center gap-1 text-[11px] text-text-dim" title="Boss accuracy stat (higher = harder to dodge)">
               Accuracy
               <input
                 type="number"
