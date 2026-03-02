@@ -214,6 +214,154 @@ function DamageRangeSection() {
   );
 }
 
+function CriticalDamageSection() {
+  return (
+    <section id="crit" className="mb-16 scroll-mt-8">
+      <SectionHeading label="Critical Damage" />
+
+      <p className="text-text-secondary text-sm mb-4 leading-relaxed">
+        Two crit damage formula variants exist, configured per class
+        via <InlineMath math="\text{seCritFormula}" />.
+      </p>
+
+      <h4 className="text-sm font-semibold text-text-bright mt-8 mb-3">
+        addBeforeMultiply (default)
+      </h4>
+      <p className="text-text-secondary text-sm mb-4 leading-relaxed">
+        Used by: Hero, DrK, Night Lord, Bowmaster, Marksman, Shadower, Corsair, Buccaneer.
+      </p>
+
+      <div className="my-6">
+        <BlockMath math="\text{critDmg\%} = (\text{basePower} + \text{totalCritBonus}) \times \text{multiplier}" />
+      </div>
+
+      <h4 className="text-sm font-semibold text-text-bright mt-8 mb-3">
+        addAfterMultiply (Paladin only)
+      </h4>
+
+      <div className="my-6">
+        <BlockMath math="\text{critDmg\%} = \text{basePower} \times \text{multiplier} + \text{totalCritBonus}" />
+      </div>
+
+      <p className="text-text-secondary text-sm mb-4 leading-relaxed">
+        Where:
+      </p>
+
+      <div className="my-6">
+        <BlockMath math="\text{totalCritBonus} = \text{builtInCritBonus} + \text{seCritBonus}" />
+      </div>
+
+      <p className="text-text-secondary text-sm mb-4 leading-relaxed">
+        Sharp Eyes provides <InlineMath math="\text{critRate} = 0.15" /> and{' '}
+        <InlineMath math="\text{critDamageBonus} = 140" />.
+      </p>
+
+      <h4 className="text-sm font-semibold text-text-bright mt-8 mb-3">Crit Rate</h4>
+
+      <div className="my-6">
+        <BlockMath math="\text{totalCritRate} = \min(\text{builtInRate} + \text{seRate},\ 1.0)" />
+      </div>
+
+      <p className="text-text-secondary text-sm mb-4 leading-relaxed">
+        Classes with built-in crit (additive with SE):
+      </p>
+      <ul className="text-text-secondary text-sm mb-4 leading-relaxed list-disc list-inside space-y-1">
+        <li>Night Lord (Triple Throw): 50% rate, +100 damage bonus</li>
+        <li>Bowmaster / Marksman (Critical Shot): 40% rate, +100 damage bonus</li>
+      </ul>
+    </section>
+  );
+}
+
+function AttackSpeedSection() {
+  return (
+    <section id="speed" className="mb-16 scroll-mt-8">
+      <SectionHeading label="Attack Speed" />
+
+      <p className="text-text-secondary text-sm mb-4 leading-relaxed">
+        Each weapon has a base speed tier. Booster reduces it by 2, and Speed Infusion
+        reduces it by an additional 2. The minimum effective speed is 2.
+      </p>
+
+      <div className="my-6">
+        <BlockMath math="\text{effectiveSpeed} = \max(2,\ \text{baseSpeed} - \text{reduction})" />
+      </div>
+
+      <p className="text-text-secondary text-sm mb-4 leading-relaxed">
+        Where <InlineMath math="\text{reduction}" /> = 2 (Booster only) or 4 (Booster + SI).
+        The attack time in seconds is then looked up from a speed table keyed by effective speed
+        and skill category.
+      </p>
+
+      <h4 className="text-sm font-semibold text-text-bright mt-8 mb-3">Fixed-Speed Skills</h4>
+
+      <p className="text-text-secondary text-sm mb-4 leading-relaxed">
+        Some skills bypass the speed table entirely and use a fixed attack time:
+      </p>
+      <ul className="text-text-secondary text-sm mb-4 leading-relaxed list-disc list-inside space-y-1">
+        <li>Hurricane (Bowmaster): 0.12s</li>
+        <li>Rapid Fire (Corsair): 0.12s</li>
+        <li>Demolition (Buccaneer): 2.34s cycle</li>
+        <li>Mage skills: fixed per-skill (Chain Lightning 0.69s, Blizzard 3.06s, Paralyze 0.69s, Meteor 3.06s, Angel Ray 0.81s, Genesis 2.7s)</li>
+      </ul>
+    </section>
+  );
+}
+
+function DamageCapSection() {
+  return (
+    <section id="damage-cap" className="mb-16 scroll-mt-8">
+      <SectionHeading label="Damage Cap" />
+
+      <p className="text-text-secondary text-sm mb-4 leading-relaxed">
+        The game enforces a damage cap of 199,999 per hit line. Skills that deal high damage
+        per line can be partially or fully capped, reducing their effective DPS.
+      </p>
+
+      <h4 className="text-sm font-semibold text-text-bright mt-8 mb-3">Range Cap</h4>
+
+      <p className="text-text-secondary text-sm mb-4 leading-relaxed">
+        The raw damage range is divided by the skill multiplier to find the cap threshold:
+      </p>
+
+      <div className="my-6">
+        <BlockMath math="\text{rangeCap} = \frac{\text{damageCap}}{\text{skillMultiplier}}" />
+      </div>
+
+      <p className="text-text-secondary text-sm mb-4 leading-relaxed">
+        Where <InlineMath math="\text{skillMultiplier} = \text{basePower} \times \text{multiplier} / 100" /> for
+        physical skills, or <InlineMath math="\text{basePower} \times \text{multiplier}" /> for magic skills.
+      </p>
+
+      <h4 className="text-sm font-semibold text-text-bright mt-8 mb-3">Adjusted Average</h4>
+
+      <p className="text-text-secondary text-sm mb-4 leading-relaxed">
+        When the damage range partially exceeds the cap, an adjusted average accounts for the
+        truncation. Damage is uniformly distributed between min and max:
+      </p>
+
+      <div className="my-6">
+        <BlockMath math="r = \frac{\text{cap} - \text{min}}{\text{max} - \text{min}}" />
+      </div>
+      <div className="my-6">
+        <BlockMath math="\text{adjusted} = \frac{\text{cap} + \text{min}}{2} \cdot r + \text{cap} \cdot (1 - r)" />
+      </div>
+
+      <p className="text-text-secondary text-sm mb-4 leading-relaxed">
+        The proportion <InlineMath math="r" /> of the range below the cap gets an average
+        of <InlineMath math="(\text{cap} + \text{min}) / 2" />, while the remaining{' '}
+        <InlineMath math="1 - r" /> hits the cap flat.
+      </p>
+
+      <p className="text-text-secondary text-sm mb-4 leading-relaxed">
+        If <InlineMath math="\text{rangeCap} > \text{max}" />: no capping, use normal average.
+        If <InlineMath math="\text{rangeCap} \leq \text{min}" />: fully capped,
+        use <InlineMath math="\text{rangeCap}" /> as the average.
+      </p>
+    </section>
+  );
+}
+
 export function FormulasPage() {
   const [activeSection, setActiveSection] = useState<SectionId>(SECTIONS[0].id);
 
@@ -285,9 +433,9 @@ export function FormulasPage() {
         <StatCalculationSection />
         <AttackCalculationSection />
         <DamageRangeSection />
-        <PlaceholderSection id="crit" label="Critical Damage" />
-        <PlaceholderSection id="speed" label="Attack Speed" />
-        <PlaceholderSection id="damage-cap" label="Damage Cap" />
+        <CriticalDamageSection />
+        <AttackSpeedSection />
+        <DamageCapSection />
         <PlaceholderSection id="dps" label="DPS Formula" />
         <PlaceholderSection id="class-reference" label="Class Reference" />
       </div>
