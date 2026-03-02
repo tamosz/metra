@@ -1,3 +1,4 @@
+@import "katex/dist/katex.min.css";
 @import "tailwindcss";
 
 @theme {
@@ -34,6 +35,8 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
+
+  .katex { color: var(--color-text-bright); }
 
   /* Remove default focus outlines, replaced by Tailwind focus: classes */
   :focus {

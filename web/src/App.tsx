@@ -4,6 +4,7 @@ import { ProposalBuilder } from './components/ProposalBuilder.js';
 import { ProposalResults } from './components/ProposalResults.js';
 import { BuildExplorer } from './components/BuildExplorer.js';
 import { BuildComparison } from './components/BuildComparison.js';
+import { FormulasPage } from './components/FormulasPage.js';
 import { useSimulation } from './hooks/useSimulation.js';
 import { useProposal } from './hooks/useProposal.js';
 import { useBuildExplorer } from './hooks/useBuildExplorer.js';
@@ -14,7 +15,7 @@ import { discoveredData } from './data/bundle.js';
 import { getProposalFromUrl, getBuildFromUrl, getComparisonFromUrl } from './utils/url-encoding.js';
 import type { BuffOverrides } from './components/BuffToggles.js';
 
-type Page = 'dashboard' | 'proposal' | 'build' | 'compare';
+type Page = 'dashboard' | 'proposal' | 'build' | 'compare' | 'formulas';
 
 export function App() {
   const customTiersState = useCustomTiers();
@@ -89,6 +90,9 @@ export function App() {
             <NavButton active={page === 'compare'} onClick={() => navigate('compare')}>
               Compare
             </NavButton>
+            <NavButton active={page === 'formulas'} onClick={() => navigate('formulas')}>
+              Formulas
+            </NavButton>
           </nav>
 
           {/* Hamburger button */}
@@ -129,6 +133,9 @@ export function App() {
             <NavButton active={page === 'compare'} onClick={() => navigate('compare')}>
               Compare
             </NavButton>
+            <NavButton active={page === 'formulas'} onClick={() => navigate('formulas')}>
+              Formulas
+            </NavButton>
           </nav>
         )}
       </header>
@@ -168,6 +175,7 @@ export function App() {
         )}
         {page === 'build' && <BuildExplorer state={buildState} savedBuilds={savedBuildsState} />}
         {page === 'compare' && <BuildComparison state={comparisonState} />}
+        {page === 'formulas' && <FormulasPage />}
       </main>
     </div>
   );
