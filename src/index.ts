@@ -58,9 +58,6 @@ export type {
   ComparisonResult,
 } from './proposals/types.js';
 
-// Scenarios
-export { DEFAULT_SCENARIOS } from './scenarios.js';
-
 // Report
 export { renderComparisonReport, renderBaselineReport } from './report/markdown.js';
 export { renderAsciiChart } from './report/ascii-chart.js';

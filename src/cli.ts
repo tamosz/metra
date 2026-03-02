@@ -16,7 +16,7 @@ import { renderAsciiChart } from './report/ascii-chart.js';
 import { capitalize } from './report/utils.js';
 import { analyzeBalance } from './audit/analyze.js';
 import { formatAuditReport } from './audit/format.js';
-import { DEFAULT_SCENARIOS } from './scenarios.js';
+
 
 export function loadProposal(path: string) {
   const fullPath = resolve(path);
@@ -56,7 +56,7 @@ function main() {
   const mwData = loadMW();
   const { classNames, tiers, classDataMap, gearTemplates } = discoverClassesAndTiers();
 
-  const scenarios: ScenarioConfig[] = [...DEFAULT_SCENARIOS];
+  const scenarios: ScenarioConfig[] = [{ name: 'Baseline' }];
   if (targetCount != null && targetCount > 1) {
     scenarios.push({
       name: `Training (${targetCount} mobs)`,

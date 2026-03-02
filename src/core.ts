@@ -59,9 +59,6 @@ export type {
   ComparisonResult,
 } from './proposals/types.js';
 
-// Scenarios
-export { DEFAULT_SCENARIOS } from './scenarios.js';
-
 // Report (renderers are pure functions, no fs)
 export { renderComparisonReport, renderBaselineReport } from './report/markdown.js';
 export { renderAsciiChart } from './report/ascii-chart.js';

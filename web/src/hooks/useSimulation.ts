@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { runSimulation } from '@engine/proposals/simulate.js';
 import type { SimulationConfig } from '@engine/proposals/simulate.js';
 import type { ScenarioConfig, ScenarioResult } from '@engine/proposals/types.js';
-import { DEFAULT_SCENARIOS } from '@engine/scenarios.js';
+
 import {
   discoveredData,
   weaponData,
@@ -47,16 +47,11 @@ export function useSimulation(
 
     const hasElementMods = elementModifiers && Object.keys(elementModifiers).length > 0;
     const hasBuffOverrides = buffOverrides && Object.keys(buffOverrides).length > 0;
-    const scenarios: ScenarioConfig[] = DEFAULT_SCENARIOS.map((s) => {
-      let merged = s;
-      if (hasElementMods) {
-        merged = { ...merged, elementModifiers: { ...merged.elementModifiers, ...elementModifiers } };
-      }
-      if (hasBuffOverrides) {
-        merged = { ...merged, overrides: { ...merged.overrides, ...buffOverrides } };
-      }
-      return merged;
-    });
+    // Build a single scenario from controls
+    const scenario: ScenarioConfig = { name: 'Baseline' };
+    if (hasElementMods) scenario.elementModifiers = { ...elementModifiers };
+    if (hasBuffOverrides) scenario.overrides = { ...buffOverrides };
+    const scenarios: ScenarioConfig[] = [scenario];
     if (targetCount != null && targetCount > 1) {
       const training: ScenarioConfig = { name: `Training (${targetCount} mobs)`, targetCount };
       if (hasElementMods) training.elementModifiers = { ...elementModifiers };
