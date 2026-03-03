@@ -1,0 +1,10 @@
+{
+  "className": "Hero",
+  "weaponType": "2H Sword",
+  "weaponSpeed": 5,
+  "projectile": 0,
+  "echoActive": true,
+  "mwLevel": 20,
+  "speedInfusion": true,
+  "sharpEyes": true
+}

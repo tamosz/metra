@@ -234,11 +234,12 @@ describe('class skill data consistency', () => {
 describe('gear breakdown consistency', () => {
   it('every template with gearBreakdown has summary fields matching computed totals', () => {
     const templateDir = resolve(import.meta.dirname, '../../data/gear-templates');
-    const files = readdirSync(templateDir).filter((f: string) => f.endsWith('.json'));
+    const files = readdirSync(templateDir).filter((f: string) => f.endsWith('.json') && !f.includes('.base.'));
 
     for (const file of files) {
       const raw = JSON.parse(readFileSync(resolve(templateDir, file), 'utf-8'));
       if (!raw.gearBreakdown) continue;
+      if (raw.extends) continue;
 
       const computed = computeGearTotals(raw.gearBreakdown);
 
