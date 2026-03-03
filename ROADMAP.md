@@ -21,6 +21,7 @@ A balance simulator for Royals staff and community. Every number traces back to 
 - Multi-target simulation: per-skill `maxTargets` + per-scenario `targetCount` for training/AoE comparisons
 - Balance audit: automated outlier detection across scenarios and tiers
 - Custom funding tiers: delta-based tier editor with localStorage persistence
+- Marginal gain calculator: DPS per WATK, per stat point — "what should I upgrade next?"
 - Pre-commit hooks, comprehensive test coverage
 - Deployed on Vercel: https://metra-ten.vercel.app
 
@@ -34,7 +35,6 @@ A balance simulator for Royals staff and community. Every number traces back to 
 
 **Quick wins:**
 - Archer projectile WATK: Bowmaster and Marksman gear templates have `projectile: 0` — need to add arrow/bolt WATK values at each tier (the engine already supports this via the `projectile` field)
-- Marginal gain calculator ("what should I upgrade next?" — DPS per WATK, per stat point)
 - Accuracy/miss rate against high-level bosses
 - Buff uptime/sustain (Berserk HP drain, Battleship HP, buff recasting)
 
