@@ -82,6 +82,12 @@ export function ProposalBuilder({ proposalState, simulation }: ProposalBuilderPr
 
   return (
     <div>
+      {proposalState.error && (
+        <div className="mb-4 rounded border border-red-700/30 bg-red-950/20 px-4 py-3 text-sm text-red-400">
+          Simulation error: {proposalState.error.message}
+        </div>
+      )}
+
       <div className="mb-4 flex items-center justify-between">
         <h2 className="m-0 text-base font-semibold">Proposal Builder</h2>
         <button

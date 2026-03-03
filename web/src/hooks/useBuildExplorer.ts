@@ -128,12 +128,20 @@ export function useBuildExplorer(): BuildExplorerState {
 
   const baselineResults = useMemo(() => {
     if (!template || !classData) return [];
-    return computeSkillDps(template, classData);
+    try {
+      return computeSkillDps(template, classData);
+    } catch {
+      return [];
+    }
   }, [template, classData]);
 
   const currentResults = useMemo(() => {
     if (!effectiveBuild || !classData) return [];
-    return computeSkillDps(effectiveBuild, classData);
+    try {
+      return computeSkillDps(effectiveBuild, classData);
+    } catch {
+      return [];
+    }
   }, [effectiveBuild, classData]);
 
   const results: SkillDpsRow[] = useMemo(() => {

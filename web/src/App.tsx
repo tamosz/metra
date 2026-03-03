@@ -13,6 +13,7 @@ import { useBuilds } from './hooks/useBuilds.js';
 import { useSavedBuilds } from './hooks/useSavedBuilds.js';
 import { getProposalFromUrl, getBuildFromUrl, getComparisonFromUrl } from './utils/url-encoding.js';
 import { SimulationControlsProvider, useSimulationControls } from './context/SimulationControlsContext.js';
+import { ErrorBoundary } from './components/ErrorBoundary.js';
 
 type Page = 'dashboard' | 'proposal' | 'build' | 'compare' | 'formulas';
 
@@ -142,13 +143,15 @@ function AppContent() {
 
       <main className="mx-auto max-w-[1200px] px-4 py-6 sm:px-8">
         {page === 'dashboard' && (
-          <Dashboard
-            simulation={simulation}
-            buildsState={buildsState}
-          />
+          <ErrorBoundary>
+            <Dashboard
+              simulation={simulation}
+              buildsState={buildsState}
+            />
+          </ErrorBoundary>
         )}
         {page === 'proposal' && (
-          <>
+          <ErrorBoundary>
             <ProposalBuilder proposalState={proposalState} simulation={simulation} />
             {proposalState.result && (
               <ProposalResults
@@ -156,11 +159,11 @@ function AppContent() {
                 proposal={proposalState.proposal}
               />
             )}
-          </>
+          </ErrorBoundary>
         )}
-        {page === 'build' && <BuildExplorer state={buildState} savedBuilds={savedBuildsState} />}
-        {page === 'compare' && <BuildComparison state={comparisonState} />}
-        {page === 'formulas' && <FormulasPage />}
+        {page === 'build' && <ErrorBoundary><BuildExplorer state={buildState} savedBuilds={savedBuildsState} /></ErrorBoundary>}
+        {page === 'compare' && <ErrorBoundary><BuildComparison state={comparisonState} /></ErrorBoundary>}
+        {page === 'formulas' && <ErrorBoundary><FormulasPage /></ErrorBoundary>}
       </main>
     </div>
   );
