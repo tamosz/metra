@@ -1,14 +1,18 @@
+import { readFileSync, readdirSync } from 'fs';
+import { resolve } from 'path';
 import { describe, it, expect, beforeAll } from 'vitest';
 import {
   loadWeapons,
   loadAttackSpeed,
   discoverClassesAndTiers,
 } from './loader.js';
+import { computeGearTotals } from './gear-utils.js';
 import type {
   WeaponData,
   AttackSpeedData,
   ClassSkillData,
   CharacterBuild,
+  StatName,
 } from './types.js';
 
 let weaponData: WeaponData;
@@ -223,6 +227,32 @@ describe('class skill data consistency', () => {
           `${classData.className} comboGroup "${skill.comboGroup}" skill "${skill.name}" has invalid speedCategory "${skill.speedCategory}"`
         ).toBe(true);
       }
+    }
+  });
+});
+
+describe('gear breakdown consistency', () => {
+  it('every template with gearBreakdown has summary fields matching computed totals', () => {
+    const templateDir = resolve(import.meta.dirname, '../../data/gear-templates');
+    const files = readdirSync(templateDir).filter((f: string) => f.endsWith('.json'));
+
+    for (const file of files) {
+      const raw = JSON.parse(readFileSync(resolve(templateDir, file), 'utf-8'));
+      if (!raw.gearBreakdown) continue;
+
+      const computed = computeGearTotals(raw.gearBreakdown);
+
+      for (const stat of ['STR', 'DEX', 'INT', 'LUK'] as StatName[]) {
+        expect(
+          raw.gearStats[stat],
+          `${file}: gearStats.${stat} is ${raw.gearStats[stat]} but breakdown sums to ${computed.gearStats[stat]}`
+        ).toBe(computed.gearStats[stat]);
+      }
+
+      expect(
+        raw.totalWeaponAttack,
+        `${file}: totalWeaponAttack is ${raw.totalWeaponAttack} but breakdown sums to ${computed.totalWeaponAttack}`
+      ).toBe(computed.totalWeaponAttack);
     }
   });
 });

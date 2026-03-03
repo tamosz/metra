@@ -30,21 +30,80 @@
       "DEX": 0,
       "WATK": 133
     },
+    "helmet": {
+      "STR": 19,
+      "DEX": 34,
+      "WATK": 0
+    },
+    "top": {
+      "STR": 35,
+      "DEX": 8,
+      "WATK": 0
+    },
+    "bottom": {
+      "STR": 8,
+      "DEX": 12,
+      "WATK": 0
+    },
+    "earring": {
+      "STR": 10,
+      "DEX": 4,
+      "WATK": 0
+    },
+    "eye": {
+      "STR": 4,
+      "DEX": 4,
+      "WATK": 0
+    },
+    "face": {
+      "STR": 8,
+      "DEX": 3,
+      "WATK": 0
+    },
+    "pendant": {
+      "STR": 16,
+      "DEX": 16,
+      "WATK": 0
+    },
+    "medal": {
+      "STR": 1,
+      "DEX": 1,
+      "WATK": 2
+    },
+    "ring1": {
+      "STR": 6,
+      "DEX": 4,
+      "WATK": 0
+    },
+    "ring2": {
+      "STR": 4,
+      "DEX": 3,
+      "WATK": 0
+    },
+    "ring3": {
+      "STR": 2,
+      "DEX": 1,
+      "WATK": 0
+    },
+    "ring4": {
+      "STR": 3,
+      "DEX": 3,
+      "WATK": 1
+    },
     "cape": {
+      "STR": 0,
+      "DEX": 0,
       "WATK": 16
     },
     "shoe": {
+      "STR": 0,
+      "DEX": 0,
       "WATK": 13
     },
     "glove": {
+      "STR": 0,
+      "DEX": 0,
       "WATK": 15
-    },
-    "medal": {
-      "WATK": 2
-    },
-    "ring4": {
-      "WATK": 1
-    },
-    "comment": "133+14+10+17+2+1 = 177. Same armor stats as hero-mid."
+    }
   }
 }
