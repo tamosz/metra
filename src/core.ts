@@ -28,6 +28,7 @@ export {
   CHANNEL_KB_RECOVERY,
 } from './engine/knockback.js';
 export { calculateMarginalGains, type MarginalGain } from './engine/marginal.js';
+export { calculateBuildDps, type SkillDpsRow, type BuildDpsResult } from './engine/build-dps.js';
 
 // Constants
 export { TIER_ORDER, compareTiers } from './data/types.js';
