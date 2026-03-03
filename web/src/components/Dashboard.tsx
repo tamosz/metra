@@ -349,6 +349,7 @@ function RankingTable({
                           isComposite={!!r.isComposite}
                           capEnabled={capEnabled}
                           currentTier={r.tier}
+                          customTierNames={customTierNames}
                         />
                       </td>
                     </tr>
