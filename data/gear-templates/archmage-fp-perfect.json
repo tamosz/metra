@@ -3,7 +3,7 @@
   "label": "Archmage F/P Perfect",
   "className": "Archmage F/P",
   "baseStats": { "STR": 4, "DEX": 4, "INT": 999, "LUK": 23 },
-  "gearStats": { "STR": 0, "DEX": 0, "INT": 423, "LUK": 0 },
+  "gearStats": { "STR": 0, "DEX": 0, "INT": 421, "LUK": 0 },
   "totalWeaponAttack": 368,
   "weaponType": "Staff",
   "weaponSpeed": 6,
@@ -29,7 +29,7 @@
     "ring2":     { "INT": 11,  "MATK": 0 },
     "ring3":     { "INT": 10, "MATK": 0 },
     "ring4":     { "INT": 8,  "MATK": 0 },
-    "cape":      { "INT": 36, "MATK": 0 },
+    "cape":      { "INT": 34, "MATK": 0 },
     "shoe":      { "INT": 20, "MATK": 13 },
     "glove":     { "INT": 15, "MATK": 29 }
   }
