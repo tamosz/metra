@@ -42,10 +42,10 @@ export function TierAssumptions() {
               </tr>
               <tr>
                 <td className="px-3 py-1.5 font-medium text-text-muted">C/G/S</td>
-                <td className="px-3 py-1.5 text-text-secondary tabular-nums">15 / 12 / 10</td>
-                <td className="px-3 py-1.5 text-text-secondary tabular-nums">17 / 14 / 10</td>
-                <td className="px-3 py-1.5 text-text-secondary tabular-nums">19 / 17 / 13</td>
-                <td className="px-3 py-1.5 text-text-secondary tabular-nums">22 / 20 / 18</td>
+                <td className="px-3 py-1.5 text-text-secondary tabular-nums">10 / 12 / 10</td>
+                <td className="px-3 py-1.5 text-text-secondary tabular-nums">15 / 16 / 13</td>
+                <td className="px-3 py-1.5 text-text-secondary tabular-nums">20 / 18 / 16</td>
+                <td className="px-3 py-1.5 text-text-secondary tabular-nums">22 / 22 / 18</td>
               </tr>
             </tbody>
           </table>

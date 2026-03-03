@@ -2,9 +2,19 @@
   "source": "gear templates sheet, Bucc rows, High. Knuckle base speed 6 (Normal). echoActive true for high tier.",
   "label": "Bucc High",
   "className": "Buccaneer",
-  "baseStats": { "STR": 999, "DEX": 23, "INT": 4, "LUK": 4 },
-  "gearStats": { "STR": 151, "DEX": 116, "INT": 0, "LUK": 0 },
-  "totalWeaponAttack": 171,
+  "baseStats": {
+    "STR": 999,
+    "DEX": 23,
+    "INT": 4,
+    "LUK": 4
+  },
+  "gearStats": {
+    "STR": 151,
+    "DEX": 116,
+    "INT": 0,
+    "LUK": 0
+  },
+  "totalWeaponAttack": 176,
   "weaponType": "Knuckle",
   "weaponSpeed": 6,
   "attackPotion": 100,
@@ -17,21 +27,89 @@
   "shadowPartner": false,
   "boosterActive": true,
   "gearBreakdown": {
-    "weapon":    { "STR": 21, "DEX": 0,  "WATK": 118, "notes": "Well-scrolled knuckle. ~1 failed scroll slot below perfect." },
-    "helmet":    { "STR": 21, "DEX": 40, "WATK": 0,   "notes": "Well-scrolled Zakum Helmet." },
-    "top":       { "STR": 42, "DEX": 20, "WATK": 0,   "notes": "STR scrolled top." },
-    "earring":   { "STR": 15, "DEX": 0,  "WATK": 0 },
-    "eye":       { "STR": 6,  "DEX": 6,  "WATK": 0 },
-    "face":      { "STR": 10, "DEX": 5,  "WATK": 0 },
-    "pendant":   { "STR": 22, "DEX": 23, "WATK": 0,   "notes": "Near-perfect HTP." },
-    "belt":      { "STR": 0,  "DEX": 5,  "WATK": 0 },
-    "medal":     { "STR": 0,  "DEX": 0,  "WATK": 3 },
-    "ring1":     { "STR": 5,  "DEX": 7,  "WATK": 0 },
-    "ring2":     { "STR": 5,  "DEX": 5,  "WATK": 0 },
-    "ring3":     { "STR": 1,  "DEX": 2,  "WATK": 0 },
-    "ring4":     { "STR": 3,  "DEX": 3,  "WATK": 1 },
-    "cape":      { "STR": 0,  "DEX": 0,  "WATK": 17 },
-    "shoe":      { "STR": 0,  "DEX": 0,  "WATK": 13 },
-    "glove":     { "STR": 0,  "DEX": 0,  "WATK": 19 }
+    "weapon": {
+      "STR": 21,
+      "DEX": 0,
+      "WATK": 118,
+      "notes": "Well-scrolled knuckle. ~1 failed scroll slot below perfect."
+    },
+    "helmet": {
+      "STR": 21,
+      "DEX": 40,
+      "WATK": 0,
+      "notes": "Well-scrolled Zakum Helmet."
+    },
+    "top": {
+      "STR": 42,
+      "DEX": 20,
+      "WATK": 0,
+      "notes": "STR scrolled top."
+    },
+    "earring": {
+      "STR": 15,
+      "DEX": 0,
+      "WATK": 0
+    },
+    "eye": {
+      "STR": 6,
+      "DEX": 6,
+      "WATK": 0
+    },
+    "face": {
+      "STR": 10,
+      "DEX": 5,
+      "WATK": 0
+    },
+    "pendant": {
+      "STR": 22,
+      "DEX": 23,
+      "WATK": 0,
+      "notes": "Near-perfect HTP."
+    },
+    "belt": {
+      "STR": 0,
+      "DEX": 5,
+      "WATK": 0
+    },
+    "medal": {
+      "STR": 0,
+      "DEX": 0,
+      "WATK": 3
+    },
+    "ring1": {
+      "STR": 5,
+      "DEX": 7,
+      "WATK": 0
+    },
+    "ring2": {
+      "STR": 5,
+      "DEX": 5,
+      "WATK": 0
+    },
+    "ring3": {
+      "STR": 1,
+      "DEX": 2,
+      "WATK": 0
+    },
+    "ring4": {
+      "STR": 3,
+      "DEX": 3,
+      "WATK": 1
+    },
+    "cape": {
+      "STR": 0,
+      "DEX": 0,
+      "WATK": 18
+    },
+    "shoe": {
+      "STR": 0,
+      "DEX": 0,
+      "WATK": 16
+    },
+    "glove": {
+      "STR": 0,
+      "DEX": 0,
+      "WATK": 20
+    }
   }
 }

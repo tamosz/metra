@@ -2,9 +2,19 @@
   "source": "Interpolated between drk-low and drk-high. Mid Sky Ski at 133 WATK.",
   "label": "DrK Mid",
   "className": "DrK",
-  "baseStats": { "STR": 850, "DEX": 22, "INT": 4, "LUK": 4 },
-  "gearStats": { "STR": 136, "DEX": 93, "INT": 0, "LUK": 0 },
-  "totalWeaponAttack": 177,
+  "baseStats": {
+    "STR": 850,
+    "DEX": 22,
+    "INT": 4,
+    "LUK": 4
+  },
+  "gearStats": {
+    "STR": 136,
+    "DEX": 93,
+    "INT": 0,
+    "LUK": 0
+  },
+  "totalWeaponAttack": 180,
   "weaponType": "Spear",
   "weaponSpeed": 6,
   "attackPotion": 60,
@@ -15,12 +25,26 @@
   "speedInfusion": true,
   "sharpEyes": true,
   "gearBreakdown": {
-    "weapon":    { "STR": 20, "DEX": 0,  "WATK": 133 },
-    "cape":      { "WATK": 14 },
-    "shoe":      { "WATK": 10 },
-    "glove":     { "WATK": 17 },
-    "medal":     { "WATK": 2 },
-    "ring4":     { "WATK": 1 },
+    "weapon": {
+      "STR": 20,
+      "DEX": 0,
+      "WATK": 133
+    },
+    "cape": {
+      "WATK": 16
+    },
+    "shoe": {
+      "WATK": 13
+    },
+    "glove": {
+      "WATK": 15
+    },
+    "medal": {
+      "WATK": 2
+    },
+    "ring4": {
+      "WATK": 1
+    },
     "comment": "133+14+10+17+2+1 = 177. Same armor stats as hero-mid."
   }
 }

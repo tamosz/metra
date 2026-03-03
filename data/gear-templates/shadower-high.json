@@ -2,9 +2,19 @@
   "source": "templates (old) sheet rows 26-48, High tier column",
   "label": "Shadower High",
   "className": "Shadower",
-  "baseStats": { "STR": 4, "DEX": 14, "INT": 4, "LUK": 933 },
-  "gearStats": { "STR": 78, "DEX": 135, "INT": 0, "LUK": 135 },
-  "totalWeaponAttack": 233,
+  "baseStats": {
+    "STR": 4,
+    "DEX": 14,
+    "INT": 4,
+    "LUK": 933
+  },
+  "gearStats": {
+    "STR": 78,
+    "DEX": 135,
+    "INT": 0,
+    "LUK": 135
+  },
+  "totalWeaponAttack": 238,
   "weaponType": "Dagger",
   "weaponSpeed": 5,
   "attackPotion": 100,
@@ -16,22 +26,107 @@
   "sharpEyes": true,
   "shadowPartner": true,
   "gearBreakdown": {
-    "weapon":    { "LUK": 21, "DEX": 0,  "STR": 0,  "WATK": 140 },
-    "shield":    { "LUK": 0,  "DEX": 0,  "STR": 21, "WATK": 43 },
-    "helmet":    { "LUK": 17, "DEX": 47, "STR": 17, "WATK": 0 },
-    "top":       { "LUK": 32, "DEX": 7,  "STR": 0,  "WATK": 0 },
-    "bottom":    { "LUK": 9,  "DEX": 28, "STR": 0,  "WATK": 0 },
-    "cape":      { "LUK": 0,  "DEX": 0,  "STR": 0,  "WATK": 17 },
-    "shoe":      { "LUK": 0,  "DEX": 0,  "STR": 0,  "WATK": 13 },
-    "glove":     { "LUK": 0,  "DEX": 0,  "STR": 0,  "WATK": 19 },
-    "earring":   { "LUK": 2,  "DEX": 15, "STR": 2,  "WATK": 0 },
-    "eye":       { "LUK": 8,  "DEX": 0,  "STR": 0,  "WATK": 0 },
-    "face":      { "LUK": 8,  "DEX": 0,  "STR": 0,  "WATK": 0 },
-    "pendant":   { "LUK": 28, "DEX": 28, "STR": 28, "WATK": 0 },
-    "medal":     { "LUK": 2,  "DEX": 2,  "STR": 2,  "WATK": 0 },
-    "ring1":     { "LUK": 1,  "DEX": 1,  "STR": 1,  "WATK": 0 },
-    "ring2":     { "LUK": 1,  "DEX": 1,  "STR": 1,  "WATK": 0 },
-    "ring3":     { "LUK": 3,  "DEX": 3,  "STR": 3,  "WATK": 1 },
-    "ring4":     { "LUK": 3,  "DEX": 3,  "STR": 3,  "WATK": 0 }
+    "weapon": {
+      "LUK": 21,
+      "DEX": 0,
+      "STR": 0,
+      "WATK": 140
+    },
+    "shield": {
+      "LUK": 0,
+      "DEX": 0,
+      "STR": 21,
+      "WATK": 43
+    },
+    "helmet": {
+      "LUK": 17,
+      "DEX": 47,
+      "STR": 17,
+      "WATK": 0
+    },
+    "top": {
+      "LUK": 32,
+      "DEX": 7,
+      "STR": 0,
+      "WATK": 0
+    },
+    "bottom": {
+      "LUK": 9,
+      "DEX": 28,
+      "STR": 0,
+      "WATK": 0
+    },
+    "cape": {
+      "LUK": 0,
+      "DEX": 0,
+      "STR": 0,
+      "WATK": 18
+    },
+    "shoe": {
+      "LUK": 0,
+      "DEX": 0,
+      "STR": 0,
+      "WATK": 16
+    },
+    "glove": {
+      "LUK": 0,
+      "DEX": 0,
+      "STR": 0,
+      "WATK": 20
+    },
+    "earring": {
+      "LUK": 2,
+      "DEX": 15,
+      "STR": 2,
+      "WATK": 0
+    },
+    "eye": {
+      "LUK": 8,
+      "DEX": 0,
+      "STR": 0,
+      "WATK": 0
+    },
+    "face": {
+      "LUK": 8,
+      "DEX": 0,
+      "STR": 0,
+      "WATK": 0
+    },
+    "pendant": {
+      "LUK": 28,
+      "DEX": 28,
+      "STR": 28,
+      "WATK": 0
+    },
+    "medal": {
+      "LUK": 2,
+      "DEX": 2,
+      "STR": 2,
+      "WATK": 0
+    },
+    "ring1": {
+      "LUK": 1,
+      "DEX": 1,
+      "STR": 1,
+      "WATK": 0
+    },
+    "ring2": {
+      "LUK": 1,
+      "DEX": 1,
+      "STR": 1,
+      "WATK": 0
+    },
+    "ring3": {
+      "LUK": 3,
+      "DEX": 3,
+      "STR": 3,
+      "WATK": 1
+    },
+    "ring4": {
+      "LUK": 3,
+      "DEX": 3,
+      "STR": 3,
+      "WATK": 0
+    }
   }
 }

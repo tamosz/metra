@@ -103,14 +103,14 @@ weapon.
 | Slot | Hero/Paladin | DrK | Forum "endgame" range | Assessment |
 |------|-------------|-----|----------------------|------------|
 | Weapon | 140 | 134 | ST Sword ~135-145; Sky Ski ~120+ | ~1 failed scroll below perfect (godly+34). |
-| Gloves | 19 | 19 | 15-16+ late-game, 21 godly | Top-1%. Standardized across all classes. |
-| Cape | 17 | 17 | 10+ late-game, 18-20 godly | Top-1%. Standardized across all classes. |
-| Shoes | 13 | 13 | 7+ late-game, 17 is high | Top-1%. Standardized across all classes. |
+| Gloves | 20 | 20 | 15-16+ late-game, 21 godly | Top-1%. Standardized across all classes. |
+| Cape | 18 | 18 | 10+ late-game, 18-20 godly | Top-1%. Standardized across all classes. |
+| Shoes | 16 | 16 | 7+ late-game, 17 is high | Top-1%. Standardized across all classes. |
 | Medal | 3 | 3 | 2-3 typical | Reasonable. |
 | Ring | 1 | 1 | 0-1 | Reasonable. |
-| **Total** | **193** | **187** | | |
+| **Total** | **198** | **192** | | |
 
-High tier models a top-1% character. Cape/Glove/Shoe standardized to 19/17/13 across
+High tier models a top-1% character. Cape/Glove/Shoe standardized to 20/18/16 across
 all classes (warriors, thieves, archers, pirates) for consistent cross-class comparison.
 
 ### Perfect Tier WATK Breakdown
@@ -118,14 +118,14 @@ all classes (warriors, thieves, archers, pirates) for consistent cross-class com
 | Slot | Hero/Paladin | DrK | Hero (Axe) | Paladin (BW) | Notes |
 |------|-------------|-----|-----------|-------------|-------|
 | Weapon | 146 | 139 | 152 | 157 | Theoretical max: godly clean + 7× 30% scroll. |
-| Gloves | 22 | 22 | 22 | 22 | Perfect tier C/G/S: 22/20/18. |
-| Cape | 20 | 20 | 20 | 20 | |
+| Gloves | 22 | 22 | 22 | 22 | Perfect tier C/G/S: 22/22/18. |
+| Cape | 22 | 22 | 22 | 22 | |
 | Shoes | 18 | 18 | 18 | 18 | |
 | Medal | 3 | 3 | 3 | 3 | Same as high. |
 | Ring | 1 | 1 | 1 | 1 | Same as high. |
-| **Total** | **210** | **203** | **216** | **221** | |
+| **Total** | **212** | **205** | **218** | **223** | |
 
-Perfect tier C/G/S: Glove 22 / Cape 20 / Shoe 18 (total 60 WATK). These represent
+Perfect tier C/G/S: Glove 22 / Cape 22 / Shoe 18 (total 62 WATK). These represent
 theoretical godly maxes on accessories — achievable in principle, extremely rare in practice.
 
 Estimated gear stats at perfect tier: STR ~244, DEX ~132 (godly stat gear + perfect
@@ -137,27 +137,27 @@ scrolling, approximately +70 primary / +30 secondary over high tier). These are 
 | Slot | Value | Forum range | Assessment |
 |------|-------|------------|------------|
 | Weapon | 130 | Budget ~120-130 | Mid-range per Paladin guide. Genuine budget. |
-| Gloves | 15 | 10-15 mid-game | Reasonable. |
-| Cape | 12 | 6-10 budget | Slightly high but plausible. |
-| Shoes | 10 | 6-7 budget | Slightly high. |
+| Gloves | 10 | 10-15 mid-game | Standardized low-tier C/G/S. |
+| Cape | 12 | 6-10 budget | Standardized low-tier C/G/S. |
+| Shoes | 10 | 6-7 budget | Standardized low-tier C/G/S. |
 | Medal | 0 | 0-1 | Reasonable. |
 | Ring | 1 | 0-1 | Reasonable. |
-| **Total** | **168** | | |
+| **Total** | **163** | | |
 
 ### Mid Tier WATK Breakdown
 
 | Slot | Hero/Paladin | DrK | Notes |
 |------|-------------|-----|-------|
 | Weapon | 140 | 133 | Mid-range scrolled. Hero/Pal share gear. |
-| Gloves | 17 | 17 | Standardized mid-tier C/G/S. |
-| Cape | 14 | 14 | Standardized mid-tier C/G/S. |
-| Shoes | 10 | 10 | Same as low — shoes are hardest to scroll. |
+| Gloves | 15 | 15 | Standardized mid-tier C/G/S. |
+| Cape | 16 | 16 | Standardized mid-tier C/G/S. |
+| Shoes | 13 | 13 | Standardized mid-tier C/G/S. |
 | Medal | 2 | 2 | Between low (0) and high (3). |
 | Ring | 1 | 1 | Same across all tiers. |
-| **Total** | **184** | **177** | |
+| **Total** | **187** | **180** | |
 
-Mid tier C/G/S standardized to Glove 17 / Cape 14 / Shoe 10 (total 41 WATK) across all
-physical classes. Between low (~37) and high (49).
+Mid tier C/G/S standardized to Glove 15 / Cape 16 / Shoe 13 (total 44 WATK) across all
+physical classes. Between low (32) and high (54).
 
 ### Pendant Stats
 
@@ -231,12 +231,12 @@ speed 2 for Strafe. Hurricane has fixed 0.12s attack time regardless of speed.
 |------|----------|---------|------------|------------|
 | Weapon | 130 | 130 | 130 ATK valued at ~3.8b | Well-scrolled (~100 base + 6x 30% scrolls). |
 | Bow/Crossbow Expert | 10 | 15 | Always +10/+15 | Passive skill. BM +10 (Bow Expert). MM +15 (Marksman Boost, buffed in Update #65.1). |
-| Gloves | 19 | 19 | 15-16+ late-game | Top-1%. Standardized across all classes. |
-| Cape | 17 | 17 | 10+ late-game | Top-1%. Standardized across all classes. |
-| Shoes | 13 | 13 | 7+ late-game | Top-1%. Standardized across all classes. |
+| Gloves | 20 | 20 | 15-16+ late-game | Top-1%. Standardized across all classes. |
+| Cape | 18 | 18 | 10+ late-game | Top-1%. Standardized across all classes. |
+| Shoes | 16 | 16 | 7+ late-game | Top-1%. Standardized across all classes. |
 | Medal | 3 | 3 | 2-3 typical | Reasonable. |
 | Ring | 1 | 1 | 0-1 | Reasonable. |
-| **Total WATK** | **193** | **198** | | |
+| **Total WATK** | **198** | **203** | | |
 
 ### Low Tier WATK Breakdown
 
@@ -244,12 +244,12 @@ speed 2 for Strafe. Hurricane has fixed 0.12s attack time regardless of speed.
 |------|----------|---------|------------|------------|
 | Weapon | 105 | 105 | ~95-110 budget | Budget bow/crossbow (~95 base + a few 60% scrolls). |
 | Bow/Crossbow Expert | 10 | 15 | Always +10/+15 | Passive skill. |
-| Gloves | 12 | 12 | 10-12 mid-game | Reasonable. |
-| Cape | 5 | 5 | 5-8 budget | Budget WATK cape. |
-| Shoes | 0 | 0 | 0-6 | No WATK shoes at low tier. |
+| Gloves | 10 | 10 | 10-12 mid-game | Standardized low-tier C/G/S. |
+| Cape | 12 | 12 | 5-8 budget | Standardized low-tier C/G/S. |
+| Shoes | 10 | 10 | 0-6 | Standardized low-tier C/G/S. |
 | Medal | 0 | 0 | 0-1 | Reasonable. |
 | Ring | 1 | 1 | 0-1 | Reasonable. |
-| **Total WATK** | **133** | **138** | | |
+| **Total WATK** | **148** | **153** | | |
 
 ### Mid Tier WATK Breakdown
 
@@ -257,12 +257,12 @@ speed 2 for Strafe. Hurricane has fixed 0.12s attack time regardless of speed.
 |------|----------|---------|-------|
 | Weapon | 120 | 120 | Mid-range scrolled. |
 | Bow/Crossbow Expert | 10 | 15 | Passive skill. |
-| Gloves | 17 | 17 | Standardized mid-tier C/G/S. |
-| Cape | 14 | 14 | Standardized mid-tier C/G/S. |
-| Shoes | 10 | 10 | Standardized mid-tier C/G/S. |
+| Gloves | 15 | 15 | Standardized mid-tier C/G/S. |
+| Cape | 16 | 16 | Standardized mid-tier C/G/S. |
+| Shoes | 13 | 13 | Standardized mid-tier C/G/S. |
 | Medal | 2 | 2 | Between low (0) and high (3). |
 | Ring | 1 | 1 | Same across all tiers. |
-| **Total WATK** | **174** | **179** | |
+| **Total WATK** | **177** | **182** | |
 
 ### Perfect Tier WATK Breakdown
 
@@ -270,12 +270,12 @@ speed 2 for Strafe. Hurricane has fixed 0.12s attack time regardless of speed.
 |------|----------|---------|-------|
 | Weapon | 140 | 143 | Theoretical max: godly clean + 7× 30% scroll. |
 | Bow/Crossbow Expert | 10 | 15 | MM gets +15 from Crossbow Expert at perfect tier. |
-| Gloves | 22 | 22 | Perfect tier C/G/S: 22/20/18. |
-| Cape | 20 | 20 | |
+| Gloves | 22 | 22 | Perfect tier C/G/S: 22/22/18. |
+| Cape | 22 | 22 | |
 | Shoes | 18 | 18 | |
 | Medal | 3 | 3 | Same as high. |
 | Ring | 1 | 1 | Same as high. |
-| **Total WATK** | **214** | **222** | |
+| **Total WATK** | **216** | **224** | |
 
 ### Marksman-Specific: Snipe
 
@@ -308,29 +308,29 @@ Always active. Reasonable — NL always uses SP for DPS (1.5x multiplier).
 | Slot | Value | Forum range | Assessment |
 |------|-------|------------|------------|
 | Weapon (RC) | 91 | 77 clean + 14 scrolling = 91 perf | Perfect Raven's Claw. Confirmed. |
-| Gloves | 19 | 21 ATT SCG endgame | Top-1%. Standardized across all classes. |
-| Cape | 17 | 10+ Blackfist endgame | Top-1%. Standardized across all classes. |
-| Shoes | 13 | 17 ATT Facestompers endgame | Top-1%. Standardized across all classes. |
+| Gloves | 20 | 21 ATT SCG endgame | Top-1%. Standardized across all classes. |
+| Cape | 18 | 10+ Blackfist endgame | Top-1%. Standardized across all classes. |
+| Shoes | 16 | 17 ATT Facestompers endgame | Top-1%. Standardized across all classes. |
 | Medal | 3 | 2-3 typical | Reasonable. |
 | Ring | 1 | 0-1 | Reasonable. |
 | Stars | 30 (Balanced Fury) | 29 Crystal Ilbi / 30 BFury | Confirmed. BFury is correct endgame. |
-| **Total WATK** | **144** | | |
+| **Total WATK** | **149** | | |
 
 ### Low Tier WATK Breakdown
 
 | Slot | Value | Forum range | Assessment |
 |------|-------|------------|------------|
 | Weapon (RC) | 76 | 71-76 mid-range RC | Reasonable — top of budget range. |
-| Gloves | 12 | 10-12 mid-game | Confirmed. |
-| Cape | 8 | 6-8 early cape | Confirmed. |
-| Shoes | 6 | 6+ mid-game FS | Confirmed. |
+| Gloves | 10 | 10-12 mid-game | Standardized low-tier C/G/S. |
+| Cape | 12 | 6-8 early cape | Standardized low-tier C/G/S. |
+| Shoes | 10 | 6+ mid-game FS | Standardized low-tier C/G/S. |
 | Medal | 2 | 1-2 | Reasonable. |
 | Ring | 1 | 0-1 | Reasonable. |
 | Stars | 27 (Hwabi) | Hwabi standard mid/late | Confirmed. |
-| **Total WATK** | **105** | | |
+| **Total WATK** | **111** | | |
 
-NL high tier C/G/S standardized from 21/18/17 to 19/17/13, aligning with all other
-classes. Low tier unchanged.
+C/G/S standardized to 20/18/16 at high tier and 10/12/10 at low tier, aligning all
+classes.
 
 ### Perfect Tier WATK Breakdown
 
@@ -341,13 +341,13 @@ Claw's theoretical max exceeds it by 4 WATK.
 | Slot | Value | Notes |
 |------|-------|-------|
 | Weapon (Dragon Purple Claw) | 95 | Godly clean 60 + 7× 30% scroll. |
-| Gloves | 22 | Perfect tier C/G/S: 22/20/18. |
-| Cape | 20 | |
+| Gloves | 22 | Perfect tier C/G/S: 22/22/18. |
+| Cape | 22 | |
 | Shoes | 18 | |
 | Medal | 3 | Same as high. |
 | Ring | 1 | Same as high. |
 | Stars | 30 (Balanced Fury) | Unchanged from high. |
-| **Total WATK** | **159** | |
+| **Total WATK** | **161** | |
 
 ---
 
@@ -369,12 +369,12 @@ Claw's theoretical max exceeds it by 4 WATK.
 | Slot | Perfect | High | Mid | Low | Notes |
 |------|---------|------|-----|-----|-------|
 | Weapon (Concerto) | 119 | 114 | 113 | 107 | Perfect = godly 84 + 35 scroll. |
-| Gloves | 22 | 19 | 17 | 15 | C/G/S per tier. |
-| Cape | 20 | 17 | 14 | 10 | |
-| Shoes | 18 | 13 | 10 | 6 | |
+| Gloves | 22 | 20 | 15 | 10 | C/G/S per tier. |
+| Cape | 22 | 18 | 16 | 12 | |
+| Shoes | 18 | 16 | 13 | 10 | |
 | Medal | 3 | 3 | 2 | 0 | |
 | Ring | 1 | 1 | 1 | 1 | |
-| **Total WATK** | **183** | **167** | **157** | **139** | |
+| **Total WATK** | **185** | **172** | **160** | **140** | |
 
 ---
 
@@ -396,12 +396,12 @@ Claw's theoretical max exceeds it by 4 WATK.
 | Slot | Perfect | High | Mid | Low | Notes |
 |------|---------|------|-----|-----|-------|
 | Weapon (Dragon Slash Claw) | 123 | 118 | 116 | 105 | Perfect = godly 88 + 35 scroll. |
-| Gloves | 22 | 19 | 17 | 12 | C/G/S per tier. |
-| Cape | 20 | 17 | 14 | 12 | |
-| Shoes | 18 | 13 | 10 | 10 | |
+| Gloves | 22 | 20 | 15 | 10 | C/G/S per tier. |
+| Cape | 22 | 18 | 16 | 12 | |
+| Shoes | 18 | 16 | 13 | 10 | |
 | Medal | 3 | 3 | 2 | 0 | |
 | Ring | 1 | 1 | 1 | 0 | |
-| **Total WATK** | **187** | **171** | **160** | **139** | |
+| **Total WATK** | **189** | **176** | **163** | **137** | |
 
 ---
 
@@ -427,12 +427,12 @@ Shadower uses Dagger + Shield, so both weapon and shield contribute WATK.
 |------|---------|------|-----|-----|-------|
 | Weapon (Dragon Kanzir) | 145 | 140 | 135 | 125 | Perfect = godly 110 + 35 scroll. |
 | Shield | 48 | 43 | 37 | 31 | Perfect = godly Dark Impenetrable + perfect scrolling. |
-| Gloves | 22 | 19 | 17 | 15 | C/G/S per tier (Shadower uses thief gloves). |
-| Cape | 20 | 17 | 14 | 11 | |
-| Shoes | 18 | 13 | 10 | 9 | |
+| Gloves | 22 | 20 | 15 | 10 | C/G/S per tier (Shadower uses thief gloves). |
+| Cape | 22 | 18 | 16 | 12 | |
+| Shoes | 18 | 16 | 13 | 10 | |
 | Medal | 0 | 0 | 0 | 0 | Shadower medals provide stats, not WATK. |
 | Ring | 1 | 1 | 1 | 1 | |
-| **Total WATK** | **254** | **233** | **214** | **192** | |
+| **Total WATK** | **256** | **238** | **217** | **189** | |
 
 ---
 
@@ -519,14 +519,22 @@ for DrK weapon.
 
 ## 10. Resolved Design Decisions
 
-### Resolved: C/G/S standardized to 19/17/13 (Q1, February 2026)
+### Resolved: C/G/S standardized across all tiers (Q1, February 2026; updated March 2026)
 
 **Finding:** Original templates had inconsistent C/G/S WATK across classes (warriors at
 20/20/20, NL at 21/18/17, Corsair at 20/20/18, etc.). 20/20/20 was extreme godly
-(top ~0.01%), with 20 ATT shoes not even found on the marketplace.
+(top ~0.01%), with 20 ATT shoes not even found on the marketplace. Low tier also varied
+wildly by class (warriors 15/12/10, archers 12/5/0, NL 12/8/6, etc.).
 
-**Decision:** Standardize all classes to Glove 19 / Cape 17 / Shoe 13 (total 49 WATK).
-This models a top-1% character — achievable endgame gear without being theoretical maximum.
+**Decision:** Standardize C/G/S across all physical classes at every tier:
+
+| Tier | Glove | Cape | Shoe | Total |
+|------|-------|------|------|-------|
+| Low | 10 | 12 | 10 | 32 |
+| Mid | 15 | 16 | 13 | 44 |
+| High | 20 | 18 | 16 | 54 |
+| Perfect | 22 | 22 | 18 | 62 |
+
 Consistent C/G/S across classes ensures cross-class DPS comparisons reflect skill/weapon
 differences, not arbitrary gear assumptions.
 

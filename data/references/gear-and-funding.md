@@ -34,13 +34,13 @@ Cape/Glove/Shoe WATK standardized across all physical classes for fair compariso
 
 | Tier | Glove | Cape | Shoe | Total |
 |------|-------|------|------|-------|
-| High | 19 | 17 | 13 | 49 |
-| Mid | 17 | 14 | 10 | 41 |
-| Low | 15 | 12 | 10 | 37 |
+| Perfect | 22 | 22 | 18 | 62 |
+| High | 20 | 18 | 16 | 54 |
+| Mid | 15 | 16 | 13 | 44 |
+| Low | 10 | 12 | 10 | 32 |
 
 High tier models top-1% gear — achievable endgame without being theoretical maximum.
-Original templates had 20/20/20 (extreme godly, top ~0.01% — 20 ATT shoes don't even
-appear on the marketplace).
+Low tier standardized across all physical classes for consistent cross-class comparison.
 
 ## Endgame Weapons
 
