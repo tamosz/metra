@@ -13,14 +13,14 @@
   "skills": [
     {
       "name": "Paralyze",
-      "source": "dmg sheet B36: basePower 240, C36: 0.72s. Single-target DPS skill.",
+      "source": "dmg sheet B36: basePower 240, C36: 0.72s. Single-target skill.",
       "basePower": 240,
       "multiplier": 1,
       "hitCount": 1,
       "speedCategory": "Paralyze",
       "weaponType": "Staff",
       "element": "Poison",
-      "maxTargets": 6
+      "maxTargets": 1
     },
     {
       "name": "Meteor",
