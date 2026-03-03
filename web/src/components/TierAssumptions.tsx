@@ -8,6 +8,7 @@ export function TierAssumptions() {
       <button
         type="button"
         onClick={() => setExpanded(!expanded)}
+        aria-expanded={expanded}
         className="flex items-center gap-1.5 cursor-pointer border-none bg-transparent p-0 text-xs text-text-dim transition-colors hover:text-text-muted"
       >
         <span className="text-[10px]">{expanded ? '\u25BC' : '\u25B6'}</span>

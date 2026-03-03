@@ -76,13 +76,14 @@ export function BuildBuffToggles({ state }: BuildBuffTogglesProps) {
             ))}
           </select>
           {mwOverridden && (
-            <span
+            <button
+              type="button"
               onClick={() => resetField('mwLevel')}
-              className="cursor-pointer select-none text-[11px] text-accent"
+              className="cursor-pointer select-none text-[11px] text-accent bg-transparent border-none p-0"
               title="Click to reset"
             >
               ({template.mwLevel})
-            </span>
+            </button>
           )}
         </div>
       </div>

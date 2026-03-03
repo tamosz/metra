@@ -6,6 +6,7 @@ import { BuildDpsResults } from './BuildDpsResults.js';
 import { ComparisonSummary } from './ComparisonSummary.js';
 import { encodeComparison } from '../utils/url-encoding.js';
 import { formatClassName, formatChange, changeColorClass } from '../utils/format.js';
+import { TH } from '../utils/styles.js';
 
 interface BuildComparisonProps {
   state: BuildComparisonState;
@@ -134,8 +135,6 @@ function SameClassDeltas({ resultsA, resultsB }: { resultsA: SkillDpsRow[]; resu
     return { skillName: a.skillName, dpsA: a.dps, dpsB: bDps, delta };
   });
 
-  const th = 'px-3 py-2 text-[11px] uppercase tracking-wide text-text-dim font-medium';
-
   return (
     <div>
       <div className="mb-2 text-[11px] font-medium uppercase tracking-wide text-text-muted">
@@ -145,10 +144,10 @@ function SameClassDeltas({ resultsA, resultsB }: { resultsA: SkillDpsRow[]; resu
       <table className="w-full border-collapse text-[13px]">
         <thead>
           <tr className="border-b border-border-subtle">
-            <th className={`${th} text-left`}>Skill</th>
-            <th className={`${th} text-right`}>Build A</th>
-            <th className={`${th} text-right`}>Build B</th>
-            <th className={`${th} text-right`}>Delta</th>
+            <th className={`${TH} text-left`}>Skill</th>
+            <th className={`${TH} text-right`}>Build A</th>
+            <th className={`${TH} text-right`}>Build B</th>
+            <th className={`${TH} text-right`}>Delta</th>
           </tr>
         </thead>
         <tbody>

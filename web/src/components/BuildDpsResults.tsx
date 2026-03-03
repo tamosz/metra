@@ -1,6 +1,7 @@
 import type { BuildExplorerState } from '../hooks/useBuildExplorer.js';
 import { encodeBuild } from '../utils/url-encoding.js';
 import { formatDps, formatChange, changeColorClass } from '../utils/format.js';
+import { TH } from '../utils/styles.js';
 
 interface BuildDpsResultsProps {
   state: BuildExplorerState;
@@ -17,8 +18,6 @@ export function BuildDpsResults({ state, showCopyLink = true }: BuildDpsResultsP
   };
 
   const hasOverrides = Object.keys(overrides).length > 0;
-  const th = 'px-3 py-2 text-[11px] uppercase tracking-wide text-text-dim font-medium text-left';
-
   return (
     <div>
       <div className="mb-2 flex items-center justify-between">
@@ -38,12 +37,12 @@ export function BuildDpsResults({ state, showCopyLink = true }: BuildDpsResultsP
       <table className="w-full border-collapse text-sm">
         <thead>
           <tr className="border-b border-border-default">
-            <th className={th}>Skill</th>
-            <th className={`${th} text-right`}>Your DPS</th>
+            <th className={`${TH} text-left`}>Skill</th>
+            <th className={`${TH} text-right`}>Your DPS</th>
             {hasOverrides && (
               <>
-                <th className={`${th} text-right`}>Template</th>
-                <th className={`${th} text-right`}>Change</th>
+                <th className={`${TH} text-right`}>Template</th>
+                <th className={`${TH} text-right`}>Change</th>
               </>
             )}
           </tr>

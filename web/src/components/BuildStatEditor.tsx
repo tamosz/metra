@@ -167,15 +167,23 @@ function StatInput({
           +
         </button>
       </div>
-      <span
-        onClick={isOverridden ? onReset : undefined}
-        className={`text-[11px] tabular-nums select-none ${
-          isOverridden ? 'cursor-pointer text-accent' : 'cursor-default text-text-faint'
-        }`}
-        title={isOverridden ? 'Click to reset' : 'Template value'}
-      >
-        ({templateValue.toLocaleString()})
-      </span>
+      {isOverridden ? (
+        <button
+          type="button"
+          onClick={onReset}
+          className="text-[11px] tabular-nums select-none cursor-pointer text-accent bg-transparent border-none p-0"
+          title="Click to reset"
+        >
+          ({templateValue.toLocaleString()})
+        </button>
+      ) : (
+        <span
+          className="text-[11px] tabular-nums select-none cursor-default text-text-faint"
+          title="Template value"
+        >
+          ({templateValue.toLocaleString()})
+        </span>
+      )}
     </div>
   );
 }

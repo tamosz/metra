@@ -66,25 +66,33 @@ export function sortDeltas(deltas: DeltaEntry[]): DeltaEntry[] {
   });
 }
 
+function groupByScenario<T>(
+  items: T[],
+  getScenario: (item: T) => string,
+): { scenario: string; items: T[] }[] {
+  const groups: { scenario: string; items: T[] }[] = [];
+  const indexMap = new Map<string, number>();
+
+  for (const item of items) {
+    const scenario = getScenario(item);
+    if (!indexMap.has(scenario)) {
+      indexMap.set(scenario, groups.length);
+      groups.push({ scenario, items: [] });
+    }
+    groups[indexMap.get(scenario)!].items.push(item);
+  }
+
+  return groups;
+}
+
 /**
  * Group deltas by scenario name, preserving insertion order.
  */
 export function groupDeltasByScenario(
   deltas: DeltaEntry[]
 ): { scenario: string; deltas: DeltaEntry[] }[] {
-  const groups: { scenario: string; deltas: DeltaEntry[] }[] = [];
-  const indexMap = new Map<string, number>();
-
-  for (const d of deltas) {
-    const scenario = d.scenario ?? 'Buffed';
-    if (!indexMap.has(scenario)) {
-      indexMap.set(scenario, groups.length);
-      groups.push({ scenario, deltas: [] });
-    }
-    groups[indexMap.get(scenario)!].deltas.push(d);
-  }
-
-  return groups;
+  return groupByScenario(deltas, (d) => d.scenario ?? 'Buffed')
+    .map((g) => ({ scenario: g.scenario, deltas: g.items }));
 }
 
 /**
@@ -93,16 +101,6 @@ export function groupDeltasByScenario(
 export function groupResultsByScenario(
   results: ScenarioResult[]
 ): { scenario: string; results: ScenarioResult[] }[] {
-  const groups: { scenario: string; results: ScenarioResult[] }[] = [];
-  const indexMap = new Map<string, number>();
-
-  for (const r of results) {
-    if (!indexMap.has(r.scenario)) {
-      indexMap.set(r.scenario, groups.length);
-      groups.push({ scenario: r.scenario, results: [] });
-    }
-    groups[indexMap.get(r.scenario)!].results.push(r);
-  }
-
-  return groups;
+  return groupByScenario(results, (r) => r.scenario)
+    .map((g) => ({ scenario: g.scenario, results: g.items }));
 }

@@ -1,4 +1,4 @@
-import { Fragment, useState, useMemo, useCallback } from 'react';
+import { Fragment, memo, useState, useMemo, useCallback } from 'react';
 import { DpsChart } from './DpsChart.js';
 import { TierPresets } from './TierPresets.js';
 import { SupportClassNote } from './SupportClassNote.js';
@@ -18,6 +18,7 @@ import { KbToggle } from './KbToggle.js';
 import { Tooltip } from './Tooltip.js';
 import { CapToggle } from './CapToggle.js';
 import { getClassColor } from '../utils/class-colors.js';
+import { TOGGLE_ON, TOGGLE_OFF, TH } from '../utils/styles.js';
 import type { DpsResult } from '@engine/engine/dps.js';
 import type { CgsValues } from '../utils/cgs.js';
 import type { ScenarioResult } from '@engine/proposals/types.js';
@@ -185,8 +186,6 @@ function TargetSpinner({ value, onChange }: { value: number; onChange: (n: numbe
 }
 
 function AllSkillsToggle({ enabled, onToggle }: { enabled: boolean; onToggle: (v: boolean) => void }) {
-  const styleOn = 'border border-emerald-700/50 bg-emerald-950/40 text-emerald-400';
-  const styleOff = 'border border-border-default bg-bg-raised text-text-muted';
   return (
     <div className="flex flex-col gap-1">
       <span className="text-[11px] font-medium uppercase tracking-wide text-text-dim">Skills</span>
@@ -195,7 +194,7 @@ function AllSkillsToggle({ enabled, onToggle }: { enabled: boolean; onToggle: (v
           type="button"
           title={enabled ? 'Showing all skills — click to show only headline skills' : 'Showing headline skills only — click to show all'}
           onClick={() => onToggle(!enabled)}
-          className={`cursor-pointer rounded px-1.5 py-0.5 text-xs font-medium transition-colors ${enabled ? styleOn : styleOff}`}
+          className={`cursor-pointer rounded px-1.5 py-0.5 text-xs font-medium transition-colors ${enabled ? TOGGLE_ON : TOGGLE_OFF}`}
         >
           All
         </button>
@@ -204,9 +203,9 @@ function AllSkillsToggle({ enabled, onToggle }: { enabled: boolean; onToggle: (v
   );
 }
 
-function SortArrow({ direction }: { direction: SortDirection }) {
+const SortArrow = memo(function SortArrow({ direction }: { direction: SortDirection }) {
   return <span className="ml-1 text-[10px]">{direction === 'asc' ? '\u25B2' : '\u25BC'}</span>;
-}
+});
 
 function buildTierData(
   row: { className: string; skillName: string },
@@ -278,8 +277,6 @@ function RankingTable({
     });
   }, [data, sortColumn, sortDirection, capEnabled]);
 
-  const thBase = 'px-3 py-2 text-[11px] uppercase tracking-wide text-text-dim font-medium';
-  const thSortable = `${thBase} cursor-pointer select-none`;
   const columnCount = capEnabled ? 6 : 5;
 
   return (
@@ -288,22 +285,32 @@ function RankingTable({
       <table data-testid="ranking-table" className="w-full border-collapse text-sm">
         <thead>
           <tr className="border-b border-border-default">
-            <th className={thBase}>#</th>
-            <th className={`${thSortable} text-left`} onClick={() => handleSort('class')}>
-              Class{sortColumn === 'class' && <SortArrow direction={sortDirection} />}
+            <th className={TH}>#</th>
+            <th className={`${TH} text-left`} aria-sort={sortColumn === 'class' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : undefined}>
+              <button type="button" onClick={() => handleSort('class')} className="cursor-pointer select-none bg-transparent border-none p-0 text-inherit font-inherit">
+                Class{sortColumn === 'class' && <SortArrow direction={sortDirection} />}
+              </button>
             </th>
-            <th className={`${thSortable} text-left`} onClick={() => handleSort('skill')}>
-              Skill{sortColumn === 'skill' && <SortArrow direction={sortDirection} />}
+            <th className={`${TH} text-left`} aria-sort={sortColumn === 'skill' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : undefined}>
+              <button type="button" onClick={() => handleSort('skill')} className="cursor-pointer select-none bg-transparent border-none p-0 text-inherit font-inherit">
+                Skill{sortColumn === 'skill' && <SortArrow direction={sortDirection} />}
+              </button>
             </th>
-            <th className={`${thSortable} text-left`} onClick={() => handleSort('tier')}>
-              Tier{sortColumn === 'tier' && <SortArrow direction={sortDirection} />}
+            <th className={`${TH} text-left`} aria-sort={sortColumn === 'tier' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : undefined}>
+              <button type="button" onClick={() => handleSort('tier')} className="cursor-pointer select-none bg-transparent border-none p-0 text-inherit font-inherit">
+                Tier{sortColumn === 'tier' && <SortArrow direction={sortDirection} />}
+              </button>
             </th>
-            <th className={`${thSortable} text-right`} onClick={() => handleSort('dps')}>
-              DPS{sortColumn === 'dps' && <SortArrow direction={sortDirection} />}
+            <th className={`${TH} text-right`} aria-sort={sortColumn === 'dps' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : undefined}>
+              <button type="button" onClick={() => handleSort('dps')} className="cursor-pointer select-none bg-transparent border-none p-0 text-inherit font-inherit">
+                DPS{sortColumn === 'dps' && <SortArrow direction={sortDirection} />}
+              </button>
             </th>
             {capEnabled && (
-              <th className={`${thSortable} text-right`} onClick={() => handleSort('capLoss')}>
-                Cap Loss{sortColumn === 'capLoss' && <SortArrow direction={sortDirection} />}
+              <th className={`${TH} text-right`} aria-sort={sortColumn === 'capLoss' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : undefined}>
+                <button type="button" onClick={() => handleSort('capLoss')} className="cursor-pointer select-none bg-transparent border-none p-0 text-inherit font-inherit">
+                  Cap Loss{sortColumn === 'capLoss' && <SortArrow direction={sortDirection} />}
+                </button>
               </th>
             )}
           </tr>
@@ -324,6 +331,10 @@ function RankingTable({
                   <tr
                     className="border-b border-border-subtle hover:bg-white/[0.03] cursor-pointer"
                     onClick={() => toggleRow(rowKey)}
+                    onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleRow(rowKey); } }}
+                    tabIndex={0}
+                    role="button"
+                    aria-expanded={isExpanded}
                   >
                     <td className="px-3 py-2 w-8 text-text-faint">
                       <span className="inline-flex items-center gap-1">
