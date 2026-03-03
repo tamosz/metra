@@ -7,23 +7,64 @@ import {
   type CharacterBuild,
 } from '@engine/data/types.js';
 import { computeGearTotals } from '@engine/data/gear-utils.js';
+import { mergeGearTemplate, type TierDefaults, type ClassBase, type TierOverride } from '@engine/data/gear-merge.js';
 
 // Static imports — bundled at build time, no fetch latency
 import weaponsJson from '@data/weapons.json';
 import attackSpeedJson from '@data/attack-speed.json';
 import mwJson from '@data/mw.json';
+import tierDefaultsJson from '@data/tier-defaults.json';
+
+const tierDefaults = tierDefaultsJson as Record<string, TierDefaults>;
 
 // Skill data
 const skillModules = import.meta.glob('@data/skills/*.json', { eager: true, import: 'default' }) as Record<string, ClassSkillData>;
 
-// Gear templates
-const templateModules = import.meta.glob('@data/gear-templates/*.json', { eager: true, import: 'default' }) as Record<string, Record<string, unknown>>;
+// Gear template class bases
+const baseModules = import.meta.glob('@data/gear-templates/*.base.json', { eager: true, import: 'default' }) as Record<string, ClassBase>;
+
+// Gear templates (exclude base files)
+const templateModules = import.meta.glob([
+  '@data/gear-templates/*.json',
+  '!@data/gear-templates/*.base.json',
+], { eager: true, import: 'default' }) as Record<string, Record<string, unknown>>;
 
 export const weaponData: WeaponData = weaponsJson as WeaponData;
 export const attackSpeedData: AttackSpeedData = attackSpeedJson as AttackSpeedData;
 export const mwData: MWData = (mwJson as { entries: MWData }).entries;
 
-function parseGearTemplate(raw: Record<string, unknown>): CharacterBuild {
+function findClassBase(templateName: string): ClassBase | null {
+  const entries = Object.entries(baseModules)
+    .map(([path, base]) => {
+      const match = path.match(/\/([^/]+)\.base\.json$/);
+      return match ? { name: match[1], base } : null;
+    })
+    .filter((e): e is { name: string; base: ClassBase } => e !== null)
+    .sort((a, b) => b.name.length - a.name.length);
+
+  for (const { name, base } of entries) {
+    if (templateName.startsWith(name + '-')) {
+      return base;
+    }
+  }
+  return null;
+}
+
+function parseGearTemplate(templateName: string, raw: Record<string, unknown>): CharacterBuild {
+  if (typeof raw.extends === 'string') {
+    const base = findClassBase(templateName);
+    if (!base) {
+      throw new Error(`Template "${templateName}" extends "${raw.extends}" but no base file found`);
+    }
+    const tier = templateName.slice((raw.extends as string).length + 1);
+    const defaults = tierDefaults[tier];
+    if (!defaults) {
+      throw new Error(`Template "${templateName}" uses tier "${tier}" with no tier defaults`);
+    }
+    return mergeGearTemplate(base, raw as unknown as TierOverride, defaults);
+  }
+
+  // Flat mode (existing logic)
   const breakdown = raw.gearBreakdown as Record<string, Record<string, number>> | undefined;
   const computed = breakdown ? computeGearTotals(breakdown) : undefined;
 
@@ -115,7 +156,7 @@ export function discoverClassesAndTiers(): DiscoveryResult {
           ([path]) => path.endsWith(`/${key}.json`)
         );
         if (matchingEntry) {
-          gearTemplates.set(key, parseGearTemplate(matchingEntry[1]));
+          gearTemplates.set(key, parseGearTemplate(key, matchingEntry[1]));
         }
       }
     }
