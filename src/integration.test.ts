@@ -302,6 +302,37 @@ describe('Special mechanics', () => {
     );
   });
 
+  it('isComposite is set on combo groups and mixed rotations, not on regular skills', () => {
+    // Combo group: Buccaneer Barrage + Demolition
+    const barrageDemoCombo = buffedResults.find(
+      (r) => r.className === 'Buccaneer' && r.skillName === 'Barrage + Demolition'
+    );
+    expect(barrageDemoCombo?.isComposite).toBe(true);
+
+    // Combo group: Shadower BStep + Assassinate
+    const shadCombo = buffedResults.find(
+      (r) => r.className === 'Shadower' && r.skillName === 'BStep + Assassinate'
+    );
+    expect(shadCombo?.isComposite).toBe(true);
+
+    // Mixed rotation: Corsair Practical Bossing
+    const practicalBossing = buffedResults.find(
+      (r) => r.className === 'Corsair' && r.skillName === 'Practical Bossing'
+    );
+    expect(practicalBossing?.isComposite).toBe(true);
+
+    // Non-combo skills should not have isComposite
+    const heroBrandish = buffedResults.find(
+      (r) => r.className === 'Hero' && r.skillName === 'Brandish (Sword)'
+    );
+    expect(heroBrandish?.isComposite).toBeUndefined();
+
+    const nlTripleThrow = buffedResults.find(
+      (r) => r.className === 'NL' && r.skillName === 'Triple Throw'
+    );
+    expect(nlTripleThrow?.isComposite).toBeUndefined();
+  });
+
   it('comboGroup aggregation sums uncappedDps and computes capLossPercent', () => {
     const buccCombo = buffedResults.find(
       (r) => r.className === 'Buccaneer' && r.skillName === 'Barrage + Demolition' && r.tier === 'high'
