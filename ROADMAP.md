@@ -25,13 +25,53 @@ A balance simulator for Royals staff and community. Every number traces back to 
 - Pre-commit hooks, comprehensive test coverage
 - Deployed on Vercel: https://metra-ten.vercel.app
 
-## Phase 2: Community Features
+## Phase 2: Interactive UX
+
+Make the dashboard the primary exploration tool. Reduce the distance between "I wonder what if..." and seeing the answer.
+
+**Skill detail drilldown**
+- Click a row in the rankings to see a breakdown: DPS by tier, crit contribution, cap loss, buff sensitivity, marginal gains per stat — all in context
+- Turns the dashboard from a flat chart into something people explore
+
+**Inline "what if" editing**
+- Click a skill's damage%, hit count, or multiplier in the detail view and change it directly
+- Instant before/after without leaving the dashboard
+- Proposal builder stays for formal proposals; this is for casual exploration
+
+**Filter state permalinks**
+- Encode dashboard filter state (tier, buffs, elements, KB, targets) in the URL
+- Shareable links like "here's what Corsair looks like with KB on and no SI"
+
+**Saved filter presets**
+- Name and save toggle combinations: "Bossing", "Training 6 mobs", "Unbuffed solo"
+- One click to switch context
+
+**Mobile filter UX**
+- Collapsible "Simulation Settings" panel, closed by default
+- Summary chip showing active state: "High tier · SE off · Holy weak"
+- Desktop keeps the current inline layout
+
+**Comparison chart overlay**
+- Ghosted "before" bar behind solid "after" bar on the same chart
+- Makes deltas instantly readable without scanning a table
+
+**Chart animations**
+- Animate bar changes when filters toggle — a bar growing/shrinking when you flip SE off gives instant feedback about what matters
+
+**CSV export**
+- Export simulation results for people who want to do their own analysis in sheets
+
+**Error boundaries**
+- Catch engine errors gracefully instead of white-screening
+- Show what went wrong with a reset button
+
+## Phase 3: Community Features
 
 - Proposal gallery: browse, search, filter, share
 - Diff visualization: bar chart overlays, bump charts for rank changes
 - If there's demand: voting, comments, proposal versioning (needs a backend)
 
-## Phase 3: Advanced Analysis
+## Phase 4: Advanced Analysis
 
 **Quick wins:**
 - Archer projectile WATK: Bowmaster and Marksman gear templates have `projectile: 0` — need to add arrow/bolt WATK values at each tier (the engine already supports this via the `projectile` field)
