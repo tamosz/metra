@@ -75,6 +75,11 @@ export interface SkillEntry {
   builtInCritRate?: number;
   /** Built-in crit damage bonus added to basePower on crit. */
   builtInCritDamageBonus?: number;
+  /** Fixed crit damage% that overrides the normal SE formula. When set, crits use this
+   *  value directly instead of (basePower + bonus) * multiplier. Used for skills like
+   *  Assassinate where the v62 criticalDamage (250%) was never updated when basePower
+   *  was buffed, causing crits to deal LESS damage than non-crits. */
+  fixedCritDamagePercent?: number;
   /** Group name for skills that combine into a single rotation.
    *  Skills sharing a comboGroup have their DPS summed in simulation output.
    *  e.g., Barrage hits + Demolition form one combo with a shared attack cycle. */

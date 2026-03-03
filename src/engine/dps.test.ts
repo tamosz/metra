@@ -702,6 +702,54 @@ describe('Shadower DPS', () => {
     expect(result.critDamagePercent).toBe(740);
   });
 
+  it('Assassinate uses fixedCritDamagePercent (250) instead of SE formula', () => {
+    const assn = shadData.skills.find((s) => s.name === 'Assassinate')!;
+    // Assassinate has fixedCritDamagePercent: 250 from v62 skill data.
+    // When SE triggers, crit damage should be 250% — NOT the SE formula
+    // which would give (950 + 140) * 1 = 1090%.
+    // Source: royals.ms/forum/threads/assassinate-and-criticals.143423
+    expect(assn.fixedCritDamagePercent).toBe(250);
+
+    const result = calculateSkillDps(
+      shadHigh, shadData, assn, weaponData, attackSpeedData, mwData
+    );
+
+    expect(result.skillDamagePercent).toBe(950);
+    // Fixed crit damage from skill, not SE formula
+    expect(result.critDamagePercent).toBe(250);
+    expect(result.totalCritRate).toBeCloseTo(0.15, 2);
+  });
+
+  it('Assassinate DPS decreases with SE due to fixedCritDamagePercent', () => {
+    const assn = shadData.skills.find((s) => s.name === 'Assassinate')!;
+    const withSe = calculateSkillDps(
+      shadHigh, shadData, assn, weaponData, attackSpeedData, mwData
+    );
+    const noSeBuild = { ...shadHigh, sharpEyes: false };
+    const withoutSe = calculateSkillDps(
+      noSeBuild, shadData, assn, weaponData, attackSpeedData, mwData
+    );
+
+    // Without SE: no crits, full 950% damage on all 3 hits
+    expect(withoutSe.totalCritRate).toBe(0);
+    // With SE: 15% of hits use 250% instead of 950% → DPS goes DOWN
+    expect(withSe.dps).toBeLessThan(withoutSe.dps);
+  });
+
+  it('BStep still benefits from SE normally (fixedCritDamagePercent is per-skill)', () => {
+    const bstep = shadData.skills.find((s) => s.name === 'Boomerang Step')!;
+    const withSe = calculateSkillDps(
+      shadHigh, shadData, bstep, weaponData, attackSpeedData, mwData
+    );
+    const noSeBuild = { ...shadHigh, sharpEyes: false };
+    const withoutSe = calculateSkillDps(
+      noSeBuild, shadData, bstep, weaponData, attackSpeedData, mwData
+    );
+
+    // BStep has no fixedCritDamagePercent → SE crits use normal formula (740% > 600%)
+    expect(withSe.dps).toBeGreaterThan(withoutSe.dps);
+  });
+
   it('Shadow Partner multiplies DPS by 1.5', () => {
     const bstep = shadData.skills.find((s) => s.name === 'Boomerang Step')!;
     const withSp = calculateSkillDps(
@@ -727,8 +775,9 @@ describe('Shadower DPS', () => {
 
     // Combo DPS = sum of individual DPS (both share 2.31s cycle)
     // = (bstepAvg + assnAvg) / 2.31
+    // Assassinate uses fixedCritDamagePercent=250 → SE crits at 250% instead of 1090%
     const comboDps = bstepDps + assnDps;
-    expect(comboDps).toBeCloseTo(326734, -1);
+    expect(comboDps).toBeCloseTo(297010, -1);
   });
 
   it('High tier Savage Blow DPS', () => {
@@ -751,7 +800,7 @@ describe('Shadower DPS', () => {
     ).dps;
 
     const comboDps = bstepDps + assnDps;
-    expect(comboDps).toBeCloseTo(195541, -1);
+    expect(comboDps).toBeCloseTo(177752, -1);
   });
 
   it('Low tier Savage Blow DPS', () => {

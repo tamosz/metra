@@ -209,7 +209,7 @@ describe('Baseline mode', () => {
     expect(find('Corsair', 'Battleship Cannon').dps.dps).toBeCloseTo(349431, -2);
     expect(find('Corsair', 'Rapid Fire').dps.dps).toBeCloseTo(240724, -2);
     expect(find('Buccaneer', 'Barrage + Demolition').dps.dps).toBeGreaterThan(200000);
-    expect(find('Shadower', 'BStep + Assassinate').dps.dps).toBeCloseTo(326734, -2);
+    expect(find('Shadower', 'BStep + Assassinate').dps.dps).toBeCloseTo(297010, -2);
   });
 
   it('mid-tier DPS matches reference values', () => {
@@ -229,7 +229,7 @@ describe('Baseline mode', () => {
     expect(find('Corsair', 'Battleship Cannon').dps.dps).toBeCloseTo(242541, -2);
     expect(find('Corsair', 'Rapid Fire').dps.dps).toBeCloseTo(167087, -2);
     expect(find('Buccaneer', 'Barrage + Demolition').dps.dps).toBeGreaterThan(130000);
-    expect(find('Shadower', 'BStep + Assassinate').dps.dps).toBeCloseTo(243189, -2);
+    expect(find('Shadower', 'BStep + Assassinate').dps.dps).toBeCloseTo(221065, -2);
   });
 
   it('low-tier DPS matches reference values', () => {
@@ -247,7 +247,7 @@ describe('Baseline mode', () => {
     expect(find('Corsair', 'Battleship Cannon').dps.dps).toBeCloseTo(180851, -2);
     expect(find('Corsair', 'Rapid Fire').dps.dps).toBeCloseTo(124589, -2);
     expect(find('Buccaneer', 'Barrage + Demolition').dps.dps).toBeGreaterThan(100000);
-    expect(find('Shadower', 'BStep + Assassinate').dps.dps).toBeCloseTo(195541, -2);
+    expect(find('Shadower', 'BStep + Assassinate').dps.dps).toBeCloseTo(177752, -2);
   });
 });
 

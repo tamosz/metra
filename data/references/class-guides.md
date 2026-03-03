@@ -119,12 +119,16 @@ Per-class verified values extracted from community guides on royals.ms.
 ## Shadower
 
 **Source:** Source spreadsheet dmg sheet rows 43-50
-**Accessed:** 2026-02-15
+**Source:** [Assassinate and criticals](https://royals.ms/forum/threads/assassinate-and-criticals.143423/)
+**Source:** [How to maximize Shadower's single target DPS](https://royals.ms/forum/threads/how-to-maximize-shadowers-single-target-dps.236808/)
+**Source:** [Assassinate and Sharp Eye](https://royals.ms/forum/threads/assassinate-and-sharp-eye.180132/)
+**Accessed:** 2026-03-03
 **Used in:** `data/skills/shadower.json`, `data/gear-templates/shadower-*.json`
 
 - BStep + Assassinate 30 combo: 2.31s cycle (0.69 + 1.62)
 - Boomerang Step: 600% base (buffed from 500%), 2 hits
 - Assassinate 30: 950% base (buffed from 600%, charge removed), 3 hits
+- Assassinate SE penalty: v62 criticalDamage=250% never updated → SE crits use 250% instead of 950%, DPS decreases with SE active. Tested at "95.6% speed of no SE." At high gear, BStep SE benefit roughly compensates.
 - Savage Blow: 80% base, 6 hits
 - Shadow Partner active (1.5x multiplier)
 - Dagger 3.6x multiplier, LUK primary, STR+DEX secondary (both summed)

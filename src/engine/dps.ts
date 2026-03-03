@@ -64,12 +64,28 @@ export interface DpsResult {
  * Crit damage formula varies by class:
  * - addBeforeMultiply (default): critDmg% = (basePower + bonus) * multiplier
  * - addAfterMultiply (Paladin): critDmg% = basePower * multiplier + bonus
+ *
+ * When a skill has fixedCritDamagePercent, that value is used directly instead of
+ * the formula above. This models skills like Assassinate where the v62 critical
+ * damage value (250%) was never updated when basePower was buffed to 950%, causing
+ * crits to deal less damage than non-crits.
+ * Source: royals.ms/forum/threads/assassinate-and-criticals.143423
+ * Source: royals.ms/forum/threads/how-to-maximize-shadowers-single-target-dps.236808
  */
 function calculateCritDamage(
   skill: SkillEntry,
   classData: ClassSkillData,
   sharpEyes: boolean
 ): { critDamagePercent: number; totalCritRate: number } {
+  const builtInCritRate = skill.builtInCritRate ?? 0;
+  const seCritRate = sharpEyes ? classData.sharpEyesCritRate : 0;
+  const totalCritRate = Math.min(builtInCritRate + seCritRate, 1.0);
+
+  // Fixed crit damage overrides the SE formula entirely
+  if (skill.fixedCritDamagePercent != null) {
+    return { critDamagePercent: skill.fixedCritDamagePercent, totalCritRate };
+  }
+
   const builtInCritBonus = skill.builtInCritDamageBonus ?? 0;
   const seCritBonus = sharpEyes ? classData.sharpEyesCritDamageBonus : 0;
   const totalCritBonus = builtInCritBonus + seCritBonus;
@@ -79,10 +95,6 @@ function calculateCritDamage(
     seCritFormula === 'addAfterMultiply'
       ? skill.basePower * skill.multiplier + totalCritBonus
       : (skill.basePower + totalCritBonus) * skill.multiplier;
-
-  const builtInCritRate = skill.builtInCritRate ?? 0;
-  const seCritRate = sharpEyes ? classData.sharpEyesCritRate : 0;
-  const totalCritRate = Math.min(builtInCritRate + seCritRate, 1.0);
 
   return { critDamagePercent, totalCritRate };
 }
