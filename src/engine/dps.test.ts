@@ -1008,9 +1008,9 @@ describe('Archmage I/L DPS', () => {
 
     expect(result.attackTime).toBe(0.69);
     expect(result.skillDamagePercent).toBe(210);
-    // SE crit: (210 + 140) * 1 = 350
-    expect(result.critDamagePercent).toBe(350);
-    expect(result.dps).toBeCloseTo(92400, -1);
+    // Multiplicative mage crit: 210 * 1 * 140/100 = 294
+    expect(result.critDamagePercent).toBe(294);
+    expect(result.dps).toBeCloseTo(89038, -1);
   });
 
   it('Chain Lightning Low tier DPS ~41,848', () => {
@@ -1022,7 +1022,7 @@ describe('Archmage I/L DPS', () => {
     expect(result.attackTime).toBe(0.69);
     expect(result.damageRange.max).toBe(140);
     expect(result.damageRange.min).toBe(110);
-    expect(result.dps).toBeCloseTo(41848, -1);
+    expect(result.dps).toBeCloseTo(40326, -1);
   });
 
   it('Blizzard High tier DPS ~53,184', () => {
@@ -1033,9 +1033,9 @@ describe('Archmage I/L DPS', () => {
 
     expect(result.attackTime).toBe(3.06);
     expect(result.skillDamagePercent).toBe(570);
-    // SE crit: (570 + 140) * 1 = 710
-    expect(result.critDamagePercent).toBe(710);
-    expect(result.dps).toBeCloseTo(53184, -1);
+    // Multiplicative mage crit: 570 * 1 * 140/100 = 798
+    expect(result.critDamagePercent).toBe(798);
+    expect(result.dps).toBeCloseTo(53504, -1);
   });
 
   it('uses magic formula (not standard weapon multiplier)', () => {
@@ -1105,9 +1105,9 @@ describe('Bishop DPS', () => {
 
     expect(result.attackTime).toBe(0.81);
     expect(result.skillDamagePercent).toBe(240);
-    // SE: (240 + 140) * 1 = 380
-    expect(result.critDamagePercent).toBe(380);
-    expect(result.dps).toBeCloseTo(50750, -1);
+    // Multiplicative mage crit: 240 * 1 * 140/100 = 336
+    expect(result.critDamagePercent).toBe(336);
+    expect(result.dps).toBeCloseTo(49467, -1);
   });
 
   it('Genesis High tier DPS ~40,308', () => {
@@ -1118,7 +1118,7 @@ describe('Bishop DPS', () => {
 
     expect(result.attackTime).toBe(2.70);
     expect(result.skillDamagePercent).toBe(670);
-    expect(result.dps).toBeCloseTo(40308, -1);
+    expect(result.dps).toBeCloseTo(41428, -1);
   });
 
   it('Bishop has lower DPS than Archmage (no amp)', () => {
@@ -1180,11 +1180,11 @@ describe('Archmage F/P DPS', () => {
 
     expect(result.attackTime).toBe(0.72);
     expect(result.skillDamagePercent).toBe(240);
-    // SE crit: (240 + 140) * 1 = 380
-    expect(result.critDamagePercent).toBe(380);
+    // Multiplicative mage crit: 240 * 1 * 140/100 = 336
+    expect(result.critDamagePercent).toBe(336);
     expect(result.damageRange.max).toBe(300);
     expect(result.damageRange.min).toBe(252);
-    expect(result.dps).toBeCloseTo(100050, -1);
+    expect(result.dps).toBeCloseTo(97520, -1);
   });
 
   it('Paralyze Low tier DPS ~45,313', () => {
@@ -1196,7 +1196,7 @@ describe('Archmage F/P DPS', () => {
     expect(result.attackTime).toBe(0.72);
     expect(result.damageRange.max).toBe(140);
     expect(result.damageRange.min).toBe(110);
-    expect(result.dps).toBeCloseTo(45313, -1);
+    expect(result.dps).toBeCloseTo(44167, -1);
   });
 
   it('Meteor High tier DPS ~53,184', () => {
@@ -1207,18 +1207,18 @@ describe('Archmage F/P DPS', () => {
 
     expect(result.attackTime).toBe(3.06);
     expect(result.skillDamagePercent).toBe(570);
-    // SE crit: (570 + 140) * 1 = 710
-    expect(result.critDamagePercent).toBe(710);
-    expect(result.dps).toBeCloseTo(53184, -1);
+    // Multiplicative mage crit: 570 * 1 * 140/100 = 798
+    expect(result.critDamagePercent).toBe(798);
+    expect(result.dps).toBeCloseTo(53504, -1);
   });
 
-  it('Meteor Low tier DPS ~24,142', () => {
+  it('Meteor Low tier DPS ~24,681', () => {
     const meteor = fpData.skills.find((s) => s.name === 'Meteor')!;
     const result = calculateSkillDps(
       fpLow, fpData, meteor, weaponData, attackSpeedData, mwData
     );
 
-    expect(result.dps).toBeCloseTo(24142, -1);
+    expect(result.dps).toBeCloseTo(24681, -1);
   });
 
   it('High tier DPS is greater than Low tier', () => {

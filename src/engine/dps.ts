@@ -64,6 +64,8 @@ export interface DpsResult {
  * Crit damage formula varies by class:
  * - addBeforeMultiply (default): critDmg% = (basePower + bonus) * multiplier
  * - addAfterMultiply (Paladin): critDmg% = basePower * multiplier + bonus
+ * - multiplicative (mages): critDmg% = basePower * multiplier * totalCritBonus / 100
+ *   Mage SE crits multiply damage by 1.4× rather than adding to skill%.
  *
  * When a skill has fixedCritDamagePercent, that value is used directly instead of
  * the formula above. This models skills like Assassinate where the v62 critical
@@ -91,10 +93,14 @@ function calculateCritDamage(
   const totalCritBonus = builtInCritBonus + seCritBonus;
 
   const seCritFormula = classData.seCritFormula ?? 'addBeforeMultiply';
-  const critDamagePercent =
-    seCritFormula === 'addAfterMultiply'
-      ? skill.basePower * skill.multiplier + totalCritBonus
-      : (skill.basePower + totalCritBonus) * skill.multiplier;
+  let critDamagePercent: number;
+  if (seCritFormula === 'multiplicative') {
+    critDamagePercent = skill.basePower * skill.multiplier * totalCritBonus / 100;
+  } else if (seCritFormula === 'addAfterMultiply') {
+    critDamagePercent = skill.basePower * skill.multiplier + totalCritBonus;
+  } else {
+    critDamagePercent = (skill.basePower + totalCritBonus) * skill.multiplier;
+  }
 
   return { critDamagePercent, totalCritRate };
 }

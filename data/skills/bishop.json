@@ -7,7 +7,7 @@
   "sharpEyesCritRate": 0.15,
   "sharpEyesCritDamageBonus": 140,
   "damageFormula": "magic",
-  "seCritFormula": "addBeforeMultiply",
+  "seCritFormula": "multiplicative",
   "spellAmplification": 1,
   "weaponAmplification": 1,
   "skills": [
