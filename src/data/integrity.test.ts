@@ -231,6 +231,27 @@ describe('class skill data consistency', () => {
   });
 });
 
+describe('inherited gear template consistency', () => {
+  it('every inherited template resolves to a valid CharacterBuild', () => {
+    for (const [key, build] of gearTemplates) {
+      expect(build.className, `${key}: missing className`).toBeTruthy();
+      expect(build.totalWeaponAttack, `${key}: missing totalWeaponAttack`).toBeGreaterThan(0);
+      expect(build.attackPotion, `${key}: missing attackPotion`).toBeGreaterThan(0);
+      expect(build.gearStats, `${key}: missing gearStats`).toBeDefined();
+    }
+  });
+
+  it('every tier in tier-defaults.json is used by at least one template', () => {
+    const tierDefaultsRaw = JSON.parse(
+      readFileSync(resolve(import.meta.dirname, '../../data/tier-defaults.json'), 'utf-8')
+    );
+    const definedTiers = Object.keys(tierDefaultsRaw);
+    for (const tier of definedTiers) {
+      expect(tiers, `Tier "${tier}" in tier-defaults.json not found in discovered tiers`).toContain(tier);
+    }
+  });
+});
+
 describe('gear breakdown consistency', () => {
   it('every template with gearBreakdown has summary fields matching computed totals', () => {
     const templateDir = resolve(import.meta.dirname, '../../data/gear-templates');
