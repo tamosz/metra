@@ -1,12 +1,21 @@
-import { describe, it, expect, vi, afterEach } from 'vitest';
-import { render, screen, fireEvent, cleanup } from '@testing-library/react';
+import { describe, it, expect, afterEach } from 'vitest';
+import { render, screen, fireEvent, cleanup, act } from '@testing-library/react';
 import { BuffToggles } from './BuffToggles.js';
+import { SimulationControlsProvider } from '../context/SimulationControlsContext.js';
+
+function renderWithContext() {
+  return render(
+    <SimulationControlsProvider>
+      <BuffToggles />
+    </SimulationControlsProvider>
+  );
+}
 
 describe('BuffToggles', () => {
   afterEach(cleanup);
 
   it('renders all five buff buttons', () => {
-    render(<BuffToggles overrides={{}} onChange={() => {}} />);
+    renderWithContext();
     expect(screen.getByText('SE')).toBeTruthy();
     expect(screen.getByText('Echo')).toBeTruthy();
     expect(screen.getByText('SI')).toBeTruthy();
@@ -14,31 +23,22 @@ describe('BuffToggles', () => {
     expect(screen.getByText('Pot')).toBeTruthy();
   });
 
-  it('calls onChange with off-value when disabling a buff', () => {
-    const onChange = vi.fn();
-    render(<BuffToggles overrides={{}} onChange={onChange} />);
-    fireEvent.click(screen.getByText('SE'));
-    expect(onChange).toHaveBeenCalledWith({ sharpEyes: false });
+  it('toggles buff off on click', () => {
+    renderWithContext();
+    const seButton = screen.getByText('SE');
+    // Initially ON (green style)
+    expect(seButton.className).toContain('emerald');
+    act(() => { fireEvent.click(seButton); });
+    // Now OFF (red style)
+    expect(seButton.className).toContain('red');
   });
 
-  it('calls onChange removing override when re-enabling a buff', () => {
-    const onChange = vi.fn();
-    render(<BuffToggles overrides={{ sharpEyes: false }} onChange={onChange} />);
-    fireEvent.click(screen.getByText('SE'));
-    expect(onChange).toHaveBeenCalledWith({});
-  });
-
-  it('calls onChange with 0 when disabling MW', () => {
-    const onChange = vi.fn();
-    render(<BuffToggles overrides={{}} onChange={onChange} />);
-    fireEvent.click(screen.getByText('MW'));
-    expect(onChange).toHaveBeenCalledWith({ mwLevel: 0 });
-  });
-
-  it('calls onChange with 0 when disabling Pot', () => {
-    const onChange = vi.fn();
-    render(<BuffToggles overrides={{}} onChange={onChange} />);
-    fireEvent.click(screen.getByText('Pot'));
-    expect(onChange).toHaveBeenCalledWith({ attackPotion: 0 });
+  it('toggles buff back on when clicked again', () => {
+    renderWithContext();
+    const seButton = screen.getByText('SE');
+    act(() => { fireEvent.click(seButton); });
+    expect(seButton.className).toContain('red');
+    act(() => { fireEvent.click(seButton); });
+    expect(seButton.className).toContain('emerald');
   });
 });

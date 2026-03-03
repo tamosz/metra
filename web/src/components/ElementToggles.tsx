@@ -1,3 +1,5 @@
+import { useSimulationControls } from '../context/SimulationControlsContext.js';
+
 const ELEMENTS = ['Holy', 'Fire', 'Ice', 'Lightning', 'Poison'] as const;
 
 const SHORT_LABELS: Record<string, string> = {
@@ -41,12 +43,9 @@ function getTooltip(element: string, state: ElementState): string {
   return `${element}: strong (0.5\u00d7) \u2014 click to reset`;
 }
 
-interface ElementTogglesProps {
-  modifiers: Record<string, number>;
-  onChange: (modifiers: Record<string, number>) => void;
-}
+export function ElementToggles() {
+  const { elementModifiers: modifiers, setElementModifiers: onChange } = useSimulationControls();
 
-export function ElementToggles({ modifiers, onChange }: ElementTogglesProps) {
   const handleClick = (element: string) => {
     const current = getState(modifiers, element);
     const next = nextState(current);

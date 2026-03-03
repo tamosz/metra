@@ -1,7 +1,6 @@
 import { useState, useMemo, useCallback } from 'react';
-import { calculateSkillDps } from '@engine/engine/dps.js';
-import type { CharacterBuild, ClassSkillData, SkillEntry } from '@engine/data/types.js';
-import type { DpsResult } from '@engine/engine/dps.js';
+import { calculateBuildDps } from '@engine/engine/build-dps.js';
+import type { CharacterBuild, ClassSkillData } from '@engine/data/types.js';
 import {
   discoveredData,
   weaponData,
@@ -77,35 +76,12 @@ function mergeOverrides(template: CharacterBuild, overrides: Partial<BuildOverri
   };
 }
 
-function computeSkillDps(
+function computeAggregatedDps(
   build: CharacterBuild,
-  classData: ClassSkillData
+  classData: ClassSkillData,
 ): { skillName: string; dps: number }[] {
-  const skillResults: { skill: SkillEntry; dps: DpsResult }[] = [];
-  for (const skill of classData.skills) {
-    const result = calculateSkillDps(
-      build, classData, skill, weaponData, attackSpeedData, mwData
-    );
-    skillResults.push({ skill, dps: result });
-  }
-
-  // Aggregate combo groups
-  const output: { skillName: string; dps: number }[] = [];
-  const comboMap = new Map<string, number>();
-
-  for (const { skill, dps } of skillResults) {
-    if (skill.comboGroup) {
-      comboMap.set(skill.comboGroup, (comboMap.get(skill.comboGroup) ?? 0) + dps.dps);
-    } else {
-      output.push({ skillName: skill.name, dps: dps.dps });
-    }
-  }
-
-  for (const [groupName, totalDps] of comboMap) {
-    output.push({ skillName: groupName, dps: totalDps });
-  }
-
-  return output;
+  const result = calculateBuildDps(build, classData, weaponData, attackSpeedData, mwData);
+  return result.aggregated.map((row) => ({ skillName: row.skillName, dps: row.dps }));
 }
 
 export function useBuildExplorer(): BuildExplorerState {
@@ -128,12 +104,20 @@ export function useBuildExplorer(): BuildExplorerState {
 
   const baselineResults = useMemo(() => {
     if (!template || !classData) return [];
-    return computeSkillDps(template, classData);
+    try {
+      return computeAggregatedDps(template, classData);
+    } catch {
+      return [];
+    }
   }, [template, classData]);
 
   const currentResults = useMemo(() => {
     if (!effectiveBuild || !classData) return [];
-    return computeSkillDps(effectiveBuild, classData);
+    try {
+      return computeAggregatedDps(effectiveBuild, classData);
+    } catch {
+      return [];
+    }
   }, [effectiveBuild, classData]);
 
   const results: SkillDpsRow[] = useMemo(() => {

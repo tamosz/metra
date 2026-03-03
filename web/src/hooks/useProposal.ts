@@ -14,6 +14,7 @@ export interface ProposalState {
   proposal: Proposal;
   result: ComparisonResult | null;
   simulating: boolean;
+  error: Error | null;
   setName: (name: string) => void;
   setAuthor: (author: string) => void;
   setDescription: (description: string) => void;
@@ -34,6 +35,7 @@ export function useProposal(targetCount?: number): ProposalState {
   });
   const [result, setResult] = useState<ComparisonResult | null>(null);
   const [simulating, setSimulating] = useState(false);
+  const [error, setError] = useState<Error | null>(null);
 
   const setName = useCallback((name: string) => {
     setProposal((p) => ({ ...p, name }));
@@ -74,30 +76,36 @@ export function useProposal(targetCount?: number): ProposalState {
     if (p.changes.length === 0) return;
 
     setSimulating(true);
+    setError(null);
     setTimeout(() => {
-      const { classNames, tiers, classDataMap, gearTemplates } = discoveredData;
-      const scenarios: ScenarioConfig[] = [{ name: 'Baseline' }];
-      if (targetCount != null && targetCount > 1) {
-        scenarios.push({ name: `Training (${targetCount} mobs)`, targetCount });
+      try {
+        const { classNames, tiers, classDataMap, gearTemplates } = discoveredData;
+        const scenarios: ScenarioConfig[] = [{ name: 'Baseline' }];
+        if (targetCount != null && targetCount > 1) {
+          scenarios.push({ name: `Training (${targetCount} mobs)`, targetCount });
+        }
+        const config: SimulationConfig = {
+          classes: classNames,
+          tiers,
+          scenarios,
+        };
+
+        const comparisonResult = compareProposal(
+          p,
+          config,
+          classDataMap,
+          gearTemplates,
+          weaponData,
+          attackSpeedData,
+          mwData
+        );
+
+        setResult(comparisonResult);
+      } catch (e) {
+        setError(e instanceof Error ? e : new Error(String(e)));
+      } finally {
+        setSimulating(false);
       }
-      const config: SimulationConfig = {
-        classes: classNames,
-        tiers,
-        scenarios,
-      };
-
-      const comparisonResult = compareProposal(
-        p,
-        config,
-        classDataMap,
-        gearTemplates,
-        weaponData,
-        attackSpeedData,
-        mwData
-      );
-
-      setResult(comparisonResult);
-      setSimulating(false);
     }, 0);
   }, [proposal, targetCount]);
 
@@ -114,6 +122,7 @@ export function useProposal(targetCount?: number): ProposalState {
     proposal,
     result,
     simulating,
+    error,
     setName,
     setAuthor,
     setDescription,

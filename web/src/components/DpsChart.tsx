@@ -11,13 +11,14 @@ import type { ScenarioResult } from '@engine/proposals/types.js';
 import { getClassColor } from '../utils/class-colors.js';
 import { useIsMobile } from '../hooks/useIsMobile.js';
 import { colors } from '../theme.js';
+import { useSimulationControls } from '../context/SimulationControlsContext.js';
 
 interface DpsChartProps {
   data: ScenarioResult[];
-  capEnabled: boolean;
 }
 
-export function DpsChart({ data, capEnabled }: DpsChartProps) {
+export function DpsChart({ data }: DpsChartProps) {
+  const { capEnabled } = useSimulationControls();
   const isMobile = useIsMobile();
 
   const chartData = data.map((r) => ({

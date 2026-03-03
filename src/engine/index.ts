@@ -34,3 +34,5 @@ export {
 } from './knockback.js';
 
 export { calculateMarginalGains, type MarginalGain } from './marginal.js';
+
+export { calculateBuildDps, type SkillDpsRow, type BuildDpsResult } from './build-dps.js';

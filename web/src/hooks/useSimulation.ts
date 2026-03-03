@@ -21,6 +21,7 @@ export interface SimulationData {
   results: ScenarioResult[];
   classNames: string[];
   tiers: string[];
+  error: Error | null;
 }
 
 export function useSimulation(
@@ -33,55 +34,59 @@ export function useSimulation(
   return useMemo(() => {
     const { classNames, tiers, classDataMap, gearTemplates } = discoveredData;
 
-    // Apply CGS override if provided
-    let finalTemplates = new Map(gearTemplates);
-    if (cgsOverride) {
-      finalTemplates = applyCgsOverride(
-        finalTemplates,
-        classDataMap,
-        classNames,
-        cgsOverride.tier,
-        cgsOverride.values,
-      );
-    }
-
-    const hasElementMods = elementModifiers && Object.keys(elementModifiers).length > 0;
-    const hasBuffOverrides = buffOverrides && Object.keys(buffOverrides).length > 0;
-    // Build a single scenario from controls
-    const scenario: ScenarioConfig = { name: 'Baseline' };
-    if (hasElementMods) scenario.elementModifiers = { ...elementModifiers };
-    if (hasBuffOverrides) scenario.overrides = { ...buffOverrides };
-    if (kbConfig) {
-      scenario.bossAttackInterval = kbConfig.bossAttackInterval;
-      scenario.bossAccuracy = kbConfig.bossAccuracy;
-    }
-    const scenarios: ScenarioConfig[] = [scenario];
-    if (targetCount != null && targetCount > 1) {
-      const training: ScenarioConfig = { name: `Training (${targetCount} mobs)`, targetCount };
-      if (hasElementMods) training.elementModifiers = { ...elementModifiers };
-      if (hasBuffOverrides) training.overrides = { ...buffOverrides };
-      if (kbConfig) {
-        training.bossAttackInterval = kbConfig.bossAttackInterval;
-        training.bossAccuracy = kbConfig.bossAccuracy;
+    try {
+      // Apply CGS override if provided
+      let finalTemplates = new Map(gearTemplates);
+      if (cgsOverride) {
+        finalTemplates = applyCgsOverride(
+          finalTemplates,
+          classDataMap,
+          classNames,
+          cgsOverride.tier,
+          cgsOverride.values,
+        );
       }
-      scenarios.push(training);
+
+      const hasElementMods = elementModifiers && Object.keys(elementModifiers).length > 0;
+      const hasBuffOverrides = buffOverrides && Object.keys(buffOverrides).length > 0;
+      // Build a single scenario from controls
+      const scenario: ScenarioConfig = { name: 'Baseline' };
+      if (hasElementMods) scenario.elementModifiers = { ...elementModifiers };
+      if (hasBuffOverrides) scenario.overrides = { ...buffOverrides };
+      if (kbConfig) {
+        scenario.bossAttackInterval = kbConfig.bossAttackInterval;
+        scenario.bossAccuracy = kbConfig.bossAccuracy;
+      }
+      const scenarios: ScenarioConfig[] = [scenario];
+      if (targetCount != null && targetCount > 1) {
+        const training: ScenarioConfig = { name: `Training (${targetCount} mobs)`, targetCount };
+        if (hasElementMods) training.elementModifiers = { ...elementModifiers };
+        if (hasBuffOverrides) training.overrides = { ...buffOverrides };
+        if (kbConfig) {
+          training.bossAttackInterval = kbConfig.bossAttackInterval;
+          training.bossAccuracy = kbConfig.bossAccuracy;
+        }
+        scenarios.push(training);
+      }
+
+      const config: SimulationConfig = {
+        classes: classNames,
+        tiers,
+        scenarios,
+      };
+
+      const results = runSimulation(
+        config,
+        classDataMap,
+        finalTemplates,
+        weaponData,
+        attackSpeedData,
+        mwData
+      );
+
+      return { results, classNames, tiers, error: null };
+    } catch (e) {
+      return { results: [], classNames, tiers, error: e instanceof Error ? e : new Error(String(e)) };
     }
-
-    const config: SimulationConfig = {
-      classes: classNames,
-      tiers,
-      scenarios,
-    };
-
-    const results = runSimulation(
-      config,
-      classDataMap,
-      finalTemplates,
-      weaponData,
-      attackSpeedData,
-      mwData
-    );
-
-    return { results, classNames, tiers };
   }, [targetCount, elementModifiers, buffOverrides, kbConfig, cgsOverride]);
 }
