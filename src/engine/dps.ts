@@ -50,6 +50,12 @@ export interface DpsResult {
   uncappedDps: number;
   /** Percentage of DPS lost to the cap (0-100). */
   capLossPercent: number;
+  /** Total crit rate (built-in + SE), 0-1. */
+  totalCritRate: number;
+  /** Number of damage lines per attack. */
+  hitCount: number;
+  /** Whether Shadow Partner is active (1.5x multiplier). */
+  hasShadowPartner: boolean;
 }
 
 /**
@@ -226,6 +232,9 @@ export function calculateSkillDps(
       dps,
       uncappedDps: dps,
       capLossPercent: 0,
+      totalCritRate: 0,
+      hitCount: skill.hitCount,
+      hasShadowPartner: !!build.shadowPartner,
     };
   }
 
@@ -256,5 +265,8 @@ export function calculateSkillDps(
     dps,
     uncappedDps,
     capLossPercent,
+    totalCritRate,
+    hitCount: skill.hitCount,
+    hasShadowPartner: !!build.shadowPartner,
   };
 }

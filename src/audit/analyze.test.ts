@@ -16,6 +16,9 @@ function makeDpsResult(dps: number): DpsResult {
     dps,
     uncappedDps: dps,
     capLossPercent: 0,
+    totalCritRate: 0,
+    hitCount: 1,
+    hasShadowPartner: false,
   };
 }
 

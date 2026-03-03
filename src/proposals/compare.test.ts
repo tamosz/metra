@@ -527,6 +527,9 @@ describe('computeDeltas with comparisonKey', () => {
       dps,
       uncappedDps: dps,
       capLossPercent: 0,
+      totalCritRate: 0.15,
+      hitCount: 2,
+      hasShadowPartner: false,
     };
   }
 
