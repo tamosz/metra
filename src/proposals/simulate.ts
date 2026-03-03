@@ -229,13 +229,14 @@ function resolveElementVariantGroups(
     }
   }
 
-  for (const entries of variantMap.values()) {
+  for (const [group, entries] of variantMap) {
+    // Ties go to the first variant in the skills array (typically the base/Holy variant)
     const winner = entries.reduce((best, entry) =>
       entry.result.dps.dps > best.result.dps.dps ? entry : best
     );
     // Merged result is always headline — strip headline: false if present
     const { headline: _, ...resultWithoutHeadline } = winner.result;
-    output.push({ skill: winner.skill, result: resultWithoutHeadline });
+    output.push({ skill: winner.skill, result: { ...resultWithoutHeadline, comparisonKey: group } });
   }
 
   return output;

@@ -47,12 +47,15 @@ export function compareProposal(
   return { proposal, before, after, deltas };
 }
 
-/** Null-byte separated composite key — uniquely identifies a result across scenario/class/skill/tier. */
+/** Null-byte separated composite key — uniquely identifies a result across scenario/class/skill/tier.
+ *  Uses comparisonKey (from elementVariantGroup) when available so the key stays stable
+ *  even when a different variant wins before vs after a proposal. */
 function scenarioKey(r: ScenarioResult): string {
-  return `${r.scenario}\0${r.className}\0${r.skillName}\0${r.tier}`;
+  const effectiveSkillName = r.comparisonKey ?? r.skillName;
+  return `${r.scenario}\0${r.className}\0${effectiveSkillName}\0${r.tier}`;
 }
 
-function computeDeltas(
+export function computeDeltas(
   before: ScenarioResult[],
   after: ScenarioResult[]
 ): DeltaEntry[] {

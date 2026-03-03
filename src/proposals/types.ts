@@ -53,6 +53,9 @@ export interface ScenarioResult {
   description?: string;
   /** If false, result is only shown when "show all skills" is toggled on. Default true. */
   headline?: boolean;
+  /** Stable key for before/after comparison. Used by elementVariantGroup so the key doesn't
+   *  change when a different variant wins. Defaults to skillName if not set. */
+  comparisonKey?: string;
 }
 
 /** Delta between before and after for a single scenario. */
