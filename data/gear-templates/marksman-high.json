@@ -2,9 +2,19 @@
   "source": "Identical to Bowmaster high template — archers share gear. Marksman Boost +15 WATK (buffed from +10 in Update #65.1). Crossbow base speed 6 (Normal).",
   "label": "Marksman High",
   "className": "Marksman",
-  "baseStats": { "STR": 4, "DEX": 999, "INT": 4, "LUK": 4 },
-  "gearStats": { "STR": 97, "DEX": 158, "INT": 0, "LUK": 0 },
-  "totalWeaponAttack": 198,
+  "baseStats": {
+    "STR": 4,
+    "DEX": 999,
+    "INT": 4,
+    "LUK": 4
+  },
+  "gearStats": {
+    "STR": 97,
+    "DEX": 158,
+    "INT": 0,
+    "LUK": 0
+  },
+  "totalWeaponAttack": 203,
   "weaponType": "Crossbow",
   "weaponSpeed": 6,
   "attackPotion": 100,
@@ -15,22 +25,95 @@
   "speedInfusion": true,
   "sharpEyes": true,
   "gearBreakdown": {
-    "weapon":        { "DEX": 0,  "STR": 0,  "WATK": 130, "notes": "Well-scrolled Neschere (~100 base + 6x 30% scrolls)." },
-    "crossbowExpert": { "DEX": 0,  "STR": 0,  "WATK": 15,  "notes": "Marksman Boost passive +15 WATK (buffed from +10 in Update #65.1)." },
-    "helmet":        { "DEX": 21, "STR": 40, "WATK": 0,   "notes": "Well-scrolled Zakum Helmet." },
-    "top":           { "DEX": 60, "STR": 8,  "WATK": 0,   "notes": "DEX scrolled Bathrobe/overall." },
-    "earring":       { "DEX": 15, "STR": 0,  "WATK": 0 },
-    "eye":           { "DEX": 6,  "STR": 6,  "WATK": 0 },
-    "face":          { "DEX": 10, "STR": 5,  "WATK": 0 },
-    "pendant":       { "DEX": 22, "STR": 23, "WATK": 0,   "notes": "Near-perfect HTP." },
-    "belt":          { "DEX": 5,  "STR": 0,  "WATK": 0 },
-    "medal":         { "DEX": 0,  "STR": 0,  "WATK": 3 },
-    "ring1":         { "DEX": 8,  "STR": 5,  "WATK": 0 },
-    "ring2":         { "DEX": 5,  "STR": 5,  "WATK": 0 },
-    "ring3":         { "DEX": 3,  "STR": 2,  "WATK": 0 },
-    "ring4":         { "DEX": 3,  "STR": 3,  "WATK": 1 },
-    "cape":          { "DEX": 0,  "STR": 0,  "WATK": 17,  "notes": "Standardized WATK cape." },
-    "shoe":          { "DEX": 0,  "STR": 0,  "WATK": 13,  "notes": "Standardized WATK shoes." },
-    "glove":         { "DEX": 0,  "STR": 0,  "WATK": 19,  "notes": "Standardized WATK gloves." }
+    "weapon": {
+      "DEX": 0,
+      "STR": 0,
+      "WATK": 130,
+      "notes": "Well-scrolled Neschere (~100 base + 6x 30% scrolls)."
+    },
+    "crossbowExpert": {
+      "DEX": 0,
+      "STR": 0,
+      "WATK": 15,
+      "notes": "Marksman Boost passive +15 WATK (buffed from +10 in Update #65.1)."
+    },
+    "helmet": {
+      "DEX": 21,
+      "STR": 40,
+      "WATK": 0,
+      "notes": "Well-scrolled Zakum Helmet."
+    },
+    "top": {
+      "DEX": 60,
+      "STR": 8,
+      "WATK": 0,
+      "notes": "DEX scrolled Bathrobe/overall."
+    },
+    "earring": {
+      "DEX": 15,
+      "STR": 0,
+      "WATK": 0
+    },
+    "eye": {
+      "DEX": 6,
+      "STR": 6,
+      "WATK": 0
+    },
+    "face": {
+      "DEX": 10,
+      "STR": 5,
+      "WATK": 0
+    },
+    "pendant": {
+      "DEX": 22,
+      "STR": 23,
+      "WATK": 0,
+      "notes": "Near-perfect HTP."
+    },
+    "belt": {
+      "DEX": 5,
+      "STR": 0,
+      "WATK": 0
+    },
+    "medal": {
+      "DEX": 0,
+      "STR": 0,
+      "WATK": 3
+    },
+    "ring1": {
+      "DEX": 8,
+      "STR": 5,
+      "WATK": 0
+    },
+    "ring2": {
+      "DEX": 5,
+      "STR": 5,
+      "WATK": 0
+    },
+    "ring3": {
+      "DEX": 3,
+      "STR": 2,
+      "WATK": 0
+    },
+    "ring4": {
+      "DEX": 3,
+      "STR": 3,
+      "WATK": 1
+    },
+    "cape": {
+      "DEX": 0,
+      "STR": 0,
+      "WATK": 18
+    },
+    "shoe": {
+      "DEX": 0,
+      "STR": 0,
+      "WATK": 16
+    },
+    "glove": {
+      "DEX": 0,
+      "STR": 0,
+      "WATK": 20
+    }
   }
 }

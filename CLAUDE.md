@@ -206,9 +206,9 @@ Two formula variants exist, configured per class via `seCritFormula`:
 
 ### Funding Tiers
 Balance is evaluated across funding levels. Current tiers:
-- **low** — base/tradeable gear, no scrolling, Stopper potion (~lv160-170)
-- **mid** — reasonable scrolling, Stopper potion (~lv185). C/G/S 17/14/10.
-- **high** — well-scrolled endgame gear, Apple potion (lv200). C/G/S 19/17/13.
+- **low** — base/tradeable gear, no scrolling, Stopper potion (~lv160-170). C/G/S 10/12/10.
+- **mid** — reasonable scrolling, Stopper potion (~lv185). C/G/S 15/16/13.
+- **high** — well-scrolled endgame gear, Apple potion (lv200). C/G/S 20/18/16.
 
 A change that looks balanced at high funding might be wildly unbalanced at low funding, and vice versa. Always evaluate across tiers.
 
