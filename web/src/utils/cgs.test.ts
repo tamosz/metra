@@ -34,9 +34,9 @@ function makeClassData(name: string, formula?: string): ClassSkillData {
 
 describe('CGS_DEFAULTS', () => {
   it('has correct values for all base tiers', () => {
-    expect(CGS_DEFAULTS.low).toEqual({ cape: 10, glove: 12, shoe: 10 });
-    expect(CGS_DEFAULTS.mid).toEqual({ cape: 15, glove: 16, shoe: 13 });
-    expect(CGS_DEFAULTS.high).toEqual({ cape: 20, glove: 18, shoe: 16 });
+    expect(CGS_DEFAULTS.low).toEqual({ cape: 12, glove: 10, shoe: 10 });
+    expect(CGS_DEFAULTS.mid).toEqual({ cape: 16, glove: 15, shoe: 13 });
+    expect(CGS_DEFAULTS.high).toEqual({ cape: 18, glove: 20, shoe: 16 });
     expect(CGS_DEFAULTS.perfect).toEqual({ cape: 22, glove: 22, shoe: 18 });
   });
 });
@@ -64,7 +64,7 @@ describe('applyCgsOverride', () => {
     const templates = new Map([['hero-high', makeBuild('Hero', 198)]]);
     const classDataMap = new Map([['hero', makeClassData('Hero')]]);
     const result = applyCgsOverride(templates, classDataMap, ['hero'], 'high', {
-      cape: 20, glove: 18, shoe: 16,
+      cape: 18, glove: 20, shoe: 16,
     });
     expect(result.get('hero-high')!.totalWeaponAttack).toBe(198);
   });

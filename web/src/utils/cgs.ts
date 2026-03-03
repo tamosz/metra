@@ -7,9 +7,9 @@ export interface CgsValues {
 }
 
 export const CGS_DEFAULTS: Record<string, CgsValues> = {
-  low: { cape: 10, glove: 12, shoe: 10 },
-  mid: { cape: 15, glove: 16, shoe: 13 },
-  high: { cape: 20, glove: 18, shoe: 16 },
+  low: { cape: 12, glove: 10, shoe: 10 },
+  mid: { cape: 16, glove: 15, shoe: 13 },
+  high: { cape: 18, glove: 20, shoe: 16 },
   perfect: { cape: 22, glove: 22, shoe: 18 },
 };
 
