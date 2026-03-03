@@ -108,6 +108,7 @@ export function calculateMagicDamageRange(
   spellAmp: number = 1,
   weaponAmp: number = 1
 ): DamageRange {
+  tma = Math.min(1999, tma); // TMA is capped at 2k currently
   const amp = spellAmp * weaponAmp;
   const max = Math.floor(
     ((tma * tma / 1000 + tma) / 30 + int / 200) * amp
