@@ -1,0 +1,10 @@
+{
+  "className": "Hero (Axe)",
+  "weaponType": "2H Axe",
+  "weaponSpeed": 6,
+  "projectile": 0,
+  "echoActive": true,
+  "mwLevel": 20,
+  "speedInfusion": true,
+  "sharpEyes": true
+}

@@ -1,109 +1,63 @@
 {
+  "extends": "hero-axe",
   "source": "Theoretical max: godly + 7/7 30% scrolls. 2H Axe: Adamantium Axe (base 107 + 7x 30% scrolls = 152 WATK). Weapon speed 6 (no speed-5 2H Axe exists). C/G/S 22/22/18. gearStats verified against breakdown totals.",
-  "label": "Hero (Axe) Perfect",
-  "className": "Hero (Axe)",
   "baseStats": {
     "STR": 999,
     "DEX": 23,
     "INT": 4,
     "LUK": 4
   },
-  "gearStats": {
-    "STR": 244,
-    "DEX": 132,
-    "INT": 0,
-    "LUK": 0
-  },
-  "totalWeaponAttack": 218,
-  "weaponType": "2H Axe",
-  "weaponSpeed": 6,
-  "attackPotion": 100,
-  "potionName": "Apple",
-  "projectile": 0,
-  "echoActive": true,
-  "mwLevel": 20,
-  "speedInfusion": true,
-  "sharpEyes": true,
   "gearBreakdown": {
     "weapon": {
       "STR": 26,
-      "DEX": 0,
       "WATK": 152
     },
     "helmet": {
       "STR": 26,
-      "DEX": 50,
-      "WATK": 0
+      "DEX": 50
     },
     "top": {
       "STR": 75,
-      "DEX": 13,
-      "WATK": 0
+      "DEX": 13
     },
     "earring": {
       "STR": 20,
-      "DEX": 5,
-      "WATK": 0
+      "DEX": 5
     },
     "eye": {
       "STR": 6,
-      "DEX": 6,
-      "WATK": 0
+      "DEX": 6
     },
     "face": {
       "STR": 10,
-      "DEX": 5,
-      "WATK": 0
+      "DEX": 5
     },
     "pendant": {
       "STR": 40,
-      "DEX": 33,
-      "WATK": 0
+      "DEX": 33
     },
     "belt": {
-      "STR": 0,
-      "DEX": 5,
-      "WATK": 0
+      "DEX": 5
     },
     "medal": {
-      "STR": 0,
-      "DEX": 0,
       "WATK": 3
     },
     "ring1": {
       "STR": 15,
-      "DEX": 5,
-      "WATK": 0
+      "DEX": 5
     },
     "ring2": {
       "STR": 10,
-      "DEX": 5,
-      "WATK": 0
+      "DEX": 5
     },
     "ring3": {
       "STR": 8,
-      "DEX": 2,
-      "WATK": 0
+      "DEX": 2
     },
     "ring4": {
       "STR": 8,
       "DEX": 3,
       "WATK": 1
-    },
-    "cape": {
-      "STR": 0,
-      "DEX": 0,
-      "WATK": 22
-    },
-    "shoe": {
-      "STR": 0,
-      "DEX": 0,
-      "WATK": 18
-    },
-    "glove": {
-      "STR": 0,
-      "DEX": 0,
-      "WATK": 22
     }
   }
 }
