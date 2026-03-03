@@ -277,6 +277,30 @@ speed 2 for Strafe. Hurricane has fixed 0.12s attack time regardless of speed.
 | Ring | 1 | 1 | Same as high. |
 | **Total WATK** | **216** | **224** | |
 
+### Projectile WATK (Arrows / Bolts)
+
+MapleRoyals buffed arrow and bolt WATK significantly in
+[Update #73.3](https://royals.ms/forum/threads/update-73-3-05-08-2021.194629/). Standard
+endgame arrows (Red Arrow for Bow, Blue Arrow for Crossbow) provide **+10 ATK** and are
+NPC-purchasable for 100 meso each. The Royal Bow/Crossbow Quiver from Von Leon forging
+provides **+12 ATK** but costs ~1b mesos to craft.
+
+Soul Arrow now retains the arrow's attack bonus (changed in Update #73.3), so projectile
+WATK is effectively always active for endgame players.
+
+| Tier | BM Projectile | MM Projectile | Notes |
+|------|:---:|:---:|-------|
+| Low | 10 | 10 | Red Arrow for Bow / Blue Arrow for Crossbow (+10 ATK, NPC) |
+| Mid | 10 | 10 | Same — arrows are essentially free |
+| High | 10 | 10 | Same |
+| Perfect | 12 | 12 | Royal Bow/Crossbow Quiver (+12 ATK, Von Leon craft) |
+
+Sources:
+[Update #73.3 Patch Notes](https://royals.ms/forum/threads/update-73-3-05-08-2021.194629/),
+[How to buy arrows as BM/MM](https://royals.ms/forum/threads/how-to-easily-buy-arrows-as-bm-mm.210265/),
+[Buff Teamwork Quiver thread](https://royals.ms/forum/threads/buff-new-teamwork-quiver-crossbow-quiver.229484/),
+[Nany's Bowmaster Guide](https://royals.ms/forum/threads/new-source-nanys-bowmaster-guide-road-to-lord-sniper.121936/)
+
 ### Marksman-Specific: Snipe
 
 Snipe deals fixed 195,000 damage per hit regardless of stats or gear. It uses the
