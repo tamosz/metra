@@ -832,6 +832,13 @@ describe('mixed rotations', () => {
     expect(mixed!.description).toBe('Test mixed rotation');
     expect(mixed!.className).toBe('TestClass');
     expect(mixed!.tier).toBe('high');
+
+    const expectedUncappedDps = skillA!.dps.uncappedDps * 0.8 + skillB!.dps.uncappedDps * 0.2;
+    expect(mixed!.dps.uncappedDps).toBeCloseTo(expectedUncappedDps, 0);
+    const expectedCapLoss = expectedUncappedDps > 0
+      ? ((expectedUncappedDps - expectedDps) / expectedUncappedDps) * 100
+      : 0;
+    expect(mixed!.dps.capLossPercent).toBeCloseTo(expectedCapLoss, 1);
   });
 
   it('applies element modifiers to mixed rotation components', () => {

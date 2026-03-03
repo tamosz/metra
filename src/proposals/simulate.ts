@@ -275,10 +275,17 @@ function processMixedRotations(
       (sum, { result, weight }) => sum + result.dps.dps * weight,
       0,
     );
+    const weightedUncappedDps = componentResults.reduce(
+      (sum, { result, weight }) => sum + result.dps.uncappedDps * weight,
+      0,
+    );
     const weightedAvgDamage = componentResults.reduce(
       (sum, { result, weight }) => sum + result.dps.averageDamage * weight,
       0,
     );
+    const capLossPercent = weightedUncappedDps > 0
+      ? Math.max(0, ((weightedUncappedDps - weightedDps) / weightedUncappedDps) * 100)
+      : 0;
 
     const first = componentResults[0].result;
     output.push({
@@ -291,7 +298,9 @@ function processMixedRotations(
         ...first.dps,
         skillName: rotation.name,
         dps: weightedDps,
+        uncappedDps: weightedUncappedDps,
         averageDamage: weightedAvgDamage,
+        capLossPercent,
       },
     });
   }
