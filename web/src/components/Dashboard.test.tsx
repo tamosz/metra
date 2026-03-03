@@ -3,6 +3,7 @@ import { render, screen, cleanup } from '@testing-library/react';
 import { Dashboard } from './Dashboard.js';
 import type { SimulationData } from '../hooks/useSimulation.js';
 import type { BuildsState } from '../hooks/useBuilds.js';
+import { SimulationControlsProvider } from '../context/SimulationControlsContext.js';
 
 const mockDps = (dps: number) => ({
   skillName: 'Test',
@@ -28,6 +29,7 @@ const mockSimulation: SimulationData = {
   ],
   classNames: ['Hero', 'Night Lord'],
   tiers: ['high'],
+  error: null,
 };
 
 const mockBuilds: BuildsState = {
@@ -38,51 +40,36 @@ const mockBuilds: BuildsState = {
   setActive: vi.fn(),
 };
 
-const defaultProps = {
-  simulation: mockSimulation,
-  buildsState: mockBuilds,
-  selectedTier: 'high',
-  setSelectedTier: vi.fn(),
-  cgsValues: { cape: 20, glove: 18, shoe: 16 },
-  setCgsValues: vi.fn(),
-  targetCount: 1,
-  setTargetCount: vi.fn(),
-  elementModifiers: {},
-  setElementModifiers: vi.fn(),
-  buffOverrides: {},
-  setBuffOverrides: vi.fn(),
-  kbEnabled: false,
-  setKbEnabled: vi.fn(),
-  bossAttackInterval: 1.5,
-  setBossAttackInterval: vi.fn(),
-  bossAccuracy: 250,
-  setBossAccuracy: vi.fn(),
-  capEnabled: true,
-  setCapEnabled: vi.fn(),
-};
-
 globalThis.ResizeObserver = class {
   observe() {}
   unobserve() {}
   disconnect() {}
 };
 
+function renderDashboard() {
+  return render(
+    <SimulationControlsProvider>
+      <Dashboard simulation={mockSimulation} buildsState={mockBuilds} />
+    </SimulationControlsProvider>
+  );
+}
+
 describe('Dashboard', () => {
   afterEach(cleanup);
 
   it('renders ranking table', () => {
-    render(<Dashboard {...defaultProps} />);
+    renderDashboard();
     expect(screen.getByTestId('ranking-table')).toBeTruthy();
   });
 
   it('shows class names in the table', () => {
-    render(<Dashboard {...defaultProps} />);
+    renderDashboard();
     expect(screen.getByText('Night Lord')).toBeTruthy();
     expect(screen.getByText('Hero')).toBeTruthy();
   });
 
   it('sorts by DPS descending by default (highest first)', () => {
-    render(<Dashboard {...defaultProps} />);
+    renderDashboard();
     const rows = screen.getByTestId('ranking-table').querySelectorAll('tbody tr');
     const firstRowText = rows[0].textContent || '';
     const secondRowText = rows[1].textContent || '';

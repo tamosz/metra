@@ -1,37 +1,38 @@
-import { describe, it, expect, vi, afterEach } from 'vitest';
-import { render, screen, fireEvent, cleanup } from '@testing-library/react';
+import { describe, it, expect, afterEach } from 'vitest';
+import { render, screen, fireEvent, cleanup, act } from '@testing-library/react';
 import { KbToggle } from './KbToggle.js';
+import { SimulationControlsProvider } from '../context/SimulationControlsContext.js';
+
+function renderWithContext() {
+  return render(
+    <SimulationControlsProvider>
+      <KbToggle />
+    </SimulationControlsProvider>
+  );
+}
 
 describe('KbToggle', () => {
   afterEach(cleanup);
 
   it('toggles KB on click', () => {
-    const onToggle = vi.fn();
-    render(
-      <KbToggle enabled={false} onToggle={onToggle}
-        bossAttackInterval={1.5} onIntervalChange={() => {}}
-        bossAccuracy={250} onAccuracyChange={() => {}} />
-    );
-    fireEvent.click(screen.getByText('KB'));
-    expect(onToggle).toHaveBeenCalledWith(true);
+    renderWithContext();
+    const kbButton = screen.getByText('KB');
+    act(() => { fireEvent.click(kbButton); });
+    // After clicking, should show interval/accuracy inputs
+    expect(screen.getByDisplayValue('1.5')).toBeTruthy();
+    expect(screen.getByDisplayValue('250')).toBeTruthy();
   });
 
   it('shows interval and accuracy inputs when enabled', () => {
-    render(
-      <KbToggle enabled={true} onToggle={() => {}}
-        bossAttackInterval={1.5} onIntervalChange={() => {}}
-        bossAccuracy={250} onAccuracyChange={() => {}} />
-    );
+    renderWithContext();
+    act(() => { fireEvent.click(screen.getByText('KB')); });
     expect(screen.getByDisplayValue('1.5')).toBeTruthy();
     expect(screen.getByDisplayValue('250')).toBeTruthy();
   });
 
   it('hides interval and accuracy inputs when disabled', () => {
-    render(
-      <KbToggle enabled={false} onToggle={() => {}}
-        bossAttackInterval={1.5} onIntervalChange={() => {}}
-        bossAccuracy={250} onAccuracyChange={() => {}} />
-    );
+    renderWithContext();
+    // KB starts disabled
     expect(screen.queryByDisplayValue('1.5')).toBeNull();
     expect(screen.queryByDisplayValue('250')).toBeNull();
   });
