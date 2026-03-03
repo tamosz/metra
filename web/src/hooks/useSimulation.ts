@@ -79,6 +79,10 @@ export function useSimulation(
       const training: ScenarioConfig = { name: `Training (${targetCount} mobs)`, targetCount };
       if (hasElementMods) training.elementModifiers = { ...elementModifiers };
       if (hasBuffOverrides) training.overrides = { ...buffOverrides };
+      if (kbConfig) {
+        training.bossAttackInterval = kbConfig.bossAttackInterval;
+        training.bossAccuracy = kbConfig.bossAccuracy;
+      }
       scenarios.push(training);
     }
 
