@@ -6,7 +6,7 @@ A balance simulator for Royals staff and community. Every number traces back to 
 
 ## Done
 
-- 13 classes with verified DPS (10 physical + Archmage I/L, Archmage F/P, Bishop)
+- 14 classes with verified DPS (11 physical + Archmage I/L, Archmage F/P, Bishop). Weapon variants (Hero Axe, Paladin BW) are separate classes with their own skill files and gear templates.
 - Standard and magic damage formulas (spell/weapon amplification)
 - Proposal pipeline (JSON → simulate → compare → report)
 - CLI with baseline rankings + proposal comparison
@@ -14,8 +14,10 @@ A balance simulator for Royals staff and community. Every number traces back to 
 - Build explorer: gear/stat overrides with sliders/inputs, real-time DPS recalc
 - Shareable builds via URL encoding (`#b=` for builds, `#c=` for comparisons)
 - UX: mobile layout, tooltips, class icons, onboarding banner, support class disclaimers
-- 3 funding tiers (low, mid, high)
-- 4 scenarios (Buffed, Unbuffed, No-Echo, Bossing 50% PDR) + composable element toggles
+- 4 funding tiers (low, mid, high, perfect)
+- Composable simulation controls: individual buff toggles (SE, Echo, SI, MW, Attack Potion), element toggles, KB toggle, target count
+- Knockback modeling (initial): dodge, Stance, Shadow Shifter interactions. Needs tuning — too aggressive for channeled skills.
+- Weapon-variant gear templates: Hero Axe and Paladin BW have dedicated templates with accurate base WATK
 - Multi-target simulation: per-skill `maxTargets` + per-scenario `targetCount` for training/AoE comparisons
 - Balance audit: automated outlier detection across scenarios and tiers
 - Custom funding tiers: delta-based tier editor with localStorage persistence
@@ -32,7 +34,6 @@ A balance simulator for Royals staff and community. Every number traces back to 
 
 **Quick wins:**
 - Archer projectile WATK: Bowmaster and Marksman gear templates have `projectile: 0` — need to add arrow/bolt WATK values at each tier (the engine already supports this via the `projectile` field)
-- Weapon-specific gear templates: BW/Axe variants with accurate base WATK (BW weapons have higher base WATK than swords at the same tier, partially offsetting the lower effective multiplier from swing/stab ratio — currently both use the same template, which understates BW Paladin DPS)
 - Marginal gain calculator ("what should I upgrade next?" — DPS per WATK, per stat point)
 - Accuracy/miss rate against high-level bosses
 - Buff uptime/sustain (Berserk HP drain, Battleship HP, buff recasting)
@@ -41,9 +42,8 @@ A balance simulator for Royals staff and community. Every number traces back to 
 - Party DPS modeling (Bishop's value is party buffs, not solo DPS — biggest analytical blind spot, but genuinely hard to model well)
 - Training efficiency (kills/hr, EXP/hr on reference mobs — AoE modeling done via `maxTargets`, still needs mob data)
 - Boss encounter simulation — Patchwerk-style sustained DPS with real-world interruptions:
-  - Knockback modeling: characters get hit periodically and lose attack uptime to knockback. Factors in dodge rate (class-dependent) and Stance (warriors). A class with 90% Stance loses far less uptime than a thief with no knockback protection.
+  - Knockback tuning: current model is too aggressive for channeled skills (Hurricane, Rapid Fire). Needs per-skill or per-category recovery times rather than a flat penalty.
   - Variable mob count phases: boss encounters like Zakum/Horntail have phases with multiple targetable parts. AoE skills get higher effective DPS during multi-body phases but not for the full fight. Configurable as a timeline of phase durations and target counts.
-  - These are separate toggleable config options — knockback settings independent of phase configuration.
 
 ## Architecture
 
