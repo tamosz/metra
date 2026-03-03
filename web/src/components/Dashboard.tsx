@@ -5,11 +5,10 @@ import { SupportClassNote } from './SupportClassNote.js';
 import { TierAssumptions } from './TierAssumptions.js';
 import { SkillDetailPanel } from './SkillDetailPanel.js';
 import type { SimulationData } from '../hooks/useSimulation.js';
-import type { CustomTiersState } from '../hooks/useCustomTiers.js';
+import type { BuildsState } from '../hooks/useBuilds.js';
 import { compareTiers } from '@engine/data/types.js';
 import { ClassIcon } from './icons/index.js';
 import { WelcomeBanner } from './WelcomeBanner.js';
-import { CustomTierList } from './CustomTierList.js';
 import { useSpinner } from '../hooks/useSpinner.js';
 import { formatDps } from '../utils/format.js';
 import { ElementToggles } from './ElementToggles.js';
@@ -25,8 +24,7 @@ import type { ScenarioResult } from '@engine/proposals/types.js';
 
 interface DashboardProps {
   simulation: SimulationData;
-  customTiers: CustomTiersState;
-  baseTiers: string[];
+  buildsState: BuildsState;
   selectedTier: string;
   setSelectedTier: (tier: string) => void;
   cgsValues: CgsValues;
@@ -58,14 +56,12 @@ const COLUMN_DEFAULTS: Record<SortColumn, SortDirection> = {
   capLoss: 'desc',
 };
 
-function tierDisplayName(tier: string, customTierNames: Map<string, string>): string {
-  const custom = customTierNames.get(tier);
-  if (custom) return custom;
+function tierDisplayName(tier: string): string {
   return tier.charAt(0).toUpperCase() + tier.slice(1);
 }
 
-export function Dashboard({ simulation, customTiers, baseTiers, selectedTier, setSelectedTier, cgsValues, setCgsValues, targetCount, setTargetCount, elementModifiers, setElementModifiers, buffOverrides, setBuffOverrides, kbEnabled, setKbEnabled, bossAttackInterval, setBossAttackInterval, bossAccuracy, setBossAccuracy, capEnabled, setCapEnabled }: DashboardProps) {
-  const { results, tiers, customTierNames } = simulation;
+export function Dashboard({ simulation, buildsState, selectedTier, setSelectedTier, cgsValues, setCgsValues, targetCount, setTargetCount, elementModifiers, setElementModifiers, buffOverrides, setBuffOverrides, kbEnabled, setKbEnabled, bossAttackInterval, setBossAttackInterval, bossAccuracy, setBossAccuracy, capEnabled, setCapEnabled }: DashboardProps) {
+  const { results, tiers } = simulation;
   const [showAllSkills, setShowAllSkills] = useState(false);
 
   const filtered = useMemo(() => {
@@ -86,8 +82,6 @@ export function Dashboard({ simulation, customTiers, baseTiers, selectedTier, se
     <div>
       <WelcomeBanner />
 
-      <CustomTierList customTiers={customTiers} baseTiers={baseTiers} />
-
       <div className="mb-6 flex items-center gap-4">
         <TierPresets
           tiers={tiers}
@@ -95,7 +89,21 @@ export function Dashboard({ simulation, customTiers, baseTiers, selectedTier, se
           cgsValues={cgsValues}
           onTierChange={setSelectedTier}
           onCgsChange={setCgsValues}
-          customTierNames={customTierNames}
+          builds={buildsState.builds}
+          activeBuildId={buildsState.activeBuildId}
+          onSaveBuild={(name) => {
+            const build = buildsState.save(name, cgsValues);
+            buildsState.setActive(build.id);
+          }}
+          onSelectBuild={(id) => {
+            const build = buildsState.builds.find((b) => b.id === id);
+            if (build) {
+              setCgsValues({ ...build.cgs });
+              buildsState.setActive(id);
+            }
+          }}
+          onDeleteBuild={(id) => buildsState.remove(id)}
+          onClearBuild={() => buildsState.setActive(null)}
         />
         <TargetSpinner value={targetCount} onChange={setTargetCount} />
         <ElementToggles modifiers={elementModifiers} onChange={setElementModifiers} />
@@ -119,7 +127,7 @@ export function Dashboard({ simulation, customTiers, baseTiers, selectedTier, se
       <DpsChart data={filtered} capEnabled={capEnabled} />
 
       <div className="mt-6">
-        <RankingTable data={filtered} allResults={results} customTierNames={customTierNames} capEnabled={capEnabled} />
+        <RankingTable data={filtered} allResults={results} capEnabled={capEnabled} />
       </div>
     </div>
   );
@@ -224,12 +232,10 @@ function buildTierData(
 function RankingTable({
   data,
   allResults,
-  customTierNames,
   capEnabled,
 }: {
   data: { className: string; skillName: string; tier: string; dps: DpsResult; description?: string; isComposite?: boolean }[];
   allResults: ScenarioResult[];
-  customTierNames: Map<string, string>;
   capEnabled: boolean;
 }) {
   const [sortColumn, setSortColumn] = useState<SortColumn>('dps');
@@ -332,7 +338,7 @@ function RankingTable({
                       {r.skillName}
                       {r.description && <Tooltip text={r.description} />}
                     </td>
-                    <td className="px-3 py-2 text-text-muted">{tierDisplayName(r.tier, customTierNames)}</td>
+                    <td className="px-3 py-2 text-text-muted">{tierDisplayName(r.tier)}</td>
                     <td className="px-3 py-2 text-right tabular-nums">
                       {formatDps(getDps(r))}
                     </td>
@@ -352,7 +358,6 @@ function RankingTable({
                           isComposite={!!r.isComposite}
                           capEnabled={capEnabled}
                           currentTier={r.tier}
-                          customTierNames={customTierNames}
                         />
                       </td>
                     </tr>

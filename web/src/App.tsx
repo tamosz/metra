@@ -9,9 +9,8 @@ import { useSimulation } from './hooks/useSimulation.js';
 import { useProposal } from './hooks/useProposal.js';
 import { useBuildExplorer } from './hooks/useBuildExplorer.js';
 import { useBuildComparison } from './hooks/useBuildComparison.js';
-import { useCustomTiers } from './hooks/useCustomTiers.js';
+import { useBuilds } from './hooks/useBuilds.js';
 import { useSavedBuilds } from './hooks/useSavedBuilds.js';
-import { discoveredData } from './data/bundle.js';
 import { getProposalFromUrl, getBuildFromUrl, getComparisonFromUrl } from './utils/url-encoding.js';
 import type { BuffOverrides } from './components/BuffToggles.js';
 import { CGS_DEFAULTS, type CgsValues } from './utils/cgs.js';
@@ -19,8 +18,7 @@ import { CGS_DEFAULTS, type CgsValues } from './utils/cgs.js';
 type Page = 'dashboard' | 'proposal' | 'build' | 'compare' | 'formulas';
 
 export function App() {
-  const customTiersState = useCustomTiers();
-  const baseTiers = discoveredData.tiers;
+  const buildsState = useBuilds();
   const [targetCount, setTargetCount] = useState(1);
   const [elementModifiers, setElementModifiers] = useState<Record<string, number>>({});
   const [buffOverrides, setBuffOverrides] = useState<BuffOverrides>({});
@@ -31,7 +29,6 @@ export function App() {
   const [selectedTier, setSelectedTier] = useState('high');
   const [cgsValues, setCgsValues] = useState<CgsValues>({ ...CGS_DEFAULTS.high });
   const simulation = useSimulation(
-    customTiersState.tiers,
     targetCount > 1 ? targetCount : undefined,
     Object.keys(elementModifiers).length > 0 ? elementModifiers : undefined,
     Object.keys(buffOverrides).length > 0 ? buffOverrides : undefined,
@@ -148,8 +145,7 @@ export function App() {
         {page === 'dashboard' && (
           <Dashboard
             simulation={simulation}
-            customTiers={customTiersState}
-            baseTiers={baseTiers}
+            buildsState={buildsState}
             selectedTier={selectedTier}
             setSelectedTier={setSelectedTier}
             cgsValues={cgsValues}

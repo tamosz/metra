@@ -13,7 +13,6 @@ interface SkillDetailPanelProps {
   isComposite: boolean;
   capEnabled: boolean;
   currentTier: string;
-  customTierNames?: Map<string, string>;
 }
 
 export function SkillDetailPanel({
@@ -23,7 +22,6 @@ export function SkillDetailPanel({
   isComposite,
   capEnabled,
   currentTier,
-  customTierNames,
 }: SkillDetailPanelProps) {
   const maxTierDps = Math.max(...tierData.map((t) => t.dps));
 
@@ -80,7 +78,7 @@ export function SkillDetailPanel({
               return (
                 <div key={t.tier} className="flex items-center gap-2 text-sm">
                   <span className={`w-16 text-right tabular-nums ${isCurrent ? 'text-text-bright font-medium' : 'text-text-muted'}`}>
-                    {customTierNames?.get(t.tier) ?? (t.tier.charAt(0).toUpperCase() + t.tier.slice(1))}
+                    {t.tier.charAt(0).toUpperCase() + t.tier.slice(1)}
                   </span>
                   <div className="flex-1 h-4 rounded-sm bg-white/[0.04] overflow-hidden">
                     <div
