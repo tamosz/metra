@@ -66,9 +66,11 @@ export function TierPresets({
         </div>
       </div>
 
-      <CgsInput label="Cape" value={cgsValues.cape} onChange={(v) => onCgsChange({ ...cgsValues, cape: v })} />
-      <CgsInput label="Glove" value={cgsValues.glove} onChange={(v) => onCgsChange({ ...cgsValues, glove: v })} />
-      <CgsInput label="Shoe" value={cgsValues.shoe} onChange={(v) => onCgsChange({ ...cgsValues, shoe: v })} />
+      <div className="flex gap-4">
+        <CgsInput label="Cape" value={cgsValues.cape} onChange={(v) => onCgsChange({ ...cgsValues, cape: v })} />
+        <CgsInput label="Glove" value={cgsValues.glove} onChange={(v) => onCgsChange({ ...cgsValues, glove: v })} />
+        <CgsInput label="Shoe" value={cgsValues.shoe} onChange={(v) => onCgsChange({ ...cgsValues, shoe: v })} />
+      </div>
     </div>
   );
 }
