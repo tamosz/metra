@@ -9,8 +9,6 @@ import {
   attackSpeedData,
   mwData,
 } from '../data/bundle.js';
-import type { CustomTier } from '../types/custom-tier.js';
-import { generateCustomTierTemplates } from '../utils/custom-tier.js';
 import type { BuffOverrides } from '../components/BuffToggles.js';
 import { applyCgsOverride, type CgsValues } from '../utils/cgs.js';
 
@@ -23,12 +21,9 @@ export interface SimulationData {
   results: ScenarioResult[];
   classNames: string[];
   tiers: string[];
-  /** Maps custom tier IDs to their display names. */
-  customTierNames: Map<string, string>;
 }
 
 export function useSimulation(
-  customTiers: CustomTier[] = [],
   targetCount?: number,
   elementModifiers?: Record<string, number>,
   buffOverrides?: BuffOverrides,
@@ -38,25 +33,11 @@ export function useSimulation(
   return useMemo(() => {
     const { classNames, tiers, classDataMap, gearTemplates } = discoveredData;
 
-    // Merge custom tier templates into the gear templates map
-    const allTiers = [...tiers];
-    const mergedTemplates = new Map(gearTemplates);
-    const customTierNames = new Map<string, string>();
-
-    for (const ct of customTiers) {
-      const generated = generateCustomTierTemplates(ct, classNames, classDataMap, gearTemplates);
-      for (const [key, build] of generated) {
-        mergedTemplates.set(key, build);
-      }
-      allTiers.push(ct.id);
-      customTierNames.set(ct.id, ct.name);
-    }
-
     // Apply CGS override if provided
-    let finalTemplates = mergedTemplates;
+    let finalTemplates = new Map(gearTemplates);
     if (cgsOverride) {
       finalTemplates = applyCgsOverride(
-        mergedTemplates,
+        finalTemplates,
         classDataMap,
         classNames,
         cgsOverride.tier,
@@ -84,7 +65,7 @@ export function useSimulation(
 
     const config: SimulationConfig = {
       classes: classNames,
-      tiers: allTiers,
+      tiers,
       scenarios,
     };
 
@@ -97,6 +78,6 @@ export function useSimulation(
       mwData
     );
 
-    return { results, classNames, tiers: allTiers, customTierNames };
-  }, [customTiers, targetCount, elementModifiers, buffOverrides, kbConfig, cgsOverride]);
+    return { results, classNames, tiers };
+  }, [targetCount, elementModifiers, buffOverrides, kbConfig, cgsOverride]);
 }

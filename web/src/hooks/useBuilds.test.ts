@@ -38,7 +38,7 @@ describe('useBuilds', () => {
 
   it('removes a build', () => {
     const { result } = renderHook(() => useBuilds());
-    let id: string;
+    let id!: string;
     act(() => {
       id = result.current.save('Temp', { cape: 10, glove: 10, shoe: 10 }).id;
     });
@@ -50,7 +50,7 @@ describe('useBuilds', () => {
 
   it('clears activeBuildId when removing the active build', () => {
     const { result } = renderHook(() => useBuilds());
-    let id: string;
+    let id!: string;
     act(() => {
       id = result.current.save('Active', { cape: 10, glove: 10, shoe: 10 }).id;
     });
@@ -66,7 +66,7 @@ describe('useBuilds', () => {
 
   it('tracks active build id', () => {
     const { result } = renderHook(() => useBuilds());
-    let id: string;
+    let id!: string;
     act(() => {
       id = result.current.save('A', { cape: 10, glove: 10, shoe: 10 }).id;
     });
