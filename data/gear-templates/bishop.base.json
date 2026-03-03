@@ -1,0 +1,11 @@
+{
+  "className": "Bishop",
+  "weaponType": "Staff",
+  "weaponSpeed": 6,
+  "projectile": 0,
+  "echoActive": true,
+  "mwLevel": 20,
+  "speedInfusion": false,
+  "sharpEyes": true,
+  "cgsStatName": "INT"
+}
