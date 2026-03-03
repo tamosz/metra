@@ -135,6 +135,17 @@ describe('Hero Brandish (Sword) DPS', () => {
     // After CGS WATK update
     expect(Math.abs(result.dps - 124135.98730158728)).toBeLessThan(1);
   });
+
+  it('includes totalCritRate, hitCount, and hasShadowPartner in result', () => {
+    const brandish = heroData.skills.find(
+      (s) => s.name === 'Brandish (Sword)'
+    )!;
+    const result = calculateSkillDps(heroHigh, heroData, brandish, weaponData, attackSpeedData, mwData);
+    // Hero has SE active (sharpEyes: true in high template), SE crit rate is 0.15, no built-in crit
+    expect(result.totalCritRate).toBeCloseTo(0.15, 2);
+    expect(result.hitCount).toBe(2);
+    expect(result.hasShadowPartner).toBe(false);
+  });
 });
 
 describe('DrK Spear Crusher DPS', () => {
@@ -603,6 +614,15 @@ describe('Night Lord Triple Throw DPS', () => {
 
     // weaponSpeed=4 - booster(2) - SI(1) = speed 1, clamped to 2
     expect(result.attackTime).toBe(0.60);
+  });
+
+  it('includes hasShadowPartner and built-in crit rate', () => {
+    const tt = nlData.skills.find((s) => s.name === 'Triple Throw')!;
+    const result = calculateSkillDps(nlHigh, nlData, tt, weaponData, attackSpeedData, mwData);
+    // NL: builtInCritRate 0.50 + SE 0.15 = 0.65
+    expect(result.totalCritRate).toBeCloseTo(0.65, 2);
+    expect(result.hitCount).toBe(3);
+    expect(result.hasShadowPartner).toBe(true);
   });
 
 });

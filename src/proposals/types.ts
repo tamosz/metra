@@ -56,6 +56,8 @@ export interface ScenarioResult {
   /** Stable key for before/after comparison. Used by elementVariantGroup so the key doesn't
    *  change when a different variant wins. Defaults to skillName if not set. */
   comparisonKey?: string;
+  /** True for combo group aggregates and mixed rotations (formula breakdown is not meaningful). */
+  isComposite?: boolean;
 }
 
 /** Delta between before and after for a single scenario. */

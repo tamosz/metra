@@ -1,8 +1,9 @@
-import { useState, useMemo, useCallback } from 'react';
+import { Fragment, useState, useMemo, useCallback } from 'react';
 import { DpsChart } from './DpsChart.js';
 import { TierPresets } from './TierPresets.js';
 import { SupportClassNote } from './SupportClassNote.js';
 import { TierAssumptions } from './TierAssumptions.js';
+import { SkillDetailPanel } from './SkillDetailPanel.js';
 import type { SimulationData } from '../hooks/useSimulation.js';
 import type { CustomTiersState } from '../hooks/useCustomTiers.js';
 import { compareTiers } from '@engine/data/types.js';
@@ -17,8 +18,10 @@ import type { BuffOverrides } from './BuffToggles.js';
 import { KbToggle } from './KbToggle.js';
 import { Tooltip } from './Tooltip.js';
 import { CapToggle } from './CapToggle.js';
+import { getClassColor } from '../utils/class-colors.js';
 import type { DpsResult } from '@engine/engine/dps.js';
 import type { CgsValues } from '../utils/cgs.js';
+import type { ScenarioResult } from '@engine/proposals/types.js';
 
 interface DashboardProps {
   simulation: SimulationData;
@@ -116,7 +119,7 @@ export function Dashboard({ simulation, customTiers, baseTiers, selectedTier, se
       <DpsChart data={filtered} capEnabled={capEnabled} />
 
       <div className="mt-6">
-        <RankingTable data={filtered} customTierNames={customTierNames} capEnabled={capEnabled} />
+        <RankingTable data={filtered} allResults={results} customTierNames={customTierNames} capEnabled={capEnabled} />
       </div>
     </div>
   );
@@ -194,17 +197,53 @@ function SortArrow({ direction }: { direction: SortDirection }) {
   return <span className="ml-1 text-[10px]">{direction === 'asc' ? '\u25B2' : '\u25BC'}</span>;
 }
 
+function buildTierData(
+  row: { className: string; skillName: string },
+  allResults: ScenarioResult[],
+  capEnabled: boolean,
+): { tier: string; dps: number }[] {
+  const firstMatch = allResults.find(
+    (r) => r.className === row.className && r.skillName === row.skillName,
+  );
+  if (!firstMatch) return [];
+
+  return allResults
+    .filter(
+      (r) =>
+        r.className === row.className &&
+        r.skillName === row.skillName &&
+        r.scenario === firstMatch.scenario,
+    )
+    .sort((a, b) => compareTiers(a.tier, b.tier))
+    .map((r) => ({
+      tier: r.tier,
+      dps: capEnabled ? r.dps.dps : r.dps.uncappedDps,
+    }));
+}
+
 function RankingTable({
   data,
+  allResults,
   customTierNames,
   capEnabled,
 }: {
-  data: { className: string; skillName: string; tier: string; dps: DpsResult; description?: string }[];
+  data: { className: string; skillName: string; tier: string; dps: DpsResult; description?: string; isComposite?: boolean }[];
+  allResults: ScenarioResult[];
   customTierNames: Map<string, string>;
   capEnabled: boolean;
 }) {
   const [sortColumn, setSortColumn] = useState<SortColumn>('dps');
   const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
+  const [expandedRows, setExpandedRows] = useState<Set<string>>(new Set());
+
+  const toggleRow = (key: string) => {
+    setExpandedRows((prev) => {
+      const next = new Set(prev);
+      if (next.has(key)) next.delete(key);
+      else next.add(key);
+      return next;
+    });
+  };
 
   const handleSort = (column: SortColumn) => {
     if (column === sortColumn) {
@@ -268,33 +307,59 @@ function RankingTable({
               </td>
             </tr>
           ) : (
-            sorted.map((r, i) => (
-              <tr
-                key={`${r.className}-${r.skillName}-${r.tier}`}
-                className="border-b border-border-subtle hover:bg-white/[0.03]"
-              >
-                <td className="px-3 py-2 w-8 text-text-faint">{i + 1}</td>
-                <td className="px-3 py-2">
-                  <span className="inline-flex items-center gap-1.5">
-                    <ClassIcon className={r.className} />
-                    {r.className}
-                  </span>
-                </td>
-                <td className="px-3 py-2 text-text-secondary">
-                  {r.skillName}
-                  {r.description && <Tooltip text={r.description} />}
-                </td>
-                <td className="px-3 py-2 text-text-muted">{tierDisplayName(r.tier, customTierNames)}</td>
-                <td className="px-3 py-2 text-right tabular-nums">
-                  {formatDps(getDps(r))}
-                </td>
-                {capEnabled && (
-                  <td className="px-3 py-2 text-right tabular-nums text-text-muted">
-                    {r.dps.capLossPercent < 0.05 ? '-' : `${r.dps.capLossPercent.toFixed(1)}%`}
-                  </td>
-                )}
-              </tr>
-            ))
+            sorted.map((r, i) => {
+              const rowKey = `${r.className}-${r.skillName}-${r.tier}`;
+              const isExpanded = expandedRows.has(rowKey);
+              return (
+                <Fragment key={rowKey}>
+                  <tr
+                    className="border-b border-border-subtle hover:bg-white/[0.03] cursor-pointer"
+                    onClick={() => toggleRow(rowKey)}
+                  >
+                    <td className="px-3 py-2 w-8 text-text-faint">
+                      <span className="inline-flex items-center gap-1">
+                        <span className="text-[10px] text-text-faint">{isExpanded ? '\u25BE' : '\u25B8'}</span>
+                        {i + 1}
+                      </span>
+                    </td>
+                    <td className="px-3 py-2">
+                      <span className="inline-flex items-center gap-1.5">
+                        <ClassIcon className={r.className} />
+                        {r.className}
+                      </span>
+                    </td>
+                    <td className="px-3 py-2 text-text-secondary">
+                      {r.skillName}
+                      {r.description && <Tooltip text={r.description} />}
+                    </td>
+                    <td className="px-3 py-2 text-text-muted">{tierDisplayName(r.tier, customTierNames)}</td>
+                    <td className="px-3 py-2 text-right tabular-nums">
+                      {formatDps(getDps(r))}
+                    </td>
+                    {capEnabled && (
+                      <td className="px-3 py-2 text-right tabular-nums text-text-muted">
+                        {r.dps.capLossPercent < 0.05 ? '-' : `${r.dps.capLossPercent.toFixed(1)}%`}
+                      </td>
+                    )}
+                  </tr>
+                  {isExpanded && (
+                    <tr>
+                      <td colSpan={columnCount} className="p-0">
+                        <SkillDetailPanel
+                          dps={r.dps}
+                          tierData={buildTierData(r, allResults, capEnabled)}
+                          classColor={getClassColor(r.className)}
+                          isComposite={!!r.isComposite}
+                          capEnabled={capEnabled}
+                          currentTier={r.tier}
+                          customTierNames={customTierNames}
+                        />
+                      </td>
+                    </tr>
+                  )}
+                </Fragment>
+              );
+            })
           )}
         </tbody>
       </table>

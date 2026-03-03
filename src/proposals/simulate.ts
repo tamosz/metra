@@ -284,6 +284,7 @@ function aggregateComboGroups(
       tier: first.tier,
       scenario: first.scenario,
       ...(isHeadline ? {} : { headline: false }),
+      isComposite: true,
       dps: {
         ...first.dps,
         skillName: groupName,
@@ -353,6 +354,7 @@ function processMixedRotations(
       scenario,
       description: rotation.description,
       ...(isHeadline ? {} : { headline: false }),
+      isComposite: true,
       dps: {
         ...first.dps,
         skillName: rotation.name,
