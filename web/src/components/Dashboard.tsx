@@ -13,37 +13,18 @@ import { useSpinner } from '../hooks/useSpinner.js';
 import { formatDps } from '../utils/format.js';
 import { ElementToggles } from './ElementToggles.js';
 import { BuffToggles } from './BuffToggles.js';
-import type { BuffOverrides } from './BuffToggles.js';
 import { KbToggle } from './KbToggle.js';
 import { Tooltip } from './Tooltip.js';
 import { CapToggle } from './CapToggle.js';
 import { getClassColor } from '../utils/class-colors.js';
 import { TOGGLE_ON, TOGGLE_OFF, TH } from '../utils/styles.js';
 import type { DpsResult } from '@engine/engine/dps.js';
-import type { CgsValues } from '../utils/cgs.js';
 import type { ScenarioResult } from '@engine/proposals/types.js';
+import { useSimulationControls } from '../context/SimulationControlsContext.js';
 
 interface DashboardProps {
   simulation: SimulationData;
   buildsState: BuildsState;
-  selectedTier: string;
-  setSelectedTier: (tier: string) => void;
-  cgsValues: CgsValues;
-  setCgsValues: (values: CgsValues) => void;
-  targetCount: number;
-  setTargetCount: (n: number) => void;
-  elementModifiers: Record<string, number>;
-  setElementModifiers: (mods: Record<string, number>) => void;
-  buffOverrides: BuffOverrides;
-  setBuffOverrides: (overrides: BuffOverrides) => void;
-  kbEnabled: boolean;
-  setKbEnabled: (enabled: boolean) => void;
-  bossAttackInterval: number;
-  setBossAttackInterval: (n: number) => void;
-  bossAccuracy: number;
-  setBossAccuracy: (n: number) => void;
-  capEnabled: boolean;
-  setCapEnabled: (enabled: boolean) => void;
 }
 
 type SortColumn = 'class' | 'skill' | 'tier' | 'dps' | 'capLoss';
@@ -63,7 +44,8 @@ function tierDisplayName(tier: string): string {
 
 const VARIANT_CLASSES = new Set(['Hero (Axe)', 'Paladin (BW)']);
 
-export function Dashboard({ simulation, buildsState, selectedTier, setSelectedTier, cgsValues, setCgsValues, targetCount, setTargetCount, elementModifiers, setElementModifiers, buffOverrides, setBuffOverrides, kbEnabled, setKbEnabled, bossAttackInterval, setBossAttackInterval, bossAccuracy, setBossAccuracy, capEnabled, setCapEnabled }: DashboardProps) {
+export function Dashboard({ simulation, buildsState }: DashboardProps) {
+  const { selectedTier, targetCount, capEnabled, cgsValues, setCgsValues, setSelectedTier } = useSimulationControls();
   const { results, tiers } = simulation;
   const [showAllSkills, setShowAllSkills] = useState(false);
 
@@ -89,10 +71,6 @@ export function Dashboard({ simulation, buildsState, selectedTier, setSelectedTi
       <div className="mb-6 flex items-center gap-4">
         <TierPresets
           tiers={tiers}
-          selectedTier={selectedTier}
-          cgsValues={cgsValues}
-          onTierChange={setSelectedTier}
-          onCgsChange={setCgsValues}
           builds={buildsState.builds}
           activeBuildId={buildsState.activeBuildId}
           onSaveBuild={(name) => {
@@ -109,18 +87,11 @@ export function Dashboard({ simulation, buildsState, selectedTier, setSelectedTi
           onDeleteBuild={(id) => buildsState.remove(id)}
           onClearBuild={() => buildsState.setActive(null)}
         />
-        <TargetSpinner value={targetCount} onChange={setTargetCount} />
-        <ElementToggles modifiers={elementModifiers} onChange={setElementModifiers} />
-        <BuffToggles overrides={buffOverrides} onChange={setBuffOverrides} />
-        <KbToggle
-          enabled={kbEnabled}
-          onToggle={setKbEnabled}
-          bossAttackInterval={bossAttackInterval}
-          onIntervalChange={setBossAttackInterval}
-          bossAccuracy={bossAccuracy}
-          onAccuracyChange={setBossAccuracy}
-        />
-        <CapToggle enabled={capEnabled} onToggle={setCapEnabled} />
+        <TargetSpinner />
+        <ElementToggles />
+        <BuffToggles />
+        <KbToggle />
+        <CapToggle />
         <AllSkillsToggle enabled={showAllSkills} onToggle={setShowAllSkills} />
       </div>
 
@@ -128,7 +99,7 @@ export function Dashboard({ simulation, buildsState, selectedTier, setSelectedTi
 
       <SupportClassNote classNames={[...new Set(filtered.map((r) => r.className))]} />
 
-      <DpsChart data={filtered} capEnabled={capEnabled} />
+      <DpsChart data={filtered} />
 
       <div className="mt-6">
         <RankingTable data={filtered} allResults={results} capEnabled={capEnabled} />
@@ -137,16 +108,17 @@ export function Dashboard({ simulation, buildsState, selectedTier, setSelectedTi
   );
 }
 
-function TargetSpinner({ value, onChange }: { value: number; onChange: (n: number) => void }) {
+function TargetSpinner() {
+  const { targetCount, setTargetCount } = useSimulationControls();
   const clamp = (n: number) => Math.max(1, Math.min(15, n));
 
   const decrement = useCallback(() => {
-    onChange(clamp(value - 1));
-  }, [value, onChange]);
+    setTargetCount(clamp(targetCount - 1));
+  }, [targetCount, setTargetCount]);
 
   const increment = useCallback(() => {
-    onChange(clamp(value + 1));
-  }, [value, onChange]);
+    setTargetCount(clamp(targetCount + 1));
+  }, [targetCount, setTargetCount]);
 
   const decSpinner = useSpinner(decrement);
   const incSpinner = useSpinner(increment);
@@ -165,10 +137,10 @@ function TargetSpinner({ value, onChange }: { value: number; onChange: (n: numbe
         </button>
         <input
           type="number"
-          value={value}
+          value={targetCount}
           onChange={(e) => {
             const v = parseInt(e.target.value, 10);
-            if (!isNaN(v)) onChange(clamp(v));
+            if (!isNaN(v)) setTargetCount(clamp(v));
           }}
           className="w-[36px] border-x border-border-default bg-bg-raised px-1 py-1 text-center text-sm tabular-nums text-text-primary focus:border-border-active transition-colors [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
         />

@@ -12,31 +12,30 @@ import { useBuildComparison } from './hooks/useBuildComparison.js';
 import { useBuilds } from './hooks/useBuilds.js';
 import { useSavedBuilds } from './hooks/useSavedBuilds.js';
 import { getProposalFromUrl, getBuildFromUrl, getComparisonFromUrl } from './utils/url-encoding.js';
-import type { BuffOverrides } from './components/BuffToggles.js';
-import { CGS_DEFAULTS, type CgsValues } from './utils/cgs.js';
+import { SimulationControlsProvider, useSimulationControls } from './context/SimulationControlsContext.js';
 
 type Page = 'dashboard' | 'proposal' | 'build' | 'compare' | 'formulas';
 
 export function App() {
+  return (
+    <SimulationControlsProvider>
+      <AppContent />
+    </SimulationControlsProvider>
+  );
+}
+
+function AppContent() {
+  const controls = useSimulationControls();
   const buildsState = useBuilds();
-  const [targetCount, setTargetCount] = useState(1);
-  const [elementModifiers, setElementModifiers] = useState<Record<string, number>>({});
-  const [buffOverrides, setBuffOverrides] = useState<BuffOverrides>({});
-  const [kbEnabled, setKbEnabled] = useState(false);
-  const [bossAttackInterval, setBossAttackInterval] = useState(1.5);
-  const [bossAccuracy, setBossAccuracy] = useState(250);
-  const [capEnabled, setCapEnabled] = useState(true);
-  const [selectedTier, setSelectedTier] = useState('high');
-  const [cgsValues, setCgsValues] = useState<CgsValues>({ ...CGS_DEFAULTS.high });
   const simulation = useSimulation(
-    targetCount > 1 ? targetCount : undefined,
-    Object.keys(elementModifiers).length > 0 ? elementModifiers : undefined,
-    Object.keys(buffOverrides).length > 0 ? buffOverrides : undefined,
-    kbEnabled ? { bossAttackInterval, bossAccuracy } : undefined,
-    { tier: selectedTier, values: cgsValues },
+    controls.targetCount > 1 ? controls.targetCount : undefined,
+    Object.keys(controls.elementModifiers).length > 0 ? controls.elementModifiers : undefined,
+    Object.keys(controls.buffOverrides).length > 0 ? controls.buffOverrides : undefined,
+    controls.kbConfig,
+    { tier: controls.selectedTier, values: controls.cgsValues },
   );
   const savedBuildsState = useSavedBuilds();
-  const proposalState = useProposal(targetCount > 1 ? targetCount : undefined);
+  const proposalState = useProposal(controls.targetCount > 1 ? controls.targetCount : undefined);
   const buildState = useBuildExplorer();
   const comparisonState = useBuildComparison();
   const [page, setPage] = useState<Page>('dashboard');
@@ -146,24 +145,6 @@ export function App() {
           <Dashboard
             simulation={simulation}
             buildsState={buildsState}
-            selectedTier={selectedTier}
-            setSelectedTier={setSelectedTier}
-            cgsValues={cgsValues}
-            setCgsValues={setCgsValues}
-            targetCount={targetCount}
-            setTargetCount={setTargetCount}
-            elementModifiers={elementModifiers}
-            setElementModifiers={setElementModifiers}
-            buffOverrides={buffOverrides}
-            setBuffOverrides={setBuffOverrides}
-            kbEnabled={kbEnabled}
-            setKbEnabled={setKbEnabled}
-            bossAttackInterval={bossAttackInterval}
-            setBossAttackInterval={setBossAttackInterval}
-            bossAccuracy={bossAccuracy}
-            setBossAccuracy={setBossAccuracy}
-            capEnabled={capEnabled}
-            setCapEnabled={setCapEnabled}
           />
         )}
         {page === 'proposal' && (

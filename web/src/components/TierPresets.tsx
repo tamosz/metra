@@ -2,13 +2,10 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { CGS_DEFAULTS, type CgsValues } from '../utils/cgs.js';
 import { useSpinner } from '../hooks/useSpinner.js';
 import type { SavedCgsBuild } from '../types/saved-cgs-build.js';
+import { useSimulationControls } from '../context/SimulationControlsContext.js';
 
 interface TierPresetsProps {
   tiers: string[];
-  selectedTier: string;
-  cgsValues: CgsValues;
-  onTierChange: (tier: string) => void;
-  onCgsChange: (values: CgsValues) => void;
   builds: SavedCgsBuild[];
   activeBuildId: string | null;
   onSaveBuild: (name: string) => void;
@@ -25,10 +22,6 @@ function matchesTierDefaults(tier: string, cgs: CgsValues): boolean {
 
 export function TierPresets({
   tiers,
-  selectedTier,
-  cgsValues,
-  onTierChange,
-  onCgsChange,
   builds,
   activeBuildId,
   onSaveBuild,
@@ -36,6 +29,7 @@ export function TierPresets({
   onDeleteBuild,
   onClearBuild,
 }: TierPresetsProps) {
+  const { selectedTier, setSelectedTier: onTierChange, cgsValues, setCgsValues: onCgsChange } = useSimulationControls();
   const cgsMatchesSelected = matchesTierDefaults(selectedTier, cgsValues);
   const [saving, setSaving] = useState(false);
   const [saveName, setSaveName] = useState('');

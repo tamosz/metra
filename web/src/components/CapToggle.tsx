@@ -1,11 +1,9 @@
+import { useSimulationControls } from '../context/SimulationControlsContext.js';
 import { TOGGLE_ON, TOGGLE_OFF } from '../utils/styles.js';
 
-interface CapToggleProps {
-  enabled: boolean;
-  onToggle: (enabled: boolean) => void;
-}
+export function CapToggle() {
+  const { capEnabled: enabled, setCapEnabled: onToggle } = useSimulationControls();
 
-export function CapToggle({ enabled, onToggle }: CapToggleProps) {
   return (
     <div className="flex flex-col gap-1">
       <span className="text-[11px] font-medium uppercase tracking-wide text-text-dim">Damage Cap</span>

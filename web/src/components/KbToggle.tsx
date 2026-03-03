@@ -1,15 +1,16 @@
+import { useSimulationControls } from '../context/SimulationControlsContext.js';
 import { TOGGLE_ON, TOGGLE_OFF } from '../utils/styles.js';
 
-interface KbToggleProps {
-  enabled: boolean;
-  onToggle: (enabled: boolean) => void;
-  bossAttackInterval: number;
-  onIntervalChange: (n: number) => void;
-  bossAccuracy: number;
-  onAccuracyChange: (n: number) => void;
-}
+export function KbToggle() {
+  const {
+    kbEnabled: enabled,
+    setKbEnabled: onToggle,
+    bossAttackInterval,
+    setBossAttackInterval: onIntervalChange,
+    bossAccuracy,
+    setBossAccuracy: onAccuracyChange,
+  } = useSimulationControls();
 
-export function KbToggle({ enabled, onToggle, bossAttackInterval, onIntervalChange, bossAccuracy, onAccuracyChange }: KbToggleProps) {
   return (
     <div className="flex flex-col gap-1">
       <span className="text-[11px] font-medium uppercase tracking-wide text-text-dim">Knockback <span className="normal-case tracking-normal text-text-muted">(experimental)</span></span>

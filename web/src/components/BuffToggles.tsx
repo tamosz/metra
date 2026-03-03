@@ -1,4 +1,5 @@
 import type { CharacterBuild } from '@engine/data/types.js';
+import { useSimulationControls } from '../context/SimulationControlsContext.js';
 import { TOGGLE_ON, TOGGLE_OFF_RED } from '../utils/styles.js';
 
 type BuffOverrides = Partial<Pick<CharacterBuild, 'sharpEyes' | 'echoActive' | 'speedInfusion' | 'mwLevel' | 'attackPotion'>>;
@@ -12,14 +13,11 @@ const BUFFS = [
 ] as const;
 
 
-interface BuffTogglesProps {
-  overrides: BuffOverrides;
-  onChange: (overrides: BuffOverrides) => void;
-}
-
 export type { BuffOverrides };
 
-export function BuffToggles({ overrides, onChange }: BuffTogglesProps) {
+export function BuffToggles() {
+  const { buffOverrides: overrides, setBuffOverrides: onChange } = useSimulationControls();
+
   const handleClick = (key: keyof BuffOverrides, offValue: boolean | number) => {
     const isOff = key in overrides;
     const updated = { ...overrides };
