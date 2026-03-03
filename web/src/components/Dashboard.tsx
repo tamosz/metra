@@ -274,7 +274,6 @@ function RankingTable({
     });
   }, [data, sortColumn, sortDirection, capEnabled]);
 
-  const thSortable = `${TH} cursor-pointer select-none`;
   const columnCount = capEnabled ? 6 : 5;
 
   return (
@@ -284,21 +283,31 @@ function RankingTable({
         <thead>
           <tr className="border-b border-border-default">
             <th className={TH}>#</th>
-            <th className={`${thSortable} text-left`} onClick={() => handleSort('class')}>
-              Class{sortColumn === 'class' && <SortArrow direction={sortDirection} />}
+            <th className={`${TH} text-left`} aria-sort={sortColumn === 'class' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : undefined}>
+              <button type="button" onClick={() => handleSort('class')} className="cursor-pointer select-none bg-transparent border-none p-0 text-inherit font-inherit">
+                Class{sortColumn === 'class' && <SortArrow direction={sortDirection} />}
+              </button>
             </th>
-            <th className={`${thSortable} text-left`} onClick={() => handleSort('skill')}>
-              Skill{sortColumn === 'skill' && <SortArrow direction={sortDirection} />}
+            <th className={`${TH} text-left`} aria-sort={sortColumn === 'skill' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : undefined}>
+              <button type="button" onClick={() => handleSort('skill')} className="cursor-pointer select-none bg-transparent border-none p-0 text-inherit font-inherit">
+                Skill{sortColumn === 'skill' && <SortArrow direction={sortDirection} />}
+              </button>
             </th>
-            <th className={`${thSortable} text-left`} onClick={() => handleSort('tier')}>
-              Tier{sortColumn === 'tier' && <SortArrow direction={sortDirection} />}
+            <th className={`${TH} text-left`} aria-sort={sortColumn === 'tier' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : undefined}>
+              <button type="button" onClick={() => handleSort('tier')} className="cursor-pointer select-none bg-transparent border-none p-0 text-inherit font-inherit">
+                Tier{sortColumn === 'tier' && <SortArrow direction={sortDirection} />}
+              </button>
             </th>
-            <th className={`${thSortable} text-right`} onClick={() => handleSort('dps')}>
-              DPS{sortColumn === 'dps' && <SortArrow direction={sortDirection} />}
+            <th className={`${TH} text-right`} aria-sort={sortColumn === 'dps' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : undefined}>
+              <button type="button" onClick={() => handleSort('dps')} className="cursor-pointer select-none bg-transparent border-none p-0 text-inherit font-inherit">
+                DPS{sortColumn === 'dps' && <SortArrow direction={sortDirection} />}
+              </button>
             </th>
             {capEnabled && (
-              <th className={`${thSortable} text-right`} onClick={() => handleSort('capLoss')}>
-                Cap Loss{sortColumn === 'capLoss' && <SortArrow direction={sortDirection} />}
+              <th className={`${TH} text-right`} aria-sort={sortColumn === 'capLoss' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : undefined}>
+                <button type="button" onClick={() => handleSort('capLoss')} className="cursor-pointer select-none bg-transparent border-none p-0 text-inherit font-inherit">
+                  Cap Loss{sortColumn === 'capLoss' && <SortArrow direction={sortDirection} />}
+                </button>
               </th>
             )}
           </tr>
@@ -319,6 +328,10 @@ function RankingTable({
                   <tr
                     className="border-b border-border-subtle hover:bg-white/[0.03] cursor-pointer"
                     onClick={() => toggleRow(rowKey)}
+                    onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleRow(rowKey); } }}
+                    tabIndex={0}
+                    role="button"
+                    aria-expanded={isExpanded}
                   >
                     <td className="px-3 py-2 w-8 text-text-faint">
                       <span className="inline-flex items-center gap-1">
