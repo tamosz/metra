@@ -23,7 +23,7 @@ A balance simulator for Royals staff and community. Every number traces back to 
 - Custom funding tiers: delta-based tier editor with localStorage persistence
 - Marginal gain calculator: DPS per WATK, per stat point — "what should I upgrade next?"
 - Pre-commit hooks, comprehensive test coverage
-- Deployed on Vercel: https://metra-ten.vercel.app
+- Deployed on Vercel: https://tomeblog.com/metra
 
 ## Phase 2: Interactive UX
 
