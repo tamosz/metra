@@ -1,5 +1,9 @@
 {
   "framework": "vite",
   "buildCommand": "cd web && npm install && npm run build",
-  "outputDirectory": "web/dist"
+  "outputDirectory": "web/dist",
+  "rewrites": [
+    { "source": "/metra/(.*)", "destination": "/metra/$1" },
+    { "source": "/metra", "destination": "/metra/index.html" }
+  ]
 }
