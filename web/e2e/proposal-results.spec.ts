@@ -45,6 +45,21 @@ test.describe('proposal results', () => {
     expect(headers).toContain('Rank');
   });
 
+  test('rank bump chart shows when tier is selected', async ({ page }) => {
+    // Select a specific tier to make bump chart visible
+    await page.getByRole('button', { name: /High/i }).click();
+
+    const chart = page.getByTestId('rank-bump-chart');
+    await expect(chart).toBeVisible();
+    await expect(chart.getByText('Rank Movement')).toBeVisible();
+  });
+
+  test('rank bump chart hidden when all tiers selected', async ({ page }) => {
+    // "All Tiers" is default — bump chart should not be visible
+    const chart = page.getByTestId('rank-bump-chart');
+    await expect(chart).not.toBeVisible();
+  });
+
   test.describe('clipboard', () => {
     test.use({
       permissions: ['clipboard-read', 'clipboard-write'],
