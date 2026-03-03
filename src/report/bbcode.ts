@@ -76,65 +76,74 @@ export function renderBaselineBBCode(
   return lines.join('\n');
 }
 
+interface ColumnDef {
+  header: string;
+  align: 'left' | 'right';
+  minWidth: number;
+}
+
+function renderAlignedTable(
+  lines: string[],
+  columns: ColumnDef[],
+  rows: string[][],
+): void {
+  const widths = columns.map((col, i) =>
+    Math.max(col.minWidth, col.header.length, ...rows.map((r) => r[i].length)),
+  );
+
+  const header = columns
+    .map((col, i) =>
+      col.align === 'right'
+        ? col.header.padStart(widths[i])
+        : col.header.padEnd(widths[i]),
+    )
+    .join('  ');
+  lines.push(header);
+  lines.push('-'.repeat(header.length));
+
+  for (const row of rows) {
+    lines.push(
+      columns
+        .map((col, i) =>
+          col.align === 'right'
+            ? row[i].padStart(widths[i])
+            : row[i].padEnd(widths[i]),
+        )
+        .join('  '),
+    );
+  }
+}
+
 function renderCodeTable(lines: string[], deltas: DeltaEntry[]): void {
   const sorted = sortDeltas(deltas);
   const hasRanks = sorted.some((d) => d.rankBefore != null);
 
-  // Compute column widths
   const rows = sorted.map((d) => {
-    const rank = hasRanks ? formatRank(d.rankBefore, d.rankAfter) : '';
-    return {
-      rank,
-      className: d.className,
-      skillName: d.skillName,
-      tier: capitalize(d.tier),
-      before: formatNumber(d.before),
-      after: formatNumber(d.after),
-      change: formatChange(d.change),
-      percent: formatPercent(d.changePercent),
-    };
+    const cells = [
+      ...(hasRanks ? [formatRank(d.rankBefore, d.rankAfter)] : []),
+      d.className,
+      d.skillName,
+      capitalize(d.tier),
+      formatNumber(d.before),
+      formatNumber(d.after),
+      formatChange(d.change),
+      formatPercent(d.changePercent),
+    ];
+    return cells;
   });
 
-  const cols = {
-    rank: hasRanks ? Math.max(4, ...rows.map((r) => r.rank.length)) : 0,
-    className: Math.max(5, ...rows.map((r) => r.className.length)),
-    skillName: Math.max(5, ...rows.map((r) => r.skillName.length)),
-    tier: Math.max(4, ...rows.map((r) => r.tier.length)),
-    before: Math.max(6, ...rows.map((r) => r.before.length)),
-    after: Math.max(5, ...rows.map((r) => r.after.length)),
-    change: Math.max(6, ...rows.map((r) => r.change.length)),
-    percent: Math.max(5, ...rows.map((r) => r.percent.length)),
-  };
+  const columns: ColumnDef[] = [
+    ...(hasRanks ? [{ header: 'Rank', align: 'left' as const, minWidth: 4 }] : []),
+    { header: 'Class', align: 'left', minWidth: 5 },
+    { header: 'Skill', align: 'left', minWidth: 5 },
+    { header: 'Tier', align: 'left', minWidth: 4 },
+    { header: 'Before', align: 'right', minWidth: 6 },
+    { header: 'After', align: 'right', minWidth: 5 },
+    { header: 'Change', align: 'right', minWidth: 6 },
+    { header: '%', align: 'right', minWidth: 5 },
+  ];
 
-  // Header
-  const headerParts: string[] = [];
-  if (hasRanks) headerParts.push('Rank'.padEnd(cols.rank));
-  headerParts.push(
-    'Class'.padEnd(cols.className),
-    'Skill'.padEnd(cols.skillName),
-    'Tier'.padEnd(cols.tier),
-    'Before'.padStart(cols.before),
-    'After'.padStart(cols.after),
-    'Change'.padStart(cols.change),
-    '%'.padStart(cols.percent),
-  );
-  lines.push(headerParts.join('  '));
-  lines.push('-'.repeat(headerParts.join('  ').length));
-
-  for (const row of rows) {
-    const parts: string[] = [];
-    if (hasRanks) parts.push(row.rank.padEnd(cols.rank));
-    parts.push(
-      row.className.padEnd(cols.className),
-      row.skillName.padEnd(cols.skillName),
-      row.tier.padEnd(cols.tier),
-      row.before.padStart(cols.before),
-      row.after.padStart(cols.after),
-      row.change.padStart(cols.change),
-      row.percent.padStart(cols.percent),
-    );
-    lines.push(parts.join('  '));
-  }
+  renderAlignedTable(lines, columns, rows);
 }
 
 function renderBaselineCodeTable(
@@ -144,45 +153,23 @@ function renderBaselineCodeTable(
 ): void {
   const sorted = [...results].sort((a, b) => b.dps.dps - a.dps.dps);
 
-  const rows = sorted.map((r, i) => ({
-    rank: String(i + 1),
-    className: r.className,
-    skillName: r.skillName,
-    tier: capitalize(r.tier),
-    dps: formatNumber(r.dps.dps),
-    capLoss: formatCapLoss(r.dps.capLossPercent),
-  }));
+  const rows = sorted.map((r, i) => [
+    String(i + 1),
+    r.className,
+    r.skillName,
+    capitalize(r.tier),
+    formatNumber(r.dps.dps),
+    ...(showCapLoss ? [formatCapLoss(r.dps.capLossPercent)] : []),
+  ]);
 
-  const cols = {
-    rank: Math.max(1, ...rows.map((r) => r.rank.length)),
-    className: Math.max(5, ...rows.map((r) => r.className.length)),
-    skillName: Math.max(5, ...rows.map((r) => r.skillName.length)),
-    tier: Math.max(4, ...rows.map((r) => r.tier.length)),
-    dps: Math.max(3, ...rows.map((r) => r.dps.length)),
-    capLoss: Math.max(8, ...rows.map((r) => r.capLoss.length)),
-  };
-
-  const headerParts = [
-    '#'.padStart(cols.rank),
-    'Class'.padEnd(cols.className),
-    'Skill'.padEnd(cols.skillName),
-    'Tier'.padEnd(cols.tier),
-    'DPS'.padStart(cols.dps),
+  const columns: ColumnDef[] = [
+    { header: '#', align: 'right', minWidth: 1 },
+    { header: 'Class', align: 'left', minWidth: 5 },
+    { header: 'Skill', align: 'left', minWidth: 5 },
+    { header: 'Tier', align: 'left', minWidth: 4 },
+    { header: 'DPS', align: 'right', minWidth: 3 },
+    ...(showCapLoss ? [{ header: 'Cap Loss', align: 'right' as const, minWidth: 8 }] : []),
   ];
-  if (showCapLoss) headerParts.push('Cap Loss'.padStart(cols.capLoss));
-  const header = headerParts.join('  ');
-  lines.push(header);
-  lines.push('-'.repeat(header.length));
 
-  for (const row of rows) {
-    const parts = [
-      row.rank.padStart(cols.rank),
-      row.className.padEnd(cols.className),
-      row.skillName.padEnd(cols.skillName),
-      row.tier.padEnd(cols.tier),
-      row.dps.padStart(cols.dps),
-    ];
-    if (showCapLoss) parts.push(row.capLoss.padStart(cols.capLoss));
-    lines.push(parts.join('  '));
-  }
+  renderAlignedTable(lines, columns, rows);
 }
