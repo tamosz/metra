@@ -32,6 +32,7 @@ export { calculateBuildDps, type SkillDpsRow, type BuildDpsResult } from './engi
 
 // Data utilities
 export { computeGearTotals, type GearTotals } from './data/gear-utils.js';
+export { mergeGearTemplate, type TierDefaults, type ClassBase, type TierOverride } from './data/gear-merge.js';
 
 // Constants
 export { TIER_ORDER, compareTiers } from './data/types.js';

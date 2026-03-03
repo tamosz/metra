@@ -9,6 +9,7 @@ import {
   type CharacterBuild,
 } from './types.js';
 import { computeGearTotals } from './gear-utils.js';
+import { mergeGearTemplate, type TierDefaults, type ClassBase, type TierOverride } from './gear-merge.js';
 
 const DATA_DIR = resolve(import.meta.dirname, '../../data');
 
@@ -41,11 +42,52 @@ export function loadClassSkills(className: string): ClassSkillData {
   return loadJson<ClassSkillData>(`skills/${filename}`);
 }
 
+let tierDefaultsCache: Record<string, TierDefaults> | null = null;
+
+function loadTierDefaults(): Record<string, TierDefaults> {
+  if (!tierDefaultsCache) {
+    tierDefaultsCache = loadJson<Record<string, TierDefaults>>('tier-defaults.json');
+  }
+  return tierDefaultsCache;
+}
+
+function loadClassBase(className: string): ClassBase | null {
+  const fullPath = resolve(DATA_DIR, `gear-templates/${className}.base.json`);
+  try {
+    return JSON.parse(readFileSync(fullPath, 'utf-8')) as ClassBase;
+  } catch {
+    return null;
+  }
+}
+
 export function loadGearTemplate(templateName: string): CharacterBuild {
   const raw = loadJson<Record<string, unknown>>(
     `gear-templates/${templateName}.json`
   );
 
+  // Inheritance mode: tier file has "extends" pointing to a class base
+  if (typeof raw.extends === 'string') {
+    const baseName = raw.extends as string;
+    const base = loadClassBase(baseName);
+    if (!base) {
+      throw new Error(
+        `Gear template "${templateName}" extends "${baseName}" but no ${baseName}.base.json found`
+      );
+    }
+
+    const tier = templateName.slice(baseName.length + 1);
+    const allDefaults = loadTierDefaults();
+    const defaults = allDefaults[tier];
+    if (!defaults) {
+      throw new Error(
+        `Gear template "${templateName}" uses tier "${tier}" but no tier defaults found for it`
+      );
+    }
+
+    return mergeGearTemplate(base, raw as unknown as TierOverride, defaults);
+  }
+
+  // Flat mode (backward compatible)
   const breakdown = raw.gearBreakdown as Record<string, Record<string, number>> | undefined;
   const computed = breakdown ? computeGearTotals(breakdown) : undefined;
 
@@ -82,7 +124,7 @@ export function discoverClassesAndTiers(): DiscoveryResult {
     .filter((f: string) => f.endsWith('.json'))
     .map((f: string) => f.replace('.json', ''));
   const templateFiles = readdirSync(resolve(DATA_DIR, 'gear-templates'))
-    .filter((f: string) => f.endsWith('.json'))
+    .filter((f: string) => f.endsWith('.json') && !f.includes('.base.'))
     .map((f: string) => f.replace('.json', ''));
 
   if (skillFiles.length === 0) {
