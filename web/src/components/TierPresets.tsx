@@ -84,6 +84,11 @@ export function TierPresets({
   }, [dropdownOpen]);
 
   const activeBuild = activeBuildId ? builds.find((b) => b.id === activeBuildId) : null;
+  const matchesActiveBuild = activeBuild &&
+    activeBuild.cgs.cape === cgsValues.cape &&
+    activeBuild.cgs.glove === cgsValues.glove &&
+    activeBuild.cgs.shoe === cgsValues.shoe;
+  const showSave = !cgsMatchesSelected && !saving && !matchesActiveBuild;
 
   return (
     <div className="flex flex-wrap items-end gap-4">
@@ -160,7 +165,7 @@ export function TierPresets({
           </div>
         )}
 
-        {!cgsMatchesSelected && !saving && (
+        {showSave && (
           <button
             type="button"
             onClick={() => setSaving(true)}
