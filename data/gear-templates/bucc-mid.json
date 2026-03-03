@@ -1,66 +1,40 @@
 {
+  "extends": "bucc",
   "source": "Interpolated between bucc-low and bucc-high. Knuckle 116 WATK.",
-  "label": "Bucc Mid",
-  "className": "Buccaneer",
   "baseStats": {
     "STR": 850,
     "DEX": 22,
     "INT": 4,
     "LUK": 4
   },
-  "gearStats": {
-    "STR": 124,
-    "DEX": 100,
-    "INT": 0,
-    "LUK": 0
-  },
-  "totalWeaponAttack": 163,
-  "weaponType": "Knuckle",
-  "weaponSpeed": 6,
-  "attackPotion": 60,
-  "potionName": "Stopper",
-  "projectile": 0,
-  "echoActive": true,
-  "mwLevel": 20,
-  "speedInfusion": true,
-  "sharpEyes": true,
-  "shadowPartner": false,
-  "boosterActive": true,
   "gearBreakdown": {
     "weapon": {
       "STR": 20,
-      "DEX": 0,
       "WATK": 116
     },
     "helmet": {
       "STR": 19,
-      "DEX": 35,
-      "WATK": 0
+      "DEX": 35
     },
     "top": {
       "STR": 32,
-      "DEX": 14,
-      "WATK": 0
+      "DEX": 14
     },
     "earring": {
       "STR": 8,
-      "DEX": 5,
-      "WATK": 0
+      "DEX": 5
     },
     "eye": {
       "STR": 4,
-      "DEX": 4,
-      "WATK": 0
+      "DEX": 4
     },
     "face": {
       "STR": 8,
-      "DEX": 3,
-      "WATK": 0
+      "DEX": 3
     },
     "pendant": {
       "STR": 16,
-      "DEX": 16,
-      "WATK": 0
+      "DEX": 16
     },
     "medal": {
       "STR": 1,
@@ -69,18 +43,15 @@
     },
     "ring1": {
       "STR": 4,
-      "DEX": 5,
-      "WATK": 0
+      "DEX": 5
     },
     "ring2": {
       "STR": 4,
-      "DEX": 4,
-      "WATK": 0
+      "DEX": 4
     },
     "ring3": {
       "STR": 1,
-      "DEX": 2,
-      "WATK": 0
+      "DEX": 2
     },
     "ring4": {
       "STR": 3,
@@ -88,29 +59,11 @@
       "WATK": 1
     },
     "belt": {
-      "STR": 0,
-      "DEX": 3,
-      "WATK": 0
+      "DEX": 3
     },
     "bottom": {
       "STR": 4,
-      "DEX": 5,
-      "WATK": 0
-    },
-    "cape": {
-      "STR": 0,
-      "DEX": 0,
-      "WATK": 16
-    },
-    "shoe": {
-      "STR": 0,
-      "DEX": 0,
-      "WATK": 13
-    },
-    "glove": {
-      "STR": 0,
-      "DEX": 0,
-      "WATK": 15
+      "DEX": 5
     }
   }
 }

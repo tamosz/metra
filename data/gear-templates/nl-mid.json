@@ -1,116 +1,65 @@
 {
+  "extends": "nl",
   "source": "Interpolated between nl-low and nl-high. Crystal Ilbi 29 WATK stars.",
-  "label": "NL Mid",
-  "className": "NL",
+  "projectile": 29,
   "baseStats": {
     "STR": 4,
     "DEX": 25,
     "INT": 4,
     "LUK": 850
   },
-  "gearStats": {
-    "STR": 0,
-    "DEX": 104,
-    "INT": 0,
-    "LUK": 76
-  },
-  "totalWeaponAttack": 130,
-  "weaponType": "Claw",
-  "weaponSpeed": 4,
-  "attackPotion": 60,
-  "potionName": "Stopper",
-  "projectile": 29,
-  "projectileName": "Crystal Ilbi",
-  "echoActive": true,
-  "mwLevel": 20,
-  "speedInfusion": true,
-  "sharpEyes": true,
-  "shadowPartner": true,
   "gearBreakdown": {
     "weapon": {
       "LUK": 2,
-      "DEX": 0,
       "WATK": 83
     },
     "helmet": {
       "LUK": 19,
-      "DEX": 35,
-      "WATK": 0
+      "DEX": 35
     },
     "top": {
       "LUK": 18,
-      "DEX": 5,
-      "WATK": 0
+      "DEX": 5
     },
     "bottom": {
       "LUK": 4,
-      "DEX": 16,
-      "WATK": 0
+      "DEX": 16
     },
     "earring": {
       "LUK": 2,
-      "DEX": 11,
-      "WATK": 0
+      "DEX": 11
     },
     "eye": {
-      "LUK": 0,
-      "DEX": 3,
-      "WATK": 0
+      "DEX": 3
     },
     "face": {
       "LUK": 5,
-      "DEX": 3,
-      "WATK": 0
+      "DEX": 3
     },
     "pendant": {
       "LUK": 18,
-      "DEX": 18,
-      "WATK": 0
+      "DEX": 18
     },
     "belt": {
-      "LUK": 0,
-      "DEX": 7,
-      "WATK": 0
+      "DEX": 7
     },
     "medal": {
-      "LUK": 0,
-      "DEX": 0,
       "WATK": 2
     },
     "ring1": {
       "LUK": 3,
-      "DEX": 2,
-      "WATK": 0
+      "DEX": 2
     },
     "ring2": {
       "LUK": 3,
-      "DEX": 3,
-      "WATK": 0
+      "DEX": 3
     },
     "ring3": {
       "LUK": 2,
-      "DEX": 1,
-      "WATK": 0
+      "DEX": 1
     },
     "ring4": {
-      "LUK": 0,
-      "DEX": 0,
       "WATK": 1
-    },
-    "cape": {
-      "LUK": 0,
-      "DEX": 0,
-      "WATK": 16
-    },
-    "shoe": {
-      "LUK": 0,
-      "DEX": 0,
-      "WATK": 13
-    },
-    "glove": {
-      "LUK": 0,
-      "DEX": 0,
-      "WATK": 15
     }
   }
 }

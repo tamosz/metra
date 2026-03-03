@@ -1,111 +1,62 @@
 {
+  "extends": "bucc",
   "source": "Theoretical max: godly + 7/7 30% scrolls. Knuckle: Maple Demon Slash (base 88 + 7x 30% scrolls = 123 WATK). C/G/S 22/22/18. gearStats verified against breakdown totals.",
-  "label": "Bucc Perfect",
-  "className": "Buccaneer",
   "baseStats": {
     "STR": 999,
     "DEX": 23,
     "INT": 4,
     "LUK": 4
   },
-  "gearStats": {
-    "STR": 221,
-    "DEX": 146,
-    "INT": 0,
-    "LUK": 0
-  },
-  "totalWeaponAttack": 189,
-  "weaponType": "Knuckle",
-  "weaponSpeed": 6,
-  "attackPotion": 100,
-  "potionName": "Apple",
-  "projectile": 0,
-  "echoActive": true,
-  "mwLevel": 20,
-  "speedInfusion": true,
-  "sharpEyes": true,
-  "shadowPartner": false,
-  "boosterActive": true,
   "gearBreakdown": {
     "weapon": {
       "STR": 26,
-      "DEX": 0,
       "WATK": 123
     },
     "helmet": {
       "STR": 31,
-      "DEX": 50,
-      "WATK": 0
+      "DEX": 50
     },
     "top": {
       "STR": 57,
-      "DEX": 25,
-      "WATK": 0
+      "DEX": 25
     },
     "earring": {
-      "STR": 20,
-      "DEX": 0,
-      "WATK": 0
+      "STR": 20
     },
     "eye": {
       "STR": 6,
-      "DEX": 6,
-      "WATK": 0
+      "DEX": 6
     },
     "face": {
       "STR": 15,
-      "DEX": 5,
-      "WATK": 0
+      "DEX": 5
     },
     "pendant": {
       "STR": 42,
-      "DEX": 33,
-      "WATK": 0
+      "DEX": 33
     },
     "belt": {
-      "STR": 0,
-      "DEX": 5,
-      "WATK": 0
+      "DEX": 5
     },
     "medal": {
-      "STR": 0,
-      "DEX": 0,
       "WATK": 3
     },
     "ring1": {
       "STR": 10,
-      "DEX": 12,
-      "WATK": 0
+      "DEX": 12
     },
     "ring2": {
       "STR": 5,
-      "DEX": 5,
-      "WATK": 0
+      "DEX": 5
     },
     "ring3": {
       "STR": 6,
-      "DEX": 2,
-      "WATK": 0
+      "DEX": 2
     },
     "ring4": {
       "STR": 3,
       "DEX": 3,
       "WATK": 1
-    },
-    "cape": {
-      "STR": 0,
-      "DEX": 0,
-      "WATK": 22
-    },
-    "shoe": {
-      "STR": 0,
-      "DEX": 0,
-      "WATK": 18
-    },
-    "glove": {
-      "STR": 0,
-      "DEX": 0,
-      "WATK": 22
     }
   }
 }

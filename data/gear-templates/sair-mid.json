@@ -1,72 +1,42 @@
 {
+  "extends": "sair",
   "source": "Interpolated between sair-low and sair-high. Gun 113 WATK, Eternal Bullet +20.",
-  "label": "Corsair Mid",
-  "className": "Corsair",
   "baseStats": {
     "STR": 4,
     "DEX": 850,
     "INT": 4,
     "LUK": 4
   },
-  "gearStats": {
-    "STR": 86,
-    "DEX": 128,
-    "INT": 0,
-    "LUK": 0
-  },
-  "totalWeaponAttack": 160,
-  "weaponType": "Gun",
-  "weaponSpeed": 6,
-  "attackPotion": 60,
-  "potionName": "Stopper",
-  "projectile": 20,
-  "projectileName": "Eternal Bullet",
-  "echoActive": true,
-  "mwLevel": 20,
-  "speedInfusion": true,
-  "sharpEyes": true,
-  "shadowPartner": false,
-  "boosterActive": true,
   "gearBreakdown": {
     "weapon": {
-      "DEX": 0,
-      "STR": 0,
       "WATK": 113
     },
     "helmet": {
       "DEX": 19,
-      "STR": 35,
-      "WATK": 0
+      "STR": 35
     },
     "top": {
       "DEX": 40,
-      "STR": 8,
-      "WATK": 0
+      "STR": 8
     },
     "bottom": {
       "DEX": 8,
-      "STR": 12,
-      "WATK": 0
+      "STR": 12
     },
     "earring": {
-      "DEX": 12,
-      "STR": 0,
-      "WATK": 0
+      "DEX": 12
     },
     "eye": {
       "DEX": 4,
-      "STR": 4,
-      "WATK": 0
+      "STR": 4
     },
     "face": {
       "DEX": 8,
-      "STR": 3,
-      "WATK": 0
+      "STR": 3
     },
     "pendant": {
       "DEX": 16,
-      "STR": 16,
-      "WATK": 0
+      "STR": 16
     },
     "medal": {
       "DEX": 1,
@@ -75,18 +45,15 @@
     },
     "ring1": {
       "DEX": 5,
-      "STR": 4,
-      "WATK": 0
+      "STR": 4
     },
     "ring2": {
       "DEX": 4,
-      "STR": 1,
-      "WATK": 0
+      "STR": 1
     },
     "ring3": {
       "DEX": 2,
-      "STR": 1,
-      "WATK": 0
+      "STR": 1
     },
     "ring4": {
       "DEX": 3,
@@ -95,18 +62,11 @@
     },
     "cape": {
       "DEX": 1,
-      "STR": 0,
       "WATK": 16
     },
     "shoe": {
       "DEX": 5,
-      "STR": 0,
       "WATK": 13
-    },
-    "glove": {
-      "DEX": 0,
-      "STR": 0,
-      "WATK": 15
     }
   }
 }

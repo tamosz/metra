@@ -1,0 +1,11 @@
+{
+  "className": "Buccaneer",
+  "weaponType": "Knuckle",
+  "weaponSpeed": 6,
+  "projectile": 0,
+  "echoActive": true,
+  "mwLevel": 20,
+  "speedInfusion": true,
+  "sharpEyes": true,
+  "shadowPartner": false
+}

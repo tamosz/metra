@@ -1,120 +1,64 @@
 {
+  "extends": "marksman",
   "source": "Identical to Bowmaster high template — archers share gear. Marksman Boost +15 WATK (buffed from +10 in Update #65.1). Crossbow base speed 6 (Normal).",
-  "label": "Marksman High",
-  "className": "Marksman",
   "baseStats": {
     "STR": 4,
     "DEX": 999,
     "INT": 4,
     "LUK": 4
   },
-  "gearStats": {
-    "STR": 97,
-    "DEX": 158,
-    "INT": 0,
-    "LUK": 0
-  },
-  "totalWeaponAttack": 203,
-  "weaponType": "Crossbow",
-  "weaponSpeed": 6,
-  "attackPotion": 100,
-  "potionName": "Apple",
-  "projectile": 10,
-  "projectileName": "Blue Arrow for Crossbow",
-  "echoActive": true,
-  "mwLevel": 20,
-  "speedInfusion": true,
-  "sharpEyes": true,
   "gearBreakdown": {
     "weapon": {
-      "DEX": 0,
-      "STR": 0,
-      "WATK": 130,
-      "notes": "Well-scrolled Neschere (~100 base + 6x 30% scrolls)."
+      "WATK": 130
     },
     "crossbowExpert": {
-      "DEX": 0,
-      "STR": 0,
-      "WATK": 15,
-      "notes": "Marksman Boost passive +15 WATK (buffed from +10 in Update #65.1)."
+      "WATK": 15
     },
     "helmet": {
       "DEX": 21,
-      "STR": 40,
-      "WATK": 0,
-      "notes": "Well-scrolled Zakum Helmet."
+      "STR": 40
     },
     "top": {
       "DEX": 60,
-      "STR": 8,
-      "WATK": 0,
-      "notes": "DEX scrolled Bathrobe/overall."
+      "STR": 8
     },
     "earring": {
-      "DEX": 15,
-      "STR": 0,
-      "WATK": 0
+      "DEX": 15
     },
     "eye": {
       "DEX": 6,
-      "STR": 6,
-      "WATK": 0
+      "STR": 6
     },
     "face": {
       "DEX": 10,
-      "STR": 5,
-      "WATK": 0
+      "STR": 5
     },
     "pendant": {
       "DEX": 22,
-      "STR": 23,
-      "WATK": 0,
-      "notes": "Near-perfect HTP."
+      "STR": 23
     },
     "belt": {
-      "DEX": 5,
-      "STR": 0,
-      "WATK": 0
+      "DEX": 5
     },
     "medal": {
-      "DEX": 0,
-      "STR": 0,
       "WATK": 3
     },
     "ring1": {
       "DEX": 8,
-      "STR": 5,
-      "WATK": 0
+      "STR": 5
     },
     "ring2": {
       "DEX": 5,
-      "STR": 5,
-      "WATK": 0
+      "STR": 5
     },
     "ring3": {
       "DEX": 3,
-      "STR": 2,
-      "WATK": 0
+      "STR": 2
     },
     "ring4": {
       "DEX": 3,
       "STR": 3,
       "WATK": 1
-    },
-    "cape": {
-      "DEX": 0,
-      "STR": 0,
-      "WATK": 18
-    },
-    "shoe": {
-      "DEX": 0,
-      "STR": 0,
-      "WATK": 16
-    },
-    "glove": {
-      "DEX": 0,
-      "STR": 0,
-      "WATK": 20
     }
   }
 }

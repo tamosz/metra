@@ -1,0 +1,10 @@
+{
+  "className": "Marksman",
+  "weaponType": "Crossbow",
+  "weaponSpeed": 6,
+  "projectile": 10,
+  "echoActive": true,
+  "mwLevel": 20,
+  "speedInfusion": true,
+  "sharpEyes": true
+}

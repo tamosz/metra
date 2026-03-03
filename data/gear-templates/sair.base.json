@@ -1,0 +1,11 @@
+{
+  "className": "Corsair",
+  "weaponType": "Gun",
+  "weaponSpeed": 6,
+  "projectile": 20,
+  "echoActive": true,
+  "mwLevel": 20,
+  "speedInfusion": true,
+  "sharpEyes": true,
+  "shadowPartner": false
+}

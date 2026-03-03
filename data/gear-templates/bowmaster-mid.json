@@ -1,75 +1,45 @@
 {
+  "extends": "bowmaster",
   "source": "Interpolated between bowmaster-low and bowmaster-high. Bow Expert +10 WATK baked in.",
-  "label": "Bowmaster Mid",
-  "className": "Bowmaster",
   "baseStats": {
     "STR": 4,
     "DEX": 850,
     "INT": 4,
     "LUK": 4
   },
-  "gearStats": {
-    "STR": 85,
-    "DEX": 123,
-    "INT": 0,
-    "LUK": 0
-  },
-  "totalWeaponAttack": 177,
-  "weaponType": "Bow",
-  "weaponSpeed": 6,
-  "attackPotion": 60,
-  "potionName": "Stopper",
-  "projectile": 10,
-  "projectileName": "Red Arrow for Bow",
-  "echoActive": true,
-  "mwLevel": 20,
-  "speedInfusion": true,
-  "sharpEyes": true,
   "gearBreakdown": {
     "weapon": {
-      "DEX": 0,
-      "STR": 0,
       "WATK": 120
     },
     "bowExpert": {
-      "DEX": 0,
-      "STR": 0,
       "WATK": 10
     },
     "helmet": {
       "DEX": 19,
-      "STR": 35,
-      "WATK": 0
+      "STR": 35
     },
     "top": {
       "DEX": 40,
-      "STR": 8,
-      "WATK": 0
+      "STR": 8
     },
     "bottom": {
       "DEX": 8,
-      "STR": 12,
-      "WATK": 0
+      "STR": 12
     },
     "earring": {
-      "DEX": 12,
-      "STR": 0,
-      "WATK": 0
+      "DEX": 12
     },
     "eye": {
       "DEX": 4,
-      "STR": 4,
-      "WATK": 0
+      "STR": 4
     },
     "face": {
       "DEX": 8,
-      "STR": 3,
-      "WATK": 0
+      "STR": 3
     },
     "pendant": {
       "DEX": 16,
-      "STR": 16,
-      "WATK": 0
+      "STR": 16
     },
     "medal": {
       "DEX": 1,
@@ -78,38 +48,19 @@
     },
     "ring1": {
       "DEX": 5,
-      "STR": 3,
-      "WATK": 0
+      "STR": 3
     },
     "ring2": {
       "DEX": 4,
-      "STR": 2,
-      "WATK": 0
+      "STR": 2
     },
     "ring3": {
       "DEX": 2,
-      "STR": 1,
-      "WATK": 0
+      "STR": 1
     },
     "ring4": {
       "DEX": 4,
-      "STR": 0,
       "WATK": 1
-    },
-    "cape": {
-      "DEX": 0,
-      "STR": 0,
-      "WATK": 16
-    },
-    "shoe": {
-      "DEX": 0,
-      "STR": 0,
-      "WATK": 13
-    },
-    "glove": {
-      "DEX": 0,
-      "STR": 0,
-      "WATK": 15
     }
   }
 }

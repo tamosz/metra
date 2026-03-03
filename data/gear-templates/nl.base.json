@@ -1,0 +1,11 @@
+{
+  "className": "NL",
+  "weaponType": "Claw",
+  "weaponSpeed": 4,
+  "projectile": 30,
+  "echoActive": true,
+  "mwLevel": 20,
+  "speedInfusion": true,
+  "sharpEyes": true,
+  "shadowPartner": true
+}

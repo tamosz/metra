@@ -1,115 +1,64 @@
 {
+  "extends": "nl",
   "source": "Theoretical max: godly + 7/7 30% scrolls. Claw: Dragon Purple Claw (95 WATK, max possible). Projectile: Balanced Fury (30 WATK). C/G/S 22/22/18. gearStats verified against breakdown totals.",
-  "label": "NL Perfect",
-  "className": "NL",
   "baseStats": {
     "STR": 4,
     "DEX": 25,
     "INT": 4,
     "LUK": 999
   },
-  "gearStats": {
-    "STR": 0,
-    "DEX": 155,
-    "INT": 0,
-    "LUK": 168
-  },
-  "totalWeaponAttack": 161,
-  "weaponType": "Claw",
-  "weaponSpeed": 4,
-  "attackPotion": 100,
-  "potionName": "Apple",
-  "projectile": 30,
-  "echoActive": true,
-  "mwLevel": 20,
-  "speedInfusion": true,
-  "sharpEyes": true,
-  "shadowPartner": true,
   "gearBreakdown": {
     "weapon": {
       "LUK": 8,
-      "DEX": 0,
       "WATK": 95
     },
     "helmet": {
       "LUK": 30,
-      "DEX": 45,
-      "WATK": 0
+      "DEX": 45
     },
     "top": {
       "LUK": 35,
-      "DEX": 10,
-      "WATK": 0
+      "DEX": 10
     },
     "bottom": {
       "LUK": 10,
-      "DEX": 23,
-      "WATK": 0
+      "DEX": 23
     },
     "earring": {
       "LUK": 9,
-      "DEX": 17,
-      "WATK": 0
+      "DEX": 17
     },
     "eye": {
       "LUK": 1,
-      "DEX": 3,
-      "WATK": 0
+      "DEX": 3
     },
     "face": {
       "LUK": 10,
-      "DEX": 5,
-      "WATK": 0
+      "DEX": 5
     },
     "pendant": {
       "LUK": 40,
-      "DEX": 31,
-      "WATK": 0
+      "DEX": 31
     },
     "belt": {
-      "LUK": 0,
-      "DEX": 9,
-      "WATK": 0
+      "DEX": 9
     },
     "medal": {
-      "LUK": 0,
-      "DEX": 0,
       "WATK": 3
     },
     "ring1": {
-      "LUK": 8,
-      "DEX": 0,
-      "WATK": 0
+      "LUK": 8
     },
     "ring2": {
       "LUK": 10,
-      "DEX": 10,
-      "WATK": 0
+      "DEX": 10
     },
     "ring3": {
       "LUK": 7,
-      "DEX": 2,
-      "WATK": 0
+      "DEX": 2
     },
     "ring4": {
-      "LUK": 0,
-      "DEX": 0,
       "WATK": 1
-    },
-    "cape": {
-      "LUK": 0,
-      "DEX": 0,
-      "WATK": 22
-    },
-    "shoe": {
-      "LUK": 0,
-      "DEX": 0,
-      "WATK": 18
-    },
-    "glove": {
-      "LUK": 0,
-      "DEX": 0,
-      "WATK": 22
     }
   }
 }
