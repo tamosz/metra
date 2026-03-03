@@ -34,7 +34,7 @@
   "mixedRotations": [
     {
       "name": "Practical Bossing",
-      "description": "Estimated 80/20 Cannon/RF split — assumes typical endgame bossing with periodic Battleship destruction (90s cooldown at level 1, 164k HP at level 200)",
+      "description": "80/20 Cannon/RF split for periodic ship destruction. Use the Skills toggle to see individual skills.",
       "components": [
         { "skill": "Battleship Cannon", "weight": 0.8 },
         { "skill": "Rapid Fire", "weight": 0.2 }
