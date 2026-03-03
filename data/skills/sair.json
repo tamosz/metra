@@ -17,6 +17,7 @@
       "speedCategory": "Battleship Cannon",
       "weaponType": "Gun",
       "headline": false,
+      "description": "Includes Bullseye (+20% damage).",
       "source": "dmg D9=380, E9=D9*1.2=456, N9 hitCount=4, speed 2 → 0.60s"
     },
     {
@@ -28,6 +29,7 @@
       "weaponType": "Gun",
       "knockbackRecovery": 0.5,
       "headline": false,
+      "description": "Includes Bullseye (+20% damage).",
       "source": "dmg D10=200, E10=D10*1.2=240, Hurricane fixed 0.12s. KB recovery lower than Hurricane — Rapid Fire can fire mid-air (data/references/knockback.md)"
     }
   ],

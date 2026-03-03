@@ -169,6 +169,7 @@ export function runSimulation(
             tier,
             scenario: scenario.name,
             dps: effectiveDps,
+            ...(skill.description ? { description: skill.description } : {}),
             ...(isHeadline ? {} : { headline: false }),
           };
 

@@ -9,6 +9,7 @@ export const GAME_TERMS: Record<string, string> = {
   'Shadow Partner': 'Shadower/NL buff that adds a clone dealing 50% of your damage (1.5x total).',
   Berserk: 'DrK HP-sacrifice buff that multiplies damage by 2.1x when HP is low.',
   Rotation: 'A repeating sequence of skills used for sustained DPS (e.g., Snipe + Strafes).',
+  Bullseye: 'Corsair buff that marks a target (via Homing Beacon) and increases damage by 20%.',
 };
 
 export const SCENARIO_DESCRIPTIONS: Record<string, string> = {

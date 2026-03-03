@@ -98,6 +98,8 @@ export interface SkillEntry {
   hidden?: boolean;
   /** If false, skill is shown only when "show all skills" is toggled on. Default true. */
   headline?: boolean;
+  /** Tooltip text shown next to the skill name in rankings. */
+  description?: string;
   /** Group name for element variant competition. Skills sharing a group are compared
    *  after DPS calculation; only the highest-DPS variant survives in output.
    *  e.g., Holy Blast and Charge Blast both have elementVariantGroup: "Blast (Sword)". */
