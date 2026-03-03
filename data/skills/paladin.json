@@ -12,6 +12,7 @@
   "skills": [
     {
       "name": "Blast (Holy, Sword)",
+      "elementVariantGroup": "Blast (Sword)",
       "basePower": 580,
       "multiplier": 1.4,
       "hitCount": 1,
@@ -21,6 +22,8 @@
     },
     {
       "name": "Blast (F/I/L Charge, Sword)",
+      "nameTemplate": "Blast ({element} Charge, Sword)",
+      "elementVariantGroup": "Blast (Sword)",
       "basePower": 580,
       "multiplier": 1.3,
       "hitCount": 1,
