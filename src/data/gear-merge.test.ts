@@ -89,4 +89,10 @@ describe('mergeGearTemplate', () => {
     const result = mergeGearTemplate(classBase, overrideWithProjectile, tierDefaults['high']);
     expect(result.projectile).toBe(30);
   });
+
+  it('tier override attackPotion takes precedence over tier defaults', () => {
+    const mageOverride: TierOverride = { ...tierOverride, attackPotion: 220 };
+    const result = mergeGearTemplate(classBase, mageOverride, tierDefaults['high']);
+    expect(result.attackPotion).toBe(220);
+  });
 });
