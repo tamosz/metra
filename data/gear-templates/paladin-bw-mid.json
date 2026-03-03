@@ -1,69 +1,44 @@
 {
+  "extends": "paladin-bw",
   "source": "Split from paladin-mid.json. Dragon Flame 2H BW has +6 WATK over Stonetooth Sword at equivalent scrolling (107 vs 101 clean avg). Speed 7 (Slow) vs Sword speed 6 (Normal).",
-  "label": "Paladin (BW) Mid",
-  "className": "Paladin (BW)",
   "baseStats": {
     "STR": 850,
     "DEX": 22,
     "INT": 4,
     "LUK": 4
   },
-  "gearStats": {
-    "STR": 136,
-    "DEX": 93,
-    "INT": 0,
-    "LUK": 0
-  },
-  "totalWeaponAttack": 193,
-  "weaponType": "2H BW",
-  "weaponSpeed": 7,
-  "attackPotion": 60,
-  "potionName": "Stopper",
-  "projectile": 0,
-  "echoActive": true,
-  "mwLevel": 20,
-  "speedInfusion": true,
-  "sharpEyes": true,
   "gearBreakdown": {
     "weapon": {
       "STR": 20,
-      "DEX": 0,
       "WATK": 146
     },
     "helmet": {
       "STR": 19,
-      "DEX": 34,
-      "WATK": 0
+      "DEX": 34
     },
     "top": {
       "STR": 35,
-      "DEX": 8,
-      "WATK": 0
+      "DEX": 8
     },
     "bottom": {
       "STR": 8,
-      "DEX": 12,
-      "WATK": 0
+      "DEX": 12
     },
     "earring": {
       "STR": 10,
-      "DEX": 4,
-      "WATK": 0
+      "DEX": 4
     },
     "eye": {
       "STR": 4,
-      "DEX": 4,
-      "WATK": 0
+      "DEX": 4
     },
     "face": {
       "STR": 8,
-      "DEX": 3,
-      "WATK": 0
+      "DEX": 3
     },
     "pendant": {
       "STR": 16,
-      "DEX": 16,
-      "WATK": 0
+      "DEX": 16
     },
     "medal": {
       "STR": 1,
@@ -72,38 +47,20 @@
     },
     "ring1": {
       "STR": 6,
-      "DEX": 4,
-      "WATK": 0
+      "DEX": 4
     },
     "ring2": {
       "STR": 4,
-      "DEX": 3,
-      "WATK": 0
+      "DEX": 3
     },
     "ring3": {
       "STR": 2,
-      "DEX": 1,
-      "WATK": 0
+      "DEX": 1
     },
     "ring4": {
       "STR": 3,
       "DEX": 3,
       "WATK": 1
-    },
-    "cape": {
-      "STR": 0,
-      "DEX": 0,
-      "WATK": 16
-    },
-    "shoe": {
-      "STR": 0,
-      "DEX": 0,
-      "WATK": 13
-    },
-    "glove": {
-      "STR": 0,
-      "DEX": 0,
-      "WATK": 15
     }
   }
 }

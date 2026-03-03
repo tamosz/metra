@@ -1,0 +1,10 @@
+{
+  "className": "Paladin (BW)",
+  "weaponType": "2H BW",
+  "weaponSpeed": 7,
+  "projectile": 0,
+  "echoActive": true,
+  "mwLevel": 20,
+  "speedInfusion": true,
+  "sharpEyes": true
+}
