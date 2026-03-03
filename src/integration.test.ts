@@ -203,9 +203,9 @@ describe('Baseline mode', () => {
     expect(find('DrK', 'Spear Crusher').dps.dps).toBeCloseTo(251906, -2);
     expect(find('Paladin', 'Blast (Holy, Sword)').dps.dps).toBeCloseTo(189256, -2);
     expect(find('NL', 'Triple Throw').dps.dps).toBeCloseTo(298499, -2);
-    expect(find('Bowmaster', 'Hurricane').dps.dps).toBeCloseTo(236901, -2);
-    expect(find('Marksman', 'Strafe (MM)').dps.dps).toBeCloseTo(237271, -2);
-    expect(find('Marksman', 'Snipe + Strafe').dps.dps).toBeCloseTo(238387, -2);
+    expect(find('Bowmaster', 'Hurricane').dps.dps).toBeCloseTo(245340, -2);
+    expect(find('Marksman', 'Strafe (MM)').dps.dps).toBeCloseTo(244801, -2);
+    expect(find('Marksman', 'Snipe + Strafe').dps.dps).toBeCloseTo(244715, -2);
     expect(find('Corsair', 'Battleship Cannon').dps.dps).toBeCloseTo(349431, -2);
     expect(find('Corsair', 'Rapid Fire').dps.dps).toBeCloseTo(240724, -2);
     expect(find('Buccaneer', 'Barrage + Demolition').dps.dps).toBeGreaterThan(200000);
@@ -223,9 +223,9 @@ describe('Baseline mode', () => {
     expect(find('DrK', 'Spear Crusher').dps.dps).toBeCloseTo(174672, -2);
     expect(find('Paladin', 'Blast (Holy, Sword)').dps.dps).toBeCloseTo(132361, -2);
     expect(find('NL', 'Triple Throw').dps.dps).toBeCloseTo(197496, -2);
-    expect(find('Bowmaster', 'Hurricane').dps.dps).toBeCloseTo(159055, -2);
-    expect(find('Marksman', 'Strafe (MM)').dps.dps).toBeCloseTo(159426, -2);
-    expect(find('Marksman', 'Snipe + Strafe').dps.dps).toBeCloseTo(172971, -2);
+    expect(find('Bowmaster', 'Hurricane').dps.dps).toBeCloseTo(165513, -2);
+    expect(find('Marksman', 'Strafe (MM)').dps.dps).toBeCloseTo(166416, -2);
+    expect(find('Marksman', 'Snipe + Strafe').dps.dps).toBeCloseTo(178845, -2);
     expect(find('Corsair', 'Battleship Cannon').dps.dps).toBeCloseTo(242541, -2);
     expect(find('Corsair', 'Rapid Fire').dps.dps).toBeCloseTo(167087, -2);
     expect(find('Buccaneer', 'Barrage + Demolition').dps.dps).toBeGreaterThan(130000);
@@ -241,9 +241,9 @@ describe('Baseline mode', () => {
     expect(find('Hero', 'Brandish (Sword)').dps.dps).toBeCloseTo(124136, -2);
     expect(find('DrK', 'Spear Crusher').dps.dps).toBeCloseTo(129592, -2);
     expect(find('Paladin', 'Blast (Holy, Sword)').dps.dps).toBeCloseTo(96840, -2);
-    expect(find('Bowmaster', 'Hurricane').dps.dps).toBeCloseTo(113332, -2);
-    expect(find('Marksman', 'Strafe (MM)').dps.dps).toBeCloseTo(113885, -2);
-    expect(find('Marksman', 'Snipe + Strafe').dps.dps).toBeCloseTo(134702, -2);
+    expect(find('Bowmaster', 'Hurricane').dps.dps).toBeCloseTo(118581, -2);
+    expect(find('Marksman', 'Strafe (MM)').dps.dps).toBeCloseTo(119042, -2);
+    expect(find('Marksman', 'Snipe + Strafe').dps.dps).toBeCloseTo(139036, -2);
     expect(find('Corsair', 'Battleship Cannon').dps.dps).toBeCloseTo(180851, -2);
     expect(find('Corsair', 'Rapid Fire').dps.dps).toBeCloseTo(124589, -2);
     expect(find('Buccaneer', 'Barrage + Demolition').dps.dps).toBeGreaterThan(100000);
@@ -415,7 +415,7 @@ describe('Multi-scenario baseline', () => {
     const comboBuffed = results.find(
       (r) => r.className === 'Marksman' && r.skillName === 'Snipe + Strafe' && r.scenario === 'Buffed' && r.tier === 'high'
     )!;
-    expect(comboBuffed.dps.dps).toBeCloseTo(238387, -2);
+    expect(comboBuffed.dps.dps).toBeCloseTo(244715, -2);
 
     // Combo DPS is halved with 50% PDR
     const comboPdr = results.find(
@@ -425,7 +425,7 @@ describe('Multi-scenario baseline', () => {
         r.scenario === 'Bossing (50% PDR)' &&
         r.tier === 'high'
     )!;
-    expect(comboPdr.dps.dps).toBeCloseTo(119194, -2);
+    expect(comboPdr.dps.dps).toBeCloseTo(122358, -2);
   });
 });
 

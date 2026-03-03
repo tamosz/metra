@@ -853,11 +853,11 @@ describe('Marksman DPS', () => {
 
     // Standard formula with Crossbow 3.6x, mastery 1.0 (Update #71)
     // DEX: floor(999 * 1.1) + 158 = 1256, STR: floor(4 * 1.1) + 97 = 101
-    // totalAttack = 203 + 100 + floor((203+100)*0.04) = 315
-    // max = floor((1256 * 3.6 + 101) * 315 / 100) = 14561
-    // min = floor((1256 * 3.6 * 0.9 * 1.0 + 101) * 315 / 100) = 13136
-    expect(result.damageRange.max).toBe(14561);
-    expect(result.damageRange.min).toBe(13136);
+    // totalAttack = 203 + 100 + 10 + floor((203+100+10)*0.04) = 325
+    // max = floor((1256 * 3.6 + 101) * 325 / 100) = 15023
+    // min = floor((1256 * 3.6 * 0.9 * 1.0 + 101) * 325 / 100) = 13553
+    expect(result.damageRange.max).toBe(15023);
+    expect(result.damageRange.min).toBe(13553);
   });
 
   it('Strafe (MM) High tier DPS ~232,748', () => {
@@ -871,7 +871,7 @@ describe('Marksman DPS', () => {
     expect(result.skillDamagePercent).toBe(125);
     // SE: (125 + 100 + 140) * 1 = 365
     expect(result.critDamagePercent).toBe(365);
-    expect(result.dps).toBeCloseTo(237271, -1);
+    expect(result.dps).toBeCloseTo(244801, -1);
   });
 
   it('Strafe (MM) Low tier DPS ~113,885', () => {
@@ -881,7 +881,7 @@ describe('Marksman DPS', () => {
     );
 
     expect(result.attackTime).toBe(0.60);
-    expect(result.dps).toBeCloseTo(113885, -1);
+    expect(result.dps).toBeCloseTo(119042, -1);
   });
 
   it('Snipe uses fixedDamage path (195,000 per hit)', () => {
@@ -949,8 +949,8 @@ describe('Marksman DPS', () => {
     // 7 Strafes per 5s cycle → effective attack time = 5.0/7 = 0.714s
     expect(result.attackTime).toBe(0.714);
     // Same damage range as standalone Strafe (MM) — same basePower, crit, weapon
-    expect(result.damageRange.max).toBe(14561);
-    expect(result.damageRange.min).toBe(13136);
+    expect(result.damageRange.max).toBe(15023);
+    expect(result.damageRange.min).toBe(13553);
   });
 
   it('Strafe (MM) High tier DPS > Low tier', () => {
@@ -1270,12 +1270,12 @@ describe('Bowmaster DPS', () => {
     );
 
     // DEX: floor(999*1.1) + 158 = 1256, STR: floor(4*1.1) + 97 = 101
-    // totalAttack = 198 + 100 + 0 + floor(298*0.04) = 309
+    // totalAttack = 198 + 100 + 10 + floor((198+100+10)*0.04) = 320
     // Bow 3.4x, mastery 0.9
-    // max = floor((1256 * 3.4 + 101) * 309 / 100) = 13507
-    // min = floor((1256 * 3.4 * 0.9 * 0.9 + 101) * 309 / 100) = 11000
-    expect(result.damageRange.max).toBe(13507);
-    expect(result.damageRange.min).toBe(11000);
+    // max = floor((1256 * 3.4 + 101) * 320 / 100) = 13988
+    // min = floor((1256 * 3.4 * 0.9 * 0.9 + 101) * 320 / 100) = 11392
+    expect(result.damageRange.max).toBe(13988);
+    expect(result.damageRange.min).toBe(11392);
   });
 
   it('Hurricane High tier crit uses 55% rate (40% Critical Shot + 15% SE)', () => {
@@ -1296,10 +1296,10 @@ describe('Bowmaster DPS', () => {
       bmHigh, bmData, hurricane, weaponData, attackSpeedData, mwData
     );
 
-    expect(result.dps).toBeCloseTo(236901, -2);
+    expect(result.dps).toBeCloseTo(245340, -2);
   });
 
-  it('Hurricane Low tier DPS ~104,932', () => {
+  it('Hurricane Low tier DPS ~118,581', () => {
     const hurricane = bmData.skills.find((s) => s.name === 'Hurricane')!;
     const result = calculateSkillDps(
       bmLow, bmData, hurricane, weaponData, attackSpeedData, mwData
@@ -1307,10 +1307,10 @@ describe('Bowmaster DPS', () => {
 
     expect(result.attackTime).toBe(0.12);
     // DEX: floor(700*1.1) + 87 = 857, STR: 4 + 73 = 77
-    // totalAttack = 148 + 60 + 0 + 8 = 216
-    expect(result.damageRange.max).toBe(6460);
-    expect(result.damageRange.min).toBe(5264);
-    expect(result.dps).toBeCloseTo(113332, -2);
+    // totalAttack = 148 + 60 + 10 + floor((148+60+10)*0.04) = 226
+    expect(result.damageRange.max).toBe(6759);
+    expect(result.damageRange.min).toBe(5508);
+    expect(result.dps).toBeCloseTo(118581, -2);
   });
 
   it('High tier DPS is greater than Low tier for all skills', () => {
