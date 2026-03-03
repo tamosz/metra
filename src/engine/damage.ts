@@ -9,6 +9,9 @@ const THROWING_STAR_MAX_COEFF = 5.0;
 /** Throwing star min damage coefficient (LUK scaling). Source: range calculator F19. */
 const THROWING_STAR_MIN_COEFF = 2.5;
 
+/** TMA hard cap. Source: in-game testing (PR #45 discussion — confirmed by endgame mage). */
+export const TMA_CAP = 1999;
+
 export interface DamageRange {
   min: number;
   max: number;
@@ -108,7 +111,7 @@ export function calculateMagicDamageRange(
   spellAmp: number = 1,
   weaponAmp: number = 1
 ): DamageRange {
-  tma = Math.min(1999, tma); // TMA is capped at 2k currently
+  tma = Math.min(TMA_CAP, tma);
   const amp = spellAmp * weaponAmp;
   const max = Math.floor(
     ((tma * tma / 1000 + tma) / 30 + int / 200) * amp

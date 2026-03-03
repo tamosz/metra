@@ -6,6 +6,7 @@ import {
   calculateAdjustedRange,
   calculateRangeCap,
   getWeaponMultiplier,
+  TMA_CAP,
 } from './damage.js';
 import { loadWeapons } from '../data/loader.js';
 
@@ -126,6 +127,13 @@ describe('calculateMagicDamageRange', () => {
     const range = calculateMagicDamageRange(1000, 800, 0.6, 1.4, 1.25);
     expect(range.max).toBe(Math.floor(((1000000/1000 + 1000)/30 + 800/200) * 1.75));
     expect(range.min).toBe(Math.floor(((1000000/1000 + 1000*0.6*0.9)/30 + 800/200) * 1.75));
+  });
+
+  it('caps TMA at TMA_CAP', () => {
+    // TMA above cap should produce same result as TMA at cap
+    const atCap = calculateMagicDamageRange(TMA_CAP, 1500, 0.6, 1.4, 1.25);
+    const overCap = calculateMagicDamageRange(2200, 1500, 0.6, 1.4, 1.25);
+    expect(overCap).toEqual(atCap);
   });
 });
 

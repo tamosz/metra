@@ -5,6 +5,7 @@ export {
   calculateAdjustedRange,
   calculateRangeCap,
   getWeaponMultiplier,
+  TMA_CAP,
   type DamageRange,
 } from './damage.js';
 
