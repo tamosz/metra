@@ -99,16 +99,11 @@ Modeled via `attackRatio: { slash: 0.5, stab: 0.5 }` on SkillEntry.
 **Accessed:** 2026-02-01
 **Used in:** `src/engine/dps.ts`
 
-Two SE crit calculation variants exist:
+All physical classes use the same SE crit calculation:
 
-**`addBeforeMultiply`** (Hero, DrK, NL, Bowmaster, Marksman, Shadower, Corsair, Buccaneer):
+**`addBeforeMultiply`** (all physical classes including Paladin):
 ```
 critDmg% = (basePower + totalCritBonus) * multiplier
-```
-
-**`addAfterMultiply`** (Paladin):
-```
-critDmg% = basePower * multiplier + totalCritBonus
 ```
 
 `totalCritBonus` = built-in crit bonus + SE bonus (+140 if active).
@@ -145,22 +140,17 @@ rework, SE can trigger on the hits but uses the old 250% crit damage.
 Modeled via `fixedCritDamagePercent` on SkillEntry: when present, overrides the SE crit
 formula entirely. Crit rate still comes from SE (0.15 when active).
 
-### Open question: Paladin addAfterMultiply consistency
+### Resolved: Paladin crit formula corrected to addBeforeMultiply
 
 **Identified:** 2026-03-03
+**Resolved:** 2026-03-03
 
-The spreadsheet uses `addAfterMultiply` only for Paladin (G28: `=D28*1.4+140`). Every
-other class uses `addBeforeMultiply` (e.g., Hero G15: `=(D15+140)*1.9`). This means the
-charge multiplier does not amplify the SE crit bonus for Paladin, but Berserk/Combo
-multipliers do amplify it for DrK/Hero.
+The spreadsheet used `addAfterMultiply` for Paladin (G28: `=D28*1.4+140`), but this was
+a bug in the spreadsheet. The charge multiplier should amplify the SE crit bonus just like
+every other class's multiplier. Community feedback confirmed the correct formula is
+`(basePower + totalCritBonus) * multiplier`, i.e. `(580 + 140) * 1.4 = 1008`.
 
-The Ayumilove pre-BB formula compilation treats elemental charge as a "Skill Modifier"
-on the damage range, separate from skill% + crit bonus. Under that model, both formulas
-would give `addBeforeMultiply`: `(580 + 140) * 1.4 = 1008`, not `580 * 1.4 + 140 = 952`.
-
-Impact: ~1% total DPS (56 percentage points on crit hits at 15% crit rate). The current
-implementation faithfully reproduces the spreadsheet. Needs forum or in-game verification
-to determine whether the spreadsheet is intentional or a bug.
+Paladin now uses `addBeforeMultiply` like all other physical classes.
 
 ## Damage Cap
 

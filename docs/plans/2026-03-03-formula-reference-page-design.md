@@ -21,7 +21,7 @@ New `'formulas'` route in App.tsx, "Formulas" nav item. Single `FormulasPage.tsx
    - Throwing Star (Night Lord)
    - Magic (Archmages, Bishop) with spell/weapon amplification
 
-5. **Critical Damage** — Two variants (addBeforeMultiply / addAfterMultiply). Built-in crit stacking with SE. Rate capped at 1.0.
+5. **Critical Damage** — Two variants (addBeforeMultiply / multiplicative). Built-in crit stacking with SE. Rate capped at 1.0.
 
 6. **Attack Speed** — Speed resolution (base - booster - SI, min 2). Fixed-speed skills (Hurricane, mage skills, Demolition).
 

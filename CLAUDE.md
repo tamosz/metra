@@ -184,8 +184,7 @@ Source: range calculator F18/F19. No weapon multiplier or secondary stat — fla
 
 ### Crit Damage
 Two formula variants exist, configured per class via `seCritFormula`:
-- **`addBeforeMultiply`** (Hero, DrK, NL, Bowmaster, Marksman, Shadower, Corsair, Buccaneer): `critDmg% = (basePower + totalCritBonus) * multiplier`
-- **`addAfterMultiply`** (Paladin): `critDmg% = basePower * multiplier + totalCritBonus`
+- **`addBeforeMultiply`** (all physical classes including Paladin): `critDmg% = (basePower + totalCritBonus) * multiplier`
 
 `totalCritBonus` = built-in crit bonus (e.g., TT +100) + SE bonus (+140 if active). Crit rate is also additive: built-in (e.g., TT 0.50) + SE (0.15), capped at 1.0.
 

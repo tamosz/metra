@@ -162,7 +162,7 @@ describe('class data value ranges', () => {
   });
 
   it('every class seCritFormula is a valid enum value', () => {
-    const validFormulas = new Set(['addBeforeMultiply', 'addAfterMultiply', 'multiplicative']);
+    const validFormulas = new Set(['addBeforeMultiply', 'multiplicative']);
     for (const [, classData] of classDataMap) {
       if (classData.seCritFormula != null) {
         expect(

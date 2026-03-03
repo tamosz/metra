@@ -12,22 +12,11 @@ export function CriticalDamageSection() {
       </p>
 
       <h4 className="text-sm font-semibold text-text-bright mt-8 mb-3">
-        addBeforeMultiply (default)
+        addBeforeMultiply (all physical classes)
       </h4>
-      <p className="text-text-secondary text-sm mb-4 leading-relaxed">
-        Used by: Hero, DrK, Night Lord, Bowmaster, Marksman, Shadower, Corsair, Buccaneer.
-      </p>
 
       <div className="my-6">
         <BlockMath math="\text{critDmg\%} = (\text{basePower} + \text{totalCritBonus}) \times \text{multiplier}" />
-      </div>
-
-      <h4 className="text-sm font-semibold text-text-bright mt-8 mb-3">
-        addAfterMultiply (Paladin only)
-      </h4>
-
-      <div className="my-6">
-        <BlockMath math="\text{critDmg\%} = \text{basePower} \times \text{multiplier} + \text{totalCritBonus}" />
       </div>
 
       <p className="text-text-secondary text-sm mb-4 leading-relaxed">

@@ -375,14 +375,9 @@ git commit -m "add stat, attack, and damage range formula sections"
 
 Two formula variants:
 
-**addBeforeMultiply** (most classes):
+**addBeforeMultiply** (all physical classes):
 ```
 \text{critDmg\%} = (\text{basePower} + \text{totalCritBonus}) \times \text{multiplier}
-```
-
-**addAfterMultiply** (Paladin):
-```
-\text{critDmg\%} = \text{basePower} \times \text{multiplier} + \text{totalCritBonus}
 ```
 
 Where `totalCritBonus = builtInCritBonus + seCritBonus`.
@@ -477,7 +472,7 @@ Build a table with columns:
 - Mastery
 - Primary stat
 - Secondary stat
-- Crit formula (addBeforeMultiply / addAfterMultiply)
+- Crit formula (addBeforeMultiply / multiplicative)
 - Built-in crit rate (if any)
 - Notable mechanics (Shadow Partner, Berserk, Stance, spell/weapon amp)
 
