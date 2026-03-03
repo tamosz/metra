@@ -4,6 +4,7 @@ import { calculateSkillDps } from '@engine/engine/dps.js';
 import type { CharacterBuild, ClassSkillData, SkillEntry } from '@engine/data/types.js';
 import { weaponData, attackSpeedData, mwData } from '../data/bundle.js';
 import { formatDps } from '../utils/format.js';
+import { TH } from '../utils/styles.js';
 
 interface MarginalGainsTableProps {
   build: CharacterBuild;
@@ -81,7 +82,6 @@ export function MarginalGainsTable({ build, classData }: MarginalGainsTableProps
 
   if (!bestSkill || gains.length === 0) return null;
 
-  const th = 'px-3 py-2 text-[11px] uppercase tracking-wide text-text-dim font-medium text-left';
   const bestGain = gains[0];
 
   return (
@@ -95,10 +95,10 @@ export function MarginalGainsTable({ build, classData }: MarginalGainsTableProps
       <table className="w-full border-collapse text-sm">
         <thead>
           <tr className="border-b border-border-default">
-            <th className={th}>Stat</th>
-            <th className={`${th} text-right`}>Current</th>
-            <th className={`${th} text-right`}>+1 DPS</th>
-            <th className={`${th} text-right`}>+1 %</th>
+            <th className={`${TH} text-left`}>Stat</th>
+            <th className={`${TH} text-right`}>Current</th>
+            <th className={`${TH} text-right`}>+1 DPS</th>
+            <th className={`${TH} text-right`}>+1 %</th>
           </tr>
         </thead>
         <tbody>

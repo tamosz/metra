@@ -1,5 +1,4 @@
-const STYLE_ON = 'border border-emerald-700/50 bg-emerald-950/40 text-emerald-400';
-const STYLE_OFF = 'border border-border-default bg-bg-raised text-text-muted';
+import { TOGGLE_ON, TOGGLE_OFF } from '../utils/styles.js';
 
 interface KbToggleProps {
   enabled: boolean;
@@ -19,7 +18,7 @@ export function KbToggle({ enabled, onToggle, bossAttackInterval, onIntervalChan
           type="button"
           title={enabled ? 'Knockback (experimental): ON (click to disable)' : 'Knockback (experimental): OFF (click to enable)'}
           onClick={() => onToggle(!enabled)}
-          className={`cursor-pointer rounded px-1.5 py-0.5 text-xs font-medium transition-colors ${enabled ? STYLE_ON : STYLE_OFF}`}
+          className={`cursor-pointer rounded px-1.5 py-0.5 text-xs font-medium transition-colors ${enabled ? TOGGLE_ON : TOGGLE_OFF}`}
         >
           KB
         </button>

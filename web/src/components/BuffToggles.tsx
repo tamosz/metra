@@ -1,4 +1,5 @@
 import type { CharacterBuild } from '@engine/data/types.js';
+import { TOGGLE_ON, TOGGLE_OFF_RED } from '../utils/styles.js';
 
 type BuffOverrides = Partial<Pick<CharacterBuild, 'sharpEyes' | 'echoActive' | 'speedInfusion' | 'mwLevel' | 'attackPotion'>>;
 
@@ -10,8 +11,6 @@ const BUFFS = [
   { key: 'attackPotion' as const, label: 'Pot', offValue: 0 as const, tooltip: 'Attack Potion' },
 ] as const;
 
-const STYLE_ON = 'border border-emerald-700/50 bg-emerald-950/40 text-emerald-400';
-const STYLE_OFF = 'border border-red-700/50 bg-red-950/40 text-red-400';
 
 interface BuffTogglesProps {
   overrides: BuffOverrides;
@@ -44,7 +43,7 @@ export function BuffToggles({ overrides, onChange }: BuffTogglesProps) {
               type="button"
               title={isOff ? `${tooltip}: OFF (click to enable)` : `${tooltip}: ON (click to disable)`}
               onClick={() => handleClick(key, offValue)}
-              className={`cursor-pointer rounded px-1.5 py-0.5 text-xs font-medium transition-colors ${isOff ? STYLE_OFF : STYLE_ON}`}
+              className={`cursor-pointer rounded px-1.5 py-0.5 text-xs font-medium transition-colors ${isOff ? TOGGLE_OFF_RED : TOGGLE_ON}`}
             >
               {label}
             </button>

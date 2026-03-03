@@ -24,6 +24,7 @@ import { getScenarioDescription } from '../utils/game-terms.js';
 import { ClassIcon } from './icons/index.js';
 import { colors } from '../theme.js';
 import { formatDps } from '../utils/format.js';
+import { TH } from '../utils/styles.js';
 
 function rankSort(a: DeltaEntry, b: DeltaEntry): number {
   const tierCmp = compareTiers(a.tier, b.tier);
@@ -385,7 +386,6 @@ function DeltaTable({ deltas, showTierGroups }: { deltas: DeltaEntry[]; showTier
 
   const visibleRows = showUnchanged ? [...changedRows, ...unchangedRows] : changedRows;
   const hasRanks = deltas.some((d) => d.rankBefore != null);
-  const th = 'px-3 py-2 text-[11px] uppercase tracking-wide text-text-dim font-medium';
 
   return (
     <>
@@ -393,14 +393,14 @@ function DeltaTable({ deltas, showTierGroups }: { deltas: DeltaEntry[]; showTier
       <table data-testid="delta-table" className="w-full border-collapse text-sm">
         <thead>
           <tr className="border-b border-border-default">
-            {hasRanks && <th className={th}>Rank</th>}
-            <th className={`${th} text-left`}>Class</th>
-            <th className={`${th} text-left`}>Skill</th>
-            <th className={`${th} text-left`}>Tier</th>
-            <th className={`${th} text-right`}>Before</th>
-            <th className={`${th} text-right`}>After</th>
-            <th className={`${th} text-right`}>Change</th>
-            <th className={`${th} text-right`}>%</th>
+            {hasRanks && <th className={TH}>Rank</th>}
+            <th className={`${TH} text-left`}>Class</th>
+            <th className={`${TH} text-left`}>Skill</th>
+            <th className={`${TH} text-left`}>Tier</th>
+            <th className={`${TH} text-right`}>Before</th>
+            <th className={`${TH} text-right`}>After</th>
+            <th className={`${TH} text-right`}>Change</th>
+            <th className={`${TH} text-right`}>%</th>
           </tr>
         </thead>
         <tbody>
