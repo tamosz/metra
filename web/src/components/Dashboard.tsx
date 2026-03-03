@@ -60,6 +60,8 @@ function tierDisplayName(tier: string): string {
   return tier.charAt(0).toUpperCase() + tier.slice(1);
 }
 
+const VARIANT_CLASSES = new Set(['Hero (Axe)', 'Paladin (BW)']);
+
 export function Dashboard({ simulation, buildsState, selectedTier, setSelectedTier, cgsValues, setCgsValues, targetCount, setTargetCount, elementModifiers, setElementModifiers, buffOverrides, setBuffOverrides, kbEnabled, setKbEnabled, bossAttackInterval, setBossAttackInterval, bossAccuracy, setBossAccuracy, capEnabled, setCapEnabled }: DashboardProps) {
   const { results, tiers } = simulation;
   const [showAllSkills, setShowAllSkills] = useState(false);
@@ -73,6 +75,7 @@ export function Dashboard({ simulation, buildsState, selectedTier, setSelectedTi
         if (r.scenario !== activeScenario) return false;
         if (r.tier !== selectedTier) return false;
         if (!showAllSkills && r.headline === false) return false;
+        if (!showAllSkills && VARIANT_CLASSES.has(r.className)) return false;
         return true;
       })
       .sort((a, b) => capEnabled ? b.dps.dps - a.dps.dps : b.dps.uncappedDps - a.dps.uncappedDps);
