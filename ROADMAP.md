@@ -13,11 +13,15 @@ A balance simulator for Royals staff and community. Every number traces back to 
 - Web SPA: dashboard, proposal builder, class comparison view, URL sharing, BBCode export
 - Build explorer: gear/stat overrides with sliders/inputs, real-time DPS recalc
 - Shareable builds via URL encoding (`#b=` for builds, `#c=` for comparisons)
+- Skill detail drilldown: click a ranking row to see DPS breakdown by tier, crit contribution, damage range, attack time, cap loss, Shadow Partner status
+- Comparison chart overlay: before/after bars in proposal comparison view
+- Error boundaries: catch engine errors gracefully with recovery button
 - UX: mobile layout, tooltips, class icons, onboarding banner, support class disclaimers
 - 4 funding tiers (low, mid, high, perfect)
 - Composable simulation controls: individual buff toggles (SE, Echo, SI, MW, Attack Potion), element toggles, KB toggle, target count
 - Knockback modeling (initial): dodge, Stance, Shadow Shifter interactions. Needs tuning — too aggressive for channeled skills.
 - Weapon-variant gear templates: Hero Axe and Paladin BW have dedicated templates with accurate base WATK
+- Archer projectile WATK: Bowmaster and Marksman templates include arrow/bolt WATK at each tier (+10 low/mid/high, +12 perfect)
 - Multi-target simulation: per-skill `maxTargets` + per-scenario `targetCount` for training/AoE comparisons
 - Balance audit: automated outlier detection across scenarios and tiers
 - Custom funding tiers: delta-based tier editor with localStorage persistence
@@ -29,14 +33,11 @@ A balance simulator for Royals staff and community. Every number traces back to 
 
 Make the dashboard the primary exploration tool. Reduce the distance between "I wonder what if..." and seeing the answer.
 
-**Skill detail drilldown**
-- Click a row in the rankings to see a breakdown: DPS by tier, crit contribution, cap loss, buff sensitivity, marginal gains per stat — all in context
-- Turns the dashboard from a flat chart into something people explore
-
 **Inline "what if" editing**
-- Click a skill's damage%, hit count, or multiplier in the detail view and change it directly
+- Click a skill's damage%, hit count, or multiplier in the dashboard detail view and change it directly
 - Instant before/after without leaving the dashboard
 - Proposal builder stays for formal proposals; this is for casual exploration
+- (Currently only available in the Build Explorer, not on the dashboard)
 
 **Filter state permalinks**
 - Encode dashboard filter state (tier, buffs, elements, KB, targets) in the URL
@@ -51,30 +52,21 @@ Make the dashboard the primary exploration tool. Reduce the distance between "I 
 - Summary chip showing active state: "High tier · SE off · Holy weak"
 - Desktop keeps the current inline layout
 
-**Comparison chart overlay**
-- Ghosted "before" bar behind solid "after" bar on the same chart
-- Makes deltas instantly readable without scanning a table
-
 **Chart animations**
 - Animate bar changes when filters toggle — a bar growing/shrinking when you flip SE off gives instant feedback about what matters
 
 **CSV export**
 - Export simulation results for people who want to do their own analysis in sheets
 
-**Error boundaries**
-- Catch engine errors gracefully instead of white-screening
-- Show what went wrong with a reset button
-
 ## Phase 3: Community Features
 
 - Proposal gallery: browse, search, filter, share
-- Diff visualization: bar chart overlays, bump charts for rank changes
+- Diff visualization: bump charts for rank changes
 - If there's demand: voting, comments, proposal versioning (needs a backend)
 
 ## Phase 4: Advanced Analysis
 
 **Quick wins:**
-- Archer projectile WATK: Bowmaster and Marksman gear templates have `projectile: 0` — need to add arrow/bolt WATK values at each tier (the engine already supports this via the `projectile` field)
 - Accuracy/miss rate against high-level bosses
 - Buff uptime/sustain (Berserk HP drain, Battleship HP, buff recasting)
 
@@ -92,7 +84,7 @@ Now:
   Static site (Vercel) ← Vite build ← React SPA
   Engine runs client-side (no server needed)
 
-Phase 2 (if community features need persistence):
+Phase 3 (if community features need persistence):
   Static site (Vercel) ← React SPA
        ↕ lightweight backend (TBD)
   Social data: proposals, votes, comments
@@ -111,6 +103,6 @@ Engine stays client-side — simulation is fast enough in the browser. Backend (
 ## Non-Goals
 
 - Not a game wiki — only balance-relevant DPS stuff.
-- Not a gear optimizer — the marginal gain calculator (Phase 4) answers "what helps most?" without solving the full optimization problem.
+- Not a gear optimizer — the marginal gain calculator answers "what helps most?" without solving the full optimization problem.
 - Not real-time multiplayer — proposals are async, no WebSockets.
 - Not a mobile app — responsive web is enough.
