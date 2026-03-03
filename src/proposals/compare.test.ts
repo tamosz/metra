@@ -12,9 +12,9 @@ import type {
   MWData,
   ClassSkillData,
 } from '../data/types.js';
-import { compareProposal } from './compare.js';
+import { compareProposal, computeDeltas } from './compare.js';
 import type { SimulationConfig, GearTemplateMap } from './simulate.js';
-import type { Proposal, ScenarioConfig } from './types.js';
+import type { Proposal, ScenarioConfig, ScenarioResult } from './types.js';
 
 let weaponData: WeaponData;
 let attackSpeedData: AttackSpeedData;
@@ -510,5 +510,110 @@ describe('compareProposal with multiple scenarios', () => {
     // Full PDR → zero DPS
     expect(fullPdrDelta.before).toBe(0);
     expect(fullPdrDelta.after).toBe(0);
+  });
+});
+
+describe('computeDeltas with comparisonKey', () => {
+  function makeDpsResult(dps: number) {
+    return {
+      skillName: '',
+      attackTime: 0.6,
+      damageRange: { min: 1000, max: 2000, average: 1500 },
+      skillDamagePercent: 260,
+      critDamagePercent: 390,
+      adjustedRangeNormal: 1000,
+      adjustedRangeCrit: 1500,
+      averageDamage: dps * 0.6,
+      dps,
+      uncappedDps: dps,
+      capLossPercent: 0,
+    };
+  }
+
+  it('matches before/after by comparisonKey when skillNames differ', () => {
+    const before: ScenarioResult[] = [
+      {
+        className: 'Paladin',
+        skillName: 'Blast (Holy, Sword)',
+        tier: 'high',
+        scenario: 'Buffed',
+        dps: makeDpsResult(190000),
+        comparisonKey: 'Blast (Sword)',
+      },
+    ];
+
+    const after: ScenarioResult[] = [
+      {
+        className: 'Paladin',
+        skillName: 'Blast (F/I/L Charge, Sword)',
+        tier: 'high',
+        scenario: 'Buffed',
+        dps: makeDpsResult(210000),
+        comparisonKey: 'Blast (Sword)',
+      },
+    ];
+
+    const deltas = computeDeltas(before, after);
+    expect(deltas).toHaveLength(1);
+    expect(deltas[0].before).toBe(190000);
+    expect(deltas[0].after).toBe(210000);
+    expect(deltas[0].change).toBe(20000);
+    expect(deltas[0].skillName).toBe('Blast (Holy, Sword)');
+  });
+
+  it('falls back to skillName when comparisonKey is not set', () => {
+    const before: ScenarioResult[] = [
+      {
+        className: 'Hero',
+        skillName: 'Brandish (Sword)',
+        tier: 'high',
+        scenario: 'Buffed',
+        dps: makeDpsResult(240000),
+      },
+    ];
+
+    const after: ScenarioResult[] = [
+      {
+        className: 'Hero',
+        skillName: 'Brandish (Sword)',
+        tier: 'high',
+        scenario: 'Buffed',
+        dps: makeDpsResult(260000),
+      },
+    ];
+
+    const deltas = computeDeltas(before, after);
+    expect(deltas).toHaveLength(1);
+    expect(deltas[0].before).toBe(240000);
+    expect(deltas[0].after).toBe(260000);
+  });
+
+  it('does not match when comparisonKeys differ', () => {
+    const before: ScenarioResult[] = [
+      {
+        className: 'Paladin',
+        skillName: 'Blast (Holy, Sword)',
+        tier: 'high',
+        scenario: 'Buffed',
+        dps: makeDpsResult(190000),
+        comparisonKey: 'Blast (Sword)',
+      },
+    ];
+
+    const after: ScenarioResult[] = [
+      {
+        className: 'Paladin',
+        skillName: 'Blast (Holy, BW)',
+        tier: 'high',
+        scenario: 'Buffed',
+        dps: makeDpsResult(180000),
+        comparisonKey: 'Blast (BW)',
+      },
+    ];
+
+    const deltas = computeDeltas(before, after);
+    expect(deltas).toHaveLength(1);
+    // No match found — after falls back to before DPS (zero change)
+    expect(deltas[0].change).toBe(0);
   });
 });

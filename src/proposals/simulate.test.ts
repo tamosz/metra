@@ -395,22 +395,22 @@ describe('elementModifiers', () => {
     );
 
     const buffed = results.find(
-      r => r.skillName === 'Blast (Holy, Sword)' && r.scenario === 'Buffed'
+      r => r.className === 'Paladin' && r.scenario === 'Buffed'
     )!;
     const holy = results.find(
-      r => r.skillName === 'Blast (Holy, Sword)' && r.scenario === 'Holy Advantage'
+      r => r.className === 'Paladin' && r.scenario === 'Holy Advantage'
     )!;
 
-    // Element is applied inside the damage cap, so some per-line damage
-    // hits 199,999 and the boost is less than a full 1.5x
+    // Both should be Holy Blast (wins in both scenarios: 1.4 > 1.3, 2.1 > 1.3)
+    expect(buffed.skillName).toBe('Blast (Holy, Sword)');
+    expect(holy.skillName).toBe('Blast (Holy, Sword)');
     expect(holy.dps.dps).toBeGreaterThan(buffed.dps.dps);
     expect(holy.dps.dps).toBeLessThan(buffed.dps.dps * 1.5);
-    // Uncapped DPS still scales linearly by element modifier
     expect(holy.dps.uncappedDps).toBeCloseTo(buffed.dps.uncappedDps * 1.5, 0);
     expect(holy.dps.capLossPercent).toBeGreaterThan(0);
   });
 
-  it('non-elemental skills unaffected by elementModifiers', () => {
+  it('holy element boost wins over neutral charge in variant group', () => {
     const config: SimulationConfig = {
       classes: ['paladin'],
       tiers: ['high'],
@@ -425,14 +425,12 @@ describe('elementModifiers', () => {
       weaponData, attackSpeedData, mwData
     );
 
-    const buffed = results.find(
-      r => r.skillName === 'Blast (F/I/L Charge, Sword)' && r.scenario === 'Buffed'
-    )!;
-    const holy = results.find(
-      r => r.skillName === 'Blast (F/I/L Charge, Sword)' && r.scenario === 'Holy Advantage'
-    )!;
-
-    expect(holy.dps.dps).toBe(buffed.dps.dps);
+    // With only Holy boosted, Holy Blast still wins (1.4 * 1.5 = 2.1 > 1.3)
+    const paladinBuffed = results.filter(r => r.className === 'Paladin' && r.scenario === 'Buffed');
+    const paladinHoly = results.filter(r => r.className === 'Paladin' && r.scenario === 'Holy Advantage');
+    expect(paladinBuffed).toHaveLength(1);
+    expect(paladinHoly).toHaveLength(1);
+    expect(paladinHoly[0].skillName).toBe('Blast (Holy, Sword)');
   });
 
   it('element modifier stacks multiplicatively with PDR', () => {
@@ -452,13 +450,12 @@ describe('elementModifiers', () => {
     );
 
     const holyOnly = results.find(
-      r => r.skillName === 'Blast (Holy, Sword)' && r.scenario === 'Holy Only'
+      r => r.className === 'Paladin' && r.scenario === 'Holy Only'
     )!;
     const undead = results.find(
-      r => r.skillName === 'Blast (Holy, Sword)' && r.scenario === 'Undead Boss'
+      r => r.className === 'Paladin' && r.scenario === 'Undead Boss'
     )!;
 
-    // PDR is a linear multiplier on the element-capped result
     expect(undead.dps.dps).toBeCloseTo(holyOnly.dps.dps * 0.5, 0);
   });
 
@@ -478,13 +475,18 @@ describe('elementModifiers', () => {
     );
 
     const buffed = results.find(
-      r => r.skillName === 'Blast (Holy, Sword)' && r.scenario === 'Buffed'
+      r => r.className === 'Paladin' && r.scenario === 'Buffed'
     )!;
     const resist = results.find(
-      r => r.skillName === 'Blast (Holy, Sword)' && r.scenario === 'Holy Resist'
+      r => r.className === 'Paladin' && r.scenario === 'Holy Resist'
     )!;
 
-    expect(resist.dps.dps).toBeCloseTo(buffed.dps.dps * 0.5, 0);
+    // Holy Resist: Holy effective = 1.4 * 0.5 = 0.7, Charge neutral = 1.3
+    // Charge wins! So the result should be the Charge variant
+    expect(resist.skillName).toBe('Blast (F/I/L Charge, Sword)');
+    // Charge is neutral (1.0), so DPS should equal baseline Charge DPS
+    // buffed.dps is Holy (1.4 mult), resist winner is Charge (1.3 mult, neutral element)
+    expect(resist.dps.dps).toBeLessThan(buffed.dps.dps);
   });
 });
 
@@ -726,7 +728,7 @@ describe('targetCount (multi-target scaling)', () => {
 });
 
 describe('elementOptions (adaptive element selection)', () => {
-  it('picks the best element when multiple are toggled', () => {
+  it('picks the best element when charge variant wins', () => {
     const config: SimulationConfig = {
       classes: ['paladin'],
       tiers: ['high'],
@@ -741,21 +743,15 @@ describe('elementOptions (adaptive element selection)', () => {
       weaponData, attackSpeedData, mwData
     );
 
-    const buffed = results.find(
-      r => r.skillName === 'Blast (F/I/L Charge, Sword)' && r.scenario === 'Buffed'
-    )!;
-    const mixed = results.find(
-      r => r.skillName === 'Blast (F/I/L Charge, Sword)' && r.scenario === 'Mixed'
-    )!;
+    const buffed = results.find(r => r.className === 'Paladin' && r.scenario === 'Buffed')!;
+    const mixed = results.find(r => r.className === 'Paladin' && r.scenario === 'Mixed')!;
 
-    // Should pick Fire (1.5x) over Ice (0.5x) and Lightning (neutral).
-    // Element interacts with damage cap, so capped DPS < naive 1.5x.
+    // Fire Charge wins: 1.3 * 1.5 = 1.95 > Holy 1.4
+    expect(mixed.skillName).toBe('Blast (Fire Charge, Sword)');
     expect(mixed.dps.dps).toBeGreaterThan(buffed.dps.dps);
-    expect(mixed.dps.dps).toBeLessThan(buffed.dps.dps * 1.5);
-    expect(mixed.dps.uncappedDps).toBeCloseTo(buffed.dps.uncappedDps * 1.5, 0);
   });
 
-  it('is unaffected when only non-matching elements are toggled', () => {
+  it('holy still wins when only Holy element is active', () => {
     const config: SimulationConfig = {
       classes: ['paladin'],
       tiers: ['high'],
@@ -770,18 +766,15 @@ describe('elementOptions (adaptive element selection)', () => {
       weaponData, attackSpeedData, mwData
     );
 
-    const buffed = results.find(
-      r => r.skillName === 'Blast (F/I/L Charge, Sword)' && r.scenario === 'Buffed'
-    )!;
-    const holyOnly = results.find(
-      r => r.skillName === 'Blast (F/I/L Charge, Sword)' && r.scenario === 'Holy Only'
-    )!;
+    const buffed = results.find(r => r.className === 'Paladin' && r.scenario === 'Buffed')!;
+    const holyOnly = results.find(r => r.className === 'Paladin' && r.scenario === 'Holy Only')!;
 
-    // Holy is not in elementOptions, so F/I/L Charge is unaffected
-    expect(holyOnly.dps.dps).toBe(buffed.dps.dps);
+    expect(buffed.skillName).toBe('Blast (Holy, Sword)');
+    expect(holyOnly.skillName).toBe('Blast (Holy, Sword)');
+    expect(holyOnly.dps.dps).toBeGreaterThan(buffed.dps.dps);
   });
 
-  it('applies a single matching element correctly', () => {
+  it('charge variant wins for BW with matching element', () => {
     const config: SimulationConfig = {
       classes: ['paladin-bw'],
       tiers: ['high'],
@@ -796,17 +789,12 @@ describe('elementOptions (adaptive element selection)', () => {
       weaponData, attackSpeedData, mwData
     );
 
-    const buffed = results.find(
-      r => r.skillName === 'Blast (F/I/L Charge, BW)' && r.scenario === 'Buffed'
-    )!;
-    const iceWeak = results.find(
-      r => r.skillName === 'Blast (F/I/L Charge, BW)' && r.scenario === 'Ice Weak'
-    )!;
+    const buffed = results.find(r => r.className === 'Paladin (BW)' && r.scenario === 'Buffed')!;
+    const iceWeak = results.find(r => r.className === 'Paladin (BW)' && r.scenario === 'Ice Weak')!;
 
-    // Element interacts with damage cap, so capped DPS < naive 1.5x
+    expect(buffed.skillName).toBe('Blast (Holy, BW)');
+    expect(iceWeak.skillName).toBe('Blast (Ice Charge, BW)');
     expect(iceWeak.dps.dps).toBeGreaterThan(buffed.dps.dps);
-    expect(iceWeak.dps.dps).toBeLessThan(buffed.dps.dps * 1.5);
-    expect(iceWeak.dps.uncappedDps).toBeCloseTo(buffed.dps.uncappedDps * 1.5, 0);
   });
 });
 
@@ -874,5 +862,120 @@ describe('mixed rotations', () => {
 
     const results = runSimulation(config, classDataMap, gearTemplates, weaponData, attackSpeedData, mwData);
     expect(results).toHaveLength(2); // Just Skill A and Skill B
+  });
+});
+
+describe('elementVariantGroup', () => {
+  it('merges variants into single result (Holy wins with no element modifiers)', () => {
+    const config: SimulationConfig = {
+      classes: ['paladin'],
+      tiers: ['high'],
+      scenarios: [{ name: 'Buffed' }],
+    };
+
+    const results = runSimulation(
+      config, classDataMap, gearTemplates,
+      weaponData, attackSpeedData, mwData
+    );
+
+    const paladinResults = results.filter(r => r.className === 'Paladin');
+    expect(paladinResults).toHaveLength(1);
+    expect(paladinResults[0].skillName).toBe('Blast (Holy, Sword)');
+  });
+
+  it('charge variant wins when its element is weak (1.5x)', () => {
+    const config: SimulationConfig = {
+      classes: ['paladin'],
+      tiers: ['high'],
+      scenarios: [{ name: 'Fire Weak', elementModifiers: { Fire: 1.5 } }],
+    };
+
+    const results = runSimulation(
+      config, classDataMap, gearTemplates,
+      weaponData, attackSpeedData, mwData
+    );
+
+    const paladinResults = results.filter(r => r.className === 'Paladin');
+    expect(paladinResults).toHaveLength(1);
+    expect(paladinResults[0].skillName).toBe('Blast (Fire Charge, Sword)');
+  });
+
+  it('holy wins when both holy and F/I/L element are weak', () => {
+    const config: SimulationConfig = {
+      classes: ['paladin'],
+      tiers: ['high'],
+      scenarios: [{ name: 'Both Weak', elementModifiers: { Holy: 1.5, Fire: 1.5 } }],
+    };
+
+    const results = runSimulation(
+      config, classDataMap, gearTemplates,
+      weaponData, attackSpeedData, mwData
+    );
+
+    const paladinResults = results.filter(r => r.className === 'Paladin');
+    expect(paladinResults).toHaveLength(1);
+    expect(paladinResults[0].skillName).toBe('Blast (Holy, Sword)');
+  });
+
+  it('merged result is always headline regardless of component headline status', () => {
+    const config: SimulationConfig = {
+      classes: ['paladin'],
+      tiers: ['high'],
+      scenarios: [{ name: 'Fire Weak', elementModifiers: { Fire: 1.5 } }],
+    };
+
+    const results = runSimulation(
+      config, classDataMap, gearTemplates,
+      weaponData, attackSpeedData, mwData
+    );
+
+    const paladinResults = results.filter(r => r.className === 'Paladin');
+    expect(paladinResults[0].headline).toBeUndefined();
+  });
+
+  it('works for BW variants too', () => {
+    const config: SimulationConfig = {
+      classes: ['paladin-bw'],
+      tiers: ['high'],
+      scenarios: [
+        { name: 'Buffed' },
+        { name: 'Ice Weak', elementModifiers: { Ice: 1.5 } },
+      ],
+    };
+
+    const results = runSimulation(
+      config, classDataMap, gearTemplates,
+      weaponData, attackSpeedData, mwData
+    );
+
+    const buffed = results.filter(r => r.className === 'Paladin (BW)' && r.scenario === 'Buffed');
+    const iceWeak = results.filter(r => r.className === 'Paladin (BW)' && r.scenario === 'Ice Weak');
+
+    expect(buffed).toHaveLength(1);
+    expect(buffed[0].skillName).toBe('Blast (Holy, BW)');
+    expect(iceWeak).toHaveLength(1);
+    expect(iceWeak[0].skillName).toBe('Blast (Ice Charge, BW)');
+  });
+
+  it('DPS of merged result is correct for both scenarios', () => {
+    const config: SimulationConfig = {
+      classes: ['paladin'],
+      tiers: ['high'],
+      scenarios: [
+        { name: 'Buffed' },
+        { name: 'Fire Weak', elementModifiers: { Fire: 1.5 } },
+      ],
+    };
+
+    const results = runSimulation(
+      config, classDataMap, gearTemplates,
+      weaponData, attackSpeedData, mwData
+    );
+
+    const buffed = results.find(r => r.className === 'Paladin' && r.scenario === 'Buffed')!;
+    const fireWeak = results.find(r => r.className === 'Paladin' && r.scenario === 'Fire Weak')!;
+
+    expect(buffed.dps.dps).toBeGreaterThan(180000);
+    expect(fireWeak.dps.dps).toBeGreaterThan(buffed.dps.dps);
   });
 });

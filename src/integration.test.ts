@@ -122,11 +122,13 @@ describe('End-to-end: warrior-rebalance proposal', () => {
     )!;
     expect(paladinHolyDelta.change).toBeGreaterThan(0);
 
-    // Paladin Blast (F/I/L) is NOT changed
-    const paladinFilDelta = result.deltas.find(
-      (d) => d.className === 'Paladin' && d.skillName === 'Blast (F/I/L Charge, Sword)' && d.tier === 'high'
-    )!;
-    expect(paladinFilDelta.change).toBe(0);
+    // With elementVariantGroup merging, only the winning variant (Holy) appears
+    // F/I/L Charge is merged away since Holy wins at neutral elements
+    const paladinDeltas = result.deltas.filter(
+      (d) => d.className === 'Paladin' && d.tier === 'high'
+    );
+    expect(paladinDeltas).toHaveLength(1);
+    expect(paladinDeltas[0].skillName).toBe('Blast (Holy, Sword)');
 
     // NL unchanged (warrior-only proposal)
     const nlDelta = result.deltas.find(

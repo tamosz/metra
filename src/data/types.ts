@@ -93,6 +93,14 @@ export interface SkillEntry {
   hidden?: boolean;
   /** If false, skill is shown only when "show all skills" is toggled on. Default true. */
   headline?: boolean;
+  /** Group name for element variant competition. Skills sharing a group are compared
+   *  after DPS calculation; only the highest-DPS variant survives in output.
+   *  e.g., Holy Blast and Charge Blast both have elementVariantGroup: "Blast (Sword)". */
+  elementVariantGroup?: string;
+  /** Name template with {element} placeholder, resolved at simulation time when
+   *  the best element is picked from elementOptions.
+   *  e.g., "Blast ({element} Charge, Sword)" → "Blast (Fire Charge, Sword)". */
+  nameTemplate?: string;
   /** KB recovery time override (seconds). 0 for i-frame skills (Demolition, Barrage). Omit for auto-detect. */
   knockbackRecovery?: number;
 }
