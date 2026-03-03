@@ -12,6 +12,7 @@ import {
 import type { CustomTier } from '../types/custom-tier.js';
 import { generateCustomTierTemplates } from '../utils/custom-tier.js';
 import type { BuffOverrides } from '../components/BuffToggles.js';
+import { applyCgsOverride, type CgsValues } from '../utils/cgs.js';
 
 export interface KbConfig {
   bossAttackInterval: number;
@@ -32,6 +33,7 @@ export function useSimulation(
   elementModifiers?: Record<string, number>,
   buffOverrides?: BuffOverrides,
   kbConfig?: KbConfig,
+  cgsOverride?: { tier: string; values: CgsValues },
 ): SimulationData {
   return useMemo(() => {
     const { classNames, tiers, classDataMap, gearTemplates } = discoveredData;
@@ -48,6 +50,18 @@ export function useSimulation(
       }
       allTiers.push(ct.id);
       customTierNames.set(ct.id, ct.name);
+    }
+
+    // Apply CGS override if provided
+    let finalTemplates = mergedTemplates;
+    if (cgsOverride) {
+      finalTemplates = applyCgsOverride(
+        mergedTemplates,
+        classDataMap,
+        classNames,
+        cgsOverride.tier,
+        cgsOverride.values,
+      );
     }
 
     const hasElementMods = elementModifiers && Object.keys(elementModifiers).length > 0;
@@ -77,12 +91,12 @@ export function useSimulation(
     const results = runSimulation(
       config,
       classDataMap,
-      mergedTemplates,
+      finalTemplates,
       weaponData,
       attackSpeedData,
       mwData
     );
 
     return { results, classNames, tiers: allTiers, customTierNames };
-  }, [customTiers, targetCount, elementModifiers, buffOverrides, kbConfig]);
+  }, [customTiers, targetCount, elementModifiers, buffOverrides, kbConfig, cgsOverride]);
 }
