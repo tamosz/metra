@@ -1,6 +1,6 @@
 import { useState, useMemo, useCallback } from 'react';
 import { DpsChart } from './DpsChart.js';
-import { FilterGroup } from './FilterGroup.js';
+import { TierPresets } from './TierPresets.js';
 import { SupportClassNote } from './SupportClassNote.js';
 import { TierAssumptions } from './TierAssumptions.js';
 import type { SimulationData } from '../hooks/useSimulation.js';
@@ -18,11 +18,16 @@ import { KbToggle } from './KbToggle.js';
 import { Tooltip } from './Tooltip.js';
 import { CapToggle } from './CapToggle.js';
 import type { DpsResult } from '@engine/engine/dps.js';
+import type { CgsValues } from '../utils/cgs.js';
 
 interface DashboardProps {
   simulation: SimulationData;
   customTiers: CustomTiersState;
   baseTiers: string[];
+  selectedTier: string;
+  setSelectedTier: (tier: string) => void;
+  cgsValues: CgsValues;
+  setCgsValues: (values: CgsValues) => void;
   targetCount: number;
   setTargetCount: (n: number) => void;
   elementModifiers: Record<string, number>;
@@ -56,9 +61,8 @@ function tierDisplayName(tier: string, customTierNames: Map<string, string>): st
   return tier.charAt(0).toUpperCase() + tier.slice(1);
 }
 
-export function Dashboard({ simulation, customTiers, baseTiers, targetCount, setTargetCount, elementModifiers, setElementModifiers, buffOverrides, setBuffOverrides, kbEnabled, setKbEnabled, bossAttackInterval, setBossAttackInterval, bossAccuracy, setBossAccuracy, capEnabled, setCapEnabled }: DashboardProps) {
+export function Dashboard({ simulation, customTiers, baseTiers, selectedTier, setSelectedTier, cgsValues, setCgsValues, targetCount, setTargetCount, elementModifiers, setElementModifiers, buffOverrides, setBuffOverrides, kbEnabled, setKbEnabled, bossAttackInterval, setBossAttackInterval, bossAccuracy, setBossAccuracy, capEnabled, setCapEnabled }: DashboardProps) {
   const { results, tiers, customTierNames } = simulation;
-  const [selectedTier, setSelectedTier] = useState<string | 'all'>('all');
   const [showAllSkills, setShowAllSkills] = useState(false);
 
   const filtered = useMemo(() => {
@@ -68,7 +72,7 @@ export function Dashboard({ simulation, customTiers, baseTiers, targetCount, set
     return results
       .filter((r) => {
         if (r.scenario !== activeScenario) return false;
-        if (selectedTier !== 'all' && r.tier !== selectedTier) return false;
+        if (r.tier !== selectedTier) return false;
         if (!showAllSkills && r.headline === false) return false;
         return true;
       })
@@ -82,14 +86,13 @@ export function Dashboard({ simulation, customTiers, baseTiers, targetCount, set
       <CustomTierList customTiers={customTiers} baseTiers={baseTiers} />
 
       <div className="mb-6 flex items-center gap-4">
-        <FilterGroup
-          label="Tier"
-          value={selectedTier}
-          options={[
-            { value: 'all', label: 'All Tiers' },
-            ...tiers.map((t) => ({ value: t, label: tierDisplayName(t, customTierNames) })),
-          ]}
-          onChange={setSelectedTier}
+        <TierPresets
+          tiers={tiers}
+          selectedTier={selectedTier}
+          cgsValues={cgsValues}
+          onTierChange={setSelectedTier}
+          onCgsChange={setCgsValues}
+          customTierNames={customTierNames}
         />
         <TargetSpinner value={targetCount} onChange={setTargetCount} />
         <ElementToggles modifiers={elementModifiers} onChange={setElementModifiers} />

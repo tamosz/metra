@@ -14,6 +14,7 @@ import { useSavedBuilds } from './hooks/useSavedBuilds.js';
 import { discoveredData } from './data/bundle.js';
 import { getProposalFromUrl, getBuildFromUrl, getComparisonFromUrl } from './utils/url-encoding.js';
 import type { BuffOverrides } from './components/BuffToggles.js';
+import { CGS_DEFAULTS, type CgsValues } from './utils/cgs.js';
 
 type Page = 'dashboard' | 'proposal' | 'build' | 'compare' | 'formulas';
 
@@ -27,12 +28,15 @@ export function App() {
   const [bossAttackInterval, setBossAttackInterval] = useState(1.5);
   const [bossAccuracy, setBossAccuracy] = useState(250);
   const [capEnabled, setCapEnabled] = useState(true);
+  const [selectedTier, setSelectedTier] = useState('high');
+  const [cgsValues, setCgsValues] = useState<CgsValues>({ ...CGS_DEFAULTS.high });
   const simulation = useSimulation(
     customTiersState.tiers,
     targetCount > 1 ? targetCount : undefined,
     Object.keys(elementModifiers).length > 0 ? elementModifiers : undefined,
     Object.keys(buffOverrides).length > 0 ? buffOverrides : undefined,
     kbEnabled ? { bossAttackInterval, bossAccuracy } : undefined,
+    { tier: selectedTier, values: cgsValues },
   );
   const savedBuildsState = useSavedBuilds();
   const proposalState = useProposal(targetCount > 1 ? targetCount : undefined);
@@ -146,6 +150,10 @@ export function App() {
             simulation={simulation}
             customTiers={customTiersState}
             baseTiers={baseTiers}
+            selectedTier={selectedTier}
+            setSelectedTier={setSelectedTier}
+            cgsValues={cgsValues}
+            setCgsValues={setCgsValues}
             targetCount={targetCount}
             setTargetCount={setTargetCount}
             elementModifiers={elementModifiers}
