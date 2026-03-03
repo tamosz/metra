@@ -112,12 +112,19 @@ export function runSimulation(
           // Compute element modifier before DPS calculation so it interacts
           // with the per-line damage cap (199,999).
           let elementModifier = 1;
+          let selectedElement: string | undefined;
           if (scenario.elementModifiers && skill.element) {
             elementModifier = scenario.elementModifiers[skill.element] ?? 1;
           } else if (scenario.elementModifiers && skill.elementOptions) {
-            elementModifier = Math.max(
-              ...skill.elementOptions.map(e => scenario.elementModifiers![e] ?? 1)
-            );
+            let bestMod = 1;
+            for (const e of skill.elementOptions) {
+              const mod = scenario.elementModifiers![e] ?? 1;
+              if (mod > bestMod) {
+                bestMod = mod;
+                selectedElement = e;
+              }
+            }
+            elementModifier = bestMod;
           }
 
           const dps = calculateSkillDps(
@@ -150,10 +157,15 @@ export function runSimulation(
             effectiveDps = applyKnockbackUptime(effectiveDps, uptime);
           }
 
+          let resolvedSkillName = skill.name;
+          if (selectedElement && skill.nameTemplate) {
+            resolvedSkillName = skill.nameTemplate.replace('{element}', selectedElement);
+          }
+
           const isHeadline = skill.headline !== false;
           const result: ScenarioResult = {
             className: classData.className,
-            skillName: skill.name,
+            skillName: resolvedSkillName,
             tier,
             scenario: scenario.name,
             dps: effectiveDps,
@@ -168,8 +180,10 @@ export function runSimulation(
           }
         }
 
+        // Resolve element variant groups: keep only the highest-DPS variant
+        const variantResolved = resolveElementVariantGroups(skillResults);
         // Aggregate comboGroup skills: sum DPS for skills sharing the same group
-        const grouped = aggregateComboGroups(skillResults);
+        const grouped = aggregateComboGroups(variantResolved);
         results.push(...grouped);
 
         // Process mixed rotations
@@ -188,6 +202,43 @@ export function runSimulation(
   }
 
   return results;
+}
+
+/**
+ * Resolve element variant groups: skills sharing an elementVariantGroup
+ * compete on DPS, and only the highest-DPS variant survives.
+ * The winning result is always treated as headline.
+ */
+function resolveElementVariantGroups(
+  skillResults: { skill: SkillEntry; result: ScenarioResult }[]
+): { skill: SkillEntry; result: ScenarioResult }[] {
+  const output: { skill: SkillEntry; result: ScenarioResult }[] = [];
+  const variantMap = new Map<string, { skill: SkillEntry; result: ScenarioResult }[]>();
+
+  for (const entry of skillResults) {
+    const group = entry.skill.elementVariantGroup;
+    if (group) {
+      const existing = variantMap.get(group);
+      if (existing) {
+        existing.push(entry);
+      } else {
+        variantMap.set(group, [entry]);
+      }
+    } else {
+      output.push(entry);
+    }
+  }
+
+  for (const entries of variantMap.values()) {
+    const winner = entries.reduce((best, entry) =>
+      entry.result.dps.dps > best.result.dps.dps ? entry : best
+    );
+    // Merged result is always headline — strip headline: false if present
+    const { headline: _, ...resultWithoutHeadline } = winner.result;
+    output.push({ skill: winner.skill, result: resultWithoutHeadline });
+  }
+
+  return output;
 }
 
 /**
