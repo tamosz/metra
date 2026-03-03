@@ -979,3 +979,130 @@ describe('elementVariantGroup', () => {
     expect(fireWeak.dps.dps).toBeGreaterThan(buffed.dps.dps);
   });
 });
+
+describe('modifier composition (PDR + KB + element + targets)', () => {
+  it('all post-calc modifiers compose multiplicatively', () => {
+    // Baseline: no modifiers
+    const baseConfig: SimulationConfig = {
+      classes: ['paladin', 'hero'],
+      tiers: ['high'],
+      scenarios: [{ name: 'Baseline' }],
+    };
+    const baseResults = runSimulation(
+      baseConfig, classDataMap, gearTemplates,
+      weaponData, attackSpeedData, mwData
+    );
+
+    // Combined: PDR 0.3 + KB + Holy 1.5x + 3 targets
+    const composedConfig: SimulationConfig = {
+      classes: ['paladin', 'hero'],
+      tiers: ['high'],
+      scenarios: [{
+        name: 'Composed',
+        pdr: 0.3,
+        targetCount: 3,
+        bossAttackInterval: 2.0,
+        bossAccuracy: 250,
+        elementModifiers: { Holy: 1.5 },
+      }],
+    };
+    const composedResults = runSimulation(
+      composedConfig, classDataMap, gearTemplates,
+      weaponData, attackSpeedData, mwData
+    );
+
+    const baselinePaladin = baseResults.find(
+      r => r.className === 'Paladin' && r.scenario === 'Baseline'
+    )!;
+    const composedPaladin = composedResults.find(
+      r => r.className === 'Paladin' && r.scenario === 'Composed'
+    )!;
+    const baselineHero = baseResults.find(
+      r => r.className === 'Hero' && r.scenario === 'Baseline'
+    )!;
+    const composedHero = composedResults.find(
+      r => r.className === 'Hero' && r.scenario === 'Composed'
+    )!;
+
+    // Paladin should be boosted by Holy 1.5x element but reduced by PDR + KB
+    // The net effect depends on the exact numbers, but Paladin should differ from baseline
+    expect(composedPaladin.dps.dps).not.toBe(baselinePaladin.dps.dps);
+
+    // Hero has no element — PDR and KB both reduce, targets scale (maxTargets 3 × 3 targets = 3x)
+    // So Hero composed = baseline × 3 (targets) × 0.7 (PDR) × KB_uptime
+    // This should be greater than baseline (3 × 0.7 = 2.1, even with KB loss)
+    expect(composedHero.dps.dps).toBeGreaterThan(baselineHero.dps.dps);
+
+    // But Hero composed should be less than baseline × 3 (due to PDR + KB losses)
+    expect(composedHero.dps.dps).toBeLessThan(baselineHero.dps.dps * 3);
+  });
+
+  it('KB reduces DPS for a class with no stance/shifter more than one with stance', () => {
+    const kbConfig: SimulationConfig = {
+      classes: ['hero', 'archmage-il'],
+      tiers: ['high'],
+      scenarios: [
+        { name: 'No KB' },
+        { name: 'With KB', bossAttackInterval: 1.5, bossAccuracy: 250 },
+      ],
+    };
+
+    const results = runSimulation(
+      kbConfig, classDataMap, gearTemplates,
+      weaponData, attackSpeedData, mwData
+    );
+
+    const heroNoKb = results.find(r => r.className === 'Hero' && r.scenario === 'No KB')!;
+    const heroKb = results.find(r => r.className === 'Hero' && r.scenario === 'With KB')!;
+    const mageNoKb = results.find(
+      r => r.className === 'Archmage I/L' && r.skillName === 'Chain Lightning' && r.scenario === 'No KB'
+    )!;
+    const mageKb = results.find(
+      r => r.className === 'Archmage I/L' && r.skillName === 'Chain Lightning' && r.scenario === 'With KB'
+    )!;
+
+    const heroLossPercent = 1 - heroKb.dps.dps / heroNoKb.dps.dps;
+    const mageLossPercent = 1 - mageKb.dps.dps / mageNoKb.dps.dps;
+
+    // Hero has 90% stance, mage has 0% — mage should lose more DPS to KB
+    expect(mageLossPercent).toBeGreaterThan(heroLossPercent);
+    // Hero stance is 90%, so KB loss should be small
+    expect(heroLossPercent).toBeLessThan(0.05);
+    // Mage has no protection, should lose significant DPS
+    expect(mageLossPercent).toBeGreaterThan(0.15);
+  });
+
+  it('element + PDR + targets all apply to the same result', () => {
+    // Verify each modifier independently, then combined
+    const configs = {
+      baseline: [{ name: 'Baseline' }],
+      pdrOnly: [{ name: 'PDR', pdr: 0.3 }],
+      elemOnly: [{ name: 'Elem', elementModifiers: { Holy: 1.5 } }],
+      targetsOnly: [{ name: 'Targets', targetCount: 3 }],
+      combined: [{ name: 'All', pdr: 0.3, elementModifiers: { Holy: 1.5 }, targetCount: 3 }],
+    } as const;
+
+    const run = (scenarios: ScenarioConfig[]) =>
+      runSimulation(
+        { classes: ['paladin'], tiers: ['high'], scenarios },
+        classDataMap, gearTemplates, weaponData, attackSpeedData, mwData
+      );
+
+    const baseline = run([...configs.baseline]).find(r => r.scenario === 'Baseline')!;
+    const pdrOnly = run([...configs.pdrOnly]).find(r => r.scenario === 'PDR')!;
+    const elemOnly = run([...configs.elemOnly]).find(r => r.scenario === 'Elem')!;
+    const combined = run([...configs.combined]).find(r => r.scenario === 'All')!;
+
+    // PDR reduces by 30%
+    expect(pdrOnly.dps.dps).toBeCloseTo(baseline.dps.dps * 0.7, 0);
+
+    // Element boosts (but less than 1.5x due to damage cap interaction)
+    expect(elemOnly.dps.dps).toBeGreaterThan(baseline.dps.dps);
+    expect(elemOnly.dps.dps).toBeLessThan(baseline.dps.dps * 1.5);
+
+    // Combined: element boost × PDR × targets
+    // Paladin Blast has no maxTargets field (single target), so targets shouldn't scale it
+    // combined ≈ elemOnly × 0.7
+    expect(combined.dps.dps).toBeCloseTo(elemOnly.dps.dps * 0.7, 0);
+  });
+});
