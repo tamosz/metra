@@ -17,6 +17,7 @@ const CLASS_ICON_MAP: Record<string, React.ComponentType<{ size?: number; color?
   'Hero (Axe)': AxeIcon,
   DrK: SpearIcon,
   Paladin: ShieldIcon,
+  'Paladin (BW)': ShieldIcon,
   NL: ShurikenIcon,
   Bowmaster: BowIcon,
   Marksman: CrossbowIcon,
