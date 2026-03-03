@@ -30,6 +30,9 @@ export {
 export { calculateMarginalGains, type MarginalGain } from './engine/marginal.js';
 export { calculateBuildDps, type SkillDpsRow, type BuildDpsResult } from './engine/build-dps.js';
 
+// Data utilities
+export { computeGearTotals, type GearTotals } from './data/gear-utils.js';
+
 // Constants
 export { TIER_ORDER, compareTiers } from './data/types.js';
 

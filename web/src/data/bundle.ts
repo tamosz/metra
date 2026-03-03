@@ -6,6 +6,7 @@ import {
   type ClassSkillData,
   type CharacterBuild,
 } from '@engine/data/types.js';
+import { computeGearTotals } from '@engine/data/gear-utils.js';
 
 // Static imports — bundled at build time, no fetch latency
 import weaponsJson from '@data/weapons.json';
@@ -23,11 +24,14 @@ export const attackSpeedData: AttackSpeedData = attackSpeedJson as AttackSpeedDa
 export const mwData: MWData = (mwJson as { entries: MWData }).entries;
 
 function parseGearTemplate(raw: Record<string, unknown>): CharacterBuild {
+  const breakdown = raw.gearBreakdown as Record<string, Record<string, number>> | undefined;
+  const computed = breakdown ? computeGearTotals(breakdown) : undefined;
+
   return {
     className: raw.className as string,
     baseStats: raw.baseStats as CharacterBuild['baseStats'],
-    gearStats: raw.gearStats as CharacterBuild['gearStats'],
-    totalWeaponAttack: raw.totalWeaponAttack as number,
+    gearStats: computed?.gearStats ?? (raw.gearStats as CharacterBuild['gearStats']),
+    totalWeaponAttack: computed?.totalWeaponAttack ?? (raw.totalWeaponAttack as number),
     weaponType: raw.weaponType as string,
     weaponSpeed: raw.weaponSpeed as number,
     attackPotion: raw.attackPotion as number,

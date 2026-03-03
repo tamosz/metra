@@ -8,6 +8,7 @@ import {
   type ClassSkillData,
   type CharacterBuild,
 } from './types.js';
+import { computeGearTotals } from './gear-utils.js';
 
 const DATA_DIR = resolve(import.meta.dirname, '../../data');
 
@@ -44,11 +45,15 @@ export function loadGearTemplate(templateName: string): CharacterBuild {
   const raw = loadJson<Record<string, unknown>>(
     `gear-templates/${templateName}.json`
   );
+
+  const breakdown = raw.gearBreakdown as Record<string, Record<string, number>> | undefined;
+  const computed = breakdown ? computeGearTotals(breakdown) : undefined;
+
   return {
     className: raw.className as string,
     baseStats: raw.baseStats as CharacterBuild['baseStats'],
-    gearStats: raw.gearStats as CharacterBuild['gearStats'],
-    totalWeaponAttack: raw.totalWeaponAttack as number,
+    gearStats: computed?.gearStats ?? (raw.gearStats as CharacterBuild['gearStats']),
+    totalWeaponAttack: computed?.totalWeaponAttack ?? (raw.totalWeaponAttack as number),
     weaponType: raw.weaponType as string,
     weaponSpeed: raw.weaponSpeed as number,
     attackPotion: raw.attackPotion as number,

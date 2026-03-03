@@ -30,21 +30,80 @@
       "DEX": 0,
       "WATK": 134
     },
+    "helmet": {
+      "STR": 21,
+      "DEX": 40,
+      "WATK": 0
+    },
+    "top": {
+      "STR": 60,
+      "DEX": 8,
+      "WATK": 0
+    },
+    "earring": {
+      "STR": 15,
+      "DEX": 0,
+      "WATK": 0
+    },
+    "eye": {
+      "STR": 6,
+      "DEX": 6,
+      "WATK": 0
+    },
+    "face": {
+      "STR": 10,
+      "DEX": 5,
+      "WATK": 0
+    },
+    "pendant": {
+      "STR": 22,
+      "DEX": 23,
+      "WATK": 0
+    },
+    "belt": {
+      "STR": 0,
+      "DEX": 5,
+      "WATK": 0
+    },
+    "medal": {
+      "STR": 0,
+      "DEX": 0,
+      "WATK": 3
+    },
+    "ring1": {
+      "STR": 8,
+      "DEX": 5,
+      "WATK": 0
+    },
+    "ring2": {
+      "STR": 5,
+      "DEX": 5,
+      "WATK": 0
+    },
+    "ring3": {
+      "STR": 3,
+      "DEX": 2,
+      "WATK": 0
+    },
+    "ring4": {
+      "STR": 3,
+      "DEX": 3,
+      "WATK": 1
+    },
     "cape": {
+      "STR": 0,
+      "DEX": 0,
       "WATK": 18
     },
     "shoe": {
+      "STR": 0,
+      "DEX": 0,
       "WATK": 16
     },
     "glove": {
+      "STR": 0,
+      "DEX": 0,
       "WATK": 20
-    },
-    "medal": {
-      "WATK": 3
-    },
-    "ring4": {
-      "WATK": 1
-    },
-    "comment": "134+17+13+19+3+1 = 187. C/G/S standardized to 19/17/13 across all classes."
+    }
   }
 }
