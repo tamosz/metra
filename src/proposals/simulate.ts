@@ -150,12 +150,14 @@ export function runSimulation(
             effectiveDps = applyKnockbackUptime(effectiveDps, uptime);
           }
 
+          const isHeadline = skill.headline !== false;
           const result: ScenarioResult = {
             className: classData.className,
             skillName: skill.name,
             tier,
             scenario: scenario.name,
             dps: effectiveDps,
+            ...(isHeadline ? {} : { headline: false }),
           };
 
           // Store all skills (including hidden) for mixed rotation lookups
@@ -200,33 +202,36 @@ function aggregateComboGroups(
   skillResults: { skill: SkillEntry; result: ScenarioResult }[]
 ): ScenarioResult[] {
   const output: ScenarioResult[] = [];
-  const comboMap = new Map<string, ScenarioResult[]>();
+  const comboMap = new Map<string, { skills: SkillEntry[]; results: ScenarioResult[] }>();
 
   for (const { skill, result } of skillResults) {
     if (skill.comboGroup) {
       const existing = comboMap.get(skill.comboGroup);
       if (existing) {
-        existing.push(result);
+        existing.skills.push(skill);
+        existing.results.push(result);
       } else {
-        comboMap.set(skill.comboGroup, [result]);
+        comboMap.set(skill.comboGroup, { skills: [skill], results: [result] });
       }
     } else {
       output.push(result);
     }
   }
 
-  for (const [groupName, groupResults] of comboMap) {
+  for (const [groupName, { skills, results: groupResults }] of comboMap) {
     const first = groupResults[0];
     const totalDps = groupResults.reduce((sum, r) => sum + r.dps.dps, 0);
     const totalAvgDamage = groupResults.reduce((sum, r) => sum + r.dps.averageDamage, 0);
     const totalUncappedDps = groupResults.reduce((sum, r) => sum + r.dps.uncappedDps, 0);
     const capLossPercent = totalUncappedDps > 0 ? ((totalUncappedDps - totalDps) / totalUncappedDps) * 100 : 0;
+    const isHeadline = skills.some(s => s.headline !== false);
 
     output.push({
       className: first.className,
       skillName: groupName,
       tier: first.tier,
       scenario: first.scenario,
+      ...(isHeadline ? {} : { headline: false }),
       dps: {
         ...first.dps,
         skillName: groupName,
@@ -287,6 +292,7 @@ function processMixedRotations(
       ? Math.max(0, ((weightedUncappedDps - weightedDps) / weightedUncappedDps) * 100)
       : 0;
 
+    const isHeadline = rotation.headline !== false;
     const first = componentResults[0].result;
     output.push({
       className,
@@ -294,6 +300,7 @@ function processMixedRotations(
       tier,
       scenario,
       description: rotation.description,
+      ...(isHeadline ? {} : { headline: false }),
       dps: {
         ...first.dps,
         skillName: rotation.name,

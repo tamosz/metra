@@ -31,7 +31,8 @@
       "speedCategory": "Blizzard",
       "weaponType": "Staff",
       "element": "Ice",
-      "maxTargets": 15
+      "maxTargets": 15,
+      "headline": false
     }
   ]
 }

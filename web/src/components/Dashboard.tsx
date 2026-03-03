@@ -59,6 +59,7 @@ function tierDisplayName(tier: string, customTierNames: Map<string, string>): st
 export function Dashboard({ simulation, customTiers, baseTiers, targetCount, setTargetCount, elementModifiers, setElementModifiers, buffOverrides, setBuffOverrides, kbEnabled, setKbEnabled, bossAttackInterval, setBossAttackInterval, bossAccuracy, setBossAccuracy, capEnabled, setCapEnabled }: DashboardProps) {
   const { results, tiers, customTierNames } = simulation;
   const [selectedTier, setSelectedTier] = useState<string | 'all'>('all');
+  const [showAllSkills, setShowAllSkills] = useState(false);
 
   const filtered = useMemo(() => {
     const activeScenario = targetCount > 1
@@ -68,10 +69,11 @@ export function Dashboard({ simulation, customTiers, baseTiers, targetCount, set
       .filter((r) => {
         if (r.scenario !== activeScenario) return false;
         if (selectedTier !== 'all' && r.tier !== selectedTier) return false;
+        if (!showAllSkills && r.headline === false) return false;
         return true;
       })
       .sort((a, b) => capEnabled ? b.dps.dps - a.dps.dps : b.dps.uncappedDps - a.dps.uncappedDps);
-  }, [results, selectedTier, targetCount, capEnabled]);
+  }, [results, selectedTier, targetCount, capEnabled, showAllSkills]);
 
   return (
     <div>
@@ -101,6 +103,7 @@ export function Dashboard({ simulation, customTiers, baseTiers, targetCount, set
           onAccuracyChange={setBossAccuracy}
         />
         <CapToggle enabled={capEnabled} onToggle={setCapEnabled} />
+        <AllSkillsToggle enabled={showAllSkills} onToggle={setShowAllSkills} />
       </div>
 
       <TierAssumptions />
@@ -158,6 +161,26 @@ function TargetSpinner({ value, onChange }: { value: number; onChange: (n: numbe
           {...incSpinner}
         >
           +
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function AllSkillsToggle({ enabled, onToggle }: { enabled: boolean; onToggle: (v: boolean) => void }) {
+  const styleOn = 'border border-emerald-700/50 bg-emerald-950/40 text-emerald-400';
+  const styleOff = 'border border-border-default bg-bg-raised text-text-muted';
+  return (
+    <div className="flex flex-col gap-1">
+      <span className="text-[11px] font-medium uppercase tracking-wide text-text-dim">Skills</span>
+      <div className="flex items-center gap-1.5">
+        <button
+          type="button"
+          title={enabled ? 'Showing all skills — click to show only headline skills' : 'Showing headline skills only — click to show all'}
+          onClick={() => onToggle(!enabled)}
+          className={`cursor-pointer rounded px-1.5 py-0.5 text-xs font-medium transition-colors ${enabled ? styleOn : styleOff}`}
+        >
+          All
         </button>
       </div>
     </div>

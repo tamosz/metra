@@ -18,6 +18,7 @@
       "weaponType": "Crossbow",
       "builtInCritRate": 0.40,
       "builtInCritDamageBonus": 100,
+      "headline": false,
       "source": "dmg sheet D19=125, E19=125 (125*1), N19 hitCount=4, crit: 0.40 built-in from Critical Shot"
     },
     {

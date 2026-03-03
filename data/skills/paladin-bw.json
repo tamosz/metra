@@ -28,7 +28,8 @@
       "speedCategory": "Blast",
       "weaponType": "2H BW",
       "attackRatio": { "slash": 0.6, "stab": 0.4 },
-      "elementOptions": ["Fire", "Ice", "Lightning"]
+      "elementOptions": ["Fire", "Ice", "Lightning"],
+      "headline": false
     }
   ]
 }

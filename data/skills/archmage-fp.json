@@ -31,7 +31,8 @@
       "speedCategory": "Meteor",
       "weaponType": "Staff",
       "element": "Fire",
-      "maxTargets": 15
+      "maxTargets": 15,
+      "headline": false
     }
   ]
 }

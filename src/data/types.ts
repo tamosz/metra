@@ -91,6 +91,8 @@ export interface SkillEntry {
   maxTargets?: number;
   /** If true, skill is excluded from simulation output (e.g., standalone Demolition when combo is strictly better). */
   hidden?: boolean;
+  /** If false, skill is shown only when "show all skills" is toggled on. Default true. */
+  headline?: boolean;
   /** KB recovery time override (seconds). 0 for i-frame skills (Demolition, Barrage). Omit for auto-detect. */
   knockbackRecovery?: number;
 }
@@ -111,6 +113,8 @@ export interface MixedRotation {
   description: string;
   /** Component skills and their time weights. */
   components: MixedRotationComponent[];
+  /** If false, rotation is shown only when "show all skills" is toggled on. Default true. */
+  headline?: boolean;
 }
 
 /** The four primary stats in Royals. */

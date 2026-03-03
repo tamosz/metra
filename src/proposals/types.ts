@@ -51,6 +51,8 @@ export interface ScenarioResult {
   dps: DpsResult;
   /** Tooltip description for mixed rotation entries. */
   description?: string;
+  /** If false, result is only shown when "show all skills" is toggled on. Default true. */
+  headline?: boolean;
 }
 
 /** Delta between before and after for a single scenario. */

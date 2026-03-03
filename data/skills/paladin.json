@@ -26,7 +26,8 @@
       "hitCount": 1,
       "speedCategory": "Blast",
       "weaponType": "2H Sword",
-      "elementOptions": ["Fire", "Ice", "Lightning"]
+      "elementOptions": ["Fire", "Ice", "Lightning"],
+      "headline": false
     }
   ]
 }
