@@ -45,7 +45,7 @@ export function TierPresets({
     <div className="flex flex-wrap items-end gap-4">
       <div className="flex flex-col gap-1">
         <span className="text-[11px] font-medium uppercase tracking-wide text-text-dim">Tier</span>
-        <div className="flex gap-0.5">
+        <div className="flex flex-wrap gap-0.5">
           {tiers.map((t) => {
             const isSelected = t === selectedTier;
             const activeStyle = isSelected && cgsMatchesSelected
