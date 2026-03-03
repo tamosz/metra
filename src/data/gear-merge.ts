@@ -26,6 +26,7 @@ export interface TierOverride {
   baseStats: CharacterBuild['baseStats'];
   gearBreakdown: Record<string, Record<string, number>>;
   projectile?: number;
+  attackPotion?: number;
   [key: string]: unknown;
 }
 
@@ -53,7 +54,7 @@ export function mergeGearTemplate(
     totalWeaponAttack: computed.totalWeaponAttack,
     weaponType: base.weaponType,
     weaponSpeed: base.weaponSpeed,
-    attackPotion: defaults.attackPotion,
+    attackPotion: tier.attackPotion ?? defaults.attackPotion,
     projectile: tier.projectile ?? base.projectile,
     echoActive: base.echoActive,
     mwLevel: base.mwLevel,
