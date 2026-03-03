@@ -1,96 +1,54 @@
 {
+  "extends": "sair",
   "source": "Adapted from ranged class templates for Corsair. DEX primary, STR secondary. Gun base speed 6 (Normal). Eternal Bullet +20 WATK projectile.",
-  "label": "Corsair High",
-  "className": "Corsair",
   "baseStats": {
     "STR": 4,
     "DEX": 999,
     "INT": 4,
     "LUK": 4
   },
-  "gearStats": {
-    "STR": 90,
-    "DEX": 165,
-    "INT": 0,
-    "LUK": 0
-  },
-  "totalWeaponAttack": 172,
-  "weaponType": "Gun",
-  "weaponSpeed": 6,
-  "attackPotion": 100,
-  "potionName": "Apple",
-  "projectile": 20,
-  "projectileName": "Eternal Bullet",
-  "echoActive": true,
-  "mwLevel": 20,
-  "speedInfusion": true,
-  "sharpEyes": true,
-  "shadowPartner": false,
-  "boosterActive": true,
   "gearBreakdown": {
     "weapon": {
-      "DEX": 0,
-      "STR": 0,
-      "WATK": 114,
-      "notes": "Well-scrolled Gun. ~1 failed scroll slot below perfect."
+      "WATK": 114
     },
     "helmet": {
       "DEX": 21,
-      "STR": 40,
-      "WATK": 0,
-      "notes": "Well-scrolled Zakum Helmet."
+      "STR": 40
     },
     "top": {
       "DEX": 60,
-      "STR": 8,
-      "WATK": 0,
-      "notes": "DEX scrolled Bathrobe/overall."
+      "STR": 8
     },
     "earring": {
-      "DEX": 15,
-      "STR": 0,
-      "WATK": 0
+      "DEX": 15
     },
     "eye": {
       "DEX": 6,
-      "STR": 6,
-      "WATK": 0
+      "STR": 6
     },
     "face": {
       "DEX": 10,
-      "STR": 5,
-      "WATK": 0
+      "STR": 5
     },
     "pendant": {
       "DEX": 22,
-      "STR": 23,
-      "WATK": 0,
-      "notes": "Near-perfect HTP."
+      "STR": 23
     },
     "belt": {
-      "DEX": 5,
-      "STR": 0,
-      "WATK": 0
+      "DEX": 5
     },
     "medal": {
-      "DEX": 0,
-      "STR": 0,
       "WATK": 3
     },
     "ring1": {
       "DEX": 8,
-      "STR": 5,
-      "WATK": 0
+      "STR": 5
     },
     "ring2": {
-      "DEX": 5,
-      "STR": 0,
-      "WATK": 0
+      "DEX": 5
     },
     "ring3": {
-      "DEX": 3,
-      "STR": 0,
-      "WATK": 0
+      "DEX": 3
     },
     "ring4": {
       "DEX": 3,
@@ -99,18 +57,11 @@
     },
     "cape": {
       "DEX": 2,
-      "STR": 0,
       "WATK": 18
     },
     "shoe": {
       "DEX": 5,
-      "STR": 0,
       "WATK": 16
-    },
-    "glove": {
-      "DEX": 0,
-      "STR": 0,
-      "WATK": 20
     }
   }
 }

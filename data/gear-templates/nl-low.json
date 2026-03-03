@@ -1,115 +1,62 @@
 {
+  "extends": "nl",
   "source": "Royals forum NL guides (Darko 2024, Comprehensive, Gearing Discussion)",
-  "label": "NL Low",
-  "className": "NL",
+  "projectile": 27,
   "baseStats": {
     "STR": 4,
     "DEX": 25,
     "INT": 4,
     "LUK": 700
   },
-  "gearStats": {
-    "STR": 0,
-    "DEX": 82,
-    "INT": 0,
-    "LUK": 53
-  },
-  "totalWeaponAttack": 111,
-  "weaponType": "Claw",
-  "weaponSpeed": 4,
-  "attackPotion": 60,
-  "potionName": "Stopper",
-  "projectile": 27,
-  "echoActive": true,
-  "mwLevel": 20,
-  "speedInfusion": true,
-  "sharpEyes": true,
-  "shadowPartner": true,
   "gearBreakdown": {
     "weapon": {
-      "LUK": 0,
-      "DEX": 0,
       "WATK": 76
     },
     "helmet": {
       "LUK": 17,
-      "DEX": 30,
-      "WATK": 0
+      "DEX": 30
     },
     "top": {
       "LUK": 12,
-      "DEX": 5,
-      "WATK": 0
+      "DEX": 5
     },
     "bottom": {
       "LUK": 3,
-      "DEX": 14,
-      "WATK": 0
+      "DEX": 14
     },
     "earring": {
-      "LUK": 0,
-      "DEX": 10,
-      "WATK": 0
+      "DEX": 10
     },
     "eye": {
-      "LUK": 0,
-      "DEX": 2,
-      "WATK": 0
+      "DEX": 2
     },
     "face": {
-      "LUK": 5,
-      "DEX": 0,
-      "WATK": 0
+      "LUK": 5
     },
     "pendant": {
       "LUK": 10,
-      "DEX": 10,
-      "WATK": 0
+      "DEX": 10
     },
     "belt": {
-      "LUK": 0,
-      "DEX": 5,
-      "WATK": 0
+      "DEX": 5
     },
     "medal": {
-      "LUK": 0,
-      "DEX": 0,
       "WATK": 2
     },
     "ring1": {
       "LUK": 3,
-      "DEX": 3,
-      "WATK": 0
+      "DEX": 3
     },
     "ring2": {
       "LUK": 2,
-      "DEX": 2,
-      "WATK": 0
+      "DEX": 2
     },
     "ring3": {
       "LUK": 1,
-      "DEX": 1,
-      "WATK": 0
+      "DEX": 1
     },
     "ring4": {
-      "LUK": 0,
-      "DEX": 0,
       "WATK": 1
-    },
-    "cape": {
-      "LUK": 0,
-      "DEX": 0,
-      "WATK": 12
-    },
-    "shoe": {
-      "LUK": 0,
-      "DEX": 0,
-      "WATK": 10
-    },
-    "glove": {
-      "LUK": 0,
-      "DEX": 0,
-      "WATK": 10
     }
   }
 }

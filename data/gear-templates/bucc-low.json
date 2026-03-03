@@ -1,113 +1,62 @@
 {
+  "extends": "bucc",
   "source": "gear templates sheet, Bucc rows, Low. Knuckle base speed 6 (Normal).",
-  "label": "Bucc Low",
-  "className": "Buccaneer",
   "baseStats": {
     "STR": 700,
     "DEX": 22,
     "INT": 4,
     "LUK": 4
   },
-  "gearStats": {
-    "STR": 96,
-    "DEX": 83,
-    "INT": 0,
-    "LUK": 0
-  },
-  "totalWeaponAttack": 137,
-  "weaponType": "Knuckle",
-  "weaponSpeed": 6,
-  "attackPotion": 60,
-  "potionName": "Stopper",
-  "projectile": 0,
-  "echoActive": true,
-  "mwLevel": 20,
-  "speedInfusion": true,
-  "sharpEyes": true,
-  "shadowPartner": false,
-  "boosterActive": true,
   "gearBreakdown": {
     "weapon": {
       "STR": 18,
-      "DEX": 0,
-      "WATK": 105,
-      "notes": "Budget knuckle. 105 WATK is mid-range scrolled knuckle."
+      "WATK": 105
     },
     "helmet": {
       "STR": 17,
-      "DEX": 31,
-      "WATK": 0,
-      "notes": "Zakum Helmet — same as warrior template."
+      "DEX": 31
     },
     "top": {
       "STR": 23,
-      "DEX": 7,
-      "WATK": 0
+      "DEX": 7
     },
     "bottom": {
       "STR": 8,
-      "DEX": 12,
-      "WATK": 0
+      "DEX": 12
     },
     "earring": {
-      "STR": 0,
-      "DEX": 10,
-      "WATK": 0
+      "DEX": 10
     },
     "eye": {
       "STR": 2,
-      "DEX": 2,
-      "WATK": 0
+      "DEX": 2
     },
     "face": {
-      "STR": 6,
-      "DEX": 0,
-      "WATK": 0
+      "STR": 6
     },
     "pendant": {
       "STR": 10,
-      "DEX": 10,
-      "WATK": 0
+      "DEX": 10
     },
     "medal": {
       "STR": 2,
-      "DEX": 2,
-      "WATK": 0
+      "DEX": 2
     },
     "ring1": {
       "STR": 3,
-      "DEX": 3,
-      "WATK": 0
+      "DEX": 3
     },
     "ring2": {
       "STR": 3,
-      "DEX": 3,
-      "WATK": 0
+      "DEX": 3
     },
     "ring3": {
       "STR": 1,
-      "DEX": 1,
-      "WATK": 0
+      "DEX": 1
     },
     "ring4": {
       "STR": 3,
-      "DEX": 2,
-      "WATK": 0
-    },
-    "cape": {
-      "STR": 0,
-      "DEX": 0,
-      "WATK": 12
-    },
-    "shoe": {
-      "STR": 0,
-      "DEX": 0,
-      "WATK": 10
-    },
-    "glove": {
-      "STR": 0,
-      "DEX": 0,
-      "WATK": 10
+      "DEX": 2
     }
   }
 }
