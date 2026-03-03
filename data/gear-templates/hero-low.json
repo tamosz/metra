@@ -6,7 +6,7 @@
   "gearStats": { "STR": 95, "DEX": 83, "INT": 0, "LUK": 0 },
   "totalWeaponAttack": 168,
   "weaponType": "2H Sword",
-  "weaponSpeed": 6,
+  "weaponSpeed": 5,
   "attackPotion": 60,
   "potionName": "Stopper",
   "projectile": 0,
