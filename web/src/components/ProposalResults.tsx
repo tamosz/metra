@@ -302,7 +302,7 @@ function RankBumpChart({ deltas }: { deltas: DeltaEntry[] }) {
               tickLine={false}
               tick={{ fill: colors.textMuted, fontSize: 12 }}
             />
-            <YAxis type="number" domain={[1, maxRank]} reversed hide />
+            <YAxis type="number" domain={[1, maxRank]} reversed hide allowDecimals={false} />
             <Tooltip content={() => null} />
             {ranked.map((d, i) => {
               const isMover = d.rankBefore !== d.rankAfter;
