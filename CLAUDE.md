@@ -66,7 +66,7 @@ Five layers. Keep them cleanly separated.
 Static game data stored as JSON files, version-controlled, human-readable and human-editable. This is the "current state of Royals."
 
 Actual files:
-- `skills/` — one file per class (`hero.json`, `hero-axe.json`, `drk.json`, `paladin.json`, `nl.json`, `bowmaster.json`, `marksman.json`, `sair.json`, `bucc.json`, `shadower.json`, `archmage-il.json`, `archmage-fp.json`, `bishop.json`). Each contains mastery, stat mapping, SE crit config, and a `skills[]` array.
+- `skills/` — one file per class (`hero.json`, `hero-axe.json`, `drk.json`, `paladin.json`, `paladin-bw.json`, `nl.json`, `bowmaster.json`, `marksman.json`, `sair.json`, `bucc.json`, `shadower.json`, `archmage-il.json`, `archmage-fp.json`, `bishop.json`). Each contains mastery, stat mapping, SE crit config, and a `skills[]` array.
 - `gear-templates/` — character builds at each funding tier (`hero-low.json`, `hero-high.json`, etc.). Include full gear breakdown, stats, buffs, and weapon info.
 - `weapons.json` — weapon type slash/stab multipliers for the damage formula.
 - `attack-speed.json` — effective speed tier → attack time lookup, keyed by skill category.
@@ -83,6 +83,9 @@ Pure functions. No side effects, no I/O. Takes game data + a character build, ou
 - `buffs.ts` — MW stat boost, Echo of Hero WATK bonus, total attack/stat aggregation.
 - `attack-speed.ts` — weapon speed resolution (base speed + booster + SI), attack time lookup by skill category.
 - `dps.ts` — full DPS pipeline: attack time → skill damage% → crit damage% → range caps → adjusted ranges → average damage → DPS. Uses `skill.weaponType` (not build) for weapon multiplier lookup, enabling weapon variants within the same class/tier. Supports built-in crit (additive with SE), throwing star formula (branches on `weaponType === 'Claw'`), Shadow Partner (1.5× multiplier), `fixedDamage` (bypasses damage formula for skills like Snipe), and `elementModifier` (factored into range cap so the 199,999 per-line cap applies to final damage including element).
+- `build-dps.ts` — build-level DPS calculation (ties together class data, gear template, and engine).
+- `knockback.ts` — KB uptime modeling (Stance, Shadow Shifter, boss attack interval/accuracy).
+- `marginal.ts` — marginal gain analysis (WATK/stat impact on DPS).
 - `index.ts` — re-exports.
 
 **Simulation features:**
@@ -188,18 +191,18 @@ Two formula variants exist, configured per class via `seCritFormula`:
 
 ### Key Classes
 
-**Implemented (13 classes):**
+**Implemented (14 classes):**
 - **Hero** — 2H Sword, Brandish (2-hit)
 - **Hero (Axe)** — 2H Axe, Brandish (2-hit). Separate skill file and gear templates. Weapon speed 6 (no speed-5 2H Axe exists), 4.8× multiplier. Buffed DPS matches Sword (SI resolves both to speed 2); unbuffed Axe is slower.
 - **Dark Knight (DrK)** — Spear, Crusher
-- **Paladin** — 2H Sword/2H BW, Blast (4 variants: Holy and F/I/L Charge × Sword and BW)
+- **Paladin** — 2H Sword, Blast (Holy and F/I/L Charge variants)
+- **Paladin (BW)** — 2H BW, Blast (Holy and F/I/L Charge variants). Separate skill file and gear templates. BW uses `attackRatio` for weighted swing/stab multiplier (3:2 → effective 4.24×).
 - **Night Lord (NL)** — Claw, Triple Throw (3-hit, built-in 50% crit, Shadow Partner)
 - **Bowmaster** — Bow, Hurricane (fixed 0.12s attack time) and Strafe (4-hit), built-in 40% crit from Critical Shot
-- **Marksman (MM)** — Crossbow, Snipe + Strafe weave rotation (combo via `comboGroup`: 1 Snipe per 5s cycle + N Strafes as filler) and standalone Strafe (4-hit). Snipe has ~5s effective cooldown (4s programmed + ~1s server tick). DEX primary, Crossbow 3.6× multiplier, 0.9 mastery, 40% crit from Critical Shot. Shares gear with Bowmaster (Crossbow Expert +10 WATK).
+- **Marksman (MM)** — Crossbow, Snipe + Strafe weave rotation (combo via `comboGroup`: 1 Snipe per 5s cycle + N Strafes as filler) and standalone Strafe (4-hit). Snipe has ~5s effective cooldown (4s programmed + ~1s server tick). DEX primary, Crossbow 3.6× multiplier, 1.0 mastery (Update #71), 40% crit from Critical Shot. Shares gear with Bowmaster (Marksman Boost +15 WATK, Update #65.1).
 - **Corsair (Sair)** — Gun, Battleship Cannon (4-hit, 0.60s) and Rapid Fire (Hurricane-style 0.12s). DEX primary, 3.6× weapon multiplier.
 - **Buccaneer (Bucc)** — Knuckle, Demolition (8-hit, fixed 2.34s cycle) and Barrage + Demolition (multi-part combo via `comboGroup`, fixed 4.04s cycle). STR primary, 4.8× weapon multiplier.
 - **Shadower** — Dagger + Shield, Boomerang Step + Assassinate 30 (combo via `comboGroup`, 2.31s cycle) and Savage Blow (6-hit standalone). LUK primary, STR+DEX secondary (array `secondaryStat`), Dagger 3.6× multiplier, standard damage formula, Shadow Partner, no built-in crit.
-
 - **Archmage (I/L)** — magic, Ice/Lightning spells
 - **Archmage (F/P)** — magic, Fire/Poison spells
 - **Bishop** — magic, party utility
@@ -209,11 +212,12 @@ Balance is evaluated across funding levels. Current tiers:
 - **low** — base/tradeable gear, no scrolling, Stopper potion (~lv160-170). C/G/S 10/12/10.
 - **mid** — reasonable scrolling, Stopper potion (~lv185). C/G/S 15/16/13.
 - **high** — well-scrolled endgame gear, Apple potion (lv200). C/G/S 20/18/16.
+- **perfect** — theoretical max gear (godly clean +5 over MS max + 7/7 30% dark scrolls), Apple potion. C/G/S 22/22/18.
 
 A change that looks balanced at high funding might be wildly unbalanced at low funding, and vice versa. Always evaluate across tiers.
 
 ### Gear Template Assumptions
-All templates assume a fully buffed party scenario: MW20, Sharp Eyes, Speed Infusion, Echo of Hero, and Booster (implicit). Low and mid tiers use Heartstopper (60 WATK), high tier uses Onyx Apple (100 WATK). Mage low/mid tiers use Lollipop (45 MATK). See `data/gear-assumptions.md` for the full per-slot breakdown, forum cross-references, and flagged concerns.
+All templates assume a fully buffed party scenario: MW20, Sharp Eyes, Speed Infusion, Echo of Hero, and Booster (implicit). Low and mid tiers use Heartstopper (60 WATK), high and perfect tiers use Onyx Apple (100 WATK). Mage low/mid tiers use Lollipop (45 MATK), mage high and perfect tiers use Ssiws Cheese (220 MATK). See `data/gear-assumptions.md` for the full per-slot breakdown, forum cross-references, and flagged concerns.
 
 ### Simulation Controls
 All simulation conditions are composed from individual toggles rather than predefined scenarios:
@@ -274,6 +278,7 @@ metra/
 │   │   ├── hero-axe.json
 │   │   ├── drk.json
 │   │   ├── paladin.json
+│   │   ├── paladin-bw.json
 │   │   ├── nl.json
 │   │   ├── bowmaster.json
 │   │   ├── marksman.json
@@ -283,20 +288,21 @@ metra/
 │   │   ├── archmage-il.json
 │   │   ├── archmage-fp.json
 │   │   └── bishop.json
-│   └── gear-templates/          # {class}-{tier}.json — low, mid, high per class
-│       ├── hero-{low,mid,high}.json
-│       ├── hero-axe-{low,mid,high}.json
-│       ├── drk-{low,mid,high}.json
-│       ├── paladin-{low,mid,high}.json
-│       ├── nl-{low,mid,high}.json
-│       ├── bowmaster-{low,mid,high}.json
-│       ├── marksman-{low,mid,high}.json
-│       ├── sair-{low,mid,high}.json
-│       ├── bucc-{low,mid,high}.json
-│       ├── shadower-{low,mid,high}.json
-│       ├── archmage-il-{low,mid,high}.json
-│       ├── archmage-fp-{low,mid,high}.json
-│       └── bishop-{low,mid,high}.json
+│   └── gear-templates/          # {class}-{tier}.json — low, mid, high, perfect per class
+│       ├── hero-{low,mid,high,perfect}.json
+│       ├── hero-axe-{low,mid,high,perfect}.json
+│       ├── drk-{low,mid,high,perfect}.json
+│       ├── paladin-{low,mid,high,perfect}.json
+│       ├── paladin-bw-{low,mid,high,perfect}.json
+│       ├── nl-{low,mid,high,perfect}.json
+│       ├── bowmaster-{low,mid,high,perfect}.json
+│       ├── marksman-{low,mid,high,perfect}.json
+│       ├── sair-{low,mid,high,perfect}.json
+│       ├── bucc-{low,mid,high,perfect}.json
+│       ├── shadower-{low,mid,high,perfect}.json
+│       ├── archmage-il-{low,mid,high,perfect}.json
+│       ├── archmage-fp-{low,mid,high,perfect}.json
+│       └── bishop-{low,mid,high,perfect}.json
 ├── proposals/                   # balance change proposals
 │   ├── brandish-buff-20.json
 │   ├── paladin-blast-multiplier.json
@@ -307,6 +313,7 @@ metra/
 │   ├── index.ts                 # library entry point
 │   ├── core.ts                  # browser-safe re-exports (no fs loaders)
 │   ├── cli.ts                   # CLI entry: baseline rankings or proposal comparison
+│   ├── cli.test.ts
 │   ├── integration.test.ts      # end-to-end pipeline tests
 │   ├── audit/
 │   │   ├── index.ts             # re-exports
@@ -328,13 +335,21 @@ metra/
 │   │   ├── attack-speed.ts      # weapon speed resolution, attack time lookup
 │   │   ├── attack-speed.test.ts
 │   │   ├── dps.ts               # full DPS pipeline
-│   │   └── dps.test.ts
+│   │   ├── dps.test.ts
+│   │   ├── build-dps.ts         # build-level DPS calculation
+│   │   ├── build-dps.test.ts
+│   │   ├── knockback.ts         # KB uptime modeling (Stance, Shadow Shifter)
+│   │   ├── knockback.test.ts
+│   │   ├── marginal.ts          # marginal gain analysis
+│   │   └── marginal.test.ts
 │   ├── proposals/
 │   │   ├── types.ts             # Proposal, ProposalChange, ScenarioResult, DeltaEntry (with ranks), ComparisonResult
 │   │   ├── apply.ts             # apply proposal changes to skill data
 │   │   ├── apply.test.ts
 │   │   ├── validate.ts          # proposal JSON validation + ProposalValidationError
+│   │   ├── validate.test.ts
 │   │   ├── simulate.ts          # run DPS across all classes × tiers × skills, comboGroup aggregation
+│   │   ├── simulate.test.ts
 │   │   ├── compare.ts           # before/after comparison with deltas and rank tracking
 │   │   └── compare.test.ts
 │   ├── report/
@@ -344,7 +359,8 @@ metra/
 │   │   ├── bbcode.test.ts
 │   │   ├── ascii-chart.ts       # horizontal ASCII bar chart for terminal output
 │   │   ├── ascii-chart.test.ts
-│   │   └── utils.ts             # shared formatting helpers (formatNumber, sortDeltas, etc.)
+│   │   ├── utils.ts             # shared formatting helpers (formatNumber, sortDeltas, etc.)
+│   │   └── utils.test.ts
 │   └── sheets/
 │       ├── extract.ts           # read formulas/values from xlsx
 │       └── extract.test.ts
