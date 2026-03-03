@@ -1,4 +1,4 @@
-import { Fragment, useState, useMemo, useCallback } from 'react';
+import { Fragment, memo, useState, useMemo, useCallback } from 'react';
 import { DpsChart } from './DpsChart.js';
 import { TierPresets } from './TierPresets.js';
 import { SupportClassNote } from './SupportClassNote.js';
@@ -200,9 +200,9 @@ function AllSkillsToggle({ enabled, onToggle }: { enabled: boolean; onToggle: (v
   );
 }
 
-function SortArrow({ direction }: { direction: SortDirection }) {
+const SortArrow = memo(function SortArrow({ direction }: { direction: SortDirection }) {
   return <span className="ml-1 text-[10px]">{direction === 'asc' ? '\u25B2' : '\u25BC'}</span>;
-}
+});
 
 function buildTierData(
   row: { className: string; skillName: string },

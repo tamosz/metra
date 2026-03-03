@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import type { DpsResult } from '@engine/engine/dps.js';
 import { formatDps } from '../utils/format.js';
 
@@ -15,7 +16,7 @@ interface SkillDetailPanelProps {
   currentTier: string;
 }
 
-export function SkillDetailPanel({
+function SkillDetailPanelInner({
   dps,
   tierData,
   classColor,
@@ -102,6 +103,8 @@ export function SkillDetailPanel({
     </div>
   );
 }
+
+export const SkillDetailPanel = memo(SkillDetailPanelInner);
 
 function StatRow({
   label,
