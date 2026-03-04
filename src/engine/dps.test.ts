@@ -4,8 +4,8 @@ import {
   loadAttackSpeed,
   loadMW,
   loadClassSkills,
-  loadGearTemplate,
 } from '../data/loader.js';
+import { TEST_BUILDS } from './test-builds.js';
 import type {
   WeaponData,
   AttackSpeedData,
@@ -39,19 +39,19 @@ beforeAll(() => {
   attackSpeedData = loadAttackSpeed();
   mwData = loadMW();
   heroData = loadClassSkills('Hero');
-  heroHigh = loadGearTemplate('hero-high');
-  heroLow = loadGearTemplate('hero-low');
+  heroHigh = TEST_BUILDS['hero-high'];
+  heroLow = TEST_BUILDS['hero-low'];
   drkData = loadClassSkills('DrK');
-  drkHigh = loadGearTemplate('drk-high');
-  drkLow = loadGearTemplate('drk-low');
+  drkHigh = TEST_BUILDS['drk-high'];
+  drkLow = TEST_BUILDS['drk-low'];
   paladinData = loadClassSkills('Paladin');
-  paladinHigh = loadGearTemplate('paladin-high');
-  paladinLow = loadGearTemplate('paladin-low');
+  paladinHigh = TEST_BUILDS['paladin-high'];
+  paladinLow = TEST_BUILDS['paladin-low'];
   paladinBwData = loadClassSkills('paladin-bw');
-  paladinBwHigh = loadGearTemplate('paladin-bw-high');
+  paladinBwHigh = TEST_BUILDS['paladin-bw-high'];
   nlData = loadClassSkills('NL');
-  nlHigh = loadGearTemplate('nl-high');
-  nlLow = loadGearTemplate('nl-low');
+  nlHigh = TEST_BUILDS['nl-high'];
+  nlLow = TEST_BUILDS['nl-low'];
 });
 
 describe('Hero Brandish (Sword) DPS', () => {
@@ -634,8 +634,8 @@ describe('Shadower DPS', () => {
 
   beforeAll(() => {
     shadData = loadClassSkills('Shadower');
-    shadHigh = loadGearTemplate('shadower-high');
-    shadLow = loadGearTemplate('shadower-low');
+    shadHigh = TEST_BUILDS['shadower-high'];
+    shadLow = TEST_BUILDS['shadower-low'];
   });
 
   it('loads Shadower skill data correctly', () => {
@@ -832,8 +832,8 @@ describe('Marksman DPS', () => {
 
   beforeAll(() => {
     mmData = loadClassSkills('Marksman');
-    mmHigh = loadGearTemplate('marksman-high');
-    mmLow = loadGearTemplate('marksman-low');
+    mmHigh = TEST_BUILDS['marksman-high'];
+    mmLow = TEST_BUILDS['marksman-low'];
   });
 
   it('loads Marksman skill data correctly', () => {
@@ -973,8 +973,8 @@ describe('Archmage I/L DPS', () => {
 
   beforeAll(() => {
     amData = loadClassSkills('Archmage I/L');
-    amHigh = loadGearTemplate('archmage-il-high');
-    amLow = loadGearTemplate('archmage-il-low');
+    amHigh = TEST_BUILDS['archmage-il-high'];
+    amLow = TEST_BUILDS['archmage-il-low'];
   });
 
   it('loads Archmage I/L skill data correctly', () => {
@@ -1084,8 +1084,8 @@ describe('Bishop DPS', () => {
 
   beforeAll(() => {
     bishopData = loadClassSkills('Bishop');
-    bishopHigh = loadGearTemplate('bishop-high');
-    bishopLow = loadGearTemplate('bishop-low');
+    bishopHigh = TEST_BUILDS['bishop-high'];
+    bishopLow = TEST_BUILDS['bishop-low'];
   });
 
   it('loads Bishop skill data correctly', () => {
@@ -1123,7 +1123,7 @@ describe('Bishop DPS', () => {
 
   it('Bishop has lower DPS than Archmage (no amp)', () => {
     const amData = loadClassSkills('Archmage I/L');
-    const amHigh = loadGearTemplate('archmage-il-high');
+    const amHigh = TEST_BUILDS['archmage-il-high'];
     const cl = amData.skills.find((s) => s.name === 'Chain Lightning')!;
     const ar = bishopData.skills.find((s) => s.name === 'Angel Ray')!;
 
@@ -1158,8 +1158,8 @@ describe('Archmage F/P DPS', () => {
 
   beforeAll(() => {
     fpData = loadClassSkills('Archmage F/P');
-    fpHigh = loadGearTemplate('archmage-fp-high');
-    fpLow = loadGearTemplate('archmage-fp-low');
+    fpHigh = TEST_BUILDS['archmage-fp-high'];
+    fpLow = TEST_BUILDS['archmage-fp-low'];
   });
 
   it('loads Archmage F/P skill data correctly', () => {
@@ -1241,8 +1241,8 @@ describe('Bowmaster DPS', () => {
 
   beforeAll(() => {
     bmData = loadClassSkills('Bowmaster');
-    bmHigh = loadGearTemplate('bowmaster-high');
-    bmLow = loadGearTemplate('bowmaster-low');
+    bmHigh = TEST_BUILDS['bowmaster-high'];
+    bmLow = TEST_BUILDS['bowmaster-low'];
   });
 
   it('loads Bowmaster skill data correctly', () => {
@@ -1333,8 +1333,8 @@ describe('Hero (Axe) DPS', () => {
 
   beforeAll(() => {
     axeData = loadClassSkills('hero-axe');
-    axeHigh = loadGearTemplate('hero-axe-high');
-    axeLow = loadGearTemplate('hero-axe-low');
+    axeHigh = TEST_BUILDS['hero-axe-high'];
+    axeLow = TEST_BUILDS['hero-axe-low'];
   });
 
   it('loads Hero (Axe) skill data correctly', () => {
@@ -1414,8 +1414,8 @@ describe('Corsair DPS', () => {
 
   beforeAll(() => {
     sairData = loadClassSkills('sair');
-    sairHigh = loadGearTemplate('sair-high');
-    sairLow = loadGearTemplate('sair-low');
+    sairHigh = TEST_BUILDS['sair-high'];
+    sairLow = TEST_BUILDS['sair-low'];
   });
 
   it('loads Corsair skill data correctly', () => {
@@ -1526,8 +1526,8 @@ describe('Buccaneer DPS', () => {
 
   beforeAll(() => {
     buccData = loadClassSkills('bucc');
-    buccHigh = loadGearTemplate('bucc-high');
-    buccLow = loadGearTemplate('bucc-low');
+    buccHigh = TEST_BUILDS['bucc-high'];
+    buccLow = TEST_BUILDS['bucc-low'];
   });
 
   it('loads Buccaneer skill data correctly', () => {
@@ -1810,7 +1810,7 @@ describe('uncapped DPS fields', () => {
   it('fixedDamage skills have uncappedDps === dps and capLossPercent === 0', () => {
     // Marksman Snipe uses fixedDamage
     const mmData = loadClassSkills('Marksman');
-    const mmHigh = loadGearTemplate('marksman-high');
+    const mmHigh = TEST_BUILDS['marksman-high'];
     const snipe = mmData.skills.find((s) => s.name === 'Snipe')!;
     expect(snipe.fixedDamage).toBeDefined();
 

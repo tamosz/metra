@@ -1,0 +1,76 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Baseline mode > high-tier DPS matches reference values 1`] = `
+{
+  "Archmage F/P / Meteor": 53504,
+  "Archmage F/P / Paralyze": 97520,
+  "Archmage I/L / Blizzard": 53504,
+  "Archmage I/L / Chain Lightning": 89040,
+  "Bishop / Angel Ray": 49467,
+  "Bishop / Genesis": 41428,
+  "Bowmaster / Hurricane": 247834,
+  "Buccaneer / Barrage + Demolition": 256452,
+  "Corsair / Battleship Cannon": 352800,
+  "Corsair / Practical Bossing": 330849,
+  "Corsair / Rapid Fire": 243045,
+  "DrK / Spear Crusher": 252099,
+  "Hero (Axe) / Brandish": 224857,
+  "Hero / Brandish (Sword)": 242789,
+  "Marksman / Snipe + Strafe": 246918,
+  "Marksman / Strafe (MM)": 247422,
+  "NL / Triple Throw": 298993,
+  "Paladin (BW) / Blast (Holy, BW)": 170255,
+  "Paladin / Blast (Holy, Sword)": 191312,
+  "Shadower / BStep + Assassinate": 298027,
+}
+`;
+
+exports[`Baseline mode > low-tier DPS matches reference values 1`] = `
+{
+  "Archmage F/P / Meteor": 24879,
+  "Archmage F/P / Paralyze": 44520,
+  "Archmage I/L / Blizzard": 24879,
+  "Archmage I/L / Chain Lightning": 40649,
+  "Bishop / Angel Ray": 22456,
+  "Bishop / Genesis": 18807,
+  "Bowmaster / Hurricane": 119045,
+  "Buccaneer / Barrage + Demolition": 127998,
+  "Corsair / Battleship Cannon": 181428,
+  "Corsair / Practical Bossing": 170140,
+  "Corsair / Rapid Fire": 124987,
+  "DrK / Spear Crusher": 129399,
+  "Hero (Axe) / Brandish": 110865,
+  "Hero / Brandish (Sword)": 123899,
+  "Marksman / Snipe + Strafe": 139475,
+  "Marksman / Strafe (MM)": 119565,
+  "NL / Triple Throw": 145182,
+  "Paladin (BW) / Blast (Holy, BW)": 84884,
+  "Paladin / Blast (Holy, Sword)": 97629,
+  "Shadower / BStep + Assassinate": 177507,
+}
+`;
+
+exports[`Baseline mode > mid-tier DPS matches reference values 1`] = `
+{
+  "Archmage F/P / Meteor": 34653,
+  "Archmage F/P / Paralyze": 62010,
+  "Archmage I/L / Blizzard": 34653,
+  "Archmage I/L / Chain Lightning": 56618,
+  "Bishop / Angel Ray": 31407,
+  "Bishop / Genesis": 26304,
+  "Bowmaster / Hurricane": 166914,
+  "Buccaneer / Barrage + Demolition": 177219,
+  "Corsair / Battleship Cannon": 244450,
+  "Corsair / Practical Bossing": 229240,
+  "Corsair / Rapid Fire": 168402,
+  "DrK / Spear Crusher": 174798,
+  "Hero (Axe) / Brandish": 151865,
+  "Hero / Brandish (Sword)": 169772,
+  "Marksman / Snipe + Strafe": 180076,
+  "Marksman / Strafe (MM)": 167881,
+  "NL / Triple Throw": 197703,
+  "Paladin (BW) / Blast (Holy, BW)": 115961,
+  "Paladin / Blast (Holy, Sword)": 133776,
+  "Shadower / BStep + Assassinate": 221519,
+}
+`;
