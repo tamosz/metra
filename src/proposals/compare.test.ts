@@ -4,8 +4,8 @@ import {
   loadAttackSpeed,
   loadMW,
   loadClassSkills,
-  loadGearTemplate,
 } from '../data/loader.js';
+import { TEST_BUILDS } from '../engine/test-builds.js';
 import type {
   WeaponData,
   AttackSpeedData,
@@ -36,14 +36,14 @@ beforeAll(() => {
   ]);
 
   gearTemplates = new Map([
-    ['hero-low', loadGearTemplate('hero-low')],
-    ['hero-high', loadGearTemplate('hero-high')],
-    ['drk-low', loadGearTemplate('drk-low')],
-    ['drk-high', loadGearTemplate('drk-high')],
-    ['paladin-low', loadGearTemplate('paladin-low')],
-    ['paladin-high', loadGearTemplate('paladin-high')],
-    ['nl-low', loadGearTemplate('nl-low')],
-    ['nl-high', loadGearTemplate('nl-high')],
+    ['hero-low', TEST_BUILDS['hero-low']],
+    ['hero-high', TEST_BUILDS['hero-high']],
+    ['drk-low', TEST_BUILDS['drk-low']],
+    ['drk-high', TEST_BUILDS['drk-high']],
+    ['paladin-low', TEST_BUILDS['paladin-low']],
+    ['paladin-high', TEST_BUILDS['paladin-high']],
+    ['nl-low', TEST_BUILDS['nl-low']],
+    ['nl-high', TEST_BUILDS['nl-high']],
   ]);
 
   config = {
@@ -102,7 +102,7 @@ describe('compareProposal', () => {
     expect(heroBrandishHigh.changePercent).toBeGreaterThan(0);
 
     // After CGS update (193→198 WATK): Brandish +20 High DPS
-    expect(heroBrandishHigh.after).toBeCloseTo(261295, -1);
+    expect(heroBrandishHigh.after).toBeCloseTo(260069, -1);
 
     // DrK should be unchanged
     const drkCrusherHigh = result.deltas.find(
@@ -166,7 +166,7 @@ describe('compareProposal', () => {
     )!;
 
     // After CGS update (168→163 WATK): Brandish +20 Low DPS
-    expect(heroBrandishLow.after).toBeCloseTo(133098, -1);
+    expect(heroBrandishLow.after).toBeCloseTo(132717, -1);
   });
 
   it('computes multi-class changes independently', () => {
