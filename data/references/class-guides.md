@@ -51,7 +51,7 @@ Per-class verified values extracted from community guides on royals.ms.
 - Blast: 580% base, 4 variants (Holy/Charge × Sword/BW)
 - Holy Charge multiplier: 1.4x; F/I/L Charge: 1.3x
 - BW Blast uses 3:2 swing/stab ratio → effective 4.24x multiplier
-- SE crit formula: addAfterMultiply (unique among implemented classes)
+- SE crit formula: addBeforeMultiply (same as all physical classes)
 - Budget weapon: 130 WATK 2H Sword ("mid-range" per guide)
 
 ## Night Lord

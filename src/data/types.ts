@@ -150,11 +150,10 @@ export interface ClassSkillData {
   sharpEyesCritDamageBonus: number;
   /**
    * SE crit damage formula variant.
-   * - "addBeforeMultiply" (default, Hero/DrK): critDmg% = (basePower + bonus) * multiplier
-   * - "addAfterMultiply" (Paladin): critDmg% = basePower * multiplier + bonus
+   * - "addBeforeMultiply" (default): critDmg% = (basePower + bonus) * multiplier
    * - "multiplicative" (mages): critDmg% = basePower * multiplier * bonus / 100  (1.4× with SE)
    */
-  seCritFormula?: 'addBeforeMultiply' | 'addAfterMultiply' | 'multiplicative';
+  seCritFormula?: 'addBeforeMultiply' | 'multiplicative';
   /**
    * Which damage formula to use.
    * - "standard" (default): warrior-style (primary * weapMult + secondary) * totalAtk / 100

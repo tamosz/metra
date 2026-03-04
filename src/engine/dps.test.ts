@@ -217,7 +217,7 @@ describe('DrK Spear Crusher DPS', () => {
 });
 
 describe('Paladin Blast DPS', () => {
-  it('uses addAfterMultiply SE formula', () => {
+  it('uses addBeforeMultiply SE formula', () => {
     const blast = paladinData.skills.find(
       (s) => s.name === 'Blast (Holy, Sword)'
     )!;
@@ -230,8 +230,8 @@ describe('Paladin Blast DPS', () => {
       mwData
     );
 
-    // Paladin SE: basePower * multiplier + bonus = 580 * 1.4 + 140 = 952
-    expect(result.critDamagePercent).toBe(952);
+    // Paladin SE: (basePower + bonus) * multiplier = (580 + 140) * 1.4 = 1008
+    expect(result.critDamagePercent).toBeCloseTo(1008, 5);
     // Normal: 580 * 1.4 = 812
     expect(result.skillDamagePercent).toBe(812);
   });
@@ -253,8 +253,8 @@ describe('Paladin Blast DPS', () => {
     // Same damage range as Hero High after CGS WATK update
     expect(result.damageRange.max).toBe(18486);
     expect(result.damageRange.min).toBe(10163);
-    expect(result.dps).toBeGreaterThan(189000);
-    expect(result.dps).toBeLessThan(190000);
+    expect(result.dps).toBeGreaterThan(191000);
+    expect(result.dps).toBeLessThan(192000);
   });
 
   it('computes Low tier DPS from gear template', () => {
@@ -273,8 +273,8 @@ describe('Paladin Blast DPS', () => {
     // Same damage range as Hero Low after CGS WATK update
     expect(result.damageRange.max).toBe(9424);
     expect(result.damageRange.min).toBe(5196);
-    expect(result.dps).toBeGreaterThan(96000);
-    expect(result.dps).toBeLessThan(97000);
+    expect(result.dps).toBeGreaterThan(97000);
+    expect(result.dps).toBeLessThan(98000);
   });
 
   it('Blast (F/I/L Charge) uses Strafe/Snipe speed category', () => {
@@ -293,8 +293,8 @@ describe('Paladin Blast DPS', () => {
     // F/I/L charge uses Blast speed (0.63s at speed 2)
     expect(result.attackTime).toBe(0.63);
     expect(result.skillDamagePercent).toBe(754);
-    // SE: 580 * 1.3 + 140 = 894
-    expect(result.critDamagePercent).toBe(894);
+    // SE: (580 + 140) * 1.3 = 936
+    expect(result.critDamagePercent).toBe(936);
   });
 });
 
@@ -316,8 +316,8 @@ describe('Paladin (BW) Blast DPS', () => {
     expect(result.attackTime).toBe(0.69);
     // Same base power and multiplier as Sword variant
     expect(result.skillDamagePercent).toBe(812);
-    // SE: 580 * 1.4 + 140 = 952 (addAfterMultiply)
-    expect(result.critDamagePercent).toBe(952);
+    // SE: (580 + 140) * 1.4 = 1008
+    expect(result.critDamagePercent).toBeCloseTo(1008, 5);
     // 2H BW weighted: 4.8*0.6 + 3.4*0.4 = 4.24 (3:2 swing/stab ratio)
     // Higher WATK (209 total) but slower speed than Sword
     expect(result.damageRange.max).toBeGreaterThan(0);
@@ -340,8 +340,8 @@ describe('Paladin (BW) Blast DPS', () => {
     // BW charge variant uses Blast speed (same as Holy BW variant)
     expect(result.attackTime).toBe(0.69);
     expect(result.skillDamagePercent).toBe(754);
-    // SE: 580 * 1.3 + 140 = 894
-    expect(result.critDamagePercent).toBe(894);
+    // SE: (580 + 140) * 1.3 = 936
+    expect(result.critDamagePercent).toBe(936);
     // Same damage range as Holy BW (same weapon type, same gear, same attackRatio)
     expect(result.damageRange.max).toBe(
       paladinBwData.skills.find((s) => s.name === 'Blast (Holy, BW)')

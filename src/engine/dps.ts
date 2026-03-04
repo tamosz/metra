@@ -63,7 +63,7 @@ export interface DpsResult {
  *
  * Crit damage formula varies by class:
  * - addBeforeMultiply (default): critDmg% = (basePower + bonus) * multiplier
- * - addAfterMultiply (Paladin): critDmg% = basePower * multiplier + bonus
+ * - (removed: addAfterMultiply was incorrect — crit bonus must also be scaled by multiplier)
  * - multiplicative (mages): critDmg% = basePower * multiplier * totalCritBonus / 100
  *   Mage SE crits multiply damage by 1.4× rather than adding to skill%.
  *
@@ -96,8 +96,6 @@ function calculateCritDamage(
   let critDamagePercent: number;
   if (seCritFormula === 'multiplicative') {
     critDamagePercent = skill.basePower * skill.multiplier * totalCritBonus / 100;
-  } else if (seCritFormula === 'addAfterMultiply') {
-    critDamagePercent = skill.basePower * skill.multiplier + totalCritBonus;
   } else {
     critDamagePercent = (skill.basePower + totalCritBonus) * skill.multiplier;
   }

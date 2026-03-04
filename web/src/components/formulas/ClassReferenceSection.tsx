@@ -65,7 +65,7 @@ export function ClassReferenceSection() {
                 ? classData.secondaryStat.join('/')
                 : classData.secondaryStat;
               const critFormula =
-                classData.seCritFormula === 'addAfterMultiply' ? 'addAfterMultiply' : '\u2014';
+                classData.seCritFormula === 'multiplicative' ? 'multiplicative' : '\u2014';
               const notables = getNotables(classData);
 
               return (

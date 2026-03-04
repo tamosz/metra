@@ -201,7 +201,7 @@ describe('Baseline mode', () => {
     expect(find('Hero', 'Brandish (Sword)').dps.dps).toBeCloseTo(242789, -2);
     expect(find('Hero (Axe)', 'Brandish').dps.dps).toBeCloseTo(224857, -2);
     expect(find('DrK', 'Spear Crusher').dps.dps).toBeCloseTo(252099, -2);
-    expect(find('Paladin', 'Blast (Holy, Sword)').dps.dps).toBeCloseTo(189402, -2);
+    expect(find('Paladin', 'Blast (Holy, Sword)').dps.dps).toBeCloseTo(191312, -2);
     expect(find('NL', 'Triple Throw').dps.dps).toBeCloseTo(298993, -2);
     expect(find('Bowmaster', 'Hurricane').dps.dps).toBeCloseTo(247834, -2);
     expect(find('Marksman', 'Strafe (MM)').dps.dps).toBeCloseTo(247422, -2);
@@ -221,7 +221,7 @@ describe('Baseline mode', () => {
     expect(find('Hero', 'Brandish (Sword)').dps.dps).toBeCloseTo(169772, -2);
     expect(find('Hero (Axe)', 'Brandish').dps.dps).toBeCloseTo(151865, -2);
     expect(find('DrK', 'Spear Crusher').dps.dps).toBeCloseTo(174798, -2);
-    expect(find('Paladin', 'Blast (Holy, Sword)').dps.dps).toBeCloseTo(132440, -2);
+    expect(find('Paladin', 'Blast (Holy, Sword)').dps.dps).toBeCloseTo(133776, -2);
     expect(find('NL', 'Triple Throw').dps.dps).toBeCloseTo(197703, -2);
     expect(find('Bowmaster', 'Hurricane').dps.dps).toBeCloseTo(166914, -2);
     expect(find('Marksman', 'Strafe (MM)').dps.dps).toBeCloseTo(167881, -2);
@@ -240,7 +240,7 @@ describe('Baseline mode', () => {
 
     expect(find('Hero', 'Brandish (Sword)').dps.dps).toBeCloseTo(123899, -2);
     expect(find('DrK', 'Spear Crusher').dps.dps).toBeCloseTo(129399, -2);
-    expect(find('Paladin', 'Blast (Holy, Sword)').dps.dps).toBeCloseTo(96654, -2);
+    expect(find('Paladin', 'Blast (Holy, Sword)').dps.dps).toBeCloseTo(97629, -2);
     expect(find('Bowmaster', 'Hurricane').dps.dps).toBeCloseTo(119045, -2);
     expect(find('Marksman', 'Strafe (MM)').dps.dps).toBeCloseTo(119565, -2);
     expect(find('Marksman', 'Snipe + Strafe').dps.dps).toBeCloseTo(139475, -2);
