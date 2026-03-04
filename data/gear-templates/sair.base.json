@@ -1,7 +1,7 @@
 {
   "className": "Corsair",
   "weaponType": "Gun",
-  "weaponSpeed": 6,
+  "weaponSpeed": 5,
   "projectile": 20,
   "echoActive": true,
   "mwLevel": 20,

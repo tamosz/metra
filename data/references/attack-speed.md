@@ -101,7 +101,7 @@ At speed 2: 7 Strafes fit in the remaining time (5.0 / 0.714 ≈ 7).
 | Claw | 4 (Fast) | Night Lord |
 | Bow | 6 (Normal) | Bowmaster |
 | Crossbow | 6 (Normal) | Marksman |
-| Gun | 6 (Normal) | Corsair |
+| Gun | 5 (Fast) | Corsair |
 | Knuckle | 6 (Normal) | Buccaneer |
 | Dagger | 4 (Fast) | Shadower |
 
