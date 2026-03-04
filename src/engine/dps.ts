@@ -66,12 +66,6 @@ export interface DpsResult {
  * - multiplicative (mages): critDmg% = basePower * multiplier * totalCritBonus / 100
  *   Mage SE crits multiply damage by 1.4× rather than adding to skill%.
  *
- * When a skill has fixedCritDamagePercent, that value is used directly instead of
- * the formula above. This models skills like Assassinate where the v62 critical
- * damage value (250%) was never updated when basePower was buffed to 950%, causing
- * crits to deal less damage than non-crits.
- * Source: royals.ms/forum/threads/assassinate-and-criticals.143423
- * Source: royals.ms/forum/threads/how-to-maximize-shadowers-single-target-dps.236808
  */
 function calculateCritDamage(
   skill: SkillEntry,
@@ -81,11 +75,6 @@ function calculateCritDamage(
   const builtInCritRate = skill.builtInCritRate ?? 0;
   const seCritRate = sharpEyes ? classData.sharpEyesCritRate : 0;
   const totalCritRate = Math.min(builtInCritRate + seCritRate, 1.0);
-
-  // Fixed crit damage overrides the SE formula entirely
-  if (skill.fixedCritDamagePercent != null) {
-    return { critDamagePercent: skill.fixedCritDamagePercent, totalCritRate };
-  }
 
   const builtInCritBonus = skill.builtInCritDamageBonus ?? 0;
   const seCritBonus = sharpEyes ? classData.sharpEyesCritDamageBonus : 0;

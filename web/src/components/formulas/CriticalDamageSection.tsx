@@ -40,6 +40,16 @@ export function CriticalDamageSection() {
         <li>Night Lord (Triple Throw): 50% rate, +100 damage bonus</li>
         <li>Bowmaster / Marksman (Critical Shot): 40% rate, +100 damage bonus</li>
       </ul>
+
+      <h4 className="text-sm font-semibold text-text-bright mt-8 mb-3">Known Limitation: Assassinate</h4>
+
+      <p className="text-text-secondary text-sm mb-4 leading-relaxed">
+        There is community evidence that Assassinate has a v62 bug where its internal crit
+        damage value (250%) was never updated when the skill&apos;s base power was buffed to
+        950%. This would cause SE crits to deal <em>less</em> damage than non-crits. The
+        simulator does not model this &mdash; Assassinate uses the standard SE crit formula.
+        If the bug exists, Shadower combo DPS with SE active may be slightly overestimated.
+      </p>
     </section>
   );
 }

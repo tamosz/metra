@@ -29,8 +29,7 @@
       "speedCategory": "BStep + Assassinate",
       "weaponType": "Dagger",
       "comboGroup": "BStep + Assassinate",
-      "fixedCritDamagePercent": 250,
-      "source": "dmg D44=950, E44=950*1.0, N44 hitCount=3, C44=1.62 (combo cycle 2.31s). v62 criticalDamage=250% (Ayumilove Shadower Skills lv30), confirmed SE penalty on royals.ms/forum/threads/how-to-maximize-shadowers-single-target-dps.236808"
+      "source": "dmg D44=950, E44=950*1.0, N44 hitCount=3, C44=1.62 (combo cycle 2.31s)"
     },
     {
       "name": "Savage Blow",
