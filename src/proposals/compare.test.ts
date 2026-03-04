@@ -101,8 +101,8 @@ describe('compareProposal', () => {
     expect(heroBrandishHigh.change).toBeGreaterThan(0);
     expect(heroBrandishHigh.changePercent).toBeGreaterThan(0);
 
-    // After CGS update (193→198 WATK): Brandish +20 High DPS
-    expect(heroBrandishHigh.after).toBeCloseTo(259870, -1);
+    // After pendant alignment: Brandish +20 High DPS
+    expect(heroBrandishHigh.after).toBeCloseTo(261095, -1);
 
     // DrK should be unchanged
     const drkCrusherHigh = result.deltas.find(
@@ -165,8 +165,8 @@ describe('compareProposal', () => {
         d.tier === 'low'
     )!;
 
-    // After CGS update (168→163 WATK): Brandish +20 Low DPS
-    expect(heroBrandishLow.after).toBeCloseTo(132971, -1);
+    // After pendant alignment: Brandish +20 Low DPS
+    expect(heroBrandishLow.after).toBeCloseTo(133353, -1);
   });
 
   it('computes multi-class changes independently', () => {

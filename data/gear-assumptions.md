@@ -161,8 +161,14 @@ physical classes. Between low (32) and high (54).
 
 ### Pendant Stats
 
-Low tier uses STR 10 / DEX 10 pendant (basic HTP or Deputy Star). Mid tier uses ~16/16
-(partially scrolled HTP). High tier uses STR 22 / DEX 23 (near-perfect HTP).
+All classes use the same HTP all-stat value per tier:
+- **Low (12)**: godly clean HTP, no egg
+- **Mid (20)**: partially scrolled + egg
+- **High (27)**: 7 base + 5 godly + 15 egg
+- **Perfect (28)**: near-max
+
+Stats applied per class: warriors/bucc get STR+DEX, archers/sair get DEX+STR, NL gets LUK+DEX,
+Shadower gets LUK+DEX+STR, mages get INT only.
 
 ### Paladin (BW) Weapon — Dragon Flame
 

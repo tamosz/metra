@@ -72,12 +72,12 @@ describe('Hero Brandish (Sword) DPS', () => {
     expect(result.attackTime).toBe(0.63);
     expect(result.skillDamagePercent).toBe(494);
     expect(result.critDamagePercent).toBe(760);
-    expect(result.damageRange.max).toBe(18472);
-    expect(result.damageRange.min).toBe(10155);
-    expect(result.damageRange.average).toBe(14313.5);
+    expect(result.damageRange.max).toBe(18556);
+    expect(result.damageRange.min).toBe(10206);
+    expect(result.damageRange.average).toBe(14381);
 
     // After CGS WATK update
-    expect(result.dps).toBeCloseTo(242602, -1);
+    expect(result.dps).toBeCloseTo(243747, -1);
   });
 
   it('matches hero charts Low tier DPS (~135,060)', () => {
@@ -95,11 +95,11 @@ describe('Hero Brandish (Sword) DPS', () => {
 
     // After CGS WATK update
     expect(result.attackTime).toBe(0.63);
-    expect(result.damageRange.max).toBe(9438);
-    expect(result.damageRange.min).toBe(5210);
-    expect(result.damageRange.average).toBe(7324);
+    expect(result.damageRange.max).toBe(9464);
+    expect(result.damageRange.min).toBe(5226);
+    expect(result.damageRange.average).toBe(7345);
 
-    expect(result.dps).toBeCloseTo(124136, -1);
+    expect(result.dps).toBeCloseTo(124492, -1);
   });
 
   it('produces exact High tier DPS value', () => {
@@ -116,7 +116,7 @@ describe('Hero Brandish (Sword) DPS', () => {
     );
 
     // After CGS WATK update
-    expect(Math.abs(result.dps - 242602.46507936508)).toBeLessThan(1);
+    expect(Math.abs(result.dps - 243746.53650793651)).toBeLessThan(1);
   });
 
   it('produces exact Low tier DPS value', () => {
@@ -133,7 +133,7 @@ describe('Hero Brandish (Sword) DPS', () => {
     );
 
     // After CGS WATK update
-    expect(Math.abs(result.dps - 124135.98730158728)).toBeLessThan(1);
+    expect(Math.abs(result.dps - 124491.92063492064)).toBeLessThan(1);
   });
 
   it('includes totalCritRate, hitCount, and hasShadowPartner in result', () => {
@@ -164,12 +164,12 @@ describe('DrK Spear Crusher DPS', () => {
     expect(result.attackTime).toBe(0.81);
     expect(result.skillDamagePercent).toBe(357);
     expect(result.critDamagePercent).toBe(651);
-    expect(result.damageRange.max).toBe(19655);
-    expect(result.damageRange.min).toBe(14259);
-    expect(result.damageRange.average).toBe(16957);
+    expect(result.damageRange.max).toBe(19743);
+    expect(result.damageRange.min).toBe(14326);
+    expect(result.damageRange.average).toBe(17034.5);
     // After CGS WATK update
-    expect(result.dps).toBeGreaterThan(251000);
-    expect(result.dps).toBeLessThan(253000);
+    expect(result.dps).toBeGreaterThan(252000);
+    expect(result.dps).toBeLessThan(254000);
   });
 
   it('computes Low tier DPS from gear template', () => {
@@ -185,11 +185,11 @@ describe('DrK Spear Crusher DPS', () => {
 
     // Computed from gear template (Spear, mastery 0.8)
     expect(result.attackTime).toBe(0.81);
-    expect(result.damageRange.max).toBe(10104);
-    expect(result.damageRange.min).toBe(7343);
-    expect(result.damageRange.average).toBe(8723.5);
+    expect(result.damageRange.max).toBe(10132);
+    expect(result.damageRange.min).toBe(7364);
+    expect(result.damageRange.average).toBe(8748);
     // After CGS WATK update
-    expect(result.dps).toBeGreaterThan(128000);
+    expect(result.dps).toBeGreaterThan(129000);
     expect(result.dps).toBeLessThan(131000);
   });
 
@@ -251,10 +251,10 @@ describe('Paladin Blast DPS', () => {
 
     // Paladin uses Hero-identical gear (gear templates sheet row 3: "Hero & Paladin")
     // Same damage range as Hero High after CGS WATK update
-    expect(result.damageRange.max).toBe(18472);
-    expect(result.damageRange.min).toBe(10155);
+    expect(result.damageRange.max).toBe(18556);
+    expect(result.damageRange.min).toBe(10206);
     expect(result.dps).toBeGreaterThan(189000);
-    expect(result.dps).toBeLessThan(190000);
+    expect(result.dps).toBeLessThan(191000);
   });
 
   it('computes Low tier DPS from gear template', () => {
@@ -271,10 +271,10 @@ describe('Paladin Blast DPS', () => {
     );
 
     // Same damage range as Hero Low after CGS WATK update
-    expect(result.damageRange.max).toBe(9438);
-    expect(result.damageRange.min).toBe(5210);
+    expect(result.damageRange.max).toBe(9464);
+    expect(result.damageRange.min).toBe(5226);
     expect(result.dps).toBeGreaterThan(96000);
-    expect(result.dps).toBeLessThan(97000);
+    expect(result.dps).toBeLessThan(98000);
   });
 
   it('Blast (F/I/L Charge) uses Strafe/Snipe speed category', () => {
@@ -396,10 +396,10 @@ describe('NL Gear Template DPS', () => {
 
     // totalAttack = 149 + 100 + 30 + echo(floor(279*0.04)=11) = 290
     // LUK = floor(999*1.1) + 98 = 1098 + 98 = 1196
-    // max = floor(5.0 * 1196 * 290 / 100) = 17342
-    // min = floor(2.5 * 1196 * 290 / 100) = 8671
-    expect(result.damageRange.max).toBe(17342);
-    expect(result.damageRange.min).toBe(8671);
+    // max = floor(5.0 * LUK * totalAttack / 100)
+    // min = floor(2.5 * LUK * totalAttack / 100)
+    expect(result.damageRange.max).toBe(17356);
+    expect(result.damageRange.min).toBe(8678);
   });
 
   it('Low tier damage range matches computed values', () => {
@@ -415,10 +415,10 @@ describe('NL Gear Template DPS', () => {
 
     // totalAttack = 111 + 60 + 27 + echo(floor(198*0.04)=7) = 205
     // LUK = floor(700*1.1) + 53 = 770 + 53 = 823
-    // max = floor(5.0 * 823 * 205 / 100) = 8435
-    // min = floor(2.5 * 823 * 205 / 100) = 4217
-    expect(result.damageRange.max).toBe(8435);
-    expect(result.damageRange.min).toBe(4217);
+    // max = floor(5.0 * LUK * totalAttack / 100)
+    // min = floor(2.5 * LUK * totalAttack / 100)
+    expect(result.damageRange.max).toBe(8456);
+    expect(result.damageRange.min).toBe(4228);
   });
 
   it('High tier DPS is greater than Low tier', () => {
@@ -659,10 +659,10 @@ describe('Shadower DPS', () => {
     // DEX: floor(14 * 1.1) + 135 = 15 + 135 = 150
     // secondary = 82 + 150 = 232
     // totalAttack = 238 + 100 + 0 + floor((238+100+0)*0.04) = 338 + 13 = 351
-    // max = floor((1161 * 3.6 + 232) * 351 / 100) = 15484
-    // min = floor((1161 * 3.6 * 0.9 * 0.6 + 232) * 351 / 100) = 8736
-    expect(result.damageRange.max).toBe(15484);
-    expect(result.damageRange.min).toBe(8736);
+    // max = floor((LUK * 3.6 + secondaryStat) * totalAttack / 100)
+    // min = floor((LUK * 3.6 * 0.9 * mastery + secondaryStat) * totalAttack / 100)
+    expect(result.damageRange.max).toBe(15465);
+    expect(result.damageRange.min).toBe(8722);
   });
 
   it('BStep + Assn30 use combo cycle time (2.31s)', () => {
@@ -777,7 +777,7 @@ describe('Shadower DPS', () => {
     // = (bstepAvg + assnAvg) / 2.31
     // Assassinate uses fixedCritDamagePercent=250 → SE crits at 250% instead of 1090%
     const comboDps = bstepDps + assnDps;
-    expect(comboDps).toBeCloseTo(297010, -1);
+    expect(comboDps).toBeCloseTo(296605, -1);
   });
 
   it('High tier Savage Blow DPS', () => {
@@ -786,7 +786,7 @@ describe('Shadower DPS', () => {
       shadHigh, shadData, sb, weaponData, attackSpeedData, mwData
     );
 
-    expect(result.dps).toBeCloseTo(183467, -1);
+    expect(result.dps).toBeCloseTo(183217, -1);
   });
 
   it('Low tier BStep + Assn30 combo DPS', () => {
@@ -800,7 +800,7 @@ describe('Shadower DPS', () => {
     ).dps;
 
     const comboDps = bstepDps + assnDps;
-    expect(comboDps).toBeCloseTo(177752, -1);
+    expect(comboDps).toBeCloseTo(174748, -1);
   });
 
   it('Low tier Savage Blow DPS', () => {
@@ -809,7 +809,7 @@ describe('Shadower DPS', () => {
       shadLow, shadData, sb, weaponData, attackSpeedData, mwData
     );
 
-    expect(result.dps).toBeCloseTo(109800, -1);
+    expect(result.dps).toBeCloseTo(107944, -1);
   });
 
   it('High tier DPS is greater than Low tier for all skills', () => {
@@ -854,10 +854,10 @@ describe('Marksman DPS', () => {
     // Standard formula with Crossbow 3.6x, mastery 1.0 (Update #71)
     // DEX: floor(999 * 1.1) + 158 = 1256, STR: floor(4 * 1.1) + 97 = 101
     // totalAttack = 203 + 100 + 10 + floor((203+100+10)*0.04) = 325
-    // max = floor((1256 * 3.6 + 101) * 325 / 100) = 15023
-    // min = floor((1256 * 3.6 * 0.9 * 1.0 + 101) * 325 / 100) = 13553
-    expect(result.damageRange.max).toBe(15023);
-    expect(result.damageRange.min).toBe(13553);
+    // max = floor((DEX * 3.6 + STR) * totalAttack / 100)
+    // min = floor((DEX * 3.6 * 0.9 * 1.0 + STR) * totalAttack / 100)
+    expect(result.damageRange.max).toBe(15094);
+    expect(result.damageRange.min).toBe(13619);
   });
 
   it('Strafe (MM) High tier DPS ~232,748', () => {
@@ -871,7 +871,7 @@ describe('Marksman DPS', () => {
     expect(result.skillDamagePercent).toBe(125);
     // SE: (125 + 100 + 140) * 1 = 365
     expect(result.critDamagePercent).toBe(365);
-    expect(result.dps).toBeCloseTo(244801, -1);
+    expect(result.dps).toBeCloseTo(245975, -1);
   });
 
   it('Strafe (MM) Low tier DPS ~113,885', () => {
@@ -881,7 +881,7 @@ describe('Marksman DPS', () => {
     );
 
     expect(result.attackTime).toBe(0.60);
-    expect(result.dps).toBeCloseTo(119042, -1);
+    expect(result.dps).toBeCloseTo(119385, -1);
   });
 
   it('Snipe uses fixedDamage path (195,000 per hit)', () => {
@@ -949,8 +949,8 @@ describe('Marksman DPS', () => {
     // 7 Strafes per 5s cycle → effective attack time = 5.0/7 = 0.714s
     expect(result.attackTime).toBe(0.714);
     // Same damage range as standalone Strafe (MM) — same basePower, crit, weapon
-    expect(result.damageRange.max).toBe(15023);
-    expect(result.damageRange.min).toBe(13553);
+    expect(result.damageRange.max).toBe(15094);
+    expect(result.damageRange.min).toBe(13619);
   });
 
   it('Strafe (MM) High tier DPS > Low tier', () => {
@@ -995,9 +995,9 @@ describe('Archmage I/L DPS', () => {
 
     // Magic formula: max = floor(((TMA²/1000 + TMA)/30 + INT/200) * 1.4 * 1.25)
     // TMA = 1348 + 145 + 220 + echo(68) = 1781
-    expect(result.damageRange.max).toBe(300);
-    expect(result.damageRange.min).toBe(252);
-    expect(result.damageRange.average).toBe(276);
+    expect(result.damageRange.max).toBe(302);
+    expect(result.damageRange.min).toBe(254);
+    expect(result.damageRange.average).toBe(278);
   });
 
   it('Chain Lightning High tier DPS ~92,400', () => {
@@ -1010,7 +1010,7 @@ describe('Archmage I/L DPS', () => {
     expect(result.skillDamagePercent).toBe(210);
     // Multiplicative mage crit: 210 * 1 * 140/100 = 294
     expect(result.critDamagePercent).toBe(294);
-    expect(result.dps).toBeCloseTo(89038, -1);
+    expect(result.dps).toBeCloseTo(89685, -1);
   });
 
   it('Chain Lightning Low tier DPS ~41,848', () => {
@@ -1021,8 +1021,8 @@ describe('Archmage I/L DPS', () => {
 
     expect(result.attackTime).toBe(0.69);
     expect(result.damageRange.max).toBe(140);
-    expect(result.damageRange.min).toBe(110);
-    expect(result.dps).toBeCloseTo(40326, -1);
+    expect(result.damageRange.min).toBe(111);
+    expect(result.dps).toBeCloseTo(40487, -1);
   });
 
   it('Blizzard High tier DPS ~53,184', () => {
@@ -1035,7 +1035,7 @@ describe('Archmage I/L DPS', () => {
     expect(result.skillDamagePercent).toBe(570);
     // Multiplicative mage crit: 570 * 1 * 140/100 = 798
     expect(result.critDamagePercent).toBe(798);
-    expect(result.dps).toBeCloseTo(53504, -1);
+    expect(result.dps).toBeCloseTo(53821, -1);
   });
 
   it('uses magic formula (not standard weapon multiplier)', () => {
@@ -1045,9 +1045,9 @@ describe('Archmage I/L DPS', () => {
     );
 
     // Magic range cap uses raw multiplier: 199999/210 = 952.38
-    // This is well above the max damage (300), so no capping occurs
+    // This is well above the max damage, so no capping occurs
     // adjustedRangeNormal should equal average
-    expect(result.adjustedRangeNormal).toBe(276);
+    expect(result.adjustedRangeNormal).toBe(278);
   });
 
   it('High tier DPS is greater than Low tier', () => {
@@ -1107,7 +1107,7 @@ describe('Bishop DPS', () => {
     expect(result.skillDamagePercent).toBe(240);
     // Multiplicative mage crit: 240 * 1 * 140/100 = 336
     expect(result.critDamagePercent).toBe(336);
-    expect(result.dps).toBeCloseTo(49467, -1);
+    expect(result.dps).toBeCloseTo(49781, -1);
   });
 
   it('Genesis High tier DPS ~40,308', () => {
@@ -1118,7 +1118,7 @@ describe('Bishop DPS', () => {
 
     expect(result.attackTime).toBe(2.70);
     expect(result.skillDamagePercent).toBe(670);
-    expect(result.dps).toBeCloseTo(41428, -1);
+    expect(result.dps).toBeCloseTo(41691, -1);
   });
 
   it('Bishop has lower DPS than Archmage (no amp)', () => {
@@ -1182,9 +1182,9 @@ describe('Archmage F/P DPS', () => {
     expect(result.skillDamagePercent).toBe(240);
     // Multiplicative mage crit: 240 * 1 * 140/100 = 336
     expect(result.critDamagePercent).toBe(336);
-    expect(result.damageRange.max).toBe(300);
-    expect(result.damageRange.min).toBe(252);
-    expect(result.dps).toBeCloseTo(97520, -1);
+    expect(result.damageRange.max).toBe(302);
+    expect(result.damageRange.min).toBe(254);
+    expect(result.dps).toBeCloseTo(98227, -1);
   });
 
   it('Paralyze Low tier DPS ~45,313', () => {
@@ -1195,8 +1195,8 @@ describe('Archmage F/P DPS', () => {
 
     expect(result.attackTime).toBe(0.72);
     expect(result.damageRange.max).toBe(140);
-    expect(result.damageRange.min).toBe(110);
-    expect(result.dps).toBeCloseTo(44167, -1);
+    expect(result.damageRange.min).toBe(111);
+    expect(result.dps).toBeCloseTo(44343, -1);
   });
 
   it('Meteor High tier DPS ~53,184', () => {
@@ -1209,7 +1209,7 @@ describe('Archmage F/P DPS', () => {
     expect(result.skillDamagePercent).toBe(570);
     // Multiplicative mage crit: 570 * 1 * 140/100 = 798
     expect(result.critDamagePercent).toBe(798);
-    expect(result.dps).toBeCloseTo(53504, -1);
+    expect(result.dps).toBeCloseTo(53821, -1);
   });
 
   it('Meteor Low tier DPS ~24,681', () => {
@@ -1218,7 +1218,7 @@ describe('Archmage F/P DPS', () => {
       fpLow, fpData, meteor, weaponData, attackSpeedData, mwData
     );
 
-    expect(result.dps).toBeCloseTo(24681, -1);
+    expect(result.dps).toBeCloseTo(24780, -1);
   });
 
   it('High tier DPS is greater than Low tier', () => {
@@ -1272,10 +1272,10 @@ describe('Bowmaster DPS', () => {
     // DEX: floor(999*1.1) + 158 = 1256, STR: floor(4*1.1) + 97 = 101
     // totalAttack = 198 + 100 + 10 + floor((198+100+10)*0.04) = 320
     // Bow 3.4x, mastery 0.9
-    // max = floor((1256 * 3.4 + 101) * 320 / 100) = 13988
-    // min = floor((1256 * 3.4 * 0.9 * 0.9 + 101) * 320 / 100) = 11392
-    expect(result.damageRange.max).toBe(13988);
-    expect(result.damageRange.min).toBe(11392);
+    // max = floor((DEX * 3.4 + STR) * totalAttack / 100)
+    // min = floor((DEX * 3.4 * 0.9 * mastery + STR) * totalAttack / 100)
+    expect(result.damageRange.max).toBe(14055);
+    expect(result.damageRange.min).toBe(11448);
   });
 
   it('Hurricane High tier crit uses 55% rate (40% Critical Shot + 15% SE)', () => {
@@ -1296,7 +1296,7 @@ describe('Bowmaster DPS', () => {
       bmHigh, bmData, hurricane, weaponData, attackSpeedData, mwData
     );
 
-    expect(result.dps).toBeCloseTo(245340, -2);
+    expect(result.dps).toBeCloseTo(246529, -2);
   });
 
   it('Hurricane Low tier DPS ~118,581', () => {
@@ -1308,9 +1308,9 @@ describe('Bowmaster DPS', () => {
     expect(result.attackTime).toBe(0.12);
     // DEX: floor(700*1.1) + 87 = 857, STR: 4 + 73 = 77
     // totalAttack = 148 + 60 + 10 + floor((148+60+10)*0.04) = 226
-    expect(result.damageRange.max).toBe(6759);
-    expect(result.damageRange.min).toBe(5508);
-    expect(result.dps).toBeCloseTo(118581, -2);
+    expect(result.damageRange.max).toBe(6779);
+    expect(result.damageRange.min).toBe(5524);
+    expect(result.dps).toBeCloseTo(118929, -2);
   });
 
   it('High tier DPS is greater than Low tier for all skills', () => {
@@ -1357,10 +1357,10 @@ describe('Hero (Axe) DPS', () => {
     // STR: floor(999*1.1) + 174 = 1272, DEX: floor(23*1.1) + 102 = 127
     // totalAttack = 208 + 100 + floor(308*0.04) = 320
     // 2H Axe effective multiplier: 0.5*4.8 + 0.5*3.4 = 4.1
-    // max = floor((1272 * 4.1 + 127) * 320 / 100) = 17095
-    // min = floor((1272 * 4.1 * 0.9 * 0.6 + 127) * 320 / 100) = 9418
-    expect(result.damageRange.max).toBe(17095);
-    expect(result.damageRange.min).toBe(9418);
+    // max = floor((STR * 4.1 + DEX) * totalAttack / 100)
+    // min = floor((STR * 4.1 * 0.9 * mastery + DEX) * totalAttack / 100)
+    expect(result.damageRange.max).toBe(17173);
+    expect(result.damageRange.min).toBe(9466);
   });
 
   it('Brandish High tier DPS ~221,170', () => {
@@ -1373,7 +1373,7 @@ describe('Hero (Axe) DPS', () => {
     expect(result.skillDamagePercent).toBe(494);
     // SE: (260 + 140) * 1.9 = 760
     expect(result.critDamagePercent).toBe(760);
-    expect(result.dps).toBeCloseTo(224687, -2);
+    expect(result.dps).toBeCloseTo(225755, -2);
   });
 
   it('Brandish Low tier DPS ~113,983', () => {
@@ -1383,9 +1383,9 @@ describe('Hero (Axe) DPS', () => {
     );
 
     expect(result.attackTime).toBe(0.63);
-    expect(result.damageRange.max).toBe(8439);
-    expect(result.damageRange.min).toBe(4671);
-    expect(result.dps).toBeCloseTo(111102, -2);
+    expect(result.damageRange.max).toBe(8463);
+    expect(result.damageRange.min).toBe(4685);
+    expect(result.dps).toBeCloseTo(111424, -2);
   });
 
   it('Axe Brandish has lower damage than Sword (effective 4.1 vs 4.6 multiplier)', () => {
@@ -1436,10 +1436,10 @@ describe('Corsair DPS', () => {
     // DEX: floor(999*1.1) + 165 = 1263, STR: 4 + 90 = 94
     // totalAttack = 172 + 100 + 20 + floor(292*0.04) = 292 + 11 = 303
     // Gun 3.6x
-    // max = floor((1263 * 3.6 + 94) * 303 / 100) = 14061
-    // min = floor((1263 * 3.6 * 0.9 * 0.6 + 94) * 303 / 100) = 7724
-    expect(result.damageRange.max).toBe(14061);
-    expect(result.damageRange.min).toBe(7724);
+    // max = floor((DEX * 3.6 + STR) * totalAttack / 100)
+    // min = floor((DEX * 3.6 * 0.9 * mastery + STR) * totalAttack / 100)
+    expect(result.damageRange.max).toBe(14128);
+    expect(result.damageRange.min).toBe(7765);
   });
 
   it('Battleship Cannon High tier DPS ~350,586', () => {
@@ -1453,7 +1453,7 @@ describe('Corsair DPS', () => {
     expect(result.skillDamagePercent).toBe(456);
     // SE: (380 + 140) * 1.2 = 624
     expect(result.critDamagePercent).toBe(624);
-    expect(result.dps).toBeCloseTo(349431, -2);
+    expect(result.dps).toBeCloseTo(351164, -2);
   });
 
   it('Battleship Cannon Low tier DPS ~180,049', () => {
@@ -1463,9 +1463,9 @@ describe('Corsair DPS', () => {
     );
 
     expect(result.attackTime).toBe(0.60);
-    expect(result.damageRange.max).toBe(7263);
-    expect(result.damageRange.min).toBe(4012);
-    expect(result.dps).toBeCloseTo(180851, -2);
+    expect(result.damageRange.max).toBe(7284);
+    expect(result.damageRange.min).toBe(4025);
+    expect(result.dps).toBeCloseTo(181396, -2);
   });
 
   it('Rapid Fire uses Hurricane speed (0.12s)', () => {
@@ -1488,8 +1488,8 @@ describe('Corsair DPS', () => {
     // SE: (200 + 140) * 1.2 = 408
     expect(result.critDamagePercent).toBe(408);
     // Same damage range as Cannon (same weapon/class)
-    expect(result.damageRange.max).toBe(14061);
-    expect(result.dps).toBeCloseTo(240724, -2);
+    expect(result.damageRange.max).toBe(14128);
+    expect(result.dps).toBeCloseTo(241918, -2);
   });
 
   it('Rapid Fire Low tier DPS ~124,036', () => {
@@ -1498,7 +1498,7 @@ describe('Corsair DPS', () => {
       sairLow, sairData, rf, weaponData, attackSpeedData, mwData
     );
 
-    expect(result.dps).toBeCloseTo(124589, -2);
+    expect(result.dps).toBeCloseTo(124964, -2);
   });
 
   it('no Shadow Partner for Corsair', () => {
@@ -1548,10 +1548,10 @@ describe('Buccaneer DPS', () => {
     // STR: floor(999*1.1) + 151 = 1249, DEX: floor(23*1.1) + 116 = 141
     // totalAttack = 176 + 100 + 0 + floor(276*0.04) = 276 + 11 = 287
     // Knuckle 4.8x
-    // max = floor((1249 * 4.8 + 141) * 287 / 100) = 17610
-    // min = floor((1249 * 4.8 * 0.9 * 0.6 + 141) * 287 / 100) = 9696
-    expect(result.damageRange.max).toBe(17610);
-    expect(result.damageRange.min).toBe(9696);
+    // max = floor((STR * 4.8 + DEX) * totalAttack / 100)
+    // min = floor((STR * 4.8 * 0.9 * mastery + DEX) * totalAttack / 100)
+    expect(result.damageRange.max).toBe(17691);
+    expect(result.damageRange.min).toBe(9744);
   });
 
   it('Demolition uses fixed 2.34s attack time', () => {
@@ -1573,7 +1573,7 @@ describe('Buccaneer DPS', () => {
     expect(result.skillDamagePercent).toBe(500);
     // SE: (500 + 140) * 1.0 = 640
     expect(result.critDamagePercent).toBe(640);
-    expect(result.dps).toBeCloseTo(243187, -2);
+    expect(result.dps).toBeCloseTo(244336, -2);
   });
 
   it('Demolition Low tier DPS ~121,362', () => {
@@ -1582,9 +1582,9 @@ describe('Buccaneer DPS', () => {
       buccLow, buccData, demo, weaponData, attackSpeedData, mwData
     );
 
-    expect(result.damageRange.max).toBe(8698);
-    expect(result.damageRange.min).toBe(4797);
-    expect(result.dps).toBeCloseTo(120180, -2);
+    expect(result.damageRange.max).toBe(8721);
+    expect(result.damageRange.min).toBe(4812);
+    expect(result.dps).toBeCloseTo(120525, -2);
   });
 
   it('Barrage + Demolition combo sub-skills all share 4.04s cycle time', () => {
@@ -1785,7 +1785,7 @@ describe('uncapped DPS fields', () => {
 
     // Low tier damage range is well below the cap, so no capping occurs
     expect(result.capLossPercent).toBe(0);
-    expect(result.uncappedDps).toBe(result.dps);
+    expect(result.uncappedDps).toBeCloseTo(result.dps, 10);
   });
 
   it('capLossPercent matches (uncappedDps - dps) / uncappedDps * 100', () => {
