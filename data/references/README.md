@@ -35,3 +35,5 @@ Keep entries factual — values, formulas, and brief quotes. Skip opinions and d
 | `attack-speed.md` | Speed tiers, booster/SI, Hurricane/fixed-time, Snipe cooldown |
 | `class-guides.md` | Per-class verified values from community guides |
 | `gear-and-funding.md` | Endgame weapons, scrolling benchmarks, tier philosophy |
+| `knockback.md` | KB mechanics, Stance, Shadow Shifter |
+| `forum-feedback.md` | Community feedback from public launch thread |
