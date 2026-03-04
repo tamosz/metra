@@ -2,24 +2,71 @@
   "extends": "archmage-fp",
   "source": "Theoretical max: godly + 7/7 30% scrolls. Staff: Elemental Staff 5 (8/188 + 7x 30%s giving 3 Int 5 MA each). Potion: Ssiws Cheese (220 MATK). Mages do not benefit from Speed Infusion. gearStats verified against breakdown totals.",
   "attackPotion": 220,
-  "baseStats": { "STR": 4, "DEX": 4, "INT": 999, "LUK": 23 },
+  "baseStats": {
+    "STR": 4,
+    "DEX": 4,
+    "INT": 999,
+    "LUK": 23
+  },
   "gearBreakdown": {
-    "weapon":    { "INT": 29, "MATK": 223 },
-    "shield":    { "INT": 20, "MATK": 30 },
-    "helmet":    { "INT": 87 },
-    "top":       { "INT": 64 },
-    "earring":   { "INT": 28, "MATK": 43 },
-    "eye":       { "INT": 14, "MATK": 7 },
-    "face":      { "INT": 25, "MATK": 7 },
-    "pendant":   { "INT": 28 },
-    "belt":      { "INT": 14, "MATK": 8 },
-    "medal":     { "MATK": 8 },
-    "ring1":     { "INT": 14 },
-    "ring2":     { "INT": 11 },
-    "ring3":     { "INT": 10 },
-    "ring4":     { "INT": 8 },
-    "cape":      { "INT": 34 },
-    "shoe":      { "INT": 20, "MATK": 13 },
-    "glove":     { "INT": 15, "MATK": 29 }
+    "weapon": {
+      "INT": 29,
+      "MATK": 223
+    },
+    "shield": {
+      "INT": 20,
+      "MATK": 30
+    },
+    "helmet": {
+      "INT": 87
+    },
+    "top": {
+      "INT": 64
+    },
+    "earring": {
+      "INT": 28,
+      "MATK": 43
+    },
+    "eye": {
+      "INT": 14,
+      "MATK": 7
+    },
+    "face": {
+      "INT": 25,
+      "MATK": 7
+    },
+    "pendant": {
+      "INT": 28
+    },
+    "belt": {
+      "INT": 14,
+      "MATK": 8
+    },
+    "medal": {
+      "MATK": 8
+    },
+    "ring1": {
+      "INT": 14
+    },
+    "ring2": {
+      "INT": 11
+    },
+    "ring3": {
+      "INT": 10
+    },
+    "ring4": {
+      "INT": 8
+    },
+    "cape": {
+      "INT": 34
+    },
+    "shoe": {
+      "INT": 20,
+      "MATK": 13
+    },
+    "glove": {
+      "INT": 15,
+      "MATK": 29
+    }
   }
 }
