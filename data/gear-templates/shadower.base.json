@@ -1,7 +1,7 @@
 {
   "className": "Shadower",
   "weaponType": "Dagger",
-  "weaponSpeed": 5,
+  "weaponSpeed": 4,
   "projectile": 0,
   "echoActive": true,
   "mwLevel": 20,
