@@ -128,7 +128,7 @@ Per-class verified values extracted from community guides on royals.ms.
 - BStep + Assassinate 30 combo: 2.31s cycle (0.69 + 1.62)
 - Boomerang Step: 600% base (buffed from 500%), 2 hits
 - Assassinate 30: 950% base (buffed from 600%, charge removed), 3 hits
-- Assassinate SE penalty: v62 criticalDamage=250% never updated → SE crits use 250% instead of 950%, DPS decreases with SE active. Tested at "95.6% speed of no SE." At high gear, BStep SE benefit roughly compensates.
+- Assassinate crit behavior: community reports a v62 bug where SE crits use a stale 250% crit damage value instead of 950%. Not modeled — see damage-formulas.md for details.
 - Savage Blow: 80% base, 6 hits
 - Shadow Partner active (1.5x multiplier)
 - Dagger 3.6x multiplier, LUK primary, STR+DEX secondary (both summed)

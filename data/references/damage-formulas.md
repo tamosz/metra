@@ -114,31 +114,21 @@ Built-in crit rates:
 - Bowmaster/Marksman (Critical Shot): 40% rate, +100 damage bonus
 - All others: 0% (SE-only)
 
-### Assassinate fixed crit damage (SE penalty)
+### Assassinate crit behavior (not modeled)
 
 **Source:** [Assassinate and criticals](https://royals.ms/forum/threads/assassinate-and-criticals.143423/)
 **Source:** [How to maximize Shadower's single target DPS](https://royals.ms/forum/threads/how-to-maximize-shadowers-single-target-dps.236808/)
 **Source:** [Assassinate and Sharp Eye](https://royals.ms/forum/threads/assassinate-and-sharp-eye.180132/)
-**Source:** [Ayumilove Shadower Skills](https://ayumilovemaple.wordpress.com/2008/09/19/maplestory-shadower-skills/) (v62 skill data: level 30 Critical Damage 250%)
 **Accessed:** 2026-03-03
-**Used in:** `data/skills/shadower.json`, `src/engine/dps.ts`
 
-Assassinate has a `fixedCritDamagePercent` of 250 from v62 skill data. When SE triggers a
-crit on Assassinate, the game uses this fixed 250% damage instead of the normal SE formula
-`(950 + 140) * 1 = 1090%`. Since 250 < 950, **SE crits deal less damage than non-crits**,
-causing Assassinate DPS to decrease with SE active.
+There is community evidence that Assassinate has a v62 bug where its crit damage value
+(250%) was never updated when basePower was buffed to 950%, causing SE crits to deal less
+damage than non-crits. Community testing reported "SE was 95.6% speed of no SE."
 
-Community testing confirmed: "SE was 95.6% speed of no SE" for Assassinate. At high gear
-levels (~22k buffed range), SE's benefit to Boomerang Step compensates for Assassinate
-losses, returning the combo to roughly baseline.
-
-The v62 Assassinate originally had Attack 120%, Critical Damage 250%, Success Rate 90%.
-When Royals buffed basePower to 950% (charge removed), the criticalDamage value was not
-updated. The first 3 hits of Assassinate cannot crit in vanilla v62; in Royals' 3-hit
-rework, SE can trigger on the hits but uses the old 250% crit damage.
-
-Modeled via `fixedCritDamagePercent` on SkillEntry: when present, overrides the SE crit
-formula entirely. Crit rate still comes from SE (0.15 when active).
+**We do not model this.** The mechanic is poorly documented, based on speculation about
+internal v62 skill data, and may be fixed in future updates. The simulator treats
+Assassinate as a normal skill with standard SE crit behavior. If the bug exists, Shadower
+DPS with SE active will be slightly overestimated.
 
 ### Resolved: Paladin crit formula was incorrect in spreadsheet
 
