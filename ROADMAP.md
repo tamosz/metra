@@ -29,6 +29,17 @@ A balance simulator for Royals staff and community. Every number traces back to 
 - Pre-commit hooks, comprehensive test coverage
 - Deployed on Vercel: https://tomeblog.com/metra
 
+## Priority: Gear Template Audit
+
+The gear templates drive every DPS comparison, but cross-class alignment is uneven. Some templates drifted from the source spreadsheet during translation, and "high" or "low" doesn't mean the same thing across all classes.
+
+**Approach:**
+- Compare current templates against the original source spreadsheet values slot by slot
+- Focus on cross-class consistency — if Hero high weapon is X scrolls below perfect, every class should follow the same logic
+- Pendants, helmets, and mage perfect tier are fine — everything else needs a look
+- Any data NOT sourced from royals.ms/forum is probably misleading and should be treated with skepticism
+- Prioritize alignment across classes over absolute accuracy of any single template
+
 ## Phase 2: Interactive UX
 
 Make the dashboard the primary exploration tool. Reduce the distance between "I wonder what if..." and seeing the answer.
