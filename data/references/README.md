@@ -4,6 +4,11 @@ Extracted knowledge from royals.ms forum threads, organized by topic. These file
 capture stable facts (formulas, balance values, mechanics) so they don't need to be
 re-fetched every session.
 
+## Primary Sources
+
+- **[MapleRoyals Skill Library](https://royals.ms/forum/threads/mapleroyals-skill-library.209540/)** — skill data extracted directly from game files (damage%, hit count, MP cost, etc.). By community member nut. First source to check for raw skill values.
+- **[Damage Range Calculator](https://royals.ms/forum/threads/damage-range-calculator.17086/)** — verified damage formulas.
+
 ## How to use
 
 Check these files BEFORE web-searching royals.ms. Most game mechanics and balance

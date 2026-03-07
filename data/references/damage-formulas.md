@@ -3,6 +3,16 @@
 Verified damage formulas used in the simulation engine. Cross-referenced against the
 source spreadsheet and royals.ms forum threads.
 
+## Primary Source: Skill Library
+
+**Source:** [MapleRoyals Skill Library](https://royals.ms/forum/threads/mapleroyals-skill-library.209540/)
+**Accessed:** 2026-03-07
+**Used in:** `data/skills/*.json`
+
+Comprehensive skill database extracted directly from game files by community member nut.
+Primary source for raw skill values (damage%, hit count, MP cost, etc.) across all classes.
+Covers Beginner through 4th job for all branches.
+
 ## Standard Physical Formula (Warriors, Archers, Corsair, Buccaneer, Shadower)
 
 **Source:** [Damage Range Calculator](https://royals.ms/forum/threads/damage-range-calculator.17086/)
