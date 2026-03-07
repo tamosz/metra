@@ -67,6 +67,7 @@
     },
     {
       "name": "Snatch + Dragon Strike (Snatch)",
+      "headline": false,
       "basePower": 600,
       "multiplier": 1.0,
       "hitCount": 1,
@@ -79,6 +80,7 @@
     },
     {
       "name": "Snatch + Dragon Strike (Dragon Strike)",
+      "headline": false,
       "basePower": 900,
       "multiplier": 1.0,
       "hitCount": 1,
