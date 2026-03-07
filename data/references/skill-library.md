@@ -29,6 +29,7 @@ may override some of these (check `data/references/balance-changes.md`).
 | Boomerang Step | Shadower (4th) | 600 | 2 | 4 | Fixed: code was 6 |
 | Assassinate | Shadower (4th) | 950 | 3 (+conditional 4th dash) | 1 | Code correct at 3 |
 | Savage Blow | Bandit (3rd) | 80 | 6 | 1 | |
+| Band of Thieves | CB (3rd) | 250 | 1 | 6 | TODO: add BStep + BoT combo (need cycle time) |
 
 **Critical Throw** (Assassin 2nd): 50% crit rate, 200% crit damage (= +100 bonus)
 **Shadow Partner** (Hermit 3rd): 50% skill damage clone
