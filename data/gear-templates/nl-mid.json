@@ -18,22 +18,23 @@
       "DEX": 33
     },
     "top": {
-      "LUK": 18,
+      "LUK": 22,
       "DEX": 5
     },
     "bottom": {
-      "LUK": 4,
+      "LUK": 8,
       "DEX": 16
     },
     "earring": {
-      "LUK": 2,
+      "LUK": 7,
       "DEX": 11
     },
     "eye": {
+      "LUK": 3,
       "DEX": 3
     },
     "face": {
-      "LUK": 5,
+      "LUK": 8,
       "DEX": 3
     },
     "pendant": {
@@ -41,21 +42,22 @@
       "DEX": 20
     },
     "belt": {
+      "LUK": 3,
       "DEX": 7
     },
     "medal": {
-      "WATK": 2
+      "WATK": 3
     },
     "ring1": {
-      "LUK": 3,
+      "LUK": 4,
       "DEX": 2
     },
     "ring2": {
-      "LUK": 3,
+      "LUK": 4,
       "DEX": 3
     },
     "ring3": {
-      "LUK": 2,
+      "LUK": 3,
       "DEX": 1
     },
     "ring4": {
