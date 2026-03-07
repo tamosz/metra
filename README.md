@@ -23,11 +23,11 @@ cd web && npm run dev
 
 ## What It Does
 
-**CLI baseline mode** — run `npm run simulate` with no arguments to get ranked DPS tables with ASCII bar charts across all 12 classes, 3 funding tiers (low/mid/high), and 4 scenarios (buffed, unbuffed, no-echo, bossing).
+**CLI baseline mode** — run `npm run simulate` with no arguments to get ranked DPS tables with ASCII bar charts across all 14 classes and 4 funding tiers (low/mid/high/perfect). Composable toggles for buffs, elements, knockback, and multi-target training.
 
 **CLI proposal mode** — pass a proposal JSON file to see a before/after comparison with DPS deltas, rank changes, and percentage shifts.
 
-**Web app** — interactive dashboard with DPS rankings, a proposal builder, and shareable URLs. Export comparison reports as BBCode for the royals.ms forum.
+**Web app** — interactive dashboard with DPS rankings, build explorer with stat editing, proposal builder, formula reference, and shareable URLs. Export comparison reports as BBCode for the royals.ms forum.
 
 **Balance audit** — run `npm run simulate -- --audit` to flag statistical outliers and unusual tier sensitivity.
 

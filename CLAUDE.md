@@ -89,8 +89,12 @@ Pure functions. No side effects, no I/O. Takes game data + a character build, ou
 - `index.ts` — re-exports.
 
 **Simulation features:**
-- **comboGroup**: skills sharing a `comboGroup` string on `SkillEntry` have their DPS summed into a single row in simulation output (used for Buccaneer's Barrage + Demolition and Shadower's BStep + Assassinate). All sub-skills in a combo use the total cycle time as their speed category so that sum-of-DPS equals rotation DPS.
+- **comboGroup**: skills sharing a `comboGroup` string on `SkillEntry` have their DPS summed into a single row in simulation output (used for Buccaneer's Barrage + Demolition, Shadower's BStep + Assassinate, Marksman Snipe + Strafe, and Bucc's Snatch + Dragon Strike). All sub-skills in a combo use the total cycle time as their speed category so that sum-of-DPS equals rotation DPS.
+- **mixedRotations**: time-weighted skill blends on `ClassSkillData` (e.g., Corsair's Practical Bossing: 80/20 Cannon/RF split). Unlike comboGroups (fixed rotation cycles), these are estimates for variable-uptime scenarios.
 - **maxTargets**: optional field on `SkillEntry` (default 1). Combined with `targetCount` on `ScenarioConfig`, enables multi-target training simulation: `effectiveTargets = min(skill.maxTargets, scenario.targetCount)`, applied as a post-calculation multiplier before combo aggregation. CLI: `--targets N`. Web: target count input in the Dashboard filter bar.
+- **elementVariantGroup**: skills sharing a group are compared after DPS calculation; only the highest-DPS variant survives in output (e.g., Paladin Holy Blast vs Charge Blast — auto-picks best element for current scenario).
+- **knockbackRecovery**: per-skill override for KB recovery time. 0 for i-frame skills (Demolition, Barrage) that can't be interrupted.
+- **headline/hidden**: skill visibility controls. `headline: false` skills only show when "show all skills" is toggled on. `hidden: true` skills are excluded from output entirely.
 
 **Not yet implemented:**
 - Training efficiency (kills/hr, EXP/hr on a given mob — AoE modeling done via `maxTargets`, still needs mob data).
@@ -141,15 +145,20 @@ CLI: `npm run simulate -- --audit` appends the audit report after baseline ranki
 ### 5. Web Interface (`/web`)
 React + Vite single-page app with its own `package.json`. Consumes the engine via `src/core.ts` (a browser-safe re-export that excludes fs-based loaders). Deployed to Vercel (`vercel.json` config in root).
 
-- Dashboard with baseline DPS rankings and composable filter controls (buff toggles, element toggles, KB toggle with boss parameters, target count)
-- Interactive proposal builder (create, edit, simulate)
-- Comparison results view with per-scenario tables
-- URL sharing via lz-string compressed proposals in URL hash (`#p=<compressed>`)
+- Dashboard with baseline DPS rankings and composable filter controls (buff toggles, element toggles, KB toggle with boss parameters, target count, damage cap toggle)
+- Skill detail drilldown — click a ranking row to see DPS breakdown by tier, crit contribution, damage range, attack time, cap loss, Shadow Partner status
+- Build explorer — gear/stat overrides with sliders/inputs, real-time DPS recalc, marginal gain table ("what to upgrade next?"), per-slot template editor with GitHub issue integration
+- Interactive proposal builder (create, edit, simulate) with comparison chart overlay and rank bump chart
+- Formula reference page — full documentation of all engine formulas with LaTeX rendering
+- URL sharing via lz-string compressed proposals (`#p=`), builds (`#b=`), and comparisons (`#c=`)
 - BBCode export for royals.ms forum posts (`src/report/bbcode.ts`)
-- Custom tier editor — create funding tiers by adjusting stats/WATK from a base tier, persisted to localStorage
+- CGS editor — per-tier Cape/Glove/Shoe WATK overrides with saved presets via localStorage
 - Per-class saved builds — store and recall custom character configurations via localStorage
 - Support class disclaimer — contextual note for Bishop/Archmage I/L in rankings
+- Self-explanatory tier assumptions — collapsible breakdown of what each tier includes
 - Game terminology tooltips via `utils/game-terms.ts`
+- Error boundaries with recovery
+- Mobile-responsive layout
 - Playwright e2e tests in `web/e2e/`
 
 ## Royals Domain Knowledge
@@ -183,8 +192,10 @@ MinDamage = floor(2.5 * LUK * totalAttack / 100)
 Source: range calculator F18/F19. No weapon multiplier or secondary stat — flat LUK scaling.
 
 ### Crit Damage
-Two formula variants exist, configured per class via `seCritFormula`:
-- **`addBeforeMultiply`** (all physical classes): `critDmg% = (basePower + totalCritBonus) * multiplier`
+Three formula variants exist, configured per class via `seCritFormula` (can also be overridden per-skill):
+- **`addBeforeMultiply`** (default, most physical classes): `critDmg% = (basePower + totalCritBonus) * multiplier`
+- **`multiplicative`** (mages): `critDmg% = basePower * multiplier * totalCritBonus / 100` (1.4× with SE)
+- **`scaleOnBase`** (Arrow Bomb): `critDmg% = basePower * multiplier * (1 + totalCritBonus / 100)`
 
 `totalCritBonus` = built-in crit bonus (e.g., TT +100) + SE bonus (+140 if active). Crit rate is also additive: built-in (e.g., TT 0.50) + SE (0.15), capped at 1.0.
 
@@ -199,8 +210,8 @@ Two formula variants exist, configured per class via `seCritFormula`:
 - **Night Lord (NL)** — Claw, Triple Throw (3-hit, built-in 50% crit, Shadow Partner)
 - **Bowmaster** — Bow, Hurricane (fixed 0.12s attack time) and Strafe (4-hit), built-in 40% crit from Critical Shot
 - **Marksman (MM)** — Crossbow, Snipe + Strafe weave rotation (combo via `comboGroup`: 1 Snipe per 5s cycle + N Strafes as filler) and standalone Strafe (4-hit). Snipe has ~5s effective cooldown (4s programmed + ~1s server tick). DEX primary, Crossbow 3.6× multiplier, 1.0 mastery (Update #71), 40% crit from Critical Shot. Shares gear with Bowmaster (Marksman Boost +15 WATK, Update #65.1).
-- **Corsair (Sair)** — Gun, Battleship Cannon (4-hit, 0.60s) and Rapid Fire (Hurricane-style 0.12s). DEX primary, 3.6× weapon multiplier.
-- **Buccaneer (Bucc)** — Knuckle, Demolition (8-hit, fixed 2.34s cycle) and Barrage + Demolition (multi-part combo via `comboGroup`, fixed 4.04s cycle). STR primary, 4.8× weapon multiplier.
+- **Corsair (Sair)** — Gun, Battleship Cannon (4-hit, 0.60s) and Rapid Fire (Hurricane-style 0.12s). DEX primary, 3.6× weapon multiplier. Has `mixedRotations` for Practical Bossing (80/20 Cannon/RF split).
+- **Buccaneer (Bucc)** — Knuckle, Demolition (8-hit, fixed 2.34s cycle), Barrage + Demolition (multi-part combo via `comboGroup`, fixed 4.04s cycle), and Snatch + Dragon Strike (training combo, 1.6s cycle, 6 targets). STR primary, 4.8× weapon multiplier.
 - **Shadower** — Dagger + Shield, Boomerang Step + Assassinate 30 (combo via `comboGroup`, 2.31s cycle) and Savage Blow (6-hit standalone). LUK primary, STR+DEX secondary (array `secondaryStat`), Dagger 3.6× multiplier, standard damage formula, Shadow Partner, no built-in crit.
 - **Archmage (I/L)** — magic, Ice/Lightning spells
 - **Archmage (F/P)** — magic, Fire/Poison spells
@@ -248,126 +259,83 @@ All simulation conditions are composed from individual toggles rather than prede
 - **Gear templates** are named `{class}-{tier}.json` (e.g., `hero-low.json`, `drk-high.json`).
 - **Skill slugs** are derived from skill names: lowercase, spaces/parentheses/commas replaced with hyphens, trailing hyphens stripped.
 - **Auto-discovery**: the CLI auto-discovers classes and tiers by scanning `data/skills/` and `data/gear-templates/`. Adding a new class means adding its skill file + gear templates — no config changes needed.
-- **SE crit formula**: each class's skill data specifies `seCritFormula` to handle the two known SE crit calculation variants.
+- **SE crit formula**: each class's skill data specifies `seCritFormula` to handle the three known SE crit calculation variants (`addBeforeMultiply`, `multiplicative`, `scaleOnBase`). Can also be overridden per-skill.
 
 ## What NOT To Do
 
 - **Don't over-engineer.** No ORMs, no databases, no microservices. This is a calculator, not a platform.
 - **Don't over-complicate the web app.** Keep it a thin presentation layer over the engine. Business logic belongs in `src/engine/`, not in React components.
-- **Don't try to model every class at once.** Start with 2-3 and expand.
 - **Don't guess at game mechanics.** If something is unclear, ask the user or leave a TODO. Wrong formulas are worse than missing ones.
-- **Don't abstract prematurely.** If only warriors use a mechanic, it's okay to have warrior-specific code. Generalize when a second class needs the same thing.
+- **Don't abstract prematurely.** If only one class uses a mechanic, it's okay to have class-specific code. Generalize when a second class needs the same thing.
 
 ## File Structure
 ```
 metra/
 ├── CLAUDE.md
+├── README.md
 ├── ROADMAP.md
 ├── package.json
 ├── tsconfig.json
 ├── vitest.config.ts
+├── vercel.json
 ├── data/
 │   ├── source-sheet.xlsx        # original spreadsheet (read-only reference)
 │   ├── gear-assumptions.md      # gear template assumptions documentation
+│   ├── tier-defaults.json       # standardized potion + CGS values per tier
 │   ├── weapons.json             # weapon type multipliers
 │   ├── attack-speed.json        # speed tier → attack time table
-│   ├── mw.json       # MW level → stat multiplier
-│   ├── skills/
-│   │   ├── hero.json
-│   │   ├── hero-axe.json
-│   │   ├── drk.json
-│   │   ├── paladin.json
-│   │   ├── paladin-bw.json
-│   │   ├── nl.json
-│   │   ├── bowmaster.json
-│   │   ├── marksman.json
-│   │   ├── sair.json
-│   │   ├── bucc.json
-│   │   ├── shadower.json
-│   │   ├── archmage-il.json
-│   │   ├── archmage-fp.json
-│   │   └── bishop.json
-│   └── gear-templates/          # {class}-{tier}.json — low, mid, high, perfect per class
-│       ├── hero-{low,mid,high,perfect}.json
-│       ├── hero-axe-{low,mid,high,perfect}.json
-│       ├── drk-{low,mid,high,perfect}.json
-│       ├── paladin-{low,mid,high,perfect}.json
-│       ├── paladin-bw-{low,mid,high,perfect}.json
-│       ├── nl-{low,mid,high,perfect}.json
-│       ├── bowmaster-{low,mid,high,perfect}.json
-│       ├── marksman-{low,mid,high,perfect}.json
-│       ├── sair-{low,mid,high,perfect}.json
-│       ├── bucc-{low,mid,high,perfect}.json
-│       ├── shadower-{low,mid,high,perfect}.json
-│       ├── archmage-il-{low,mid,high,perfect}.json
-│       ├── archmage-fp-{low,mid,high,perfect}.json
-│       └── bishop-{low,mid,high,perfect}.json
+│   ├── mw.json                  # MW level → stat multiplier
+│   ├── skills/                  # one file per class (14 classes)
+│   ├── gear-templates/          # {class}-{tier}.json — low, mid, high, perfect per class
+│   └── references/              # extracted forum knowledge by topic
+├── docs/
+│   ├── audit/                   # gear template comparison reports
+│   └── plans/                   # implementation plans (design + execution)
 ├── proposals/                   # balance change proposals
-│   ├── brandish-buff-20.json
-│   ├── paladin-blast-multiplier.json
-│   └── warrior-rebalance.json
 ├── scripts/
 │   └── dump-sheet.ts            # spreadsheet extraction utility
 ├── src/
 │   ├── index.ts                 # library entry point
 │   ├── core.ts                  # browser-safe re-exports (no fs loaders)
 │   ├── cli.ts                   # CLI entry: baseline rankings or proposal comparison
-│   ├── cli.test.ts
-│   ├── integration.test.ts      # end-to-end pipeline tests
-│   ├── audit/
-│   │   ├── index.ts             # re-exports
-│   │   ├── types.ts             # BalanceAudit, OutlierEntry, TierSensitivity, GroupSummary
-│   │   ├── analyze.ts           # analyzeBalance() — outlier detection + tier sensitivity
-│   │   ├── analyze.test.ts
-│   │   └── format.ts            # formatAuditReport() — Markdown rendering
+│   ├── audit/                   # balance audit (outlier detection, tier sensitivity)
 │   ├── data/
-│   │   ├── types.ts             # WeaponData, AttackSpeedData, ClassSkillData, CharacterBuild, etc.
+│   │   ├── types.ts             # WeaponData, ClassSkillData, CharacterBuild, SkillEntry, MixedRotation, etc.
 │   │   ├── loader.ts            # JSON data loaders + discoverClassesAndTiers()
-│   │   ├── loader.test.ts
-│   │   └── integrity.test.ts    # cross-file data validation (tier coverage, weapon refs)
+│   │   └── gear-merge.ts        # gear template inheritance (base + tier delta)
 │   ├── engine/
-│   │   ├── index.ts             # re-exports
 │   │   ├── damage.ts            # raw damage range, range cap, adjusted range
-│   │   ├── damage.test.ts
 │   │   ├── buffs.ts             # MW, Echo, total attack/stat calculation
-│   │   ├── buffs.test.ts
 │   │   ├── attack-speed.ts      # weapon speed resolution, attack time lookup
-│   │   ├── attack-speed.test.ts
 │   │   ├── dps.ts               # full DPS pipeline
-│   │   ├── dps.test.ts
 │   │   ├── build-dps.ts         # build-level DPS calculation
-│   │   ├── build-dps.test.ts
 │   │   ├── knockback.ts         # KB uptime modeling (Stance, Shadow Shifter)
-│   │   ├── knockback.test.ts
-│   │   ├── marginal.ts          # marginal gain analysis
-│   │   └── marginal.test.ts
+│   │   └── marginal.ts          # marginal gain analysis
 │   ├── proposals/
-│   │   ├── types.ts             # Proposal, ProposalChange, ScenarioResult, DeltaEntry (with ranks), ComparisonResult
+│   │   ├── types.ts             # Proposal, ScenarioResult, DeltaEntry, ComparisonResult
 │   │   ├── apply.ts             # apply proposal changes to skill data
-│   │   ├── apply.test.ts
-│   │   ├── validate.ts          # proposal JSON validation + ProposalValidationError
-│   │   ├── validate.test.ts
-│   │   ├── simulate.ts          # run DPS across all classes × tiers × skills, comboGroup aggregation
-│   │   ├── simulate.test.ts
-│   │   ├── compare.ts           # before/after comparison with deltas and rank tracking
-│   │   └── compare.test.ts
+│   │   ├── validate.ts          # proposal JSON validation
+│   │   ├── simulate.ts          # run DPS across all classes × tiers × skills
+│   │   └── compare.ts           # before/after comparison with rank tracking
 │   ├── report/
-│   │   ├── markdown.ts          # render comparison and baseline reports as Markdown
-│   │   ├── markdown.test.ts
-│   │   ├── bbcode.ts            # render reports as BBCode for royals.ms forum
-│   │   ├── bbcode.test.ts
-│   │   ├── ascii-chart.ts       # horizontal ASCII bar chart for terminal output
-│   │   ├── ascii-chart.test.ts
-│   │   ├── utils.ts             # shared formatting helpers (formatNumber, sortDeltas, etc.)
-│   │   └── utils.test.ts
+│   │   ├── markdown.ts          # Markdown rendering
+│   │   ├── bbcode.ts            # BBCode rendering for royals.ms
+│   │   ├── ascii-chart.ts       # terminal bar charts
+│   │   └── utils.ts             # shared formatting helpers
 │   └── sheets/
-│       ├── extract.ts           # read formulas/values from xlsx
-│       └── extract.test.ts
+│       └── extract.ts           # read formulas/values from xlsx
 └── web/                         # React + Vite SPA (separate package.json)
     ├── package.json
     ├── vite.config.ts
     ├── playwright.config.ts
     ├── index.html
-    ├── src/                     # React components, data bundle, styles
-    └── e2e/                     # Playwright end-to-end tests
+    ├── e2e/                     # Playwright end-to-end tests
+    └── src/
+        ├── App.tsx              # routing + layout
+        ├── theme.ts             # centralized color constants
+        ├── data/bundle.ts       # static imports via import.meta.glob
+        ├── context/             # SimulationControlsContext (buff/element/KB/cap state)
+        ├── hooks/               # useSimulation, useBuildExplorer, useSavedBuilds, etc.
+        ├── utils/               # format, cgs, class-colors, game-terms, url-encoding, etc.
+        └── components/          # Dashboard, BuildExplorer, ProposalBuilder, FormulasPage, etc.
 ```

@@ -19,26 +19,23 @@ A balance simulator for Royals staff and community. Every number traces back to 
 - UX: mobile layout, tooltips, class icons, onboarding banner, support class disclaimers
 - 4 funding tiers (low, mid, high, perfect)
 - Composable simulation controls: individual buff toggles (SE, Echo, SI, MW, Attack Potion), element toggles, KB toggle, target count
-- Knockback modeling (initial): dodge, Stance, Shadow Shifter interactions. Needs tuning — too aggressive for channeled skills.
+- Knockback modeling: dodge, Stance, Shadow Shifter interactions. Per-skill `knockbackRecovery` override for i-frame skills (Demolition, Barrage).
 - Weapon-variant gear templates: Hero Axe and Paladin BW have dedicated templates with accurate base WATK
 - Archer projectile WATK: Bowmaster and Marksman templates include arrow/bolt WATK at each tier (+10 low/mid/high, +12 perfect)
 - Multi-target simulation: per-skill `maxTargets` + per-scenario `targetCount` for training/AoE comparisons
 - Balance audit: automated outlier detection across scenarios and tiers
 - Custom funding tiers: delta-based tier editor with localStorage persistence
 - Marginal gain calculator: DPS per WATK, per stat point — "what should I upgrade next?"
+- Formula reference page: full documentation of all engine formulas with LaTeX rendering
+- Damage cap toggle: uncapped DPS mode for theoretical comparisons
+- Element variant competition: Paladin charges auto-pick best element for current scenario
+- Mixed rotations: time-weighted skill blends (Corsair practical bossing 80/20 Cannon/RF)
+- Training skills: Arrow Bomb (Bowmaster), Snatch + Dragon Strike (Buccaneer)
+- Per-slot template editor with GitHub issue integration for proposing template changes
+- Gear template audit: cross-class alignment verified against source spreadsheet, stats aligned across all 14 classes
+- Gear template inheritance: base templates with tier deltas, reducing duplication
 - Pre-commit hooks, comprehensive test coverage
 - Deployed on Vercel: https://tomeblog.com/metra
-
-## Priority: Gear Template Audit
-
-The gear templates drive every DPS comparison, but cross-class alignment is uneven. Some templates drifted from the source spreadsheet during translation, and "high" or "low" doesn't mean the same thing across all classes.
-
-**Approach:**
-- Compare current templates against the original source spreadsheet values slot by slot
-- Focus on cross-class consistency — if Hero high weapon is X scrolls below perfect, every class should follow the same logic
-- Pendants, helmets, and mage perfect tier are fine — everything else needs a look
-- Any data NOT sourced from royals.ms/forum is probably misleading and should be treated with skepticism
-- Prioritize alignment across classes over absolute accuracy of any single template
 
 ## Phase 2: Interactive UX
 
@@ -72,7 +69,6 @@ Make the dashboard the primary exploration tool. Reduce the distance between "I 
 ## Phase 3: Community Features
 
 - Proposal gallery: browse, search, filter, share
-- Diff visualization: bump charts for rank changes
 - If there's demand: voting, comments, proposal versioning (needs a backend)
 
 ## Phase 4: Advanced Analysis
@@ -85,7 +81,7 @@ Make the dashboard the primary exploration tool. Reduce the distance between "I 
 - Party DPS modeling (Bishop's value is party buffs, not solo DPS — biggest analytical blind spot, but genuinely hard to model well)
 - Training efficiency (kills/hr, EXP/hr on reference mobs — AoE modeling done via `maxTargets`, still needs mob data)
 - Boss encounter simulation — Patchwerk-style sustained DPS with real-world interruptions:
-  - Knockback tuning: current model is too aggressive for channeled skills (Hurricane, Rapid Fire). Needs per-skill or per-category recovery times rather than a flat penalty.
+  - Knockback tuning: per-skill `knockbackRecovery` is implemented, but channeled skills (Hurricane, Rapid Fire) may still need more nuance.
   - Variable mob count phases: boss encounters like Zakum/Horntail have phases with multiple targetable parts. AoE skills get higher effective DPS during multi-body phases but not for the full fight. Configurable as a timeline of phase durations and target counts.
 
 ## Architecture
