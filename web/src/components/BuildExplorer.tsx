@@ -170,7 +170,7 @@ export function BuildExplorer({ state, savedBuilds }: BuildExplorerProps) {
           <div className="mb-3 text-[11px] font-medium uppercase tracking-wide text-text-dim">
             Gear Breakdown — {formatClassName(selectedClass)} ({selectedTier})
           </div>
-          <TemplateEditor className={selectedClass} tier={selectedTier} />
+          <TemplateEditor key={`${selectedClass}-${selectedTier}`} className={selectedClass} tier={selectedTier} />
         </div>
       )}
 

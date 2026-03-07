@@ -15,13 +15,6 @@ export function TemplateEditor({ className, tier }: TemplateEditorProps) {
   const breakdown = useMemo(() => getGearBreakdown(templateKey), [templateKey]);
   const [edits, setEdits] = useState<Edits>({});
 
-  // Reset edits when class/tier changes
-  const [prevKey, setPrevKey] = useState(templateKey);
-  if (templateKey !== prevKey) {
-    setPrevKey(templateKey);
-    setEdits({});
-  }
-
   if (!breakdown) {
     return (
       <div className="py-4 text-sm text-text-dim">
