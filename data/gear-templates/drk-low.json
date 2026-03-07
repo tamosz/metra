@@ -1,6 +1,6 @@
 {
   "extends": "drk",
-  "source": "gear templates sheet, DrK rows 52-74, Low",
+  "source": "gear templates sheet, DrK rows 52-74, Low. Stats reduced to match spreadsheet totals.",
   "baseStats": {
     "STR": 818,
     "DEX": 4,
@@ -9,7 +9,7 @@
   },
   "gearBreakdown": {
     "weapon": {
-      "STR": 18,
+      "STR": 12,
       "WATK": 127
     },
     "helmet": {
@@ -17,22 +17,22 @@
       "DEX": 25
     },
     "top": {
-      "STR": 23,
+      "STR": 17,
       "DEX": 7
     },
     "bottom": {
       "STR": 8,
-      "DEX": 12
+      "DEX": 10
     },
     "earring": {
-      "DEX": 10
+      "DEX": 5
     },
     "eye": {
       "STR": 2,
-      "DEX": 2
+      "DEX": 1
     },
     "face": {
-      "STR": 6
+      "STR": 3
     },
     "pendant": {
       "STR": 12,
@@ -40,24 +40,22 @@
     },
     "medal": {
       "STR": 2,
-      "DEX": 2,
-      "WATK": 1
+      "DEX": 2
     },
     "ring1": {
       "STR": 3,
       "DEX": 3
     },
     "ring2": {
-      "STR": 2,
+      "STR": 1,
       "DEX": 2
     },
     "ring3": {
-      "STR": 1,
-      "DEX": 1
+      "STR": 1
     },
     "ring4": {
-      "STR": 3,
-      "DEX": 3
+      "STR": 2,
+      "DEX": 2
     }
   }
 }
