@@ -2,5 +2,5 @@
   "low":     { "attackPotion": 60,  "potionName": "Stopper", "cgs": { "cape": 12, "glove": 10, "shoe": 10 } },
   "mid":     { "attackPotion": 60,  "potionName": "Stopper", "cgs": { "cape": 16, "glove": 15, "shoe": 13 } },
   "high":    { "attackPotion": 100, "potionName": "Apple",   "cgs": { "cape": 18, "glove": 20, "shoe": 16 } },
-  "perfect": { "attackPotion": 100, "potionName": "Apple",   "cgs": { "cape": 22, "glove": 22, "shoe": 18 } }
+  "perfect": { "attackPotion": 100, "potionName": "Apple",   "cgs": { "cape": 24, "glove": 24, "shoe": 22 } }
 }

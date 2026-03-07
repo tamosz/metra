@@ -1,6 +1,6 @@
 {
   "extends": "paladin",
-  "source": "Theoretical max: godly + 7/7 30% scrolls. 2H Sword: Crushed Skull (base 107 + 7x 30% scrolls = 146 WATK). Weapon speed 6 (Normal). C/G/S 22/22/18. gearStats verified against breakdown totals.",
+  "source": "Theoretical max: godly + 7/7 30% scrolls. 2H Sword: Crushed Skull (base 107 + 7x 30% scrolls = 146 WATK). Weapon speed 6 (Normal). C/G/S 24/24/22. gearStats verified against breakdown totals.",
   "baseStats": {
     "STR": 999,
     "DEX": 23,

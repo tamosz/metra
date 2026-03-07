@@ -1,6 +1,6 @@
 {
   "extends": "nl",
-  "source": "Theoretical max: godly + 7/7 30% scrolls. Claw: Dragon Purple Claw (95 WATK, max possible). Projectile: Balanced Fury (30 WATK). C/G/S 22/22/18. gearStats verified against breakdown totals.",
+  "source": "Theoretical max: godly + 7/7 30% scrolls. Claw: Dragon Purple Claw (95 WATK, max possible). Projectile: Balanced Fury (30 WATK). C/G/S 24/24/22. gearStats verified against breakdown totals.",
   "baseStats": {
     "STR": 4,
     "DEX": 25,

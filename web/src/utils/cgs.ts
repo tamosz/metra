@@ -10,7 +10,7 @@ export const CGS_DEFAULTS: Record<string, CgsValues> = {
   low: { cape: 12, glove: 10, shoe: 10 },
   mid: { cape: 16, glove: 15, shoe: 13 },
   high: { cape: 18, glove: 20, shoe: 16 },
-  perfect: { cape: 22, glove: 22, shoe: 18 },
+  perfect: { cape: 24, glove: 24, shoe: 22 },
 };
 
 export function applyCgsOverride(

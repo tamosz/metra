@@ -1,6 +1,6 @@
 {
   "extends": "sair",
-  "source": "Theoretical max: godly + 7/7 30% scrolls. Gun: Pinnacle of Creation (base 84 + 7x 30% scrolls = 119 WATK). Projectile: Eternal Bullet (20 WATK). C/G/S 22/22/18. gearStats verified against breakdown totals.",
+  "source": "Theoretical max: godly + 7/7 30% scrolls. Gun: Pinnacle of Creation (base 84 + 7x 30% scrolls = 119 WATK). Projectile: Eternal Bullet (20 WATK). C/G/S 24/24/22. gearStats verified against breakdown totals.",
   "baseStats": {
     "STR": 4,
     "DEX": 999,
@@ -58,11 +58,11 @@
     },
     "cape": {
       "DEX": 2,
-      "WATK": 22
+      "WATK": 24
     },
     "shoe": {
       "DEX": 5,
-      "WATK": 18
+      "WATK": 22
     }
   }
 }

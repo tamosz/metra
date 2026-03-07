@@ -37,7 +37,7 @@ describe('CGS_DEFAULTS', () => {
     expect(CGS_DEFAULTS.low).toEqual({ cape: 12, glove: 10, shoe: 10 });
     expect(CGS_DEFAULTS.mid).toEqual({ cape: 16, glove: 15, shoe: 13 });
     expect(CGS_DEFAULTS.high).toEqual({ cape: 18, glove: 20, shoe: 16 });
-    expect(CGS_DEFAULTS.perfect).toEqual({ cape: 22, glove: 22, shoe: 18 });
+    expect(CGS_DEFAULTS.perfect).toEqual({ cape: 24, glove: 24, shoe: 22 });
   });
 });
 

@@ -118,14 +118,14 @@ all classes (warriors, thieves, archers, pirates) for consistent cross-class com
 | Slot | Hero/Paladin | DrK | Hero (Axe) | Paladin (BW) | Notes |
 |------|-------------|-----|-----------|-------------|-------|
 | Weapon | 146 | 139 | 152 | 157 | Theoretical max: godly clean + 7× 30% scroll. |
-| Gloves | 22 | 22 | 22 | 22 | Perfect tier C/G/S: 22/22/18. |
-| Cape | 22 | 22 | 22 | 22 | |
-| Shoes | 18 | 18 | 18 | 18 | |
+| Gloves | 24 | 24 | 24 | 24 | Perfect tier C/G/S: 24/24/22. |
+| Cape | 24 | 24 | 24 | 24 | |
+| Shoes | 22 | 22 | 22 | 22 | |
 | Medal | 3 | 3 | 3 | 3 | Same as high. |
 | Ring | 1 | 1 | 1 | 1 | Same as high. |
-| **Total** | **212** | **205** | **218** | **223** | |
+| **Total** | **220** | **213** | **226** | **231** | |
 
-Perfect tier C/G/S: Glove 22 / Cape 22 / Shoe 18 (total 62 WATK). These represent
+Perfect tier C/G/S: Glove 24 / Cape 24 / Shoe 22 (total 70 WATK). These represent
 theoretical godly maxes on accessories — achievable in principle, extremely rare in practice.
 
 Estimated gear stats at perfect tier: STR ~244, DEX ~132 (godly stat gear + perfect
@@ -276,12 +276,12 @@ speed 2 for Strafe. Hurricane has fixed 0.12s attack time regardless of speed.
 |------|----------|---------|-------|
 | Weapon | 140 | 143 | Theoretical max: godly clean + 7× 30% scroll. |
 | Bow/Crossbow Expert | 10 | 15 | MM gets +15 from Crossbow Expert at perfect tier. |
-| Gloves | 22 | 22 | Perfect tier C/G/S: 22/22/18. |
-| Cape | 22 | 22 | |
-| Shoes | 18 | 18 | |
+| Gloves | 24 | 24 | Perfect tier C/G/S: 24/24/22. |
+| Cape | 24 | 24 | |
+| Shoes | 22 | 22 | |
 | Medal | 3 | 3 | Same as high. |
 | Ring | 1 | 1 | Same as high. |
-| **Total WATK** | **216** | **224** | |
+| **Total WATK** | **224** | **232** | |
 
 ### Projectile WATK (Arrows / Bolts)
 
@@ -371,13 +371,13 @@ Claw's theoretical max exceeds it by 4 WATK.
 | Slot | Value | Notes |
 |------|-------|-------|
 | Weapon (Dragon Purple Claw) | 95 | Godly clean 60 + 7× 30% scroll. |
-| Gloves | 22 | Perfect tier C/G/S: 22/22/18. |
-| Cape | 22 | |
-| Shoes | 18 | |
+| Gloves | 24 | Perfect tier C/G/S: 24/24/22. |
+| Cape | 24 | |
+| Shoes | 22 | |
 | Medal | 3 | Same as high. |
 | Ring | 1 | Same as high. |
 | Stars | 30 (Balanced Fury) | Unchanged from high. |
-| **Total WATK** | **161** | |
+| **Total WATK** | **169** | |
 
 ---
 
@@ -399,12 +399,12 @@ Claw's theoretical max exceeds it by 4 WATK.
 | Slot | Perfect | High | Mid | Low | Notes |
 |------|---------|------|-----|-----|-------|
 | Weapon (Concerto) | 119 | 114 | 113 | 107 | Perfect = godly 84 + 35 scroll. |
-| Gloves | 22 | 20 | 15 | 10 | C/G/S per tier. |
-| Cape | 22 | 18 | 16 | 12 | |
-| Shoes | 18 | 16 | 13 | 10 | |
+| Gloves | 24 | 20 | 15 | 10 | C/G/S per tier. |
+| Cape | 24 | 18 | 16 | 12 | |
+| Shoes | 22 | 16 | 13 | 10 | |
 | Medal | 3 | 3 | 2 | 0 | |
 | Ring | 1 | 1 | 1 | 1 | |
-| **Total WATK** | **185** | **172** | **160** | **140** | |
+| **Total WATK** | **193** | **172** | **160** | **140** | |
 
 ---
 
@@ -426,12 +426,12 @@ Claw's theoretical max exceeds it by 4 WATK.
 | Slot | Perfect | High | Mid | Low | Notes |
 |------|---------|------|-----|-----|-------|
 | Weapon (Dragon Slash Claw) | 123 | 118 | 116 | 105 | Perfect = godly 88 + 35 scroll. |
-| Gloves | 22 | 20 | 15 | 10 | C/G/S per tier. |
-| Cape | 22 | 18 | 16 | 12 | |
-| Shoes | 18 | 16 | 13 | 10 | |
+| Gloves | 24 | 20 | 15 | 10 | C/G/S per tier. |
+| Cape | 24 | 18 | 16 | 12 | |
+| Shoes | 22 | 16 | 13 | 10 | |
 | Medal | 3 | 3 | 2 | 0 | |
 | Ring | 1 | 1 | 1 | 0 | |
-| **Total WATK** | **189** | **176** | **163** | **137** | |
+| **Total WATK** | **197** | **176** | **163** | **137** | |
 
 ---
 
@@ -457,12 +457,12 @@ Shadower uses Dagger + Shield, so both weapon and shield contribute WATK.
 |------|---------|------|-----|-----|-------|
 | Weapon (Dragon Kanzir) | 145 | 140 | 135 | 125 | Perfect = godly 110 + 35 scroll. |
 | Shield | 48 | 43 | 37 | 31 | Perfect = godly Dark Impenetrable + perfect scrolling. |
-| Gloves | 22 | 20 | 15 | 10 | C/G/S per tier (Shadower uses thief gloves). |
-| Cape | 22 | 18 | 16 | 12 | |
-| Shoes | 18 | 16 | 13 | 10 | |
+| Gloves | 24 | 20 | 15 | 10 | C/G/S per tier (Shadower uses thief gloves). |
+| Cape | 24 | 18 | 16 | 12 | |
+| Shoes | 22 | 16 | 13 | 10 | |
 | Medal | 0 | 0 | 0 | 0 | Shadower medals provide stats, not WATK. |
 | Ring | 1 | 1 | 1 | 1 | |
-| **Total WATK** | **256** | **238** | **217** | **189** | |
+| **Total WATK** | **264** | **238** | **217** | **189** | |
 
 ---
 
@@ -563,7 +563,7 @@ wildly by class (warriors 15/12/10, archers 12/5/0, NL 12/8/6, etc.).
 | Low | 10 | 12 | 10 | 32 |
 | Mid | 15 | 16 | 13 | 44 |
 | High | 20 | 18 | 16 | 54 |
-| Perfect | 22 | 22 | 18 | 62 |
+| Perfect | 24 | 24 | 22 | 70 |
 
 Consistent C/G/S across classes ensures cross-class DPS comparisons reflect skill/weapon
 differences, not arbitrary gear assumptions.

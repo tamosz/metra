@@ -1,6 +1,6 @@
 {
   "extends": "marksman",
-  "source": "Theoretical max: godly + 7/7 30% scrolls. Crossbow: Neschere/Olympus Crossbow (base 108 + 7x 30% scrolls = 143 WATK). Marksman Boost passive +15 WATK (Update #65.1). C/G/S 22/22/18. gearStats verified against breakdown totals.",
+  "source": "Theoretical max: godly + 7/7 30% scrolls. Crossbow: Neschere/Olympus Crossbow (base 108 + 7x 30% scrolls = 143 WATK). Marksman Boost passive +15 WATK (Update #65.1). C/G/S 24/24/22. gearStats verified against breakdown totals.",
   "projectile": 12,
   "baseStats": {
     "STR": 4,

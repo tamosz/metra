@@ -1,6 +1,6 @@
 {
   "extends": "paladin-bw",
-  "source": "Theoretical max: godly Dragon Flame (122) + 7/7 30% scrolls (+35) = 157 WATK. Weapon speed 7 (Slow). C/G/S 22/22/18. gearStats same as paladin-perfect (warriors share stat gear). gearStats verified against breakdown totals.",
+  "source": "Theoretical max: godly Dragon Flame (122) + 7/7 30% scrolls (+35) = 157 WATK. Weapon speed 7 (Slow). C/G/S 24/24/22. gearStats same as paladin-perfect (warriors share stat gear). gearStats verified against breakdown totals.",
   "baseStats": {
     "STR": 999,
     "DEX": 23,
