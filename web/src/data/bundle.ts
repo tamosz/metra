@@ -50,6 +50,13 @@ function findClassBase(templateName: string): ClassBase | null {
   return null;
 }
 
+function findTemplateModule(templateKey: string): Record<string, unknown> | null {
+  const entry = Object.entries(templateModules).find(
+    ([path]) => path.endsWith(`/${templateKey}.json`)
+  );
+  return entry ? entry[1] : null;
+}
+
 function parseGearTemplate(templateName: string, raw: Record<string, unknown>): CharacterBuild {
   if (typeof raw.extends === 'string') {
     const base = findClassBase(templateName);
@@ -151,12 +158,9 @@ export function discoverClassesAndTiers(): DiscoveryResult {
     for (const tier of tierArray) {
       const key = `${name}-${tier}`;
       if (templateNames.includes(key)) {
-        // Find the raw data by matching path
-        const matchingEntry = Object.entries(templateModules).find(
-          ([path]) => path.endsWith(`/${key}.json`)
-        );
-        if (matchingEntry) {
-          gearTemplates.set(key, parseGearTemplate(key, matchingEntry[1]));
+        const raw = findTemplateModule(key);
+        if (raw) {
+          gearTemplates.set(key, parseGearTemplate(key, raw));
         }
       }
     }
@@ -175,12 +179,8 @@ export const discoveredData = discoverClassesAndTiers();
 export function getGearBreakdown(
   templateKey: string
 ): Record<string, Record<string, number>> | null {
-  const matchingEntry = Object.entries(templateModules).find(
-    ([path]) => path.endsWith(`/${templateKey}.json`)
-  );
-  if (!matchingEntry) return null;
-
-  const raw = matchingEntry[1] as Record<string, unknown>;
+  const raw = findTemplateModule(templateKey);
+  if (!raw) return null;
   const breakdown = raw.gearBreakdown as
     | Record<string, Record<string, number>>
     | undefined;
