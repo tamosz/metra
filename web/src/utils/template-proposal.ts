@@ -26,7 +26,7 @@ export function generateProposalTitle(
     for (const part of parts) {
       const next = suffix ? `${suffix}, ${part}` : part;
       if ((prefix + next + ', ...').length > maxLen) {
-        suffix += ', ...';
+        suffix += suffix ? ', ...' : '...';
         break;
       }
       suffix = next;

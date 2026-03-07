@@ -208,6 +208,12 @@ export function TemplateEditor({ className, tier }: TemplateEditorProps) {
         </table>
       </div>
 
+      {!slots.some((s) => ['cape', 'glove', 'shoe'].includes(s)) && (
+        <p className="mt-2 text-[11px] text-text-faint">
+          Cape, glove, and shoe use standardized tier values and are editable from the dashboard.
+        </p>
+      )}
+
       {changes.length > 0 && (
         <TemplateProposal className={className} tier={tier} changes={changes} />
       )}
