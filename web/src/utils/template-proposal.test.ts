@@ -28,6 +28,17 @@ describe('generateProposalTitle', () => {
     expect(title.length).toBeLessThanOrEqual(70);
     expect(title).toContain('...');
   });
+
+  it('falls back to change count when first part exceeds limit', () => {
+    const changes: SlotChange[] = [
+      { slot: 'really-long-slot-name-here', stat: 'WATK', from: 1, to: 2 },
+      { slot: 'another-long-slot', stat: 'STR', from: 3, to: 4 },
+    ];
+    const title = generateProposalTitle('archmage-fp', 'perfect', changes);
+    expect(title.length).toBeLessThanOrEqual(70);
+    expect(title).toContain('2 changes');
+    expect(title).not.toContain('...');
+  });
 });
 
 describe('formatTemplateProposal', () => {

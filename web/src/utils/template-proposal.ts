@@ -22,12 +22,16 @@ export function generateProposalTitle(
   let suffix = parts.join(', ');
 
   if ((prefix + suffix).length > maxLen) {
+    // Try fitting as many parts as possible
     suffix = '';
     for (const part of parts) {
       const next = suffix ? `${suffix}, ${part}` : part;
       if ((prefix + next + ', ...').length > maxLen) {
-        suffix += suffix ? ', ...' : '...';
-        break;
+        if (suffix) {
+          return prefix + suffix + ', ...';
+        }
+        // First part alone exceeds limit — fall back to count
+        return prefix + `${changes.length} changes`;
       }
       suffix = next;
     }
