@@ -12,9 +12,9 @@ import type {
   MWData,
   ClassSkillData,
   CharacterBuild,
-} from '../data/types.js';
-import { calculateBuildDps } from './build-dps.js';
-import { calculateSkillDps } from './dps.js';
+} from '@metra/engine';
+import { calculateBuildDps } from '@metra/engine';
+import { calculateSkillDps } from '@metra/engine';
 
 let weaponData: WeaponData;
 let attackSpeedData: AttackSpeedData;

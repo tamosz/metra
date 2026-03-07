@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeAll } from 'vitest';
 import { loadClassSkills } from '../data/loader.js';
-import type { ClassSkillData } from '../data/types.js';
+import type { ClassSkillData } from '@metra/engine';
 import { applyProposal, skillSlug } from './apply.js';
 import type { Proposal } from './types.js';
 

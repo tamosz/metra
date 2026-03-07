@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { CGS_DEFAULTS, applyCgsOverride } from './cgs.js';
-import type { CharacterBuild, ClassSkillData } from '@engine/data/types.js';
+import type { CharacterBuild, ClassSkillData } from '@metra/engine';
 
 function makeBuild(className: string, watk: number): CharacterBuild {
   return {

@@ -7,7 +7,7 @@ import {
   loadGearTemplate,
   discoverClassesAndTiers,
 } from './loader.js';
-import { compareTiers } from './types.js';
+import { compareTiers } from '@metra/engine';
 
 describe('loadWeapons', () => {
   it('loads weapon types with correct multipliers', () => {

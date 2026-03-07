@@ -7,7 +7,7 @@ import {
   calculateRangeCap,
   getWeaponMultiplier,
   TMA_CAP,
-} from './damage.js';
+} from '@metra/engine';
 import { loadWeapons } from '../data/loader.js';
 
 describe('getWeaponMultiplier', () => {

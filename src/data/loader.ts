@@ -2,12 +2,13 @@ import { readFileSync, readdirSync } from 'fs';
 import { resolve } from 'path';
 import {
   compareTiers,
+  classSkillDataSchema,
   type WeaponData,
   type AttackSpeedData,
   type MWData,
   type ClassSkillData,
   type CharacterBuild,
-} from './types.js';
+} from '@metra/engine';
 import { computeGearTotals } from './gear-utils.js';
 import { mergeGearTemplate, type TierDefaults, type ClassBase, type TierOverride } from './gear-merge.js';
 
@@ -39,7 +40,8 @@ export function loadMW(): MWData {
 
 export function loadClassSkills(className: string): ClassSkillData {
   const filename = className.toLowerCase().replace(/\//g, '').replace(/\s+/g, '-') + '.json';
-  return loadJson<ClassSkillData>(`skills/${filename}`);
+  const raw = loadJson<unknown>(`skills/${filename}`);
+  return classSkillDataSchema.parse(raw);
 }
 
 let tierDefaultsCache: Record<string, TierDefaults> | null = null;

@@ -5,14 +5,13 @@ import type {
   WeaponData,
   AttackSpeedData,
   MWData,
-} from '../data/types.js';
+} from './types.js';
 import { calculateTotalAttack, calculateTotalStats, calculateMageEcho } from './buffs.js';
 import {
   calculateDamageRange,
   calculateThrowingStarRange,
   calculateMagicDamageRange,
   calculateAdjustedRange,
-  calculateRangeCap,
   getWeaponMultiplier,
   type DamageRange,
 } from './damage.js';

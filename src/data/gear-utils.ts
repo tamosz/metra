@@ -1,4 +1,4 @@
-import type { StatName } from './types.js';
+import type { StatName } from '@metra/engine';
 
 export interface GearTotals {
   gearStats: Record<StatName, number>;

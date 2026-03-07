@@ -1,6 +1,6 @@
 import { useState, useMemo, Fragment } from 'react';
 import type { DeltaEntry } from '@engine/proposals/types.js';
-import { compareTiers } from '@engine/data/types.js';
+import { compareTiers } from '@metra/engine';
 import { getClassColor } from '../../utils/class-colors.js';
 import { ClassIcon } from '../icons/index.js';
 import { formatDps } from '../../utils/format.js';

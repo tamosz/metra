@@ -1,7 +1,5 @@
 import { useMemo } from 'react';
-import { calculateMarginalGains, type MarginalGain } from '@engine/engine/marginal.js';
-import { calculateSkillDps } from '@engine/engine/dps.js';
-import type { CharacterBuild, ClassSkillData, SkillEntry } from '@engine/data/types.js';
+import { calculateMarginalGains, type MarginalGain, calculateSkillDps, type CharacterBuild, type ClassSkillData, type SkillEntry } from '@metra/engine';
 import { weaponData, attackSpeedData, mwData } from '../data/bundle.js';
 import { formatDps } from '../utils/format.js';
 import { TH } from '../utils/styles.js';

@@ -1,19 +1,18 @@
-import type {
-  ClassSkillData,
-  CharacterBuild,
-  WeaponData,
-  AttackSpeedData,
-  MWData,
-  MixedRotation,
-  SkillEntry,
-} from '../data/types.js';
-import { calculateSkillDps, type DpsResult } from '../engine/dps.js';
 import {
+  calculateSkillDps,
   calculateDodgeChance,
   calculateKnockbackProbability,
   calculateKnockbackUptime,
   getKnockbackRecovery,
-} from '../engine/knockback.js';
+  type ClassSkillData,
+  type CharacterBuild,
+  type WeaponData,
+  type AttackSpeedData,
+  type MWData,
+  type MixedRotation,
+  type SkillEntry,
+  type DpsResult,
+} from '@metra/engine';
 import type { ScenarioConfig, ScenarioResult } from './types.js';
 
 /** Fallback scenario when none is provided: fully buffed, no overrides. */
