@@ -472,7 +472,7 @@ describe('Multi-target training scenario', () => {
     const shadBuffed = find('Shadower', 'BStep + Assassinate', 'Buffed');
     const shadTraining = find('Shadower', 'BStep + Assassinate', 'Training (6 mobs)');
     expect(shadTraining.dps.dps).toBeGreaterThan(shadBuffed.dps.dps);
-    expect(shadTraining.dps.dps).toBeLessThan(shadBuffed.dps.dps * 6);
+    expect(shadTraining.dps.dps).toBeLessThan(shadBuffed.dps.dps * 4);
   });
 });
 
