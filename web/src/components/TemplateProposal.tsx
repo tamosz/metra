@@ -21,10 +21,14 @@ export function TemplateProposal({ className, tier, changes }: TemplateProposalP
   const issueUrl = buildGitHubIssueUrl(title, body);
 
   const handleCopy = useCallback(async () => {
-    const text = `**${title}**\n\n${body}`;
-    await navigator.clipboard.writeText(text);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    try {
+      const text = `**${title}**\n\n${body}`;
+      await navigator.clipboard.writeText(text);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      // Clipboard API unavailable or permission denied — silent fail
+    }
   }, [title, body]);
 
   const btnBase =

@@ -181,7 +181,7 @@ export function TemplateEditor({ className, tier }: TemplateEditorProps) {
                             }
                             setActiveInput(null);
                           }}
-                          className={`w-14 rounded border px-1.5 py-0.5 text-right text-sm tabular-nums transition-colors [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${
+                          className={`w-14 rounded border px-1.5 py-0.5 text-right text-sm tabular-nums transition-colors [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${
                             edited
                               ? 'border-amber-600/50 bg-amber-950/20 text-amber-400'
                               : 'border-border-default bg-bg-surface text-text-primary'
@@ -221,7 +221,7 @@ export function TemplateEditor({ className, tier }: TemplateEditorProps) {
 
       {!slots.some((s) => ['cape', 'glove', 'shoe'].includes(s)) && (
         <p className="mt-2 text-[11px] text-text-faint">
-          Cape, glove, and shoe use standardized tier values and are editable from the dashboard.
+          Cape, glove, and shoe use standardized tier values (configurable via dashboard CGS controls).
         </p>
       )}
 
