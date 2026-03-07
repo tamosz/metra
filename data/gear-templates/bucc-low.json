@@ -1,6 +1,6 @@
 {
   "extends": "bucc",
-  "source": "gear templates sheet, Bucc rows, Low. Knuckle base speed 6 (Normal).",
+  "source": "gear templates sheet, Bucc rows, Low. Knuckle base speed 6 (Normal). Stats aligned to spreadsheet totals.",
   "baseStats": {
     "STR": 797,
     "DEX": 25,
@@ -22,17 +22,17 @@
     },
     "bottom": {
       "STR": 8,
-      "DEX": 12
+      "DEX": 14
     },
     "earring": {
-      "DEX": 10
+      "DEX": 12
     },
     "eye": {
       "STR": 2,
       "DEX": 2
     },
     "face": {
-      "STR": 6
+      "STR": 4
     },
     "pendant": {
       "STR": 12,
@@ -40,7 +40,8 @@
     },
     "medal": {
       "STR": 2,
-      "DEX": 2
+      "DEX": 2,
+      "WATK": 1
     },
     "ring1": {
       "STR": 3,
@@ -52,7 +53,8 @@
     },
     "ring3": {
       "STR": 1,
-      "DEX": 1
+      "DEX": 1,
+      "WATK": 1
     },
     "ring4": {
       "STR": 3,

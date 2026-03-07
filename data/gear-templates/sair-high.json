@@ -1,6 +1,6 @@
 {
   "extends": "sair",
-  "source": "Adapted from ranged class templates for Corsair. DEX primary, STR secondary. Gun base speed 6 (Normal). Eternal Bullet +20 WATK projectile.",
+  "source": "gear templates sheet, Corsair rows, High. Stats aligned to spreadsheet totals.",
   "baseStats": {
     "STR": 11,
     "DEX": 931,
@@ -9,6 +9,7 @@
   },
   "gearBreakdown": {
     "weapon": {
+      "STR": 5,
       "WATK": 114
     },
     "helmet": {
@@ -16,11 +17,12 @@
       "STR": 22
     },
     "top": {
-      "DEX": 60,
-      "STR": 8
+      "DEX": 40,
+      "STR": 12
     },
     "earring": {
-      "DEX": 15
+      "DEX": 12,
+      "STR": 4
     },
     "eye": {
       "DEX": 6,
@@ -28,32 +30,37 @@
     },
     "face": {
       "DEX": 10,
-      "STR": 5
+      "STR": 8
     },
     "pendant": {
       "DEX": 27,
       "STR": 27
     },
     "belt": {
-      "DEX": 5
+      "DEX": 4
     },
     "medal": {
       "WATK": 3
     },
     "ring1": {
-      "DEX": 8,
-      "STR": 5
+      "DEX": 5,
+      "STR": 5,
+      "WATK": 3
     },
     "ring2": {
-      "DEX": 5
-    },
-    "ring3": {
-      "DEX": 3
-    },
-    "ring4": {
       "DEX": 3,
       "STR": 3,
-      "WATK": 1
+      "WATK": 3
+    },
+    "ring3": {
+      "DEX": 1,
+      "STR": 3,
+      "WATK": 2
+    },
+    "ring4": {
+      "DEX": 2,
+      "STR": 3,
+      "WATK": 3
     },
     "cape": {
       "DEX": 2,
