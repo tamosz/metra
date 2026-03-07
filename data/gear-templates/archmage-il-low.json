@@ -1,6 +1,6 @@
 {
   "extends": "archmage-il",
-  "source": "No mage gear templates in source spreadsheet. Derived from physical class low-tier patterns. Staff MATK ~100 (basic Elemental Staff, partially scrolled). Mage potion: Spellbound Lollipop (45 MATK) — Heartstopper gives 0 for mages per spreadsheet E8 formula.",
+  "source": "Same gear as Archmage F/P. MATK and gear INT/LUK aligned to spreadsheet totals. Mage potion: Lollipop (45 MATK).",
   "attackPotion": 45,
   "baseStats": {
     "STR": 4,
@@ -10,50 +10,71 @@
   },
   "gearBreakdown": {
     "weapon": {
-      "INT": 10,
-      "MATK": 100
+      "INT": 15,
+      "MATK": 170
+    },
+    "shield": {
+      "INT": 13,
+      "MATK": 13
     },
     "helmet": {
       "INT": 25
     },
     "top": {
-      "INT": 15
-    },
-    "shield": {
-      "INT": 10
+      "INT": 20
     },
     "earring": {
-      "INT": 8
+      "INT": 12,
+      "LUK": 6,
+      "MATK": 3
     },
     "eye": {
-      "INT": 3
+      "INT": 5,
+      "LUK": 3
     },
     "face": {
-      "INT": 5
+      "INT": 7,
+      "LUK": 5
     },
     "pendant": {
-      "INT": 12
+      "INT": 12,
+      "LUK": 12
+    },
+    "belt": {
+      "INT": 3,
+      "LUK": 3
+    },
+    "medal": {
+      "MATK": 3
     },
     "ring1": {
-      "INT": 5
+      "INT": 7,
+      "LUK": 5,
+      "MATK": 2
     },
     "ring2": {
-      "INT": 3
+      "INT": 5,
+      "LUK": 5
     },
     "ring3": {
-      "INT": 2
+      "INT": 4,
+      "LUK": 5,
+      "MATK": 2
     },
     "ring4": {
-      "INT": 3
+      "INT": 5,
+      "LUK": 5
     },
     "cape": {
-      "INT": 15
+      "INT": 15,
+      "MATK": 7
     },
     "shoe": {
       "INT": 10
     },
     "glove": {
-      "INT": 11
+      "INT": 11,
+      "MATK": 14
     }
   }
 }
