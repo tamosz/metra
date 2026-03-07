@@ -19,8 +19,8 @@ describe('TemplateEditor', () => {
 
   it('renders slot rows and stat columns from breakdown', () => {
     render(<TemplateEditor className="hero" tier="high" />);
-    expect(screen.getByText('weapon')).toBeTruthy();
-    expect(screen.getByText('helmet')).toBeTruthy();
+    expect(screen.getByText('Weapon')).toBeTruthy();
+    expect(screen.getByText('Helmet')).toBeTruthy();
     expect(screen.getByText('STR')).toBeTruthy();
     expect(screen.getByText('WATK')).toBeTruthy();
     expect(screen.getByText('DEX')).toBeTruthy();

@@ -1,3 +1,119 @@
+# Template Editor Polish — Implementation Plan
+
+> **For Claude:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task.
+
+**Goal:** Align TemplateEditor and TemplateProposal with the site's design language — spinners, card wrapper, table styling, slot capitalization, tooltip.
+
+**Architecture:** All changes in `web/`. One new utility for slot display names, component rewrites for TemplateEditor and TemplateProposal, test updates.
+
+**Tech Stack:** React, TypeScript, Vitest, @testing-library/react, Tailwind CSS
+
+---
+
+### Task 1: Add slot display name utility
+
+**Files:**
+- Create: `web/src/utils/slot-names.ts`
+- Create: `web/src/utils/slot-names.test.ts`
+
+**Step 1: Write the test**
+
+```typescript
+import { describe, it, expect } from 'vitest';
+import { slotDisplayName, OVERALL_TOOLTIP } from './slot-names.js';
+
+describe('slotDisplayName', () => {
+  it('capitalizes simple slot names', () => {
+    expect(slotDisplayName('weapon')).toBe('Weapon');
+    expect(slotDisplayName('helmet')).toBe('Helmet');
+    expect(slotDisplayName('pendant')).toBe('Pendant');
+  });
+
+  it('maps top to Overall', () => {
+    expect(slotDisplayName('top')).toBe('Overall');
+  });
+
+  it('splits numbered slots', () => {
+    expect(slotDisplayName('ring1')).toBe('Ring 1');
+    expect(slotDisplayName('ring4')).toBe('Ring 4');
+  });
+
+  it('falls back to capitalized key for unknown slots', () => {
+    expect(slotDisplayName('unknown')).toBe('Unknown');
+  });
+
+  it('exports tooltip constant', () => {
+    expect(OVERALL_TOOLTIP).toContain('Top and bottom');
+  });
+});
+```
+
+**Step 2: Run test to verify it fails**
+
+Run: `cd web && npx vitest run slot-names`
+Expected: FAIL — module not found.
+
+**Step 3: Write the implementation**
+
+```typescript
+const SLOT_NAMES: Record<string, string> = {
+  weapon: 'Weapon',
+  shield: 'Shield',
+  helmet: 'Helmet',
+  top: 'Overall',
+  earring: 'Earring',
+  eye: 'Eye',
+  face: 'Face',
+  pendant: 'Pendant',
+  belt: 'Belt',
+  medal: 'Medal',
+  ring1: 'Ring 1',
+  ring2: 'Ring 2',
+  ring3: 'Ring 3',
+  ring4: 'Ring 4',
+  cape: 'Cape',
+  shoe: 'Shoe',
+  glove: 'Glove',
+};
+
+export const OVERALL_TOOLTIP = 'Top and bottom are combined into a single slot.';
+
+export function slotDisplayName(key: string): string {
+  return SLOT_NAMES[key] ?? key.charAt(0).toUpperCase() + key.slice(1);
+}
+```
+
+**Step 4: Run test to verify it passes**
+
+Run: `cd web && npx vitest run slot-names`
+Expected: PASS.
+
+**Step 5: Commit**
+
+```
+add slot display name utility
+```
+
+---
+
+### Task 2: Rewrite TemplateEditor with spinners and site styling
+
+This is the main task. Replace the entire TemplateEditor component body with spinners, card wrapper, TH constant, proper padding/borders/hover, and slot display names.
+
+**Files:**
+- Modify: `web/src/components/TemplateEditor.tsx`
+
+**Reference:** The spinner pattern from `BuildStatEditor.tsx` (lines 141-168):
+- `useSpinner(callback)` from `../hooks/useSpinner.js` for hold-to-repeat
+- Button: `h-6 w-5 bg-bg-raised text-xs text-text-faint hover:bg-bg-active hover:text-text-muted`
+- Input: `w-[48px] border-x border-border-default bg-bg-raised px-1 py-1 text-center text-sm tabular-nums`
+- Container: `flex items-stretch overflow-hidden rounded border border-border-default`
+
+**Step 1: Rewrite the component**
+
+Replace the full contents of `TemplateEditor.tsx` with:
+
+```tsx
 import { useState, useMemo, useCallback } from 'react';
 import { getGearBreakdown } from '../data/bundle.js';
 import { useSpinner } from '../hooks/useSpinner.js';
@@ -242,7 +358,6 @@ function CellSpinner({
       </button>
       <input
         type="number"
-        min={0}
         value={value}
         onChange={(e) => {
           const v = parseInt(e.target.value, 10);
@@ -260,3 +375,111 @@ function CellSpinner({
     </div>
   );
 }
+```
+
+Key changes:
+- Removed `activeInput` state (spinners handle increment/decrement natively, no need for text-mode tracking)
+- Added `CellSpinner` sub-component matching `BuildStatEditor`'s `StatInput` pattern
+- Imported `useSpinner` from `../hooks/useSpinner.js`
+- Imported `TH` from `../utils/styles.js`, `slotDisplayName`/`OVERALL_TOOLTIP` from `../utils/slot-names.js`
+- Card wrapper: `rounded-lg border border-border-subtle bg-bg-raised p-4`
+- Table rows: `border-border-subtle hover:bg-white/[0.03]`
+- Cell padding: `px-3 py-2` (slot column), `px-3 py-1.5` (spinner cells — slightly less vertical to keep row height reasonable)
+- "Overall" slot gets dotted-underline tooltip via `title` attribute
+- Spinner border turns amber when edited, matching the input highlight
+
+**Step 2: Run type-check**
+
+Run: `cd web && npx tsc --noEmit`
+Expected: No errors.
+
+**Step 3: Visually verify**
+
+Run: `cd web && npm run dev`
+Check the Build Explorer → Edit Template to confirm spinners render, slot names are capitalized, "Overall" has tooltip, card looks right.
+
+**Step 4: Commit**
+
+```
+restyle template editor with spinners and site styling
+```
+
+---
+
+### Task 3: Fix TemplateProposal background
+
+**Files:**
+- Modify: `web/src/components/TemplateProposal.tsx`
+
+**Step 1: Change the container background**
+
+On line 40, change:
+```tsx
+<div className="mt-5 rounded border border-border-default bg-bg-surface p-4">
+```
+to:
+```tsx
+<div className="mt-5 rounded border border-border-subtle bg-bg-raised p-4">
+```
+
+**Step 2: Commit**
+
+```
+fix template proposal background to match card pattern
+```
+
+---
+
+### Task 4: Update tests for new slot display names
+
+The existing tests check for raw slot names like `'weapon'` and `'helmet'`. These are now capitalized.
+
+**Files:**
+- Modify: `web/src/components/TemplateEditor.test.tsx`
+
+**Step 1: Update the test assertions**
+
+Replace lines 21-27 (the first test body):
+
+```typescript
+it('renders slot rows and stat columns from breakdown', () => {
+  render(<TemplateEditor className="hero" tier="high" />);
+  expect(screen.getByText('Weapon')).toBeTruthy();
+  expect(screen.getByText('Helmet')).toBeTruthy();
+  expect(screen.getByText('STR')).toBeTruthy();
+  expect(screen.getByText('WATK')).toBeTruthy();
+  expect(screen.getByText('DEX')).toBeTruthy();
+});
+```
+
+Update the edit tests (lines 34-48, 51-61) — the spinbutton lookup by value still works since we're finding inputs by value, not by label. But check that `screen.getByText('18')` still works for the struck-through original. This should be fine since the struck-through span text doesn't change.
+
+**Step 2: Run all web tests**
+
+Run: `cd web && npx vitest run`
+Expected: All template-related tests pass. Pre-existing localStorage failures are unrelated.
+
+**Step 3: Commit**
+
+```
+update template editor tests for capitalized slot names
+```
+
+---
+
+### Task 5: Final verification
+
+**Step 1: Run web type-check**
+
+Run: `cd web && npx tsc --noEmit`
+Expected: No errors.
+
+**Step 2: Run all web tests**
+
+Run: `cd web && npx vitest run`
+Expected: All template-related tests pass.
+
+**Step 3: Run engine tests**
+
+Run: `npx vitest run`
+Expected: All engine tests pass.

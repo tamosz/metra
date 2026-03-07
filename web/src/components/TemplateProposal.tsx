@@ -37,7 +37,7 @@ export function TemplateProposal({ className, tier, changes }: TemplateProposalP
   const btnSecondary = `${btnBase} border-border-default bg-transparent text-text-muted hover:border-border-active hover:text-text-secondary`;
 
   return (
-    <div className="mt-5 rounded border border-border-default bg-bg-surface p-4">
+    <div className="mt-5 rounded border border-border-subtle bg-bg-raised p-4">
       <div className="mb-1 text-[11px] font-medium uppercase tracking-wide text-text-dim">
         Propose Changes
       </div>
