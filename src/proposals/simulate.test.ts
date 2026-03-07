@@ -975,7 +975,7 @@ describe('elementVariantGroup', () => {
     const buffed = results.find(r => r.className === 'Paladin' && r.scenario === 'Buffed')!;
     const fireWeak = results.find(r => r.className === 'Paladin' && r.scenario === 'Fire Weak')!;
 
-    expect(buffed.dps.dps).toBeGreaterThan(180000);
+    expect(buffed.dps.dps).toBeGreaterThan(170000);
     expect(fireWeak.dps.dps).toBeGreaterThan(buffed.dps.dps);
   });
 });

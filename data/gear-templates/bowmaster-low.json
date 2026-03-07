@@ -1,15 +1,16 @@
 {
   "extends": "bowmaster",
-  "source": "Adapted from warrior low template for archer class. DEX primary, STR secondary. Bow Expert +10 WATK baked in per range calculator L31. Bow base speed 6 (Normal).",
+  "source": "gear templates sheet, Bowmaster rows. DEX primary, STR secondary. Bow Expert +10 WATK baked in. Stats aligned to spreadsheet totals.",
   "baseStats": {
-    "STR": 4,
-    "DEX": 700,
+    "STR": 23,
+    "DEX": 799,
     "INT": 4,
     "LUK": 4
   },
   "gearBreakdown": {
     "weapon": {
-      "WATK": 105
+      "STR": 5,
+      "WATK": 115
     },
     "bowExpert": {
       "WATK": 10
@@ -19,30 +20,36 @@
       "STR": 17
     },
     "top": {
-      "DEX": 23,
-      "STR": 7
-    },
-    "bottom": {
-      "DEX": 8,
+      "DEX": 20,
       "STR": 12
     },
+    "bottom": {
+      "DEX": 7,
+      "STR": 15
+    },
     "earring": {
-      "DEX": 10
+      "DEX": 9,
+      "STR": 5
     },
     "eye": {
       "DEX": 2,
       "STR": 2
     },
     "face": {
-      "DEX": 6
+      "DEX": 4,
+      "STR": 3
     },
     "pendant": {
       "DEX": 12,
       "STR": 12
     },
+    "belt": {
+      "STR": 3
+    },
     "medal": {
       "DEX": 2,
-      "STR": 2
+      "STR": 2,
+      "WATK": 2
     },
     "ring1": {
       "DEX": 3,
@@ -54,7 +61,8 @@
     },
     "ring3": {
       "DEX": 1,
-      "STR": 1
+      "STR": 1,
+      "WATK": 1
     },
     "ring4": {
       "DEX": 3,

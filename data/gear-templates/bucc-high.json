@@ -1,9 +1,9 @@
 {
   "extends": "bucc",
-  "source": "gear templates sheet, Bucc rows, High. Knuckle base speed 6 (Normal). echoActive true for high tier.",
+  "source": "gear templates sheet, Bucc rows, High. Stats aligned to spreadsheet totals.",
   "baseStats": {
-    "STR": 999,
-    "DEX": 23,
+    "STR": 938,
+    "DEX": 4,
     "INT": 4,
     "LUK": 4
   },
@@ -18,7 +18,7 @@
     },
     "top": {
       "STR": 42,
-      "DEX": 20
+      "DEX": 16
     },
     "earring": {
       "STR": 15
@@ -36,27 +36,30 @@
       "DEX": 27
     },
     "belt": {
-      "DEX": 5
+      "DEX": 4
     },
     "medal": {
       "WATK": 3
     },
     "ring1": {
       "STR": 5,
-      "DEX": 7
+      "DEX": 4,
+      "WATK": 2
     },
     "ring2": {
-      "STR": 5,
-      "DEX": 5
+      "STR": 6,
+      "DEX": 3,
+      "WATK": 2
     },
     "ring3": {
-      "STR": 1,
-      "DEX": 2
+      "STR": 2,
+      "DEX": 1,
+      "WATK": 1
     },
     "ring4": {
       "STR": 3,
-      "DEX": 3,
-      "WATK": 1
+      "DEX": 2,
+      "WATK": 2
     }
   }
 }

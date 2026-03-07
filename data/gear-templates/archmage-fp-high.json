@@ -1,62 +1,79 @@
 {
   "extends": "archmage-fp",
-  "source": "No mage gear templates in source spreadsheet. Derived from physical class templates and Royals mage gear conventions. Staff MATK ~145 (well-scrolled Elemental Staff 1, base 95 + 7 slots * 7 MATK/scroll). INT gear comparable to warrior STR gear. Mages do not benefit from Speed Infusion. Potion: Ssiws Cheese (220 MATK) — mage-specific endgame potion.",
+  "source": "gear templates sheet, Archmage F/P rows. MATK and gear INT/LUK aligned to spreadsheet totals. Mage potion: Ssiws Cheese (220 MATK).",
   "attackPotion": 220,
   "baseStats": {
     "STR": 4,
     "DEX": 4,
-    "INT": 999,
-    "LUK": 23
+    "INT": 938,
+    "LUK": 4
   },
   "gearBreakdown": {
     "weapon": {
-      "INT": 20,
-      "MATK": 145
-    },
-    "helmet": {
-      "INT": 40
-    },
-    "top": {
-      "INT": 30
+      "INT": 28,
+      "MATK": 190
     },
     "shield": {
-      "INT": 15
+      "INT": 22,
+      "MATK": 20
+    },
+    "helmet": {
+      "INT": 48
+    },
+    "top": {
+      "INT": 40
     },
     "earring": {
-      "INT": 15
+      "INT": 20,
+      "LUK": 6,
+      "MATK": 5
     },
     "eye": {
-      "INT": 6
+      "INT": 10,
+      "LUK": 3
     },
     "face": {
-      "INT": 10
+      "INT": 14,
+      "LUK": 5
     },
     "pendant": {
-      "INT": 27
+      "INT": 27,
+      "LUK": 12
     },
     "belt": {
-      "INT": 5
+      "INT": 8,
+      "LUK": 3
+    },
+    "medal": {
+      "MATK": 5
     },
     "ring1": {
-      "INT": 10
+      "INT": 14,
+      "LUK": 5,
+      "MATK": 3
     },
     "ring2": {
-      "INT": 8
+      "INT": 12,
+      "LUK": 5
     },
     "ring3": {
-      "INT": 5
+      "INT": 8,
+      "LUK": 5,
+      "MATK": 3
     },
     "ring4": {
-      "INT": 5
+      "INT": 8,
+      "LUK": 5
     },
     "cape": {
-      "INT": 30
+      "INT": 35
     },
     "shoe": {
-      "INT": 15
+      "INT": 17
     },
     "glove": {
-      "INT": 14
+      "INT": 12,
+      "MATK": 23
     }
   }
 }

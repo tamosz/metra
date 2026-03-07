@@ -1,62 +1,59 @@
 {
   "extends": "paladin-bw",
-  "source": "Split from paladin-high.json. Dragon Flame 2H BW has +6 WATK over Stonetooth Sword at equivalent scrolling (107 vs 101 clean avg). Speed 7 (Slow) vs Sword speed 6 (Normal).",
+  "source": "Split from paladin-high.json. Dragon Flame 2H BW has +6 WATK over Stonetooth Sword. Stats reduced to match spreadsheet totals.",
   "baseStats": {
-    "STR": 999,
-    "DEX": 23,
+    "STR": 943,
+    "DEX": 4,
     "INT": 4,
     "LUK": 4
   },
   "gearBreakdown": {
     "weapon": {
-      "STR": 21,
+      "STR": 18,
       "WATK": 156
     },
     "helmet": {
       "STR": 22,
-      "DEX": 40
+      "DEX": 30
     },
     "top": {
-      "STR": 60,
-      "DEX": 8
+      "STR": 32
     },
     "earring": {
-      "STR": 15
+      "STR": 8
     },
     "eye": {
-      "STR": 6,
-      "DEX": 6
+      "STR": 3,
+      "DEX": 3
     },
     "face": {
-      "STR": 10,
-      "DEX": 5
+      "STR": 5,
+      "DEX": 2
     },
     "pendant": {
       "STR": 27,
-      "DEX": 27
-    },
-    "belt": {
-      "DEX": 5
+      "DEX": 12
     },
     "medal": {
       "WATK": 3
     },
     "ring1": {
-      "STR": 8,
-      "DEX": 5
+      "STR": 5,
+      "WATK": 3
     },
     "ring2": {
-      "STR": 5,
-      "DEX": 5
+      "STR": 3,
+      "WATK": 3
     },
     "ring3": {
       "STR": 3,
-      "DEX": 2
+      "DEX": 2,
+      "WATK": 3
     },
     "ring4": {
       "STR": 3,
-      "DEX": 3,
-      "WATK": 1
+      "DEX": 1,
+      "WATK": 3
     }
   }
 }

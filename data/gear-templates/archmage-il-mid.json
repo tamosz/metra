@@ -1,62 +1,80 @@
 {
   "extends": "archmage-il",
-  "source": "Interpolated between archmage-il-low and archmage-il-high. Lollipop 45 MATK potion (Stopper gives 0 MATK for mages).",
+  "source": "Same gear as Archmage F/P. MATK and gear INT/LUK aligned to spreadsheet totals. Mage potion: Lollipop (45 MATK).",
   "attackPotion": 45,
   "baseStats": {
     "STR": 4,
     "DEX": 4,
-    "INT": 850,
-    "LUK": 23
+    "INT": 893,
+    "LUK": 4
   },
   "gearBreakdown": {
     "weapon": {
+      "INT": 20,
+      "MATK": 180
+    },
+    "shield": {
       "INT": 15,
-      "MATK": 122
+      "MATK": 12
     },
     "helmet": {
       "INT": 33
     },
     "top": {
-      "INT": 22
-    },
-    "shield": {
-      "INT": 12
+      "INT": 28
     },
     "earring": {
-      "INT": 12
+      "INT": 16,
+      "LUK": 6,
+      "MATK": 4
     },
     "eye": {
-      "INT": 5
+      "INT": 7,
+      "LUK": 3
     },
     "face": {
-      "INT": 8
+      "INT": 10,
+      "LUK": 5
     },
     "pendant": {
-      "INT": 20
+      "INT": 20,
+      "LUK": 12
     },
     "belt": {
-      "INT": 3
+      "INT": 6,
+      "LUK": 3
+    },
+    "medal": {
+      "MATK": 4
     },
     "ring1": {
-      "INT": 8
+      "INT": 10,
+      "LUK": 5,
+      "MATK": 3
     },
     "ring2": {
-      "INT": 6
+      "INT": 8,
+      "LUK": 5
     },
     "ring3": {
-      "INT": 4
+      "INT": 6,
+      "LUK": 5,
+      "MATK": 3
     },
     "ring4": {
-      "INT": 4
+      "INT": 5,
+      "LUK": 5
     },
     "cape": {
-      "INT": 22
+      "INT": 23,
+      "MATK": 12
     },
     "shoe": {
       "INT": 12
     },
     "glove": {
-      "INT": 11
+      "INT": 11,
+      "MATK": 20
     }
   }
 }

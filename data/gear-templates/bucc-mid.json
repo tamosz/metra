@@ -1,27 +1,31 @@
 {
   "extends": "bucc",
-  "source": "Interpolated between bucc-low and bucc-high. Knuckle 116 WATK.",
+  "source": "gear templates sheet, Bucc rows, Mid. Stats aligned to spreadsheet totals.",
   "baseStats": {
-    "STR": 850,
-    "DEX": 22,
+    "STR": 886,
+    "DEX": 11,
     "INT": 4,
     "LUK": 4
   },
   "gearBreakdown": {
     "weapon": {
       "STR": 20,
-      "WATK": 116
+      "WATK": 113
     },
     "helmet": {
       "STR": 20,
       "DEX": 33
     },
     "top": {
-      "STR": 32,
+      "STR": 28,
       "DEX": 14
     },
+    "bottom": {
+      "STR": 4,
+      "DEX": 5
+    },
     "earring": {
-      "STR": 8,
+      "STR": 5,
       "DEX": 5
     },
     "eye": {
@@ -29,41 +33,36 @@
       "DEX": 4
     },
     "face": {
-      "STR": 8,
+      "STR": 6,
       "DEX": 3
     },
     "pendant": {
       "STR": 20,
       "DEX": 20
     },
+    "belt": {
+      "DEX": 2
+    },
     "medal": {
       "STR": 1,
       "DEX": 1,
-      "WATK": 2
+      "WATK": 1
     },
     "ring1": {
       "STR": 4,
-      "DEX": 5
+      "DEX": 4
     },
     "ring2": {
       "STR": 4,
       "DEX": 4
     },
     "ring3": {
-      "STR": 1,
-      "DEX": 2
+      "DEX": 1
     },
     "ring4": {
       "STR": 3,
-      "DEX": 3,
+      "DEX": 2,
       "WATK": 1
-    },
-    "belt": {
-      "DEX": 3
-    },
-    "bottom": {
-      "STR": 4,
-      "DEX": 5
     }
   }
 }

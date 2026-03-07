@@ -1,14 +1,15 @@
 {
   "extends": "sair",
-  "source": "Interpolated between sair-low and sair-high. Gun 113 WATK, Eternal Bullet +20.",
+  "source": "gear templates sheet, Corsair rows, Mid. Stats aligned to spreadsheet totals.",
   "baseStats": {
-    "STR": 4,
-    "DEX": 850,
+    "STR": 24,
+    "DEX": 873,
     "INT": 4,
     "LUK": 4
   },
   "gearBreakdown": {
     "weapon": {
+      "STR": 3,
       "WATK": 113
     },
     "helmet": {
@@ -16,23 +17,24 @@
       "STR": 20
     },
     "top": {
-      "DEX": 40,
+      "DEX": 25,
       "STR": 8
     },
     "bottom": {
       "DEX": 8,
-      "STR": 12
+      "STR": 14
     },
     "earring": {
-      "DEX": 12
+      "DEX": 12,
+      "STR": 2
     },
     "eye": {
       "DEX": 4,
       "STR": 4
     },
     "face": {
-      "DEX": 8,
-      "STR": 3
+      "DEX": 7,
+      "STR": 5
     },
     "pendant": {
       "DEX": 20,
@@ -44,21 +46,20 @@
       "WATK": 2
     },
     "ring1": {
-      "DEX": 5,
+      "DEX": 3,
       "STR": 4
     },
     "ring2": {
-      "DEX": 4,
-      "STR": 1
-    },
-    "ring3": {
       "DEX": 2,
       "STR": 1
     },
+    "ring3": {
+      "DEX": 1,
+      "STR": 1
+    },
     "ring4": {
-      "DEX": 3,
-      "STR": 1,
-      "WATK": 1
+      "DEX": 1,
+      "STR": 1
     },
     "cape": {
       "DEX": 1,

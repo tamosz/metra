@@ -2,10 +2,10 @@
   "extends": "shadower",
   "source": "Interpolated between shadower-low and shadower-high.",
   "baseStats": {
-    "STR": 15,
-    "DEX": 30,
+    "STR": 10,
+    "DEX": 31,
     "INT": 4,
-    "LUK": 849
+    "LUK": 860
   },
   "gearBreakdown": {
     "weapon": {
@@ -22,7 +22,8 @@
       "STR": 20
     },
     "top": {
-      "LUK": 26,
+      "LUK": 21,
+      "STR": 5,
       "DEX": 7
     },
     "bottom": {
@@ -35,11 +36,11 @@
       "STR": 1
     },
     "eye": {
-      "LUK": 4,
+      "LUK": 1,
       "DEX": 1
     },
     "face": {
-      "LUK": 4,
+      "LUK": 2,
       "DEX": 5
     },
     "pendant": {

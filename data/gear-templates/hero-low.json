@@ -2,8 +2,8 @@
   "extends": "hero",
   "source": "gear templates sheet, Hero & Paladin rows 3-25, Low (columns B-F)",
   "baseStats": {
-    "STR": 700,
-    "DEX": 22,
+    "STR": 818,
+    "DEX": 4,
     "INT": 4,
     "LUK": 4
   },
@@ -22,17 +22,17 @@
     },
     "bottom": {
       "STR": 8,
-      "DEX": 12
+      "DEX": 15
     },
     "earring": {
-      "DEX": 10
+      "DEX": 12
     },
     "eye": {
       "STR": 2,
       "DEX": 2
     },
     "face": {
-      "STR": 6
+      "STR": 4
     },
     "pendant": {
       "STR": 12,
@@ -40,7 +40,8 @@
     },
     "medal": {
       "STR": 2,
-      "DEX": 2
+      "DEX": 2,
+      "WATK": 2
     },
     "ring1": {
       "STR": 3,
@@ -52,7 +53,8 @@
     },
     "ring3": {
       "STR": 1,
-      "DEX": 1
+      "DEX": 1,
+      "WATK": 1
     },
     "ring4": {
       "STR": 3,

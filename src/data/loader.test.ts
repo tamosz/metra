@@ -77,8 +77,8 @@ describe('loadGearTemplate', () => {
   it('loads hero-high gear template', () => {
     const build = loadGearTemplate('hero-high');
     expect(build.className).toBe('Hero');
-    expect(build.baseStats.STR).toBe(999);
-    expect(build.totalWeaponAttack).toBe(198);
+    expect(build.baseStats.STR).toBe(943);
+    expect(build.totalWeaponAttack).toBe(209);
     expect(build.attackPotion).toBe(100);
     expect(build.mwLevel).toBe(20);
   });
@@ -86,8 +86,8 @@ describe('loadGearTemplate', () => {
   it('loads hero-low gear template', () => {
     const build = loadGearTemplate('hero-low');
     expect(build.className).toBe('Hero');
-    expect(build.baseStats.STR).toBe(700);
-    expect(build.totalWeaponAttack).toBe(163);
+    expect(build.baseStats.STR).toBe(818);
+    expect(build.totalWeaponAttack).toBe(166);
     expect(build.attackPotion).toBe(60);
   });
 });

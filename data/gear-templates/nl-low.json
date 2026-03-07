@@ -4,9 +4,9 @@
   "projectile": 27,
   "baseStats": {
     "STR": 4,
-    "DEX": 25,
+    "DEX": 42,
     "INT": 4,
-    "LUK": 700
+    "LUK": 780
   },
   "gearBreakdown": {
     "weapon": {
@@ -17,38 +17,41 @@
       "DEX": 25
     },
     "top": {
-      "LUK": 12,
+      "LUK": 17,
       "DEX": 5
     },
     "bottom": {
-      "LUK": 3,
+      "LUK": 8,
       "DEX": 14
     },
     "earring": {
+      "LUK": 10,
       "DEX": 10
     },
     "eye": {
+      "LUK": 5,
       "DEX": 2
     },
     "face": {
-      "LUK": 5
+      "LUK": 10
     },
     "pendant": {
       "LUK": 12,
       "DEX": 12
     },
     "belt": {
+      "LUK": 5,
       "DEX": 5
     },
     "medal": {
       "WATK": 2
     },
     "ring1": {
-      "LUK": 3,
+      "LUK": 5,
       "DEX": 3
     },
     "ring2": {
-      "LUK": 2,
+      "LUK": 4,
       "DEX": 2
     },
     "ring3": {
