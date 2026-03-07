@@ -110,9 +110,7 @@ Also in Update #68:
 - Meteor Shower: attack 570 → **620**; MP cost 3500 → **2900**
 - Infinity: duration 40s → **120s** at level 30 (Update #65)
 
-Note: our Archmage I/L data uses the pre-buff Blizzard value of 570 from the source
-spreadsheet, not the buffed 600. This may need updating — see the spreadsheet values
-to determine which version it models.
+Blizzard and Meteor updated to Royals-buffed values (600 and 620) as of 2026-03-07.
 
 ## Warriors — General
 

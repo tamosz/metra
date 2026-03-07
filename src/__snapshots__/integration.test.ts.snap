@@ -2,9 +2,9 @@
 
 exports[`Baseline mode > high-tier DPS matches reference values 1`] = `
 {
-  "Archmage F/P / Meteor": 58254,
+  "Archmage F/P / Meteor": 62382,
   "Archmage F/P / Paralyze": 108120,
-  "Archmage I/L / Blizzard": 58254,
+  "Archmage I/L / Blizzard": 60804,
   "Archmage I/L / Chain Lightning": 98718,
   "Bishop / Angel Ray": 54806,
   "Bishop / Genesis": 45900,
@@ -29,9 +29,9 @@ exports[`Baseline mode > high-tier DPS matches reference values 1`] = `
 
 exports[`Baseline mode > low-tier DPS matches reference values 1`] = `
 {
-  "Archmage F/P / Meteor": 35837,
+  "Archmage F/P / Meteor": 38981,
   "Archmage F/P / Paralyze": 64130,
-  "Archmage I/L / Blizzard": 35837,
+  "Archmage I/L / Blizzard": 37724,
   "Archmage I/L / Chain Lightning": 58553,
   "Bishop / Angel Ray": 32507,
   "Bishop / Genesis": 27224,
@@ -56,9 +56,9 @@ exports[`Baseline mode > low-tier DPS matches reference values 1`] = `
 
 exports[`Baseline mode > mid-tier DPS matches reference values 1`] = `
 {
-  "Archmage F/P / Meteor": 43637,
+  "Archmage F/P / Meteor": 47396,
   "Archmage F/P / Paralyze": 78087,
-  "Archmage I/L / Blizzard": 43637,
+  "Archmage I/L / Blizzard": 45926,
   "Archmage I/L / Chain Lightning": 71297,
   "Bishop / Angel Ray": 39573,
   "Bishop / Genesis": 33143,

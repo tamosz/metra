@@ -686,7 +686,7 @@ describe('targetCount (multi-target scaling)', () => {
       r => r.skillName === 'BStep + Assassinate' && r.scenario === 'Training'
     )!;
 
-    // BStep has maxTargets: 6, Assassinate has default 1
+    // BStep has maxTargets: 4, Assassinate has default 1
     // So combo DPS != buffed * 6 — only BStep's portion scales
     expect(trainingCombo.dps.dps).toBeGreaterThan(buffedCombo.dps.dps);
     expect(trainingCombo.dps.dps).toBeLessThan(buffedCombo.dps.dps * 6);

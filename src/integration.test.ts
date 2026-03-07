@@ -468,7 +468,7 @@ describe('Multi-target training scenario', () => {
     const nlTraining = find('NL', 'Triple Throw', 'Training (6 mobs)');
     expect(nlTraining.dps.dps).toBe(nlBuffed.dps.dps);
 
-    // Shadower BStep+Assassinate combo: BStep has maxTargets 6, Assassinate defaults to 1
+    // Shadower BStep+Assassinate combo: BStep has maxTargets 4, Assassinate defaults to 1
     const shadBuffed = find('Shadower', 'BStep + Assassinate', 'Buffed');
     const shadTraining = find('Shadower', 'BStep + Assassinate', 'Training (6 mobs)');
     expect(shadTraining.dps.dps).toBeGreaterThan(shadBuffed.dps.dps);

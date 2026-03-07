@@ -988,17 +988,17 @@ describe('Archmage I/L DPS', () => {
     expect(result.dps).toBeCloseTo(40649, -1);
   });
 
-  it('Blizzard High tier DPS ~53,184', () => {
+  it('Blizzard High tier DPS', () => {
     const bliz = amData.skills.find((s) => s.name === 'Blizzard')!;
     const result = calculateSkillDps(
       amHigh, amData, bliz, weaponData, attackSpeedData, mwData
     );
 
     expect(result.attackTime).toBe(3.06);
-    expect(result.skillDamagePercent).toBe(570);
-    // Multiplicative mage crit: 570 * 1 * 140/100 = 798
-    expect(result.critDamagePercent).toBe(798);
-    expect(result.dps).toBeCloseTo(53504, -1);
+    expect(result.skillDamagePercent).toBe(600);
+    // Multiplicative mage crit: 600 * 1 * 140/100 = 840
+    expect(result.critDamagePercent).toBe(840);
+    expect(result.dps).toBeCloseTo(55804, -1);
   });
 
   it('uses magic formula (not standard weapon multiplier)', () => {
@@ -1162,26 +1162,26 @@ describe('Archmage F/P DPS', () => {
     expect(result.dps).toBeCloseTo(44520, -1);
   });
 
-  it('Meteor High tier DPS ~53,184', () => {
+  it('Meteor High tier DPS', () => {
     const meteor = fpData.skills.find((s) => s.name === 'Meteor')!;
     const result = calculateSkillDps(
       fpHigh, fpData, meteor, weaponData, attackSpeedData, mwData
     );
 
     expect(result.attackTime).toBe(3.06);
-    expect(result.skillDamagePercent).toBe(570);
-    // Multiplicative mage crit: 570 * 1 * 140/100 = 798
-    expect(result.critDamagePercent).toBe(798);
-    expect(result.dps).toBeCloseTo(53504, -1);
+    expect(result.skillDamagePercent).toBe(620);
+    // Multiplicative mage crit: 620 * 1 * 140/100 = 868
+    expect(result.critDamagePercent).toBe(868);
+    expect(result.dps).toBeCloseTo(57337, -1);
   });
 
-  it('Meteor Low tier DPS ~24,681', () => {
+  it('Meteor Low tier DPS', () => {
     const meteor = fpData.skills.find((s) => s.name === 'Meteor')!;
     const result = calculateSkillDps(
       fpLow, fpData, meteor, weaponData, attackSpeedData, mwData
     );
 
-    expect(result.dps).toBeCloseTo(24879, -1);
+    expect(result.dps).toBeCloseTo(27061, -1);
   });
 
   it('High tier DPS is greater than Low tier', () => {

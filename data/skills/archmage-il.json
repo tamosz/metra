@@ -24,8 +24,8 @@
     },
     {
       "name": "Blizzard",
-      "source": "dmg sheet B40: basePower 570, C40: 3.06s. Map-wide AoE ultimate.",
-      "basePower": 570,
+      "source": "Base 570 (game file / skill library), buffed to 600 (Royals balance change). C40: 3.06s. Map-wide AoE ultimate.",
+      "basePower": 600,
       "multiplier": 1,
       "hitCount": 1,
       "speedCategory": "Blizzard",
