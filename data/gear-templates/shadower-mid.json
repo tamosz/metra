@@ -2,10 +2,10 @@
   "extends": "shadower",
   "source": "Interpolated between shadower-low and shadower-high.",
   "baseStats": {
-    "STR": 15,
-    "DEX": 30,
+    "STR": 10,
+    "DEX": 31,
     "INT": 4,
-    "LUK": 849
+    "LUK": 860
   },
   "gearBreakdown": {
     "weapon": {

@@ -2,8 +2,8 @@
   "extends": "hero-axe",
   "source": "Split from hero-high.json. Same gear stats but weapon speed 6 (no speed-5 2H Axe exists). WATK kept identical for fair multiplier comparison.",
   "baseStats": {
-    "STR": 999,
-    "DEX": 23,
+    "STR": 943,
+    "DEX": 4,
     "INT": 4,
     "LUK": 4
   },

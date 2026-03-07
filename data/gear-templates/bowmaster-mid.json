@@ -2,8 +2,8 @@
   "extends": "bowmaster",
   "source": "Interpolated between bowmaster-low and bowmaster-high. Bow Expert +10 WATK baked in.",
   "baseStats": {
-    "STR": 4,
-    "DEX": 850,
+    "STR": 21,
+    "DEX": 876,
     "INT": 4,
     "LUK": 4
   },

@@ -2,8 +2,8 @@
   "extends": "bucc",
   "source": "gear templates sheet, Bucc rows, Low. Knuckle base speed 6 (Normal).",
   "baseStats": {
-    "STR": 700,
-    "DEX": 22,
+    "STR": 797,
+    "DEX": 25,
     "INT": 4,
     "LUK": 4
   },

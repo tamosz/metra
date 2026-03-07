@@ -2,8 +2,8 @@
   "extends": "drk",
   "source": "Interpolated between drk-low and drk-high. Mid Sky Ski at 133 WATK.",
   "baseStats": {
-    "STR": 850,
-    "DEX": 22,
+    "STR": 893,
+    "DEX": 4,
     "INT": 4,
     "LUK": 4
   },

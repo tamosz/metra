@@ -3,9 +3,9 @@
   "source": "Royals forum NL guides (Darko 2024, Comprehensive, Gearing Discussion)",
   "baseStats": {
     "STR": 4,
-    "DEX": 25,
+    "DEX": 4,
     "INT": 4,
-    "LUK": 999
+    "LUK": 943
   },
   "gearBreakdown": {
     "weapon": {

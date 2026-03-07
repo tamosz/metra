@@ -2,8 +2,8 @@
   "extends": "paladin",
   "source": "Interpolated between paladin-low and paladin-high. Identical gear to hero-mid per source sheet.",
   "baseStats": {
-    "STR": 850,
-    "DEX": 22,
+    "STR": 893,
+    "DEX": 4,
     "INT": 4,
     "LUK": 4
   },

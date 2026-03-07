@@ -2,8 +2,8 @@
   "extends": "hero",
   "source": "gear templates sheet, Hero & Paladin rows 3-25, High (columns H-L)",
   "baseStats": {
-    "STR": 999,
-    "DEX": 23,
+    "STR": 943,
+    "DEX": 4,
     "INT": 4,
     "LUK": 4
   },

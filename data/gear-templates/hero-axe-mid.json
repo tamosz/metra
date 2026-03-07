@@ -2,8 +2,8 @@
   "extends": "hero-axe",
   "source": "Interpolated between hero-axe-low and hero-axe-high. Same gear as hero-mid but 2H Axe weapon type.",
   "baseStats": {
-    "STR": 850,
-    "DEX": 22,
+    "STR": 893,
+    "DEX": 4,
     "INT": 4,
     "LUK": 4
   },

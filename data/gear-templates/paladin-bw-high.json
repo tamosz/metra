@@ -2,8 +2,8 @@
   "extends": "paladin-bw",
   "source": "Split from paladin-high.json. Dragon Flame 2H BW has +6 WATK over Stonetooth Sword at equivalent scrolling (107 vs 101 clean avg). Speed 7 (Slow) vs Sword speed 6 (Normal).",
   "baseStats": {
-    "STR": 999,
-    "DEX": 23,
+    "STR": 943,
+    "DEX": 4,
     "INT": 4,
     "LUK": 4
   },

@@ -4,9 +4,9 @@
   "projectile": 27,
   "baseStats": {
     "STR": 4,
-    "DEX": 25,
+    "DEX": 42,
     "INT": 4,
-    "LUK": 700
+    "LUK": 780
   },
   "gearBreakdown": {
     "weapon": {

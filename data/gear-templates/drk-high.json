@@ -2,8 +2,8 @@
   "extends": "drk",
   "source": "gear templates sheet, DrK rows 52-74, High",
   "baseStats": {
-    "STR": 999,
-    "DEX": 23,
+    "STR": 938,
+    "DEX": 4,
     "INT": 4,
     "LUK": 4
   },

@@ -2,8 +2,8 @@
   "extends": "hero-axe",
   "source": "Split from hero-low.json. Weapon speed 6 is correct for 2H Axe at all tiers. WATK kept identical for fair multiplier comparison.",
   "baseStats": {
-    "STR": 700,
-    "DEX": 22,
+    "STR": 818,
+    "DEX": 4,
     "INT": 4,
     "LUK": 4
   },

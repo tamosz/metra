@@ -2,8 +2,8 @@
   "extends": "sair",
   "source": "Interpolated between sair-low and sair-high. Gun 113 WATK, Eternal Bullet +20.",
   "baseStats": {
-    "STR": 4,
-    "DEX": 850,
+    "STR": 24,
+    "DEX": 873,
     "INT": 4,
     "LUK": 4
   },

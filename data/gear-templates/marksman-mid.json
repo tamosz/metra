@@ -2,8 +2,8 @@
   "extends": "marksman",
   "source": "Interpolated between marksman-low and marksman-high. Same gear as bowmaster-mid. Marksman Boost +15 WATK (buffed from +10 in Update #65.1).",
   "baseStats": {
-    "STR": 4,
-    "DEX": 850,
+    "STR": 21,
+    "DEX": 876,
     "INT": 4,
     "LUK": 4
   },

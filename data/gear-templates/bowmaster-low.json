@@ -2,8 +2,8 @@
   "extends": "bowmaster",
   "source": "Adapted from warrior low template for archer class. DEX primary, STR secondary. Bow Expert +10 WATK baked in per range calculator L31. Bow base speed 6 (Normal).",
   "baseStats": {
-    "STR": 4,
-    "DEX": 700,
+    "STR": 23,
+    "DEX": 799,
     "INT": 4,
     "LUK": 4
   },

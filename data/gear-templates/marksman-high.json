@@ -2,8 +2,8 @@
   "extends": "marksman",
   "source": "Identical to Bowmaster high template — archers share gear. Marksman Boost +15 WATK (buffed from +10 in Update #65.1). Crossbow base speed 6 (Normal).",
   "baseStats": {
-    "STR": 4,
-    "DEX": 999,
+    "STR": 9,
+    "DEX": 933,
     "INT": 4,
     "LUK": 4
   },

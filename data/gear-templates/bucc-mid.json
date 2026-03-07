@@ -2,8 +2,8 @@
   "extends": "bucc",
   "source": "Interpolated between bucc-low and bucc-high. Knuckle 116 WATK.",
   "baseStats": {
-    "STR": 850,
-    "DEX": 22,
+    "STR": 886,
+    "DEX": 11,
     "INT": 4,
     "LUK": 4
   },

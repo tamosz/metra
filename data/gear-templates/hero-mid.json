@@ -2,8 +2,8 @@
   "extends": "hero",
   "source": "Interpolated between hero-low and hero-high. Mid = ~lv185, reasonable scrolling, Stopper potion.",
   "baseStats": {
-    "STR": 850,
-    "DEX": 22,
+    "STR": 893,
+    "DEX": 4,
     "INT": 4,
     "LUK": 4
   },
