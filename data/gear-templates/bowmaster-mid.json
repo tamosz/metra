@@ -1,6 +1,6 @@
 {
   "extends": "bowmaster",
-  "source": "Interpolated between bowmaster-low and bowmaster-high. Bow Expert +10 WATK baked in.",
+  "source": "gear templates sheet, Bowmaster rows. Bow Expert +10 WATK baked in. Stats aligned to spreadsheet totals.",
   "baseStats": {
     "STR": 21,
     "DEX": 876,
@@ -9,6 +9,7 @@
   },
   "gearBreakdown": {
     "weapon": {
+      "STR": 3,
       "WATK": 120
     },
     "bowExpert": {
@@ -19,7 +20,7 @@
       "STR": 20
     },
     "top": {
-      "DEX": 40,
+      "DEX": 30,
       "STR": 8
     },
     "bottom": {
@@ -27,15 +28,16 @@
       "STR": 12
     },
     "earring": {
-      "DEX": 12
+      "DEX": 12,
+      "STR": 3
     },
     "eye": {
       "DEX": 4,
       "STR": 4
     },
     "face": {
-      "DEX": 8,
-      "STR": 3
+      "DEX": 6,
+      "STR": 6
     },
     "pendant": {
       "DEX": 20,
@@ -44,22 +46,26 @@
     "medal": {
       "DEX": 1,
       "STR": 1,
-      "WATK": 2
+      "WATK": 3
     },
     "ring1": {
-      "DEX": 5,
-      "STR": 3
+      "DEX": 3,
+      "STR": 3,
+      "WATK": 1
     },
     "ring2": {
-      "DEX": 4,
-      "STR": 2
+      "DEX": 2,
+      "STR": 2,
+      "WATK": 1
     },
     "ring3": {
-      "DEX": 2,
-      "STR": 1
+      "DEX": 1,
+      "STR": 2,
+      "WATK": 1
     },
     "ring4": {
-      "DEX": 4,
+      "DEX": 2,
+      "STR": 3,
       "WATK": 1
     }
   }

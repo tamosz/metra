@@ -1,6 +1,6 @@
 {
   "extends": "marksman",
-  "source": "Identical to Bowmaster high template — archers share gear. Marksman Boost +15 WATK (buffed from +10 in Update #65.1). Crossbow base speed 6 (Normal).",
+  "source": "Identical to Bowmaster high — archers share gear. Marksman Boost +15 WATK (Update #65.1). Stats aligned to spreadsheet totals.",
   "baseStats": {
     "STR": 9,
     "DEX": 933,
@@ -9,6 +9,7 @@
   },
   "gearBreakdown": {
     "weapon": {
+      "STR": 5,
       "WATK": 130
     },
     "crossbowExpert": {
@@ -19,11 +20,12 @@
       "STR": 22
     },
     "top": {
-      "DEX": 60,
-      "STR": 8
+      "DEX": 40,
+      "STR": 12
     },
     "earring": {
-      "DEX": 15
+      "DEX": 12,
+      "STR": 4
     },
     "eye": {
       "DEX": 6,
@@ -31,7 +33,7 @@
     },
     "face": {
       "DEX": 10,
-      "STR": 5
+      "STR": 8
     },
     "pendant": {
       "DEX": 27,
@@ -44,20 +46,23 @@
       "WATK": 3
     },
     "ring1": {
-      "DEX": 8,
-      "STR": 5
+      "DEX": 6,
+      "STR": 5,
+      "WATK": 2
     },
     "ring2": {
       "DEX": 5,
-      "STR": 5
+      "STR": 5,
+      "WATK": 2
     },
     "ring3": {
       "DEX": 3,
-      "STR": 2
+      "STR": 3,
+      "WATK": 2
     },
     "ring4": {
-      "DEX": 3,
-      "STR": 3,
+      "DEX": 2,
+      "STR": 4,
       "WATK": 1
     }
   }
