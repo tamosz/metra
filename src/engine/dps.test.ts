@@ -1525,7 +1525,7 @@ describe('Buccaneer DPS', () => {
     expect(buccData.primaryStat).toBe('STR');
     expect(buccData.secondaryStat).toBe('DEX');
     expect(buccData.damageFormula).toBe('standard');
-    expect(buccData.skills.length).toBe(6);
+    expect(buccData.skills.length).toBe(7);
   });
 
   it('Demolition High tier damage range', () => {

@@ -256,7 +256,7 @@ describe('Special mechanics', () => {
     expect(buccHigh).toHaveLength(2);
     expect(buccLow).toHaveLength(2);
     expect(buccHigh.map((r) => r.skillName).sort()).toEqual(
-      ['Barrage + Demolition', 'Dragon Strike']
+      ['Barrage + Demolition', 'Snatch + Dragon Strike']
     );
   });
 

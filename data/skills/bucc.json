@@ -66,16 +66,28 @@
       "knockbackRecovery": 0
     },
     {
-      "name": "Dragon Strike",
-      "headline": false,
+      "name": "Snatch + Dragon Strike (Snatch)",
+      "basePower": 600,
+      "multiplier": 1.0,
+      "hitCount": 1,
+      "maxTargets": 6,
+      "speedCategory": "Snatch + Dragon Strike",
+      "weaponType": "Knuckle",
+      "comboGroup": "Snatch + Dragon Strike",
+      "knockbackRecovery": 0,
+      "source": "Snatch lv30: 600%, 6 targets. Combo cycle 1.6s from in-game macro timing (royals.ms/forum/threads/buccaneer-in-ht-maximize-dragon-strike-snatch.188742/)"
+    },
+    {
+      "name": "Snatch + Dragon Strike (Dragon Strike)",
       "basePower": 900,
       "multiplier": 1.0,
       "hitCount": 1,
       "maxTargets": 6,
-      "speedCategory": "Brandish",
+      "speedCategory": "Snatch + Dragon Strike",
       "weaponType": "Knuckle",
+      "comboGroup": "Snatch + Dragon Strike",
       "knockbackRecovery": 0,
-      "source": "dmg sheet D25=900, E25=900*1. Speed inferred from combo math: B+Demo 4.04s - Demo 2.34s = Barrage 1.70s; B+DS 2.34s - 1.70s = 0.64s ≈ Brandish (0.63s at speed 2). Speed-dependent, uses Brandish category."
+      "source": "DS lv30: 900%, 6 targets. Combo cycle 1.6s from in-game macro timing (royals.ms/forum/threads/buccaneer-in-ht-maximize-dragon-strike-snatch.188742/)"
     }
   ]
 }
