@@ -6,6 +6,7 @@ import { BuildBuffToggles } from './BuildBuffToggles.js';
 import { BuildDpsResults } from './BuildDpsResults.js';
 import { SupportClassNote } from './SupportClassNote.js';
 import { MarginalGainsTable } from './MarginalGainsTable.js';
+import { TemplateEditor } from './TemplateEditor.js';
 import { formatClassName } from '../utils/format.js';
 
 interface BuildExplorerProps {
@@ -22,6 +23,7 @@ export function BuildExplorer({ state, savedBuilds }: BuildExplorerProps) {
 
   const [saveName, setSaveName] = useState('');
   const [showSaveInput, setShowSaveInput] = useState(false);
+  const [showTemplateEditor, setShowTemplateEditor] = useState(false);
 
   const hasOverrides = Object.keys(overrides).length > 0;
 
@@ -71,6 +73,14 @@ export function BuildExplorer({ state, savedBuilds }: BuildExplorerProps) {
       </div>
 
       <div className="mb-5 flex flex-wrap items-center gap-2">
+        {template && (
+          <button
+            onClick={() => setShowTemplateEditor(!showTemplateEditor)}
+            className={actionBtn}
+          >
+            {showTemplateEditor ? 'Hide Template' : 'Edit Template'}
+          </button>
+        )}
         {!showSaveInput ? (
           <button onClick={() => setShowSaveInput(true)} className={actionBtn}>
             Save Build
@@ -152,6 +162,15 @@ export function BuildExplorer({ state, savedBuilds }: BuildExplorerProps) {
               />
             )}
           </div>
+        </div>
+      )}
+
+      {showTemplateEditor && template && (
+        <div className="mt-6">
+          <div className="mb-3 text-[11px] font-medium uppercase tracking-wide text-text-dim">
+            Gear Breakdown — {formatClassName(selectedClass)} ({selectedTier})
+          </div>
+          <TemplateEditor key={`${selectedClass}-${selectedTier}`} className={selectedClass} tier={selectedTier} />
         </div>
       )}
 

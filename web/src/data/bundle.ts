@@ -50,6 +50,13 @@ function findClassBase(templateName: string): ClassBase | null {
   return null;
 }
 
+function findTemplateModule(templateKey: string): Record<string, unknown> | null {
+  const entry = Object.entries(templateModules).find(
+    ([path]) => path.endsWith(`/${templateKey}.json`)
+  );
+  return entry ? entry[1] : null;
+}
+
 function parseGearTemplate(templateName: string, raw: Record<string, unknown>): CharacterBuild {
   if (typeof raw.extends === 'string') {
     const base = findClassBase(templateName);
@@ -151,12 +158,9 @@ export function discoverClassesAndTiers(): DiscoveryResult {
     for (const tier of tierArray) {
       const key = `${name}-${tier}`;
       if (templateNames.includes(key)) {
-        // Find the raw data by matching path
-        const matchingEntry = Object.entries(templateModules).find(
-          ([path]) => path.endsWith(`/${key}.json`)
-        );
-        if (matchingEntry) {
-          gearTemplates.set(key, parseGearTemplate(key, matchingEntry[1]));
+        const raw = findTemplateModule(key);
+        if (raw) {
+          gearTemplates.set(key, parseGearTemplate(key, raw));
         }
       }
     }
@@ -166,3 +170,26 @@ export function discoverClassesAndTiers(): DiscoveryResult {
 }
 
 export const discoveredData = discoverClassesAndTiers();
+
+/**
+ * Get the raw per-slot gear breakdown for a template.
+ * Returns the gearBreakdown object from the JSON file as-is.
+ * CGS slots that come from tier-defaults are NOT included — only class-specific gear.
+ */
+export function getGearBreakdown(
+  templateKey: string
+): Record<string, Record<string, number>> | null {
+  const raw = findTemplateModule(templateKey);
+  if (!raw) return null;
+  const breakdown = raw.gearBreakdown as
+    | Record<string, Record<string, number>>
+    | undefined;
+  if (!breakdown) return null;
+
+  // Deep clone so callers can't mutate the bundled data
+  const result: Record<string, Record<string, number>> = {};
+  for (const [slot, stats] of Object.entries(breakdown)) {
+    result[slot] = { ...stats };
+  }
+  return result;
+}
