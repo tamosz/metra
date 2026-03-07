@@ -1,4 +1,4 @@
-import { readFileSync } from 'fs';
+import { readFileSync, mkdirSync, writeFileSync } from 'fs';
 import { resolve } from 'path';
 import XLSX from 'xlsx';
 import { loadWorkbook, readSheet, type CellInfo } from '../src/sheets/extract.js';
@@ -270,14 +270,204 @@ if (!sheetName) {
 
 const sheet = workbook.Sheets[sheetName]!;
 
-// Smoke test old extraction
-const nlHigh = extractOldTemplate(sheet, CLASS_BLOCKS[0], 'high');
-console.log('NL high weapon WATK:', nlHigh.weaponWatk, '(expected 95)');
-console.log('NL high total WATK:', nlHigh.totalWatk);
-console.log('NL high gear LUK:', nlHigh.gearPrimary);
-console.log('NL high base LUK:', nlHigh.baseStats.LUK, '(expected 943)');
+// --- Helpers ---
 
-// Smoke test current loading
-const heroHigh = loadCurrentTemplate('hero', 'high', CLASS_BLOCKS[2]);
-console.log('\nHero high total WATK:', heroHigh?.totalWatk, '(expected 198)');
-console.log('Hero high gear STR:', heroHigh?.gearPrimary);
+function delta(a: number, b: number): string {
+  const d = b - a;
+  if (d === 0) return '\u2014'; // em dash
+  return d > 0 ? `+${d}` : `${d}`;
+}
+
+function pad(s: string | number, width: number, align: 'left' | 'right' = 'right'): string {
+  const str = String(s);
+  if (align === 'left') return str.padEnd(width);
+  return str.padStart(width);
+}
+
+// Alternate spreadsheet templates that map to the same jsonClass
+const ALT_TEMPLATES = new Set(['Hero/Pally ST', 'MM (Crow)']);
+
+// Mage classes where WATK is actually MATK
+const MAGE_CLASSES = new Set(['archmage-fp', 'archmage-il', 'bishop']);
+
+// --- Main comparison loop ---
+
+interface ComparisonRow {
+  tier: string;
+  old: ExtractedTemplate | null;
+  cur: CurrentTemplate | null;
+}
+
+interface ClassComparison {
+  block: ClassBlock;
+  isAlt: boolean;
+  isMage: boolean;
+  rows: ComparisonRow[];
+}
+
+const comparisons: ClassComparison[] = [];
+
+for (const block of CLASS_BLOCKS) {
+  const isAlt = ALT_TEMPLATES.has(block.label);
+  const isMage = MAGE_CLASSES.has(block.jsonClass);
+  const rows: ComparisonRow[] = [];
+
+  for (const tier of OLD_TIERS) {
+    const old = extractOldTemplate(sheet, block, tier);
+    const cur = loadCurrentTemplate(block.jsonClass, tier, block);
+    rows.push({ tier, old, cur });
+  }
+
+  comparisons.push({ block, isAlt, isMage, rows });
+}
+
+// --- Console output ---
+
+const W = 11; // column width for values
+const DW = 6; // column width for deltas
+
+function printClassTable(comp: ClassComparison) {
+  const { block, isAlt, isMage } = comp;
+  const secLabel = block.secondaryStat.length > 0 ? block.secondaryStat.join('+') : 'none';
+  const altNote = isAlt ? ' (alt spreadsheet template)' : '';
+  const atkLabel = isMage ? 'MATK' : 'WATK';
+
+  console.log('='.repeat(120));
+  console.log(` ${block.label}${altNote} (Primary: ${block.primaryStat}, Secondary: ${secLabel})`);
+  console.log('='.repeat(120));
+
+  // Header
+  const hdr = [
+    pad('Tier', 8, 'left'),
+    pad(`${atkLabel}(old)`, W), pad(`${atkLabel}(cur)`, W), pad('\u0394', DW),
+    pad(`1\u00B0gear(old)`, W), pad(`1\u00B0gear(cur)`, W), pad('\u0394', DW),
+    pad(`2\u00B0gear(old)`, W), pad(`2\u00B0gear(cur)`, W), pad('\u0394', DW),
+    pad(`Base1\u00B0(old)`, W), pad(`Base1\u00B0(cur)`, W), pad('\u0394', DW),
+  ].join('  ');
+  console.log(hdr);
+  console.log('-'.repeat(hdr.length));
+
+  for (const row of comp.rows) {
+    if (!row.cur) {
+      console.log(`${pad(row.tier, 8, 'left')}  (no template)`);
+      continue;
+    }
+    const o = row.old!;
+    const c = row.cur;
+    const basePrimOld = o.baseStats[block.primaryStat] ?? 0;
+    const basePrimCur = c.baseStats[block.primaryStat] ?? 0;
+
+    const line = [
+      pad(row.tier, 8, 'left'),
+      pad(o.totalWatk, W), pad(c.totalWatk, W), pad(delta(o.totalWatk, c.totalWatk), DW),
+      pad(o.gearPrimary, W), pad(c.gearPrimary, W), pad(delta(o.gearPrimary, c.gearPrimary), DW),
+      pad(o.gearSecondary, W), pad(c.gearSecondary, W), pad(delta(o.gearSecondary, c.gearSecondary), DW),
+      pad(basePrimOld, W), pad(basePrimCur, W), pad(delta(basePrimOld, basePrimCur), DW),
+    ].join('  ');
+    console.log(line);
+  }
+  console.log('');
+}
+
+// Print WATK breakdown for rows with large deltas
+function printWatkBreakdown(comp: ClassComparison) {
+  const atkLabel = comp.isMage ? 'MATK' : 'WATK';
+  const largeDeltas = comp.rows.filter(r => r.old && r.cur && Math.abs(r.cur.totalWatk - r.old.totalWatk) > 3);
+  if (largeDeltas.length === 0) return;
+
+  console.log(`  ${atkLabel} Breakdown (|delta| > 3):`);
+  const slots = ['weapon', 'shield', 'cape', 'shoe', 'glove', 'other'] as const;
+  const slotW = 8;
+
+  const hdr = [
+    pad('Tier', 8, 'left'),
+    ...slots.flatMap(s => [pad(`${s}(o)`, slotW), pad(`${s}(c)`, slotW), pad('\u0394', 5)]),
+  ].join('  ');
+  console.log(`  ${hdr}`);
+
+  for (const row of largeDeltas) {
+    const o = row.old!.watkBreakdown;
+    const c = row.cur!.watkBreakdown;
+    const line = [
+      pad(row.tier, 8, 'left'),
+      ...slots.flatMap(s => [pad(o[s], slotW), pad(c[s], slotW), pad(delta(o[s], c[s]), 5)]),
+    ].join('  ');
+    console.log(`  ${line}`);
+  }
+  console.log('');
+}
+
+for (const comp of comparisons) {
+  printClassTable(comp);
+  printWatkBreakdown(comp);
+}
+
+// --- Markdown output ---
+
+function generateMarkdown(): string {
+  const lines: string[] = [];
+  lines.push('# Gear Template Comparison: Spreadsheet vs Current JSON');
+  lines.push('');
+  lines.push('Auto-generated by `scripts/compare-templates.ts`.');
+  lines.push('');
+  lines.push('Spreadsheet tiers: low (Mid), mid (Mid-high), high (High).');
+  lines.push('');
+
+  for (const comp of comparisons) {
+    const { block, isAlt, isMage } = comp;
+    const secLabel = block.secondaryStat.length > 0 ? block.secondaryStat.join('+') : 'none';
+    const altNote = isAlt ? ' (alt spreadsheet template)' : '';
+    const atkLabel = isMage ? 'MATK' : 'WATK';
+
+    lines.push(`## ${block.label}${altNote}`);
+    lines.push('');
+    lines.push(`Primary: ${block.primaryStat}, Secondary: ${secLabel}`);
+    lines.push('');
+
+    // Main comparison table
+    lines.push(`| Tier | ${atkLabel}(old) | ${atkLabel}(cur) | \u0394 | 1\u00B0gear(old) | 1\u00B0gear(cur) | \u0394 | 2\u00B0gear(old) | 2\u00B0gear(cur) | \u0394 | Base1\u00B0(old) | Base1\u00B0(cur) | \u0394 |`);
+    lines.push(`|------|${'----|'.repeat(12)}`);
+
+    for (const row of comp.rows) {
+      if (!row.cur) {
+        lines.push(`| ${row.tier} | | (no template) | | | | | | | | | | |`);
+        continue;
+      }
+      const o = row.old!;
+      const c = row.cur;
+      const basePrimOld = o.baseStats[block.primaryStat] ?? 0;
+      const basePrimCur = c.baseStats[block.primaryStat] ?? 0;
+
+      lines.push(`| ${row.tier} | ${o.totalWatk} | ${c.totalWatk} | ${delta(o.totalWatk, c.totalWatk)} | ${o.gearPrimary} | ${c.gearPrimary} | ${delta(o.gearPrimary, c.gearPrimary)} | ${o.gearSecondary} | ${c.gearSecondary} | ${delta(o.gearSecondary, c.gearSecondary)} | ${basePrimOld} | ${basePrimCur} | ${delta(basePrimOld, basePrimCur)} |`);
+    }
+    lines.push('');
+
+    // WATK breakdown for large deltas
+    const largeDeltas = comp.rows.filter(r => r.old && r.cur && Math.abs(r.cur.totalWatk - r.old.totalWatk) > 3);
+    if (largeDeltas.length > 0) {
+      lines.push(`### ${atkLabel} Breakdown (|\u0394| > 3)`);
+      lines.push('');
+      lines.push(`| Tier | weapon(o) | weapon(c) | \u0394 | shield(o) | shield(c) | \u0394 | cape(o) | cape(c) | \u0394 | shoe(o) | shoe(c) | \u0394 | glove(o) | glove(c) | \u0394 | other(o) | other(c) | \u0394 |`);
+      lines.push(`|------|${'----|'.repeat(18)}`);
+
+      for (const row of largeDeltas) {
+        const o = row.old!.watkBreakdown;
+        const c = row.cur!.watkBreakdown;
+        const slots = ['weapon', 'shield', 'cape', 'shoe', 'glove', 'other'] as const;
+        const cells = slots.map(s => `${o[s]} | ${c[s]} | ${delta(o[s], c[s])}`).join(' | ');
+        lines.push(`| ${row.tier} | ${cells} |`);
+      }
+      lines.push('');
+    }
+  }
+
+  return lines.join('\n');
+}
+
+const DOCS_DIR = resolve(import.meta.dirname, '../docs/audit');
+mkdirSync(DOCS_DIR, { recursive: true });
+
+const markdown = generateMarkdown();
+const outputPath = resolve(DOCS_DIR, 'gear-template-comparison.md');
+writeFileSync(outputPath, markdown);
+console.log(`\nMarkdown report written to ${outputPath}`);
