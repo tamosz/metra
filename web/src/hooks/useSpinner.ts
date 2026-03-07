@@ -1,6 +1,9 @@
 import { useCallback, useRef } from 'react';
 
 export function useSpinner(callback: () => void) {
+  const callbackRef = useRef(callback);
+  callbackRef.current = callback;
+
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
@@ -12,11 +15,11 @@ export function useSpinner(callback: () => void) {
   }, []);
 
   const start = useCallback(() => {
-    callback();
+    callbackRef.current();
     timerRef.current = setTimeout(() => {
-      intervalRef.current = setInterval(callback, 80);
+      intervalRef.current = setInterval(() => callbackRef.current(), 80);
     }, 400);
-  }, [callback]);
+  }, []);
 
   return {
     onMouseDown: start,
