@@ -30,7 +30,8 @@
       "weaponType": "Bow",
       "builtInCritRate": 0.40,
       "builtInCritDamageBonus": 100,
-      "source": "ayumilove, bbb.hidden-street.net, royals.ms thread #237950. 130% x1 hit, 6 targets. TODO: may use multiplicative crit formula (forum says 130%*2=260% with crit, not addBeforeMultiply 230%)"
+      "seCritFormula": "scaleOnBase",
+      "source": "ayumilove, bbb.hidden-street.net, royals.ms thread #237950. 130% x1 hit, 6 targets. Crit formula: 130%*2=260% (no SE), 130%*3.4=442% (with SE) — scaleOnBase, not addBeforeMultiply"
     }
   ]
 }

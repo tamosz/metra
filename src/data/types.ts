@@ -75,6 +75,8 @@ export interface SkillEntry {
   builtInCritRate?: number;
   /** Built-in crit damage bonus added to basePower on crit. */
   builtInCritDamageBonus?: number;
+  /** Per-skill SE crit formula override. When set, overrides the class-level seCritFormula. */
+  seCritFormula?: 'addBeforeMultiply' | 'multiplicative' | 'scaleOnBase';
   /** Group name for skills that combine into a single rotation.
    *  Skills sharing a comboGroup have their DPS summed in simulation output.
    *  e.g., Barrage hits + Demolition form one combo with a shared attack cycle. */
@@ -147,8 +149,9 @@ export interface ClassSkillData {
    * SE crit damage formula variant.
    * - "addBeforeMultiply" (default): critDmg% = (basePower + bonus) * multiplier
    * - "multiplicative" (mages): critDmg% = basePower * multiplier * bonus / 100  (1.4× with SE)
+   * - "scaleOnBase": critDmg% = basePower * multiplier * (1 + bonus/100)
    */
-  seCritFormula?: 'addBeforeMultiply' | 'multiplicative';
+  seCritFormula?: 'addBeforeMultiply' | 'multiplicative' | 'scaleOnBase';
   /**
    * Which damage formula to use.
    * - "standard" (default): warrior-style (primary * weapMult + secondary) * totalAtk / 100

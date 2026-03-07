@@ -1276,6 +1276,32 @@ describe('Bowmaster DPS', () => {
     expect(result.dps).toBeCloseTo(119045, -2);
   });
 
+  it('Arrow Bomb uses scaleOnBase crit formula: 130 * (1 + bonus/100)', () => {
+    const arrowBomb = bmData.skills.find((s) => s.name === 'Arrow Bomb')!;
+    const result = calculateSkillDps(
+      bmHigh, bmData, arrowBomb, weaponData, attackSpeedData, mwData
+    );
+
+    // skillDmg% = 130 * 1 = 130
+    expect(result.skillDamagePercent).toBe(130);
+    // scaleOnBase: basePower * multiplier * (1 + totalCritBonus/100)
+    // totalCritBonus = 100 (built-in) + 140 (SE) = 240
+    // critDmg% = 130 * 1 * (1 + 240/100) = 130 * 3.4 = 442
+    // Source: royals.ms thread #237950
+    expect(result.critDamagePercent).toBe(442);
+  });
+
+  it('Arrow Bomb without SE uses scaleOnBase: 130 * 2 = 260', () => {
+    const arrowBomb = bmData.skills.find((s) => s.name === 'Arrow Bomb')!;
+    const noSeBuild = { ...bmHigh, sharpEyes: false };
+    const result = calculateSkillDps(
+      noSeBuild, bmData, arrowBomb, weaponData, attackSpeedData, mwData
+    );
+
+    // scaleOnBase: 130 * 1 * (1 + 100/100) = 130 * 2 = 260
+    expect(result.critDamagePercent).toBe(260);
+  });
+
   it('High tier DPS is greater than Low tier for all skills', () => {
     for (const skill of bmData.skills) {
       const high = calculateSkillDps(

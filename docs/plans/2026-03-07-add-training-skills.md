@@ -16,10 +16,9 @@ Add two AoE training skills relevant for multi-target scenarios.
 - **builtInCritDamageBonus**: 100
 - **source**: ayumilove, hidden-street, royals.ms thread #237950
 
-**TODO**: Arrow Bomb may use a multiplicative crit formula instead of addBeforeMultiply.
-Forum thread says "130% * 2 = 260%" for normal crit and "130% * 3.4 = 442%" with SE.
-If addBeforeMultiply: (130+100)*1 = 230%, which doesn't match 260%.
-Needs investigation — for now, uses class-level addBeforeMultiply like other BM skills.
+**RESOLVED**: Arrow Bomb uses `scaleOnBase` crit formula (per-skill override).
+Forum-confirmed: 130% × 2 = 260% (no SE), 130% × 3.4 = 442% (with SE).
+Formula: `basePower * multiplier * (1 + totalCritBonus/100)`.
 
 ## Dragon Strike (Buccaneer)
 

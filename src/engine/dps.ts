@@ -80,10 +80,12 @@ function calculateCritDamage(
   const seCritBonus = sharpEyes ? classData.sharpEyesCritDamageBonus : 0;
   const totalCritBonus = builtInCritBonus + seCritBonus;
 
-  const seCritFormula = classData.seCritFormula ?? 'addBeforeMultiply';
+  const seCritFormula = skill.seCritFormula ?? classData.seCritFormula ?? 'addBeforeMultiply';
   let critDamagePercent: number;
   if (seCritFormula === 'multiplicative') {
     critDamagePercent = skill.basePower * skill.multiplier * totalCritBonus / 100;
+  } else if (seCritFormula === 'scaleOnBase') {
+    critDamagePercent = skill.basePower * skill.multiplier * (1 + totalCritBonus / 100);
   } else {
     critDamagePercent = (skill.basePower + totalCritBonus) * skill.multiplier;
   }
