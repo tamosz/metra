@@ -166,3 +166,30 @@ export function discoverClassesAndTiers(): DiscoveryResult {
 }
 
 export const discoveredData = discoverClassesAndTiers();
+
+/**
+ * Get the raw per-slot gear breakdown for a template.
+ * Returns the gearBreakdown object from the JSON file as-is.
+ * CGS slots that come from tier-defaults are NOT included — only class-specific gear.
+ */
+export function getGearBreakdown(
+  templateKey: string
+): Record<string, Record<string, number>> | null {
+  const matchingEntry = Object.entries(templateModules).find(
+    ([path]) => path.endsWith(`/${templateKey}.json`)
+  );
+  if (!matchingEntry) return null;
+
+  const raw = matchingEntry[1] as Record<string, unknown>;
+  const breakdown = raw.gearBreakdown as
+    | Record<string, Record<string, number>>
+    | undefined;
+  if (!breakdown) return null;
+
+  // Deep clone so callers can't mutate the bundled data
+  const result: Record<string, Record<string, number>> = {};
+  for (const [slot, stats] of Object.entries(breakdown)) {
+    result[slot] = { ...stats };
+  }
+  return result;
+}
