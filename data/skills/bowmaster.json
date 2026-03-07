@@ -22,6 +22,7 @@
     },
     {
       "name": "Arrow Bomb",
+      "headline": false,
       "basePower": 130,
       "multiplier": 1,
       "hitCount": 1,

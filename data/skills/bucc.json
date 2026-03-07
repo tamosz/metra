@@ -67,6 +67,7 @@
     },
     {
       "name": "Dragon Strike",
+      "headline": false,
       "basePower": 900,
       "multiplier": 1.0,
       "hitCount": 1,
