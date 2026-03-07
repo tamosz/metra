@@ -242,6 +242,7 @@ function CellSpinner({
       </button>
       <input
         type="number"
+        min={0}
         value={value}
         onChange={(e) => {
           const v = parseInt(e.target.value, 10);

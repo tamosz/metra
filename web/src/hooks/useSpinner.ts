@@ -1,4 +1,4 @@
-import { useCallback, useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 
 export function useSpinner(callback: () => void) {
   const callbackRef = useRef(callback);
@@ -20,6 +20,8 @@ export function useSpinner(callback: () => void) {
       intervalRef.current = setInterval(() => callbackRef.current(), 80);
     }, 400);
   }, []);
+
+  useEffect(() => stop, [stop]);
 
   return {
     onMouseDown: start,
