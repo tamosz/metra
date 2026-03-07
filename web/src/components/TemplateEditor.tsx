@@ -1,6 +1,9 @@
 import { useState, useMemo, useCallback } from 'react';
 import { getGearBreakdown } from '../data/bundle.js';
+import { useSpinner } from '../hooks/useSpinner.js';
 import { TemplateProposal } from './TemplateProposal.js';
+import { slotDisplayName, OVERALL_TOOLTIP } from '../utils/slot-names.js';
+import { TH } from '../utils/styles.js';
 import type { SlotChange } from '../utils/template-proposal.js';
 
 interface TemplateEditorProps {
@@ -14,7 +17,6 @@ export function TemplateEditor({ className, tier }: TemplateEditorProps) {
   const templateKey = `${className}-${tier}`;
   const breakdown = useMemo(() => getGearBreakdown(templateKey), [templateKey]);
   const [edits, setEdits] = useState<Edits>({});
-  const [activeInput, setActiveInput] = useState<{ slot: string; stat: string; text: string } | null>(null);
 
   if (!breakdown) {
     return (
@@ -26,7 +28,6 @@ export function TemplateEditor({ className, tier }: TemplateEditorProps) {
 
   const slots = Object.keys(breakdown);
 
-  // Discover all stat columns from the breakdown
   const statColumns = useMemo(() => {
     const stats = new Set<string>();
     for (const slotStats of Object.values(breakdown)) {
@@ -78,7 +79,6 @@ export function TemplateEditor({ className, tier }: TemplateEditorProps) {
     []
   );
 
-  // Compute totals
   const totals = useMemo(() => {
     const t: Record<string, number> = {};
     for (const stat of statColumns) {
@@ -103,7 +103,6 @@ export function TemplateEditor({ className, tier }: TemplateEditorProps) {
     return t;
   }, [statColumns, slots, breakdown]);
 
-  // Collect changes for proposal
   const changes: SlotChange[] = useMemo(() => {
     const result: SlotChange[] = [];
     for (const slot of slots) {
@@ -121,71 +120,51 @@ export function TemplateEditor({ className, tier }: TemplateEditorProps) {
     return result;
   }, [slots, statColumns, isEdited, breakdown, edits]);
 
-  const thStyle = 'px-2 py-1.5 text-[11px] uppercase tracking-wide text-text-dim font-medium text-right';
-  const tdSlot = 'px-2 py-1 text-xs text-text-muted text-left';
-
   return (
-    <div>
+    <div className="rounded-lg border border-border-subtle bg-bg-raised p-4">
       <div className="overflow-x-auto">
         <table className="w-full border-collapse">
           <thead>
             <tr className="border-b border-border-default">
-              <th className={`${thStyle} text-left`}>Slot</th>
+              <th className={`${TH} text-left`}>Slot</th>
               {statColumns.map((stat) => (
-                <th key={stat} className={thStyle}>{stat}</th>
+                <th key={stat} className={`${TH} text-right`}>{stat}</th>
               ))}
             </tr>
           </thead>
           <tbody>
             {slots.map((slot) => (
-              <tr key={slot} className="border-b border-border-default/50">
-                <td className={tdSlot}>{slot}</td>
+              <tr key={slot} className="border-b border-border-subtle hover:bg-white/[0.03]">
+                <td className="px-3 py-2 text-xs text-text-muted">
+                  {slot === 'top' ? (
+                    <span title={OVERALL_TOOLTIP} className="cursor-help underline decoration-dotted decoration-text-faint underline-offset-2">
+                      {slotDisplayName(slot)}
+                    </span>
+                  ) : (
+                    slotDisplayName(slot)
+                  )}
+                </td>
                 {statColumns.map((stat) => {
                   const original = getOriginal(slot, stat);
                   const hasStat = original !== null;
                   const edited = isEdited(slot, stat);
 
                   if (!hasStat) {
-                    return <td key={stat} className="px-2 py-1" />;
+                    return <td key={stat} className="px-3 py-2" />;
                   }
 
                   return (
-                    <td key={stat} className="px-2 py-0.5">
-                      <div className="flex items-center justify-end gap-1">
+                    <td key={stat} className="px-3 py-1.5">
+                      <div className="flex items-center justify-end gap-1.5">
                         {edited && (
                           <span className="text-[10px] text-text-faint line-through tabular-nums">
                             {original}
                           </span>
                         )}
-                        <input
-                          type="number"
-                          min={0}
-                          step={1}
-                          value={
-                            activeInput?.slot === slot && activeInput?.stat === stat
-                              ? activeInput.text
-                              : (getValue(slot, stat) ?? '')
-                          }
-                          onFocus={(e) => {
-                            setActiveInput({ slot, stat, text: e.target.value });
-                          }}
-                          onChange={(e) => {
-                            setActiveInput({ slot, stat, text: e.target.value });
-                            const v = parseInt(e.target.value, 10);
-                            if (!isNaN(v)) handleChange(slot, stat, v);
-                          }}
-                          onBlur={() => {
-                            if (activeInput && activeInput.text === '') {
-                              const original = getOriginal(slot, stat) ?? 0;
-                              handleChange(slot, stat, original);
-                            }
-                            setActiveInput(null);
-                          }}
-                          className={`w-14 rounded border px-1.5 py-0.5 text-right text-sm tabular-nums transition-colors [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${
-                            edited
-                              ? 'border-amber-600/50 bg-amber-950/20 text-amber-400'
-                              : 'border-border-default bg-bg-surface text-text-primary'
-                          }`}
+                        <CellSpinner
+                          value={getValue(slot, stat) ?? 0}
+                          edited={edited}
+                          onChange={(v) => handleChange(slot, stat, v)}
                         />
                       </div>
                     </td>
@@ -196,11 +175,11 @@ export function TemplateEditor({ className, tier }: TemplateEditorProps) {
           </tbody>
           <tfoot>
             <tr className="border-t border-border-default">
-              <td className={`${tdSlot} font-medium`}>Total</td>
+              <td className="px-3 py-2 text-xs font-medium text-text-muted">Total</td>
               {statColumns.map((stat) => {
                 const changed = totals[stat] !== originalTotals[stat];
                 return (
-                  <td key={stat} className="px-2 py-1.5 text-right">
+                  <td key={stat} className="px-3 py-2 text-right">
                     <div className="flex items-center justify-end gap-1">
                       {changed && (
                         <span className="text-[10px] text-text-faint line-through tabular-nums">
@@ -228,6 +207,55 @@ export function TemplateEditor({ className, tier }: TemplateEditorProps) {
       {changes.length > 0 && (
         <TemplateProposal className={className} tier={tier} changes={changes} />
       )}
+    </div>
+  );
+}
+
+function CellSpinner({
+  value,
+  edited,
+  onChange,
+}: {
+  value: number;
+  edited: boolean;
+  onChange: (value: number) => void;
+}) {
+  const decrement = useCallback(() => {
+    onChange(Math.max(0, value - 1));
+  }, [value, onChange]);
+
+  const increment = useCallback(() => {
+    onChange(value + 1);
+  }, [value, onChange]);
+
+  const decSpinner = useSpinner(decrement);
+  const incSpinner = useSpinner(increment);
+
+  const btnClass = 'flex h-6 w-5 items-center justify-center bg-bg-raised text-xs text-text-faint hover:bg-bg-active hover:text-text-muted';
+
+  return (
+    <div className={`flex items-stretch overflow-hidden rounded border ${
+      edited ? 'border-amber-600/50' : 'border-border-default'
+    }`}>
+      <button type="button" tabIndex={-1} className={btnClass} {...decSpinner}>
+        &minus;
+      </button>
+      <input
+        type="number"
+        value={value}
+        onChange={(e) => {
+          const v = parseInt(e.target.value, 10);
+          if (!isNaN(v) && v >= 0) onChange(v);
+        }}
+        className={`w-[48px] border-x px-1 py-1 text-center text-sm tabular-nums transition-colors [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${
+          edited
+            ? 'border-amber-600/50 bg-amber-950/20 text-amber-400'
+            : 'border-border-default bg-bg-raised text-text-primary'
+        }`}
+      />
+      <button type="button" tabIndex={-1} className={btnClass} {...incSpinner}>
+        +
+      </button>
     </div>
   );
 }
