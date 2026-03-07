@@ -14,6 +14,7 @@ export function TemplateEditor({ className, tier }: TemplateEditorProps) {
   const templateKey = `${className}-${tier}`;
   const breakdown = useMemo(() => getGearBreakdown(templateKey), [templateKey]);
   const [edits, setEdits] = useState<Edits>({});
+  const [activeInput, setActiveInput] = useState<{ slot: string; stat: string; text: string } | null>(null);
 
   if (!breakdown) {
     return (
@@ -158,10 +159,27 @@ export function TemplateEditor({ className, tier }: TemplateEditorProps) {
                         )}
                         <input
                           type="number"
-                          value={getValue(slot, stat) ?? ''}
+                          min={0}
+                          step={1}
+                          value={
+                            activeInput?.slot === slot && activeInput?.stat === stat
+                              ? activeInput.text
+                              : (getValue(slot, stat) ?? '')
+                          }
+                          onFocus={(e) => {
+                            setActiveInput({ slot, stat, text: e.target.value });
+                          }}
                           onChange={(e) => {
+                            setActiveInput({ slot, stat, text: e.target.value });
                             const v = parseInt(e.target.value, 10);
                             if (!isNaN(v)) handleChange(slot, stat, v);
+                          }}
+                          onBlur={() => {
+                            if (activeInput && activeInput.text === '') {
+                              const original = getOriginal(slot, stat) ?? 0;
+                              handleChange(slot, stat, original);
+                            }
+                            setActiveInput(null);
                           }}
                           className={`w-14 rounded border px-1.5 py-0.5 text-right text-sm tabular-nums transition-colors [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${
                             edited
