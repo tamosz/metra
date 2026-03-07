@@ -1214,7 +1214,7 @@ describe('Bowmaster DPS', () => {
     expect(bmData.primaryStat).toBe('DEX');
     expect(bmData.secondaryStat).toBe('STR');
     expect(bmData.damageFormula).toBe('standard');
-    expect(bmData.skills.length).toBe(1);
+    expect(bmData.skills.length).toBe(2);
   });
 
   it('Hurricane uses fixed 0.12s attack time', () => {
@@ -1499,7 +1499,7 @@ describe('Buccaneer DPS', () => {
     expect(buccData.primaryStat).toBe('STR');
     expect(buccData.secondaryStat).toBe('DEX');
     expect(buccData.damageFormula).toBe('standard');
-    expect(buccData.skills.length).toBe(5);
+    expect(buccData.skills.length).toBe(6);
   });
 
   it('Demolition High tier damage range', () => {

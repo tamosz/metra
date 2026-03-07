@@ -64,6 +64,17 @@
       "comboGroup": "Barrage + Demolition",
       "source": "Demolition 500%x8 as combo finisher; cycle time 4.04s derived from forum DPS ratios (B+Demo ~5.8% > Demo alone)",
       "knockbackRecovery": 0
+    },
+    {
+      "name": "Dragon Strike",
+      "basePower": 900,
+      "multiplier": 1.0,
+      "hitCount": 1,
+      "maxTargets": 6,
+      "speedCategory": "Brandish",
+      "weaponType": "Knuckle",
+      "knockbackRecovery": 0,
+      "source": "dmg sheet D25=900, E25=900*1. Speed inferred from combo math: B+Demo 4.04s - Demo 2.34s = Barrage 1.70s; B+DS 2.34s - 1.70s = 0.64s ≈ Brandish (0.63s at speed 2). Speed-dependent, uses Brandish category."
     }
   ]
 }

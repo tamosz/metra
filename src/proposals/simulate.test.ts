@@ -503,9 +503,9 @@ describe('comboGroup aggregation', () => {
       weaponData, attackSpeedData, mwData
     );
 
-    // Bucc has 4 Barrage+Demo sub-skills (standalone Demolition is hidden)
-    // After aggregation: 1 Barrage+Demo = 1
-    expect(results.length).toBe(1);
+    // Bucc has 4 Barrage+Demo sub-skills (standalone Demolition is hidden) + Dragon Strike
+    // After aggregation: 1 Barrage+Demo + 1 Dragon Strike = 2
+    expect(results.length).toBe(2);
   });
 
   it('aggregated result uses the comboGroup name as skillName', () => {
@@ -571,8 +571,8 @@ describe('comboGroup aggregation', () => {
       weaponData, attackSpeedData, mwData
     );
 
-    // 1 skill after aggregation (hidden Demolition excluded) × 2 tiers × 2 scenarios = 4
-    expect(results.length).toBe(4);
+    // 2 skills after aggregation (hidden Demolition excluded, Dragon Strike standalone) × 2 tiers × 2 scenarios = 8
+    expect(results.length).toBe(8);
   });
 });
 

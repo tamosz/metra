@@ -253,10 +253,10 @@ describe('Special mechanics', () => {
     const buccResults = buffedResults.filter((r) => r.className === 'Buccaneer');
     const buccHigh = buccResults.filter((r) => r.tier === 'high');
     const buccLow = buccResults.filter((r) => r.tier === 'low');
-    expect(buccHigh).toHaveLength(1);
-    expect(buccLow).toHaveLength(1);
-    expect(buccHigh.map((r) => r.skillName)).toEqual(
-      ['Barrage + Demolition']
+    expect(buccHigh).toHaveLength(2);
+    expect(buccLow).toHaveLength(2);
+    expect(buccHigh.map((r) => r.skillName).sort()).toEqual(
+      ['Barrage + Demolition', 'Dragon Strike']
     );
   });
 
