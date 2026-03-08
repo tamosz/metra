@@ -852,6 +852,54 @@ describe('mixed rotations', () => {
     expect(mixed!.dps.dps).toBeCloseTo(expectedDps, 0);
   });
 
+  it('uses efficiencyOverrides when provided', () => {
+    const { classData, build, weaponData, attackSpeedData, mwData } = makeMixedRotationFixtures();
+    const classDataMap = new Map([['testclass', classData]]);
+    const gearTemplates = new Map([['testclass-high', build]]);
+    const config: SimulationConfig = {
+      classes: ['testclass'],
+      tiers: ['high'],
+      scenarios: [{
+        name: 'Custom',
+        efficiencyOverrides: { 'TestClass.Mixed A+B': [0.5, 0.5] },
+      }],
+    };
+
+    const results = runSimulation(config, classDataMap, gearTemplates, weaponData, attackSpeedData, mwData);
+
+    const skillA = results.find(r => r.skillName === 'Skill A');
+    const skillB = results.find(r => r.skillName === 'Skill B');
+    const mixed = results.find(r => r.skillName === 'Mixed A+B');
+
+    expect(mixed).toBeDefined();
+    const expectedDps = skillA!.dps.dps * 0.5 + skillB!.dps.dps * 0.5;
+    expect(mixed!.dps.dps).toBeCloseTo(expectedDps, 0);
+  });
+
+  it('ignores malformed efficiencyOverrides (wrong array length)', () => {
+    const { classData, build, weaponData, attackSpeedData, mwData } = makeMixedRotationFixtures();
+    const classDataMap = new Map([['testclass', classData]]);
+    const gearTemplates = new Map([['testclass-high', build]]);
+    const config: SimulationConfig = {
+      classes: ['testclass'],
+      tiers: ['high'],
+      scenarios: [{
+        name: 'Bad Override',
+        efficiencyOverrides: { 'TestClass.Mixed A+B': [0.5] },
+      }],
+    };
+
+    const results = runSimulation(config, classDataMap, gearTemplates, weaponData, attackSpeedData, mwData);
+
+    const skillA = results.find(r => r.skillName === 'Skill A');
+    const skillB = results.find(r => r.skillName === 'Skill B');
+    const mixed = results.find(r => r.skillName === 'Mixed A+B');
+
+    // Should fall back to default 0.8/0.2 weights
+    const expectedDps = skillA!.dps.dps * 0.8 + skillB!.dps.dps * 0.2;
+    expect(mixed!.dps.dps).toBeCloseTo(expectedDps, 0);
+  });
+
   it('classes without mixedRotations produce no extra results', () => {
     const { classData, build, weaponData, attackSpeedData, mwData } = makeMixedRotationFixtures();
     delete (classData as any).mixedRotations;
