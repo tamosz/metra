@@ -16,6 +16,7 @@ import { useSimulationControls } from '../context/SimulationControlsContext.js';
 import { useWhatIfComparison } from '../hooks/useWhatIfComparison.js';
 import { RankingTable } from './dashboard/RankingTable.js';
 import { TargetSpinner } from './dashboard/TargetSpinner.js';
+import { WhatIfPopover } from './dashboard/WhatIfPopover.js';
 import { EfficiencyPanel } from './EfficiencyPanel.js';
 import { resolveActiveScenario } from '../utils/scenario.js';
 import { VARIANT_CLASSES } from '../utils/class-colors.js';
@@ -91,6 +92,7 @@ export function Dashboard({ simulation, buildsState }: DashboardProps) {
         <CapToggle />
         <AllSkillsToggle enabled={showAllSkills} onToggle={setShowAllSkills} />
         <WhatIfToggle enabled={whatIfEnabled} onToggle={setWhatIfEnabled} changeCount={whatIfChanges.length} />
+        {whatIfEnabled && <WhatIfPopover comparison={comparison} />}
         <EfficiencyPanel />
       </div>
 
