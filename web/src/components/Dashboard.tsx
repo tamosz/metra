@@ -12,6 +12,7 @@ import { KbToggle } from './KbToggle.js';
 import { CapToggle } from './CapToggle.js';
 import { TOGGLE_ON, TOGGLE_OFF } from '../utils/styles.js';
 import { useSimulationControls } from '../context/SimulationControlsContext.js';
+import { useWhatIfComparison } from '../hooks/useWhatIfComparison.js';
 import { RankingTable } from './dashboard/RankingTable.js';
 import { TargetSpinner } from './dashboard/TargetSpinner.js';
 import { EfficiencyPanel } from './EfficiencyPanel.js';
@@ -24,8 +25,19 @@ interface DashboardProps {
 const VARIANT_CLASSES = new Set(['Hero (Axe)', 'Paladin (BW)']);
 
 export function Dashboard({ simulation, buildsState }: DashboardProps) {
-  const { selectedTier, targetCount, capEnabled, cgsValues, setCgsValues, setSelectedTier, whatIfEnabled, setWhatIfEnabled, whatIfChanges } = useSimulationControls();
+  const controls = useSimulationControls();
+  const { selectedTier, targetCount, capEnabled, cgsValues, setCgsValues, setSelectedTier, whatIfEnabled, setWhatIfEnabled, whatIfChanges } = controls;
   const { results, tiers } = simulation;
+
+  const comparison = useWhatIfComparison({
+    changes: whatIfChanges,
+    targetCount: targetCount > 1 ? targetCount : undefined,
+    elementModifiers: Object.keys(controls.elementModifiers).length > 0 ? controls.elementModifiers : undefined,
+    buffOverrides: Object.keys(controls.buffOverrides).length > 0 ? controls.buffOverrides : undefined,
+    kbConfig: controls.kbConfig,
+    cgsOverride: { tier: selectedTier, values: cgsValues },
+    efficiencyOverrides: Object.keys(controls.efficiencyOverrides).length > 0 ? controls.efficiencyOverrides : undefined,
+  });
   const [showAllSkills, setShowAllSkills] = useState(false);
 
   const filtered = useMemo(() => {
@@ -90,7 +102,7 @@ export function Dashboard({ simulation, buildsState }: DashboardProps) {
       <DpsChart data={filtered} />
 
       <div className="mt-6">
-        <RankingTable data={filtered} allResults={results} capEnabled={capEnabled} />
+        <RankingTable data={filtered} allResults={results} capEnabled={capEnabled} whatIfComparison={whatIfEnabled ? comparison.result : null} />
       </div>
     </div>
   );
