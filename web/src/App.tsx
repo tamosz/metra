@@ -74,9 +74,17 @@ function AppContent() {
     <div className="min-h-screen bg-bg text-text-primary">
       <header className="relative border-b border-border-default px-4 py-4 sm:px-8">
         <div className="flex items-center gap-6">
-          <h1 className="m-0 text-lg font-bold tracking-tight text-text-bright">
-            Royals Balance Simulator
-          </h1>
+          <button
+            onClick={() => navigate('dashboard')}
+            className="flex cursor-pointer items-baseline gap-2.5 border-none bg-transparent p-0"
+          >
+            <h1 className="m-0 text-xl font-semibold tracking-[0.12em] text-text-bright">
+              metra
+            </h1>
+            <span className="text-[10px] font-medium tracking-[0.2em] text-text-dim">
+              royals dps
+            </span>
+          </button>
 
           {/* Desktop nav */}
           <nav className="hidden gap-1 md:flex">
