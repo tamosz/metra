@@ -1,4 +1,4 @@
-import type { CharacterBuild } from '@engine/data/types.js';
+import type { CharacterBuild } from '@metra/engine';
 import type { BuildExplorerState, BuildOverrides } from '../hooks/useBuildExplorer.js';
 import { Tooltip } from './Tooltip.js';
 import { BUFF_DESCRIPTIONS } from '../utils/game-terms.js';
