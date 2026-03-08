@@ -63,6 +63,8 @@ TypeScript, Vitest, React + Vite, Playwright. Engine runs via tsx, no build step
 
 Engine translated from a spreadsheet by Tim, Shiyui, and Geyforlife. Game data from the [Skill Library](https://royals.ms/forum/threads/mapleroyals-skill-library.209540/) and [royals.ms forum](https://royals.ms/forum).
 
+Thanks to Sylafia, PinaColadaPirate, Donn1e, PandemicP, and Kamuna for feedback and corrections.
+
 ## License
 
 [MIT](LICENSE)
