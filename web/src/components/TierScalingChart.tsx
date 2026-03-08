@@ -83,8 +83,22 @@ export function TierScalingChart({ data, capEnabled, showAllSkills, targetCount 
     return <div className="py-10 text-center text-text-dim">No data</div>;
   }
 
-  const chartHeight = isMobile ? 350 : 450;
+  const chartHeight = isMobile ? 400 : 600;
   const rightMargin = isMobile ? 120 : 180;
+
+  // Compute tight Y-axis domain from actual data to spread lines apart
+  const allValues = chartData.flatMap((point) =>
+    Object.entries(point)
+      .filter(([k]) => k !== 'tier')
+      .map(([, v]) => v as number),
+  );
+  const dataMin = Math.min(...allValues);
+  const dataMax = Math.max(...allValues);
+  const padding = (dataMax - dataMin) * 0.08;
+  const yDomain: [number, number] = [
+    Math.max(0, Math.floor((dataMin - padding) / 1000) * 1000),
+    Math.ceil((dataMax + padding) / 1000) * 1000,
+  ];
 
   return (
     <div data-testid="tier-scaling-chart">
@@ -102,6 +116,7 @@ export function TierScalingChart({ data, capEnabled, showAllSkills, targetCount 
             tick={{ fill: colors.textSecondary, fontSize: 12 }}
           />
           <YAxis
+            domain={yDomain}
             tickFormatter={(v: number) => `${(v / 1000).toFixed(0)}k`}
             tick={{ fill: colors.textFaint, fontSize: 11 }}
             axisLine={false}
