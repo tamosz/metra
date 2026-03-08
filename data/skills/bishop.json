@@ -19,7 +19,8 @@
       "hitCount": 1,
       "speedCategory": "Angel Ray",
       "weaponType": "Staff",
-      "element": "Holy"
+      "element": "Holy",
+      "headline": false
     },
     {
       "name": "Genesis",
