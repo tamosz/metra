@@ -5,10 +5,11 @@ import {
   XAxis,
   YAxis,
   Tooltip,
+  ReferenceLine,
   ResponsiveContainer,
 } from 'recharts';
 import type { ScenarioResult } from '@engine/proposals/types.js';
-import { getClassColor } from '../utils/class-colors.js';
+import { getClassColor, VARIANT_CLASSES } from '../utils/class-colors.js';
 import { useIsMobile } from '../hooks/useIsMobile.js';
 import { colors } from '../theme.js';
 import { resolveActiveScenario } from '../utils/scenario.js';
@@ -18,6 +19,7 @@ interface TierScalingChartProps {
   capEnabled: boolean;
   showAllSkills: boolean;
   targetCount: number;
+  selectedTier: string;
 }
 
 const TIER_ORDER = ['low', 'mid', 'high', 'perfect'];
@@ -27,9 +29,8 @@ const TIER_LABELS: Record<string, string> = {
   high: 'High',
   perfect: 'Perfect',
 };
-const VARIANT_CLASSES = new Set(['Hero (Axe)', 'Paladin (BW)']);
 
-export function TierScalingChart({ data, capEnabled, showAllSkills, targetCount }: TierScalingChartProps) {
+export function TierScalingChart({ data, capEnabled, showAllSkills, targetCount, selectedTier }: TierScalingChartProps) {
   const isMobile = useIsMobile();
   const [hoveredKey, setHoveredKey] = useState<string | null>(null);
 
@@ -176,6 +177,12 @@ export function TierScalingChart({ data, capEnabled, showAllSkills, targetCount 
             axisLine={false}
             tickLine={false}
           />
+          <ReferenceLine
+            x={TIER_LABELS[selectedTier] ?? selectedTier}
+            stroke={colors.borderActive}
+            strokeDasharray="4 4"
+            strokeOpacity={0.6}
+          />
           <Tooltip
             content={({ active, payload, label }) => {
               if (!active || !payload?.length) return null;
@@ -229,7 +236,7 @@ export function TierScalingChart({ data, capEnabled, showAllSkills, targetCount 
                 connectNulls
                 label={({ x, y, index }: { x: number; y: number; index: number }) => {
                   // Only label the last point (rightmost tier)
-                  if (index !== chartData.length - 1) return <g />;
+                  if (index !== chartData.length - 1) return <text />;
                   const offset = labelOffsets.get(line.key) ?? 0;
                   return (
                     <text

@@ -19,13 +19,12 @@ import { RankingTable } from './dashboard/RankingTable.js';
 import { TargetSpinner } from './dashboard/TargetSpinner.js';
 import { EfficiencyPanel } from './EfficiencyPanel.js';
 import { resolveActiveScenario } from '../utils/scenario.js';
+import { VARIANT_CLASSES } from '../utils/class-colors.js';
 
 interface DashboardProps {
   simulation: SimulationData;
   buildsState: BuildsState;
 }
-
-const VARIANT_CLASSES = new Set(['Hero (Axe)', 'Paladin (BW)']);
 
 export function Dashboard({ simulation, buildsState }: DashboardProps) {
   const { selectedTier, targetCount, capEnabled, cgsValues, setCgsValues, setSelectedTier } = useSimulationControls();
@@ -95,7 +94,7 @@ export function Dashboard({ simulation, buildsState }: DashboardProps) {
       {chartView === 'bar' ? (
         <DpsChart data={filtered} />
       ) : (
-        <TierScalingChart data={results} capEnabled={capEnabled} showAllSkills={showAllSkills} targetCount={targetCount} />
+        <TierScalingChart data={results} capEnabled={capEnabled} showAllSkills={showAllSkills} targetCount={targetCount} selectedTier={selectedTier} />
       )}
 
       <div className="mt-6">
