@@ -22,7 +22,8 @@ export function DpsChart({ data }: DpsChartProps) {
   const isMobile = useIsMobile();
 
   const chartData = data.map((r) => ({
-    label: `${r.className} — ${r.skillName}`,
+    label: r.className,
+    skillLabel: r.skillName,
     sublabel: r.tier.charAt(0).toUpperCase() + r.tier.slice(1),
     // Unique key for Recharts YAxis — includes tier to avoid duplicate labels
     uid: `${r.className} — ${r.skillName} [${r.tier}]`,
@@ -70,10 +71,10 @@ export function DpsChart({ data }: DpsChartProps) {
                     y={0}
                     dy={-4}
                     textAnchor="end"
-                    fill={colors.textSecondary}
                     fontSize={labelFontSize}
                   >
-                    {entry?.label ?? payload.value}
+                    <tspan fill={colors.textSecondary}>{entry?.label ?? payload.value}</tspan>
+                    <tspan fill={colors.textFaint}>{' — '}{entry?.skillLabel}</tspan>
                   </text>
                   {entry && (
                     <text
