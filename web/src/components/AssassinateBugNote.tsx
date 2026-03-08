@@ -14,7 +14,7 @@ export function AssassinateBugNote({ classNames }: AssassinateBugNoteProps) {
       <span className="font-medium text-text-secondary">Note: </span>
       Assassinate has a{' '}
       <a
-        href="https://royals.ms/forum/threads/assassinate-and-sharp-eye.180132/"
+        href="https://royals.ms/forum/threads/how-to-maximize-shadowers-single-target-dps.236808/"
         target="_blank"
         rel="noopener noreferrer"
         className="underline text-text-secondary hover:text-text-bright"
