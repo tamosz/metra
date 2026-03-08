@@ -42,6 +42,7 @@ interface SimulationControlsContextType {
   clearEditChanges: () => void;
   editMeta: EditMeta;
   setEditMeta: (meta: EditMeta) => void;
+  loadEditState: (changes: ProposalChange[], meta?: EditMeta) => void;
 }
 
 const SimulationControlsContext = createContext<SimulationControlsContextType | null>(null);
@@ -89,6 +90,12 @@ export function SimulationControlsProvider({ children }: { children: ReactNode }
     setEditMetaRaw(meta);
   }, []);
 
+  const loadEditState = useCallback((changes: ProposalChange[], meta?: EditMeta) => {
+    setEditEnabledRaw(true);
+    setEditChanges(changes);
+    setEditMetaRaw(meta ?? EMPTY_EDIT_META);
+  }, []);
+
   const kbConfig = useMemo(
     () => (kbEnabled ? { bossAttackInterval, bossAccuracy } : undefined),
     [kbEnabled, bossAttackInterval, bossAccuracy],
@@ -126,8 +133,9 @@ export function SimulationControlsProvider({ children }: { children: ReactNode }
       clearEditChanges,
       editMeta,
       setEditMeta,
+      loadEditState,
     }),
-    [targetCount, elementModifiers, buffOverrides, kbEnabled, bossAttackInterval, bossAccuracy, capEnabled, selectedTier, cgsValues, kbConfig, efficiencyOverrides, editEnabled, editChanges, editMeta, setEditEnabled, addEditChange, removeEditChange, updateEditChange, clearEditChanges, setEditMeta],
+    [targetCount, elementModifiers, buffOverrides, kbEnabled, bossAttackInterval, bossAccuracy, capEnabled, selectedTier, cgsValues, kbConfig, efficiencyOverrides, editEnabled, editChanges, editMeta, setEditEnabled, addEditChange, removeEditChange, updateEditChange, clearEditChanges, setEditMeta, loadEditState],
   );
 
   return (

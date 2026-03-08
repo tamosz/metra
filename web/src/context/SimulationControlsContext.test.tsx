@@ -166,6 +166,7 @@ describe('edit state', () => {
       updateEditChange: result.current.updateEditChange,
       clearEditChanges: result.current.clearEditChanges,
       setEditMeta: result.current.setEditMeta,
+      loadEditState: result.current.loadEditState,
     };
 
     rerender();
@@ -176,5 +177,37 @@ describe('edit state', () => {
     expect(result.current.updateEditChange).toBe(first.updateEditChange);
     expect(result.current.clearEditChanges).toBe(first.clearEditChanges);
     expect(result.current.setEditMeta).toBe(first.setEditMeta);
+    expect(result.current.loadEditState).toBe(first.loadEditState);
+  });
+
+  it('loadEditState atomically sets enabled, changes, and meta', () => {
+    const { result } = renderControls();
+
+    const changes = [
+      { target: 'hero.brandish-sword', field: 'basePower', to: 280 },
+      { target: 'drk.spear-crusher', field: 'basePower', to: 300 },
+    ];
+
+    act(() => {
+      result.current.loadEditState(changes, { name: 'Batch Load', author: 'Staff' });
+    });
+
+    expect(result.current.editEnabled).toBe(true);
+    expect(result.current.editChanges).toEqual(changes);
+    expect(result.current.editMeta).toEqual({ name: 'Batch Load', author: 'Staff' });
+  });
+
+  it('loadEditState without meta uses empty defaults', () => {
+    const { result } = renderControls();
+
+    act(() => {
+      result.current.loadEditState([
+        { target: 'hero.brandish-sword', field: 'basePower', to: 280 },
+      ]);
+    });
+
+    expect(result.current.editEnabled).toBe(true);
+    expect(result.current.editChanges).toHaveLength(1);
+    expect(result.current.editMeta).toEqual({ name: '', author: '' });
   });
 });

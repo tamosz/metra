@@ -24,7 +24,7 @@ function GhostBarShape(props: unknown) {
     fill: string; fillOpacity: number;
     baselineDps?: number; dps: number;
   };
-  if (baselineDps === undefined || baselineDps === dps) {
+  if (baselineDps === undefined || baselineDps === dps || dps === 0) {
     return <rect x={x} y={y} width={width} height={height} rx={3} fill={fill} fillOpacity={fillOpacity} />;
   }
   // Ghost width = baseline / dps * actual width

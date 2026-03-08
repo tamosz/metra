@@ -59,7 +59,7 @@ export function RankingTable({
   capEnabled,
   editComparison,
 }: {
-  data: { className: string; skillName: string; tier: string; dps: DpsResult; description?: string; isComposite?: boolean }[];
+  data: { className: string; skillName: string; tier: string; scenario: string; dps: DpsResult; description?: string; isComposite?: boolean }[];
   allResults: ScenarioResult[];
   capEnabled: boolean;
   editComparison?: ComparisonResult | null;
@@ -94,13 +94,13 @@ export function RankingTable({
     if (!editComparison) return null;
     const map = new Map<string, DeltaEntry>();
     for (const d of editComparison.deltas) {
-      map.set(`${d.className}\0${d.skillName}\0${d.tier}`, d);
+      map.set(`${d.className}\0${d.skillName}\0${d.tier}\0${d.scenario}`, d);
     }
     return map;
   }, [editComparison]);
 
   function getDelta(r: typeof data[0]): DeltaEntry | undefined {
-    return deltaMap?.get(`${r.className}\0${r.skillName}\0${r.tier}`);
+    return deltaMap?.get(`${r.className}\0${r.skillName}\0${r.tier}\0${r.scenario}`);
   }
 
   const getSkillEditInfo = useCallback((className: string, skillName: string) => {
