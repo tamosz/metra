@@ -68,7 +68,7 @@ describe('loadClassSkills', () => {
     const hero = loadClassSkills('Hero');
     expect(hero.damageFormula).toBe('standard');
 
-    const nl = loadClassSkills('NL');
+    const nl = loadClassSkills('Night Lord');
     expect(nl.damageFormula).toBe('throwingStar');
   });
 });
@@ -117,9 +117,9 @@ describe('discoverClassesAndTiers', () => {
     expect(classNames.length).toBeGreaterThanOrEqual(9);
     expect(classNames).toContain('hero');
     expect(classNames).toContain('hero-axe');
-    expect(classNames).toContain('drk');
+    expect(classNames).toContain('dark-knight');
     expect(classNames).toContain('paladin');
-    expect(classNames).toContain('nl');
+    expect(classNames).toContain('night-lord');
     expect(classNames).toContain('bowmaster');
     expect(classNames).toContain('sair');
     expect(classNames).toContain('bucc');

@@ -32,7 +32,7 @@ fire while airborne. Rapid Fire can fire mid-air.
 
 | Class | Defense | Rate | Source |
 |-------|---------|------|--------|
-| Hero / DrK / Paladin | Power Stance | 90% | Standard v62, no Royals changes |
+| Hero / Dark Knight / Paladin | Power Stance | 90% | Standard v62, no Royals changes |
 | Buccaneer | Energy Charge stance | 90% | Update #50 (30% → 90% at lv40) |
 | Night Lord | Shadow Shifter | 30% | Settled at 30% (was 20%, briefly 40%) |
 | Shadower | Shadow Shifter | 40% | Royals buff (base 20% → 40%) |

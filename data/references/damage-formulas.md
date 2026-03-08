@@ -74,7 +74,7 @@ Key differences from physical:
 | 2H Axe | 4.8 | 3.4 | Hero (Axe) |
 | 1H BW | 4.4 | 3.2 | |
 | 2H BW | 4.8 | 3.4 | Paladin BW variant |
-| Spear | 3.0 | 5.0 | DrK uses stab (Crusher) |
+| Spear | 3.0 | 5.0 | Dark Knight uses stab (Crusher) |
 | Polearm | 5.0 | 3.0 | |
 | Bow | 3.4 | 3.4 | Bowmaster |
 | Crossbow | 3.6 | 3.6 | Marksman |
@@ -120,7 +120,7 @@ critDmg% = (basePower + totalCritBonus) * multiplier
 Crit rate = built-in rate + SE rate (0.15), capped at 1.0.
 
 Built-in crit rates:
-- NL Triple Throw: 50% rate, +100 damage bonus
+- Night Lord Triple Throw: 50% rate, +100 damage bonus
 - Bowmaster/Marksman (Critical Shot): 40% rate, +100 damage bonus
 - All others: 0% (SE-only)
 

@@ -14,7 +14,7 @@ export function DamageRangeSection() {
       {/* Standard formula */}
       <h4 className="text-sm font-semibold text-text-bright mt-8 mb-3">Standard Formula</h4>
       <p className="text-text-secondary text-sm mb-4 leading-relaxed">
-        Used by: Hero, DrK, Paladin, Bowmaster, Marksman, Corsair, Buccaneer, Shadower.
+        Used by: Hero, Dark Knight, Paladin, Bowmaster, Marksman, Corsair, Buccaneer, Shadower.
       </p>
 
       <div className="my-6">

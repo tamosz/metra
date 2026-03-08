@@ -18,7 +18,7 @@ extract DPS-relevant changes by class.
 **Source:** [Update #68 Patch Notes](https://royals.ms/forum/threads/update-68-20-10-2020.176133/)
 **Source:** [Update #68 Class Buffs Discussion](https://royals.ms/forum/threads/update-68-class-buffs.176455/)
 **Accessed:** 2026-03-01
-**Used in:** `data/skills/drk.json`
+**Used in:** `data/skills/dark-knight.json`
 
 Berserk damage multiplier buffed at high levels:
 

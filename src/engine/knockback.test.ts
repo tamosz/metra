@@ -58,7 +58,7 @@ describe('calculateKnockbackProbability', () => {
     expect(calculateKnockbackProbability(0, 0.9, 0)).toBeCloseTo(0.1);
   });
 
-  it('returns 0.7 for NL with 30% shadow shifter', () => {
+  it('returns 0.7 for Night Lord with 30% shadow shifter', () => {
     expect(calculateKnockbackProbability(0, 0, 0.3)).toBeCloseTo(0.7);
   });
 
@@ -94,7 +94,7 @@ describe('calculateKnockbackUptime', () => {
     expect(uptime).toBeCloseTo(0.96, 2);
   });
 
-  it('NL with 30% shifter loses ~28% uptime on burst skills', () => {
+  it('Night Lord with 30% shifter loses ~28% uptime on burst skills', () => {
     // kbProb=0.7, interval=1.5, recovery=0.6
     // kbs/sec = 0.467, timeLost = 0.28
     const uptime = calculateKnockbackUptime(0.7, 1.5, 0.6);

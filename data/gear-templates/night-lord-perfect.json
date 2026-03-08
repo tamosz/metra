@@ -1,5 +1,5 @@
 {
-  "extends": "nl",
+  "extends": "night-lord",
   "source": "Perfect tier: Dragon Purple Sleeve (speed 4) 95wa 20luk. Projectile: Star 32wa. C/G/S 24/24/22.",
   "projectile": 32,
   "baseStats": {

@@ -80,48 +80,48 @@ describe('capitalize', () => {
 
 describe('sortDeltas', () => {
   it('sorts changed entries before unchanged entries', () => {
-    const unchanged = makeDelta({ className: 'DrK', change: 0, changePercent: 0 });
+    const unchanged = makeDelta({ className: 'Dark Knight', change: 0, changePercent: 0 });
     const changed = makeDelta({ className: 'Hero', change: 5000, changePercent: 5 });
 
     const sorted = sortDeltas([unchanged, changed]);
 
     expect(sorted[0].className).toBe('Hero');
-    expect(sorted[1].className).toBe('DrK');
+    expect(sorted[1].className).toBe('Dark Knight');
   });
 
   it('sorts changed entries by absolute changePercent descending', () => {
     const smallChange = makeDelta({ className: 'Hero', change: 1000, changePercent: 2 });
-    const bigChange = makeDelta({ className: 'DrK', change: -5000, changePercent: -10 });
+    const bigChange = makeDelta({ className: 'Dark Knight', change: -5000, changePercent: -10 });
 
     const sorted = sortDeltas([smallChange, bigChange]);
 
-    expect(sorted[0].className).toBe('DrK');
+    expect(sorted[0].className).toBe('Dark Knight');
     expect(sorted[1].className).toBe('Hero');
   });
 
   it('sorts unchanged entries alphabetically by className then tier', () => {
     const palLow = makeDelta({ className: 'Paladin', tier: 'low', change: 0, changePercent: 0 });
-    const drkHigh = makeDelta({ className: 'DrK', tier: 'high', change: 0, changePercent: 0 });
-    const drkLow = makeDelta({ className: 'DrK', tier: 'low', change: 0, changePercent: 0 });
+    const darkKnightHigh = makeDelta({ className: 'Dark Knight', tier: 'high', change: 0, changePercent: 0 });
+    const darkKnightLow = makeDelta({ className: 'Dark Knight', tier: 'low', change: 0, changePercent: 0 });
 
-    const sorted = sortDeltas([palLow, drkLow, drkHigh]);
+    const sorted = sortDeltas([palLow, darkKnightLow, darkKnightHigh]);
 
-    expect(sorted[0]).toEqual(drkLow);
-    expect(sorted[1]).toEqual(drkHigh);
+    expect(sorted[0]).toEqual(darkKnightLow);
+    expect(sorted[1]).toEqual(darkKnightHigh);
     expect(sorted[2]).toEqual(palLow);
   });
 
   it('sorts a mixed set correctly: changed by |%| desc, then unchanged alphabetically', () => {
     const heroChanged = makeDelta({ className: 'Hero', change: 5000, changePercent: 5 });
-    const nlChanged = makeDelta({ className: 'NL', change: -8000, changePercent: -8 });
-    const drkUnchanged = makeDelta({ className: 'DrK', tier: 'high', change: 0, changePercent: 0 });
+    const nightLordChanged = makeDelta({ className: 'Night Lord', change: -8000, changePercent: -8 });
+    const darkKnightUnchanged = makeDelta({ className: 'Dark Knight', tier: 'high', change: 0, changePercent: 0 });
     const palUnchanged = makeDelta({ className: 'Paladin', tier: 'low', change: 0, changePercent: 0 });
 
-    const sorted = sortDeltas([drkUnchanged, heroChanged, palUnchanged, nlChanged]);
+    const sorted = sortDeltas([darkKnightUnchanged, heroChanged, palUnchanged, nightLordChanged]);
 
-    expect(sorted[0].className).toBe('NL');
+    expect(sorted[0].className).toBe('Night Lord');
     expect(sorted[1].className).toBe('Hero');
-    expect(sorted[2].className).toBe('DrK');
+    expect(sorted[2].className).toBe('Dark Knight');
     expect(sorted[3].className).toBe('Paladin');
   });
 });
@@ -130,7 +130,7 @@ describe('groupDeltasByScenario', () => {
   it('groups deltas preserving insertion order', () => {
     const buffedDelta = makeDelta({ scenario: 'Buffed' });
     const bossingDelta = makeDelta({ scenario: 'Bossing (50% PDR)' });
-    const buffedDelta2 = makeDelta({ scenario: 'Buffed', className: 'DrK' });
+    const buffedDelta2 = makeDelta({ scenario: 'Buffed', className: 'Dark Knight' });
 
     const groups = groupDeltasByScenario([buffedDelta, bossingDelta, buffedDelta2]);
 
@@ -158,7 +158,7 @@ describe('groupResultsByScenario', () => {
   it('groups results by scenario name preserving insertion order', () => {
     const buffedResult = makeResult({ scenario: 'Buffed', className: 'Hero' });
     const bossingResult = makeResult({ scenario: 'Bossing (50% PDR)', className: 'Hero' });
-    const buffedResult2 = makeResult({ scenario: 'Buffed', className: 'DrK' });
+    const buffedResult2 = makeResult({ scenario: 'Buffed', className: 'Dark Knight' });
     const bossingKbResult = makeResult({ scenario: 'Bossing (KB)', className: 'Hero' });
 
     const groups = groupResultsByScenario([

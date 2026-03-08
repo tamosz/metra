@@ -1,5 +1,5 @@
 {
-  "extends": "drk",
+  "extends": "dark-knight",
   "source": "Perfect tier: Purple Surfboard (speed 5) 144wa 21str. C/G/S 24/24/22.",
   "weaponSpeed": 5,
   "baseStats": {

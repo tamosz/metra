@@ -1,32 +1,33 @@
 {
-  "extends": "nl",
-  "source": "Royals forum NL guides (Darko 2024, Comprehensive, Gearing Discussion)",
+  "extends": "night-lord",
+  "source": "Interpolated between night-lord-low and night-lord-high. Crystal Ilbi 29 WATK stars.",
+  "projectile": 29,
   "baseStats": {
     "STR": 4,
-    "DEX": 4,
+    "DEX": 23,
     "INT": 4,
-    "LUK": 943
+    "LUK": 869
   },
   "gearBreakdown": {
     "weapon": {
-      "LUK": 3,
-      "WATK": 91
+      "LUK": 2,
+      "WATK": 83
     },
     "helmet": {
-      "LUK": 22,
-      "DEX": 40
+      "LUK": 20,
+      "DEX": 33
     },
     "top": {
-      "LUK": 28,
+      "LUK": 22,
       "DEX": 5
     },
     "bottom": {
-      "LUK": 10,
-      "DEX": 18
+      "LUK": 8,
+      "DEX": 16
     },
     "earring": {
-      "LUK": 9,
-      "DEX": 12
+      "LUK": 7,
+      "DEX": 11
     },
     "eye": {
       "LUK": 3,
@@ -34,29 +35,30 @@
     },
     "face": {
       "LUK": 8,
-      "DEX": 5
+      "DEX": 3
     },
     "pendant": {
-      "LUK": 27,
-      "DEX": 27
+      "LUK": 20,
+      "DEX": 20
     },
     "belt": {
       "LUK": 3,
-      "DEX": 9
+      "DEX": 7
     },
     "medal": {
       "WATK": 3
     },
     "ring1": {
-      "LUK": 3
+      "LUK": 4,
+      "DEX": 2
     },
     "ring2": {
-      "LUK": 5,
-      "DEX": 5
+      "LUK": 4,
+      "DEX": 3
     },
     "ring3": {
-      "LUK": 5,
-      "DEX": 2
+      "LUK": 3,
+      "DEX": 1
     },
     "ring4": {
       "WATK": 1

@@ -71,7 +71,7 @@ export function calculateDamageRange(
 }
 
 /**
- * Calculate the raw damage range for a throwing star attack (NL/Shad).
+ * Calculate the raw damage range for a throwing star attack (Night Lord/Shad).
  *
  * Source: range calculator F18/F19
  *   MaxDamage = floor(5.0 * LUK * totalAttack / 100)

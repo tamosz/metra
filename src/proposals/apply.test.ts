@@ -9,7 +9,7 @@ let classDataMap: Map<string, ClassSkillData>;
 beforeAll(() => {
   classDataMap = new Map([
     ['hero', loadClassSkills('Hero')],
-    ['drk', loadClassSkills('DrK')],
+    ['dark-knight', loadClassSkills('Dark Knight')],
     ['paladin', loadClassSkills('Paladin')],
   ]);
 });
@@ -66,9 +66,9 @@ describe('applyProposal', () => {
 
     const modified = applyProposal(classDataMap, proposal);
 
-    // DrK should be unchanged
+    // Dark Knight should be unchanged
     const crusher = modified
-      .get('drk')!
+      .get('dark-knight')!
       .skills.find((s) => s.name === 'Spear Crusher')!;
     expect(crusher.basePower).toBe(170);
   });
@@ -135,18 +135,18 @@ describe('applyProposal', () => {
   });
 
   it('accepts builtInCritRate and builtInCritDamageBonus fields', () => {
-    const nlDataMap = new Map([['nl', loadClassSkills('NL')]]);
+    const nightLordDataMap = new Map([['night-lord', loadClassSkills('Night Lord')]]);
     const proposal: Proposal = {
       name: 'TT crit nerf',
       author: 'test',
       changes: [
-        { target: 'nl.triple-throw', field: 'builtInCritRate', from: 0.50, to: 0.40 },
-        { target: 'nl.triple-throw', field: 'builtInCritDamageBonus', from: 100, to: 80 },
+        { target: 'night-lord.triple-throw', field: 'builtInCritRate', from: 0.50, to: 0.40 },
+        { target: 'night-lord.triple-throw', field: 'builtInCritDamageBonus', from: 100, to: 80 },
       ],
     };
 
-    const modified = applyProposal(nlDataMap, proposal);
-    const tt = modified.get('nl')!.skills.find((s) => s.name === 'Triple Throw')!;
+    const modified = applyProposal(nightLordDataMap, proposal);
+    const tt = modified.get('night-lord')!.skills.find((s) => s.name === 'Triple Throw')!;
     expect(tt.builtInCritRate).toBe(0.40);
     expect(tt.builtInCritDamageBonus).toBe(80);
   });
@@ -185,7 +185,7 @@ describe('applyProposal', () => {
       author: 'test',
       changes: [
         { target: 'hero.brandish-sword', field: 'basePower', to: 300 },
-        { target: 'drk.spear-crusher', field: 'basePower', to: 200 },
+        { target: 'dark-knight.spear-crusher', field: 'basePower', to: 200 },
       ],
     };
 
@@ -196,7 +196,7 @@ describe('applyProposal', () => {
         .basePower
     ).toBe(300);
     expect(
-      modified.get('drk')!.skills.find((s) => s.name === 'Spear Crusher')!
+      modified.get('dark-knight')!.skills.find((s) => s.name === 'Spear Crusher')!
         .basePower
     ).toBe(200);
   });

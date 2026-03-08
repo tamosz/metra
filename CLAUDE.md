@@ -70,7 +70,7 @@ Five layers. Keep them cleanly separated.
 Static game data stored as JSON files, version-controlled, human-readable and human-editable. This is the "current state of Royals."
 
 Actual files:
-- `skills/` — one file per class (`hero.json`, `hero-axe.json`, `drk.json`, `paladin.json`, `paladin-bw.json`, `nl.json`, `bowmaster.json`, `marksman.json`, `sair.json`, `bucc.json`, `shadower.json`, `archmage-il.json`, `archmage-fp.json`, `bishop.json`). Each contains mastery, stat mapping, SE crit config, and a `skills[]` array.
+- `skills/` — one file per class (`hero.json`, `hero-axe.json`, `dark-knight.json`, `paladin.json`, `paladin-bw.json`, `night-lord.json`, `bowmaster.json`, `marksman.json`, `sair.json`, `bucc.json`, `shadower.json`, `archmage-il.json`, `archmage-fp.json`, `bishop.json`). Each contains mastery, stat mapping, SE crit config, and a `skills[]` array.
 - `gear-templates/` — character builds at each funding tier (`hero-low.json`, `hero-high.json`, etc.). Include full gear breakdown, stats, buffs, and weapon info.
 - `weapons.json` — weapon type slash/stab multipliers for the damage formula.
 - `attack-speed.json` — effective speed tier → attack time lookup, keyed by skill category.
@@ -83,7 +83,7 @@ Actual files:
 Pure functions. No side effects, no I/O. Takes game data + a character build, outputs damage ranges and DPS.
 
 **Implemented:**
-- `damage.ts` — raw damage range (min/max), throwing star range (NL/Shad), range cap from damage cap, adjusted range for capped distributions.
+- `damage.ts` — raw damage range (min/max), throwing star range (Night Lord/Shad), range cap from damage cap, adjusted range for capped distributions.
 - `buffs.ts` — MW stat boost, Echo of Hero WATK bonus, total attack/stat aggregation.
 - `attack-speed.ts` — weapon speed resolution (base speed + booster + SI), attack time lookup by skill category.
 - `dps.ts` — full DPS pipeline: attack time → skill damage% → crit damage% → range caps → adjusted ranges → average damage → DPS. Uses `skill.weaponType` (not build) for weapon multiplier lookup, enabling weapon variants within the same class/tier. Supports built-in crit (additive with SE), throwing star formula (branches on `weaponType === 'Claw'`), Shadow Partner (1.5× multiplier), `fixedDamage` (bypasses damage formula for skills like Snipe), and `elementModifier` (factored into range cap so the 199,999 per-line cap applies to final damage including element).
@@ -126,7 +126,7 @@ A proposal is a JSON file that describes one or more changes:
 ```
 
 **Target format:** `className.skill-slug` where:
-- `className` is the lowercase filename stem in `data/skills/` (e.g., `hero`, `drk`, `paladin`).
+- `className` is the lowercase filename stem in `data/skills/` (e.g., `hero`, `dark-knight`, `paladin`).
 - `skill-slug` is the skill name lowercased with spaces/punctuation replaced by hyphens (e.g., `"Brandish (Sword)"` → `brandish-sword`).
 
 **Valid fields:** any numeric property on a `SkillEntry` — typically `basePower`, `multiplier`, `hitCount`, `maxTargets`.
@@ -185,7 +185,7 @@ This is a v62-based Royals private server. Key differences from official GMS:
 Detailed formulas (damage, crit, attack speed, KB) are in `data/references/`. Read those files when working on engine code — don't rely on summaries here.
 
 Key design points:
-- Three damage formulas: standard (physical), throwing star (NL), magic. Dispatched via `classData.damageFormula`.
+- Three damage formulas: standard (physical), throwing star (Night Lord), magic. Dispatched via `classData.damageFormula`.
 - Three SE crit formula variants: `addBeforeMultiply` (default), `multiplicative` (mages), `scaleOnBase` (Arrow Bomb). Set per-class, overridable per-skill.
 - `secondaryStat` can be an array (e.g., Shadower uses `["STR", "DEX"]`).
 
@@ -225,7 +225,7 @@ All conditions are composed from individual toggles (not predefined scenarios):
 - All game data values must cite their source (spreadsheet cell, royals.ms forum thread, wiki, or in-game verification). Use a `"source"` field in JSON data files.
 - Tests go next to the code they test (`damage.ts` → `damage.test.ts`).
 - Keep functions small. If a function needs a comment explaining what a section does, that section should be its own function.
-- **Gear templates** are named `{class}-{tier}.json` (e.g., `hero-low.json`, `drk-high.json`).
+- **Gear templates** are named `{class}-{tier}.json` (e.g., `hero-low.json`, `dark-knight-high.json`).
 - **Skill slugs** are derived from skill names: lowercase, spaces/parentheses/commas replaced with hyphens, trailing hyphens stripped.
 - **Auto-discovery**: the CLI auto-discovers classes and tiers by scanning `data/skills/` and `data/gear-templates/`. Adding a new class means adding its skill file + gear templates — no config changes needed.
 - **SE crit formula**: each class's skill data specifies `seCritFormula` to handle the three known SE crit calculation variants (`addBeforeMultiply`, `multiplicative`, `scaleOnBase`). Can also be overridden per-skill.

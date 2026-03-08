@@ -28,7 +28,7 @@ describe('renderComparisonReport', () => {
           changePercent: 7.117,
         },
         {
-          className: 'DrK',
+          className: 'Dark Knight',
           skillName: 'Spear Crusher',
           tier: 'high',
           scenario: 'Buffed',
@@ -51,7 +51,7 @@ describe('renderComparisonReport', () => {
     expect(report).toContain('Brandish (Sword)');
     expect(report).toContain('+18,217');
     expect(report).toContain('+7.1%');
-    expect(report).toContain('DrK');
+    expect(report).toContain('Dark Knight');
     expect(report).toContain('0.0%');
   });
 
@@ -96,7 +96,7 @@ describe('renderComparisonReport', () => {
       after: [],
       deltas: [
         {
-          className: 'DrK',
+          className: 'Dark Knight',
           skillName: 'Crusher',
           tier: 'high',
           scenario: 'Buffed',
@@ -120,10 +120,10 @@ describe('renderComparisonReport', () => {
 
     const report = renderComparisonReport(result);
     const heroIndex = report.indexOf('Hero');
-    const drkIndex = report.indexOf('DrK');
+    const darkKnightIndex = report.indexOf('Dark Knight');
 
-    // Hero (changed) should appear before DrK (unchanged)
-    expect(heroIndex).toBeLessThan(drkIndex);
+    // Hero (changed) should appear before Dark Knight (unchanged)
+    expect(heroIndex).toBeLessThan(darkKnightIndex);
   });
 });
 
@@ -256,7 +256,7 @@ describe('renderBaselineReport', () => {
   it('renders a ranked DPS table grouped by scenario', () => {
     const results: ScenarioResult[] = [
       { className: 'Hero', skillName: 'Brandish', tier: 'high', scenario: 'Buffed', dps: mockDpsResult(300000) },
-      { className: 'DrK', skillName: 'Crusher', tier: 'high', scenario: 'Buffed', dps: mockDpsResult(250000) },
+      { className: 'Dark Knight', skillName: 'Crusher', tier: 'high', scenario: 'Buffed', dps: mockDpsResult(250000) },
       { className: 'Paladin', skillName: 'Blast', tier: 'high', scenario: 'Buffed', dps: mockDpsResult(200000) },
     ];
 
@@ -268,7 +268,7 @@ describe('renderBaselineReport', () => {
 
     // Rank 1 should be Hero (highest DPS)
     expect(report).toContain('| 1 | Hero');
-    expect(report).toContain('| 2 | DrK');
+    expect(report).toContain('| 2 | Dark Knight');
     expect(report).toContain('| 3 | Paladin');
   });
 
@@ -312,15 +312,15 @@ describe('renderBaselineReport content accuracy', () => {
   it('DPS values in table match input data', () => {
     const results: ScenarioResult[] = [
       { className: 'Hero', skillName: 'Brandish', tier: 'high', scenario: 'Buffed', dps: mockDpsResult(274167) },
-      { className: 'DrK', skillName: 'Crusher', tier: 'mid', scenario: 'Buffed', dps: mockDpsResult(183042) },
+      { className: 'Dark Knight', skillName: 'Crusher', tier: 'mid', scenario: 'Buffed', dps: mockDpsResult(183042) },
     ];
 
     const report = renderBaselineReport(results);
     const heroLine = report.split('\n').find((l) => l.includes('Hero'));
     expect(heroLine).toContain('274,167');
-    const drkLine = report.split('\n').find((l) => l.includes('DrK'));
-    expect(drkLine).toContain('183,042');
-    expect(drkLine).toContain('Mid');
+    const darkKnightLine = report.split('\n').find((l) => l.includes('Dark Knight'));
+    expect(darkKnightLine).toContain('183,042');
+    expect(darkKnightLine).toContain('Mid');
   });
 
   it('multi-tier grouping produces tier labels in table rows', () => {
@@ -424,7 +424,7 @@ describe('renderComparisonReport with rank columns', () => {
           rankAfter: 1,
         },
         {
-          className: 'DrK',
+          className: 'Dark Knight',
           skillName: 'Crusher',
           tier: 'high',
           scenario: 'Buffed',
@@ -443,7 +443,7 @@ describe('renderComparisonReport with rank columns', () => {
     expect(report).toContain('| Rank | Class | Skill | Tier |');
     // Hero moved from rank 2 to 1
     expect(report).toContain('2\u21921');
-    // DrK moved from rank 1 to 2
+    // Dark Knight moved from rank 1 to 2
     expect(report).toContain('1\u21922');
   });
 

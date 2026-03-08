@@ -1,7 +1,7 @@
 export function formatClassName(name: string): string {
   const special: Record<string, string> = {
-    'drk': 'DrK',
-    'nl': 'NL',
+    'dark-knight': 'Dark Knight',
+    'night-lord': 'Night Lord',
     'sair': 'Corsair',
     'bucc': 'Buccaneer',
     'hero-axe': 'Hero (Axe)',

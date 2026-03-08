@@ -5,14 +5,14 @@ describe('renderAsciiChart', () => {
   it('renders bars sorted by value descending', () => {
     const result = renderAsciiChart([
       { label: 'Hero', value: 200000 },
-      { label: 'DrK', value: 300000 },
+      { label: 'Dark Knight', value: 300000 },
       { label: 'Paladin', value: 100000 },
     ]);
 
     const lines = result.trimEnd().split('\n');
     expect(lines).toHaveLength(3);
-    // DrK should be first (highest DPS)
-    expect(lines[0]).toContain('DrK');
+    // Dark Knight should be first (highest DPS)
+    expect(lines[0]).toContain('Dark Knight');
     expect(lines[1]).toContain('Hero');
     expect(lines[2]).toContain('Paladin');
   });

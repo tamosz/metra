@@ -46,7 +46,7 @@ describe('renderComparisonBBCode', () => {
           changePercent: 7.117,
         },
         {
-          className: 'DrK',
+          className: 'Dark Knight',
           skillName: 'Spear Crusher',
           tier: 'high',
           scenario: 'Buffed',
@@ -202,7 +202,7 @@ describe('renderBaselineBBCode', () => {
   it('renders ranked DPS table in [code] blocks', () => {
     const results: ScenarioResult[] = [
       { className: 'Hero', skillName: 'Brandish', tier: 'high', scenario: 'Buffed', dps: mockDpsResult(300000) },
-      { className: 'DrK', skillName: 'Crusher', tier: 'high', scenario: 'Buffed', dps: mockDpsResult(250000) },
+      { className: 'Dark Knight', skillName: 'Crusher', tier: 'high', scenario: 'Buffed', dps: mockDpsResult(250000) },
     ];
 
     const bbcode = renderBaselineBBCode(results);

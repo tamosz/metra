@@ -79,8 +79,8 @@ describe('mergeGearTemplate', () => {
   });
 
   it('uses shadowPartner from base when present', () => {
-    const nlBase: ClassBase = { ...classBase, shadowPartner: true };
-    const result = mergeGearTemplate(nlBase, tierOverride, tierDefaults['high']);
+    const nightLordBase: ClassBase = { ...classBase, shadowPartner: true };
+    const result = mergeGearTemplate(nightLordBase, tierOverride, tierDefaults['high']);
     expect(result.shadowPartner).toBe(true);
   });
 

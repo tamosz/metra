@@ -102,8 +102,8 @@ export const TEST_BUILDS: Record<string, CharacterBuild> = {
       "speedInfusion": true,
       "sharpEyes": true
   },
-  'drk-high': {
-      "className": "DrK",
+  'dark-knight-high': {
+      "className": "Dark Knight",
       "baseStats": {
           "STR": 999,
           "DEX": 23,
@@ -126,8 +126,8 @@ export const TEST_BUILDS: Record<string, CharacterBuild> = {
       "speedInfusion": true,
       "sharpEyes": true
   },
-  'drk-low': {
-      "className": "DrK",
+  'dark-knight-low': {
+      "className": "Dark Knight",
       "baseStats": {
           "STR": 700,
           "DEX": 22,
@@ -222,8 +222,8 @@ export const TEST_BUILDS: Record<string, CharacterBuild> = {
       "speedInfusion": true,
       "sharpEyes": true
   },
-  'nl-high': {
-      "className": "NL",
+  'night-lord-high': {
+      "className": "Night Lord",
       "baseStats": {
           "STR": 4,
           "DEX": 25,
@@ -247,8 +247,8 @@ export const TEST_BUILDS: Record<string, CharacterBuild> = {
       "sharpEyes": true,
       "shadowPartner": true
   },
-  'nl-low': {
-      "className": "NL",
+  'night-lord-low': {
+      "className": "Night Lord",
       "baseStats": {
           "STR": 4,
           "DEX": 25,

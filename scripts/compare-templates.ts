@@ -49,10 +49,10 @@ interface CurrentTemplate {
 // --- Class block definitions ---
 
 const CLASS_BLOCKS: ClassBlock[] = [
-  { label: 'NL', headerRow: 2, jsonClass: 'nl', primaryStat: 'LUK', secondaryStat: [], hasShield: false, hasBottom: true },
+  { label: 'Night Lord', headerRow: 2, jsonClass: 'night-lord', primaryStat: 'LUK', secondaryStat: [], hasShield: false, hasBottom: true },
   { label: 'Shadower', headerRow: 27, jsonClass: 'shadower', primaryStat: 'LUK', secondaryStat: ['STR', 'DEX'], hasShield: true, hasBottom: true },
   { label: 'Hero/Pally', headerRow: 52, jsonClass: 'hero', primaryStat: 'STR', secondaryStat: ['DEX'], hasShield: false, hasBottom: false },
-  { label: 'DrK', headerRow: 77, jsonClass: 'drk', primaryStat: 'STR', secondaryStat: ['DEX'], hasShield: false, hasBottom: false },
+  { label: 'Dark Knight', headerRow: 77, jsonClass: 'dark-knight', primaryStat: 'STR', secondaryStat: ['DEX'], hasShield: false, hasBottom: false },
   { label: 'Bowmaster', headerRow: 102, jsonClass: 'bowmaster', primaryStat: 'DEX', secondaryStat: ['STR'], hasShield: false, hasBottom: true },
   { label: 'Marksman', headerRow: 127, jsonClass: 'marksman', primaryStat: 'DEX', secondaryStat: ['STR'], hasShield: false, hasBottom: true },
   { label: 'Buccaneer', headerRow: 152, jsonClass: 'bucc', primaryStat: 'STR', secondaryStat: ['DEX'], hasShield: false, hasBottom: true },
