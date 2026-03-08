@@ -24,11 +24,11 @@ const mockDps = (dps: number) => ({
 
 const mockSimulation: SimulationData = {
   results: [
-    { scenario: 'Baseline', className: 'Hero', skillName: 'Brandish (Sword)', tier: 'high', dps: mockDps(240000), headline: true },
-    { scenario: 'Baseline', className: 'Night Lord', skillName: 'Triple Throw', tier: 'high', dps: mockDps(300000), headline: true },
+    { scenario: 'Baseline', className: 'Hero', skillName: 'Brandish (Sword)', tier: 'perfect', dps: mockDps(240000), headline: true },
+    { scenario: 'Baseline', className: 'Night Lord', skillName: 'Triple Throw', tier: 'perfect', dps: mockDps(300000), headline: true },
   ],
   classNames: ['Hero', 'Night Lord'],
-  tiers: ['high'],
+  tiers: ['perfect'],
   error: null,
 };
 
