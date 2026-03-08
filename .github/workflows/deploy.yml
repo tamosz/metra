@@ -13,6 +13,8 @@ jobs:
   deploy:
     runs-on: self-hosted
     environment: production
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@v4
 
