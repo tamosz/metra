@@ -12,8 +12,16 @@ export function AssassinateBugNote({ classNames }: AssassinateBugNoteProps) {
   return (
     <div className="mb-4 rounded border border-border-subtle bg-bg-raised px-4 py-3 text-xs leading-relaxed text-text-muted">
       <span className="font-medium text-text-secondary">Note: </span>
-      Assassinate has a known in-game bug affecting its crit damage with SE.
-      Shadower combo DPS shown here may be overestimated.
+      Assassinate has a{' '}
+      <a
+        href="https://royals.ms/forum/threads/how-to-maximize-shadowers-single-target-dps.236808/"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="underline text-text-secondary hover:text-text-bright"
+      >
+        known in-game bug
+      </a>{' '}
+      affecting its crit damage with SE. Shadower combo DPS shown here may be overestimated.
     </div>
   );
 }
