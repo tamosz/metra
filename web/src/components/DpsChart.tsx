@@ -38,9 +38,9 @@ export function DpsChart({ data }: DpsChartProps) {
 
   const barHeight = 28;
   const chartHeight = Math.max(300, chartData.length * barHeight + 60);
-  const yAxisWidth = isMobile ? 160 : 260;
+  const yAxisWidth = isMobile ? 130 : 200;
   const labelFontSize = isMobile ? 10 : 12;
-  const sublabelFontSize = isMobile ? 9 : 10;
+  const sublabelFontSize = isMobile ? 8 : 9;
 
   return (
     <div data-testid="dps-chart" style={{ width: '100%', height: chartHeight }}>
@@ -69,23 +69,23 @@ export function DpsChart({ data }: DpsChartProps) {
                   <text
                     x={-8}
                     y={0}
-                    dy={-4}
+                    dy={-5}
                     textAnchor="end"
+                    fill={colors.textSecondary}
                     fontSize={labelFontSize}
                   >
-                    <tspan fill={colors.textSecondary}>{entry?.label ?? payload.value}</tspan>
-                    <tspan fill={colors.textFaint}>{' — '}{entry?.skillLabel}</tspan>
+                    {entry?.label ?? payload.value}
                   </text>
                   {entry && (
                     <text
                       x={-8}
                       y={0}
-                      dy={10}
+                      dy={8}
                       textAnchor="end"
                       fill={colors.textFaint}
                       fontSize={sublabelFontSize}
                     >
-                      {entry.sublabel}
+                      {entry.skillLabel} · {entry.sublabel}
                     </text>
                   )}
                 </g>
