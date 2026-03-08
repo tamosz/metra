@@ -120,7 +120,7 @@ export function TierScalingChart({ data, capEnabled, showAllSkills, targetCount,
     const dpsRange = yDomain[1] - yDomain[0];
     if (dpsRange === 0) return new Map<string, number>();
     const dpsPerPixel = dpsRange / usableHeight;
-    const minGapDps = (isMobile ? 12 : 14) * dpsPerPixel;
+    const minGapDps = (isMobile ? 22 : 24) * dpsPerPixel;
 
     // Pass 1: walk top-to-bottom, push labels down when too close
     const adjusted = new Map<string, number>();
