@@ -1,5 +1,8 @@
-// Re-export all data types from @metra/engine.
-// This file exists for backward compatibility — new code should import from '@metra/engine' directly.
+// @metra/engine — public API
+// Pure functions for Royals balance simulation. No dependencies.
+// No filesystem I/O, no side effects, safe for browser and Node.
+
+// Types and constants
 export {
   TIER_ORDER,
   compareTiers,
@@ -15,4 +18,4 @@ export {
   type MixedRotation,
   type ClassSkillData,
   type CharacterBuild,
-} from '@metra/engine';
+} from './types.js';
