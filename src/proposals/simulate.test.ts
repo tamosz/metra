@@ -680,10 +680,10 @@ describe('targetCount (multi-target scaling)', () => {
     );
 
     const buffedCombo = results.find(
-      r => r.skillName === 'BStep + Assassinate' && r.scenario === 'Buffed'
+      r => r.skillName === 'Boomerang Step + Assassinate' && r.scenario === 'Buffed'
     )!;
     const trainingCombo = results.find(
-      r => r.skillName === 'BStep + Assassinate' && r.scenario === 'Training'
+      r => r.skillName === 'Boomerang Step + Assassinate' && r.scenario === 'Training'
     )!;
 
     // BStep has maxTargets: 4, Assassinate has default 1

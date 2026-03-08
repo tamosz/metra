@@ -25,7 +25,7 @@ exports[`Baseline mode > high-tier DPS matches reference values 1`] = `
   "Night Lord / Triple Throw": 290249,
   "Paladin (BW) / Blast (Holy, BW)": 159122,
   "Paladin / Blast (Holy, Sword)": 179365,
-  "Shadower / BStep + Assassinate": 326734,
+  "Shadower / Boomerang Step + Assassinate": 326734,
 }
 `;
 
@@ -54,7 +54,7 @@ exports[`Baseline mode > low-tier DPS matches reference values 1`] = `
   "Night Lord / Triple Throw": 167960,
   "Paladin (BW) / Blast (Holy, BW)": 97950,
   "Paladin / Blast (Holy, Sword)": 113255,
-  "Shadower / BStep + Assassinate": 198577,
+  "Shadower / Boomerang Step + Assassinate": 198577,
 }
 `;
 
@@ -83,6 +83,6 @@ exports[`Baseline mode > mid-tier DPS matches reference values 1`] = `
   "Night Lord / Triple Throw": 207789,
   "Paladin (BW) / Blast (Holy, BW)": 116546,
   "Paladin / Blast (Holy, Sword)": 135245,
-  "Shadower / BStep + Assassinate": 242555,
+  "Shadower / Boomerang Step + Assassinate": 242555,
 }
 `;
