@@ -11,6 +11,7 @@ on:
 jobs:
   deploy:
     runs-on: self-hosted
+    environment: production
     defaults:
       run:
         working-directory: web
