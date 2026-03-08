@@ -90,11 +90,17 @@ export function RankingTable({
 
   const getDps = (r: typeof data[0]) => capEnabled ? r.dps.dps : r.dps.uncappedDps;
 
+  const deltaMap = useMemo(() => {
+    if (!whatIfComparison) return null;
+    const map = new Map<string, DeltaEntry>();
+    for (const d of whatIfComparison.deltas) {
+      map.set(`${d.className}\0${d.skillName}\0${d.tier}`, d);
+    }
+    return map;
+  }, [whatIfComparison]);
+
   function getDelta(r: typeof data[0]): DeltaEntry | undefined {
-    if (!whatIfComparison) return undefined;
-    return whatIfComparison.deltas.find(
-      d => d.className === r.className && d.skillName === r.skillName && d.tier === r.tier
-    );
+    return deltaMap?.get(`${r.className}\0${r.skillName}\0${r.tier}`);
   }
 
   const getSkillEditInfo = useCallback((className: string, skillName: string) => {

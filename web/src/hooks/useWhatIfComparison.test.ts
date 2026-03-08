@@ -1,5 +1,5 @@
-import { describe, it, expect } from 'vitest';
-import { renderHook } from '@testing-library/react';
+import { describe, it, expect, vi } from 'vitest';
+import { renderHook, act } from '@testing-library/react';
 import { useWhatIfComparison, type WhatIfComparisonOptions } from './useWhatIfComparison.js';
 
 describe('useWhatIfComparison', () => {
@@ -67,7 +67,9 @@ describe('useWhatIfComparison', () => {
     expect(result.current.error).toBeInstanceOf(Error);
   });
 
-  it('recomputes when changes array identity changes', () => {
+  it('recomputes when changes array identity changes', async () => {
+    vi.useFakeTimers();
+
     const changes1 = [
       { target: 'hero.brandish-sword', field: 'basePower', to: 280 as number | string },
     ];
@@ -90,6 +92,11 @@ describe('useWhatIfComparison', () => {
 
     rerender({ changes: changes2 });
 
+    // Flush the debounce timer so the comparison recomputes
+    await act(async () => {
+      vi.advanceTimersByTime(100);
+    });
+
     expect(result.current.error).toBeNull();
     expect(result.current.result).not.toBeNull();
     const secondHeroDelta = result.current.result!.deltas.find(
@@ -100,5 +107,7 @@ describe('useWhatIfComparison', () => {
 
     // basePower 300 should yield higher DPS than basePower 280
     expect(secondAfterDps).toBeGreaterThan(firstAfterDps);
+
+    vi.useRealTimers();
   });
 });

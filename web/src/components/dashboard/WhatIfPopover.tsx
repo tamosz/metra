@@ -30,25 +30,38 @@ export function WhatIfPopover({ comparison }: WhatIfPopoverProps) {
     }
   }, [open]);
 
-  // Update URL when changes exist
+  // Update URL when changes exist — debounce meta changes so typing in
+  // the name field doesn't thrash the URL on every keystroke.
+  const metaTimerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
   useEffect(() => {
     if (whatIfChanges.length > 0) {
-      setProposalInUrl({
-        name: whatIfMeta.name || '(Edit)',
-        author: whatIfMeta.author,
-        changes: whatIfChanges,
-      });
+      clearTimeout(metaTimerRef.current);
+      metaTimerRef.current = setTimeout(() => {
+        setProposalInUrl({
+          name: whatIfMeta.name || '(Edit)',
+          author: whatIfMeta.author,
+          changes: whatIfChanges,
+        });
+      }, 300);
     } else {
       clearProposalFromUrl();
     }
+    return () => clearTimeout(metaTimerRef.current);
   }, [whatIfChanges, whatIfMeta]);
 
   if (whatIfChanges.length === 0) return null;
 
   function copyToClipboard(text: string, label: string) {
-    navigator.clipboard.writeText(text);
-    setCopied(label);
-    setTimeout(() => setCopied(null), 2000);
+    navigator.clipboard.writeText(text).then(
+      () => {
+        setCopied(label);
+        setTimeout(() => setCopied(null), 2000);
+      },
+      () => {
+        setCopied('failed');
+        setTimeout(() => setCopied(null), 2000);
+      },
+    );
   }
 
   return (
@@ -109,7 +122,7 @@ export function WhatIfPopover({ comparison }: WhatIfPopoverProps) {
               onClick={() => copyToClipboard(window.location.href, 'link')}
               className="cursor-pointer rounded border border-border-default bg-bg-raised px-2 py-1 text-xs text-text-muted hover:text-text-primary transition-colors"
             >
-              {copied === 'link' ? 'Copied!' : 'Copy Link'}
+              {copied === 'link' ? 'Copied!' : copied === 'failed' ? 'Failed' : 'Copy Link'}
             </button>
             <button
               type="button"
