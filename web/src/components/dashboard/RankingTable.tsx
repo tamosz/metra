@@ -164,8 +164,22 @@ export function RankingTable({
     });
   }, [editChanges]);
 
+  const applyFieldChange = useCallback((target: string, field: string, value: number, original: number) => {
+    if (value === original) {
+      const index = editChanges.findIndex((c) => c.target === target && c.field === field);
+      if (index !== -1) removeEditChange(index);
+      return;
+    }
+
+    const existingIndex = editChanges.findIndex((c) => c.target === target && c.field === field);
+    if (existingIndex !== -1) {
+      updateEditChange(existingIndex, { target, field, from: original, to: value });
+    } else {
+      addEditChange({ target, field, from: original, to: value });
+    }
+  }, [editChanges, addEditChange, updateEditChange, removeEditChange]);
+
   const handleFieldChange = useCallback((className: string, skillName: string, field: string, value: number, original: number) => {
-    // Find the class key
     let classKey: string | null = null;
     for (const [key, data] of discoveredData.classDataMap) {
       if (data.className === className) {
@@ -175,23 +189,8 @@ export function RankingTable({
     }
     if (!classKey) return;
 
-    const target = `${classKey}.${skillSlug(skillName)}`;
-
-    if (value === original) {
-      // Remove existing change for this target+field
-      const index = editChanges.findIndex((c) => c.target === target && c.field === field);
-      if (index !== -1) removeEditChange(index);
-      return;
-    }
-
-    // Check if change already exists for this target+field
-    const existingIndex = editChanges.findIndex((c) => c.target === target && c.field === field);
-    if (existingIndex !== -1) {
-      updateEditChange(existingIndex, { target, field, from: original, to: value });
-    } else {
-      addEditChange({ target, field, from: original, to: value });
-    }
-  }, [editChanges, addEditChange, updateEditChange, removeEditChange]);
+    applyFieldChange(`${classKey}.${skillSlug(skillName)}`, field, value, original);
+  }, [applyFieldChange]);
 
   const sorted = useMemo(() => {
     const dir = sortDirection === 'asc' ? 1 : -1;
@@ -247,11 +246,12 @@ export function RankingTable({
             sorted.map((r, i) => {
               const rowKey = `${r.className}-${r.skillName}-${r.tier}`;
               const isExpanded = expandedRows.has(rowKey);
+              const delta = getDelta(r);
               return (
                 <Fragment key={rowKey}>
                   <tr
                     className={`border-b border-border-subtle hover:bg-white/[0.03] cursor-pointer ${
-                      getDelta(r)?.change ? 'border-l-2 border-l-accent' : ''
+                      delta?.change ? 'border-l-2 border-l-accent' : ''
                     }`}
                     onClick={() => toggleRow(rowKey)}
                   >
@@ -259,9 +259,7 @@ export function RankingTable({
                       <span className="inline-flex items-center gap-1">
                         <span className="text-[10px] text-text-faint">{isExpanded ? '\u25BE' : '\u25B8'}</span>
                         {i + 1}
-                        {(() => {
-                          const delta = getDelta(r);
-                          if (!delta?.rankBefore || !delta?.rankAfter || delta.rankBefore === delta.rankAfter) return null;
+                        {delta?.rankBefore && delta?.rankAfter && delta.rankBefore !== delta.rankAfter && (() => {
                           const diff = delta.rankBefore - delta.rankAfter;
                           return (
                             <span className={`text-[9px] font-medium ${diff > 0 ? 'text-emerald-400' : 'text-red-400'}`}>
@@ -285,18 +283,13 @@ export function RankingTable({
                     <td className="px-3 py-2 text-right tabular-nums">
                       <div className="flex items-center justify-end gap-2">
                         {formatDps(getDps(r))}
-                        {(() => {
-                          const delta = getDelta(r);
-                          if (!delta || delta.change === 0) return null;
-                          const isPositive = delta.change > 0;
-                          return (
-                            <span className={`inline-flex items-center rounded-full px-1.5 py-0.5 text-[10px] font-medium leading-none ${
-                              isPositive ? 'bg-emerald-500/15 text-emerald-400' : 'bg-red-500/15 text-red-400'
-                            }`}>
-                              {isPositive ? '+' : ''}{delta.changePercent.toFixed(1)}%
-                            </span>
-                          );
-                        })()}
+                        {delta && delta.change !== 0 && (
+                          <span className={`inline-flex items-center rounded-full px-1.5 py-0.5 text-[10px] font-medium leading-none ${
+                            delta.change > 0 ? 'bg-emerald-500/15 text-emerald-400' : 'bg-red-500/15 text-red-400'
+                          }`}>
+                            {delta.change > 0 ? '+' : ''}{delta.changePercent.toFixed(1)}%
+                          </span>
+                        )}
                       </div>
                     </td>
                     {capEnabled && (
@@ -325,16 +318,7 @@ export function RankingTable({
                             }
                             activeChanges={editInfo?.activeChanges}
                             comboSkills={comboSkills ?? undefined}
-                            onComboFieldChange={(target, field, value, original) => {
-                              const existingIndex = editChanges.findIndex(c => c.target === target && c.field === field);
-                              if (value === original) {
-                                if (existingIndex >= 0) removeEditChange(existingIndex);
-                              } else if (existingIndex >= 0) {
-                                updateEditChange(existingIndex, { target, field, from: original, to: value });
-                              } else {
-                                addEditChange({ target, field, from: original, to: value });
-                              }
-                            }}
+                            onComboFieldChange={applyFieldChange}
                           />
                         </td>
                       </tr>
