@@ -259,6 +259,7 @@ function FieldInput({
       <div className="flex items-center gap-1.5">
         <input
           type="number"
+          aria-label={field}
           defaultValue={defaultValue}
           onBlur={handleBlur}
           onKeyDown={handleKeyDown}
