@@ -1,25 +1,24 @@
 import { test, expect } from '@playwright/test';
 import { encodeProposalHash, BRANDISH_BUFF } from './fixtures.js';
 
-test.describe('What-if mode', () => {
+test.describe('Edit mode', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/');
     await page.waitForSelector('[data-testid="ranking-table"]');
   });
 
-  test('what-if toggle appears', async ({ page }) => {
-    await expect(page.getByText('What If', { exact: true })).toBeVisible();
+  test('edit toggle appears', async ({ page }) => {
     await expect(page.getByRole('button', { name: 'Edit' })).toBeVisible();
   });
 
-  test('clicking toggle enables what-if mode', async ({ page }) => {
+  test('clicking toggle enables edit mode', async ({ page }) => {
     const editButton = page.getByRole('button', { name: 'Edit' });
     await editButton.click();
     await expect(editButton).toHaveClass(/emerald/);
   });
 
-  test('expanding a skill row in what-if mode shows editable fields', async ({ page }) => {
-    // Enable what-if mode
+  test('expanding a skill row in edit mode shows editable fields', async ({ page }) => {
+    // Enable edit mode
     await page.getByRole('button', { name: 'Edit' }).click();
 
     // Click the first ranking row to expand it
@@ -33,7 +32,7 @@ test.describe('What-if mode', () => {
   });
 
   test('editing a value shows changes pill and delta badge', async ({ page }) => {
-    // Enable what-if mode
+    // Enable edit mode
     await page.getByRole('button', { name: 'Edit' }).click();
 
     // Expand a row
@@ -54,12 +53,12 @@ test.describe('What-if mode', () => {
     await expect(deltaBadge.first()).toHaveClass(/bg-emerald-500|bg-red-500/);
   });
 
-  test('#p= URL loads into what-if mode', async ({ page }) => {
+  test('#p= URL loads into edit mode', async ({ page }) => {
     const hash = encodeProposalHash(BRANDISH_BUFF);
     await page.goto(`/${hash}`);
     await page.waitForSelector('[data-testid="ranking-table"]');
 
-    // The changes pill should be visible, confirming what-if mode activated with changes loaded
+    // The changes pill should be visible, confirming edit mode activated with changes loaded
     await expect(page.getByText('1 change')).toBeVisible();
   });
 });
