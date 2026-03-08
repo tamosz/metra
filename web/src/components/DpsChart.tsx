@@ -13,7 +13,7 @@ import { getClassColor } from '../utils/class-colors.js';
 import { useIsMobile } from '../hooks/useIsMobile.js';
 import { colors } from '../theme.js';
 import { useSimulationControls } from '../context/SimulationControlsContext.js';
-import type { DeltaEntry } from '@engine/proposals/types.js';
+import { buildDeltaMap, deltaMapKey } from '../utils/delta-map.js';
 
 // Custom bar shape that overlays a ghost bar showing the baseline DPS when an edit change is active.
 // Recharts renders multiple <Bar> components side-by-side (grouped), so we use a single Bar with a
@@ -46,21 +46,15 @@ export function DpsChart({ data, editComparison }: DpsChartProps) {
   const { capEnabled } = useSimulationControls();
   const isMobile = useIsMobile();
 
-  const deltaMap = useMemo(() => {
-    if (!editComparison) return null;
-    const map = new Map<string, DeltaEntry>();
-    for (const d of editComparison.deltas) {
-      map.set(`${d.className}\0${d.skillName}\0${d.tier}\0${d.scenario}`, d);
-    }
-    return map;
-  }, [editComparison]);
+  const deltaMap = useMemo(() => buildDeltaMap(editComparison), [editComparison]);
 
   const chartData = data.map((r) => {
     let baselineDps: number | undefined;
     if (deltaMap) {
-      const delta = deltaMap.get(`${r.className}\0${r.skillName}\0${r.tier}\0${r.scenario}`);
-      if (delta && delta.change !== 0) {
-        baselineDps = Math.round(delta.before);
+      const delta = deltaMap.get(deltaMapKey(r.className, r.skillName, r.tier, r.scenario));
+      const change = capEnabled ? delta?.change : delta?.uncappedChange;
+      if (delta && change !== 0) {
+        baselineDps = Math.round(capEnabled ? delta.before : delta.uncappedBefore);
       }
     }
     return {

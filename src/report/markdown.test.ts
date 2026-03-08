@@ -1,7 +1,18 @@
 import { describe, it, expect } from 'vitest';
 import { renderComparisonReport, renderBaselineReport } from './markdown.js';
-import type { ComparisonResult, ScenarioResult } from '../proposals/types.js';
+import type { ComparisonResult, DeltaEntry, ScenarioResult } from '../proposals/types.js';
 import type { DpsResult } from '@metra/engine';
+
+/** Create a DeltaEntry with uncapped fields defaulting to capped values. */
+function delta(d: Omit<DeltaEntry, 'uncappedBefore' | 'uncappedAfter' | 'uncappedChange' | 'uncappedChangePercent'> & Partial<Pick<DeltaEntry, 'uncappedBefore' | 'uncappedAfter' | 'uncappedChange' | 'uncappedChangePercent'>>): DeltaEntry {
+  return {
+    uncappedBefore: d.before,
+    uncappedAfter: d.after,
+    uncappedChange: d.change,
+    uncappedChangePercent: d.changePercent,
+    ...d,
+  };
+}
 
 describe('renderComparisonReport', () => {
   it('renders a Markdown table with changes and unchanged rows', () => {
@@ -17,7 +28,7 @@ describe('renderComparisonReport', () => {
       before: [],
       after: [],
       deltas: [
-        {
+        delta({
           className: 'Hero',
           skillName: 'Brandish (Sword)',
           tier: 'high',
@@ -26,8 +37,8 @@ describe('renderComparisonReport', () => {
           after: 274167,
           change: 18217,
           changePercent: 7.117,
-        },
-        {
+        }),
+        delta({
           className: 'Dark Knight',
           skillName: 'Spear Crusher',
           tier: 'high',
@@ -36,7 +47,7 @@ describe('renderComparisonReport', () => {
           after: 249418,
           change: 0,
           changePercent: 0,
-        },
+        }),
       ],
     };
 
@@ -65,7 +76,7 @@ describe('renderComparisonReport', () => {
       before: [],
       after: [],
       deltas: [
-        {
+        delta({
           className: 'Hero',
           skillName: 'Brandish',
           tier: 'high',
@@ -74,7 +85,7 @@ describe('renderComparisonReport', () => {
           after: 110000,
           change: 10000,
           changePercent: 10,
-        },
+        }),
       ],
     };
 
@@ -95,7 +106,7 @@ describe('renderComparisonReport', () => {
       before: [],
       after: [],
       deltas: [
-        {
+        delta({
           className: 'Dark Knight',
           skillName: 'Crusher',
           tier: 'high',
@@ -104,8 +115,8 @@ describe('renderComparisonReport', () => {
           after: 100000,
           change: 0,
           changePercent: 0,
-        },
-        {
+        }),
+        delta({
           className: 'Hero',
           skillName: 'Brandish',
           tier: 'high',
@@ -114,7 +125,7 @@ describe('renderComparisonReport', () => {
           after: 110000,
           change: 10000,
           changePercent: 10,
-        },
+        }),
       ],
     };
 
@@ -140,7 +151,7 @@ describe('renderComparisonReport with multiple scenarios', () => {
       before: [],
       after: [],
       deltas: [
-        {
+        delta({
           className: 'Hero',
           skillName: 'Brandish (Sword)',
           tier: 'high',
@@ -149,8 +160,8 @@ describe('renderComparisonReport with multiple scenarios', () => {
           after: 274167,
           change: 18217,
           changePercent: 7.117,
-        },
-        {
+        }),
+        delta({
           className: 'Hero',
           skillName: 'Brandish (Sword)',
           tier: 'high',
@@ -159,7 +170,7 @@ describe('renderComparisonReport with multiple scenarios', () => {
           after: 130000,
           change: 10000,
           changePercent: 8.333,
-        },
+        }),
       ],
     };
 
@@ -189,7 +200,7 @@ describe('renderComparisonReport with multiple scenarios', () => {
       before: [],
       after: [],
       deltas: [
-        {
+        delta({
           className: 'Hero',
           skillName: 'Brandish',
           tier: 'high',
@@ -198,8 +209,8 @@ describe('renderComparisonReport with multiple scenarios', () => {
           after: 100000,
           change: 0,
           changePercent: 0,
-        },
-        {
+        }),
+        delta({
           className: 'Hero',
           skillName: 'Brandish',
           tier: 'high',
@@ -208,8 +219,8 @@ describe('renderComparisonReport with multiple scenarios', () => {
           after: 50000,
           change: 0,
           changePercent: 0,
-        },
-        {
+        }),
+        delta({
           className: 'Hero',
           skillName: 'Brandish',
           tier: 'high',
@@ -218,7 +229,7 @@ describe('renderComparisonReport with multiple scenarios', () => {
           after: 90000,
           change: 0,
           changePercent: 0,
-        },
+        }),
       ],
     };
 
@@ -384,7 +395,7 @@ describe('renderComparisonReport content accuracy', () => {
       before: [],
       after: [],
       deltas: [
-        {
+        delta({
           className: 'Hero',
           skillName: 'Brandish',
           tier: 'high',
@@ -393,7 +404,7 @@ describe('renderComparisonReport content accuracy', () => {
           after: 270000,
           change: -30000,
           changePercent: -10,
-        },
+        }),
       ],
     };
 
@@ -411,7 +422,7 @@ describe('renderComparisonReport with rank columns', () => {
       before: [],
       after: [],
       deltas: [
-        {
+        delta({
           className: 'Hero',
           skillName: 'Brandish',
           tier: 'high',
@@ -422,8 +433,8 @@ describe('renderComparisonReport with rank columns', () => {
           changePercent: 8,
           rankBefore: 2,
           rankAfter: 1,
-        },
-        {
+        }),
+        delta({
           className: 'Dark Knight',
           skillName: 'Crusher',
           tier: 'high',
@@ -434,7 +445,7 @@ describe('renderComparisonReport with rank columns', () => {
           changePercent: 0,
           rankBefore: 1,
           rankAfter: 2,
-        },
+        }),
       ],
     };
 
@@ -453,7 +464,7 @@ describe('renderComparisonReport with rank columns', () => {
       before: [],
       after: [],
       deltas: [
-        {
+        delta({
           className: 'Hero',
           skillName: 'Brandish',
           tier: 'high',
@@ -464,7 +475,7 @@ describe('renderComparisonReport with rank columns', () => {
           changePercent: 0,
           rankBefore: 1,
           rankAfter: 1,
-        },
+        }),
       ],
     };
 
@@ -480,7 +491,7 @@ describe('renderComparisonReport with rank columns', () => {
       before: [],
       after: [],
       deltas: [
-        {
+        delta({
           className: 'Hero',
           skillName: 'Brandish',
           tier: 'high',
@@ -489,7 +500,7 @@ describe('renderComparisonReport with rank columns', () => {
           after: 260000,
           change: 10000,
           changePercent: 4,
-        },
+        }),
       ],
     };
 

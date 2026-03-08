@@ -1,14 +1,15 @@
-import { Fragment, useState, useMemo, useCallback } from 'react';
+import { Fragment, useState, useMemo, useCallback, useRef } from 'react';
 import { SkillDetailPanel } from '../SkillDetailPanel.js';
 import { ClassIcon } from '../icons/index.js';
 import { Tooltip } from '../Tooltip.js';
 import { formatDps } from '../../utils/format.js';
 import { getClassColor } from '../../utils/class-colors.js';
 import { compareTiers, type DpsResult } from '@metra/engine';
-import type { ScenarioResult, ComparisonResult, DeltaEntry } from '@engine/proposals/types.js';
+import type { ScenarioResult, ComparisonResult } from '@engine/proposals/types.js';
 import { useSimulationControls } from '../../context/SimulationControlsContext.js';
 import { discoveredData } from '../../data/bundle.js';
 import { skillSlug } from '@engine/proposals/apply.js';
+import { buildDeltaMap, deltaMapKey } from '../../utils/delta-map.js';
 
 type SortColumn = 'class' | 'skill' | 'tier' | 'dps' | 'capLoss';
 type SortDirection = 'asc' | 'desc';
@@ -90,21 +91,12 @@ export function RankingTable({
 
   const getDps = (r: typeof data[0]) => capEnabled ? r.dps.dps : r.dps.uncappedDps;
 
-  const deltaMap = useMemo(() => {
-    if (!editComparison) return null;
-    const map = new Map<string, DeltaEntry>();
-    for (const d of editComparison.deltas) {
-      map.set(`${d.className}\0${d.skillName}\0${d.tier}\0${d.scenario}`, d);
-    }
-    return map;
-  }, [editComparison]);
+  const deltaMap = useMemo(() => buildDeltaMap(editComparison), [editComparison]);
 
-  function getDelta(r: typeof data[0]): DeltaEntry | undefined {
-    return deltaMap?.get(`${r.className}\0${r.skillName}\0${r.tier}\0${r.scenario}`);
-  }
+  const editChangesRef = useRef(editChanges);
+  editChangesRef.current = editChanges;
 
   const getSkillEditInfo = useCallback((className: string, skillName: string) => {
-    // Find the class key whose classData.className matches the display name
     let classKey: string | null = null;
     let classData = null;
     for (const [key, data] of discoveredData.classDataMap) {
@@ -127,7 +119,7 @@ export function RankingTable({
     if (skill.maxTargets !== undefined) skillFields.maxTargets = skill.maxTargets;
 
     const activeChanges: Record<string, number> = {};
-    for (const change of editChanges) {
+    for (const change of editChangesRef.current) {
       if (change.target === target && typeof change.to === 'number') {
         activeChanges[change.field] = change.to;
       }
@@ -155,7 +147,7 @@ export function RankingTable({
       if (skill.maxTargets !== undefined) skillFields.maxTargets = skill.maxTargets;
 
       const activeChanges: Record<string, number> = {};
-      for (const change of editChanges) {
+      for (const change of editChangesRef.current) {
         if (change.target === target && typeof change.to === 'number') {
           activeChanges[change.field] = change.to;
         }
@@ -165,19 +157,20 @@ export function RankingTable({
   }, [editChanges]);
 
   const applyFieldChange = useCallback((target: string, field: string, value: number, original: number) => {
+    const changes = editChangesRef.current;
     if (value === original) {
-      const index = editChanges.findIndex((c) => c.target === target && c.field === field);
+      const index = changes.findIndex((c) => c.target === target && c.field === field);
       if (index !== -1) removeEditChange(index);
       return;
     }
 
-    const existingIndex = editChanges.findIndex((c) => c.target === target && c.field === field);
+    const existingIndex = changes.findIndex((c) => c.target === target && c.field === field);
     if (existingIndex !== -1) {
       updateEditChange(existingIndex, { target, field, from: original, to: value });
     } else {
       addEditChange({ target, field, from: original, to: value });
     }
-  }, [editChanges, addEditChange, updateEditChange, removeEditChange]);
+  }, [addEditChange, updateEditChange, removeEditChange]);
 
   const handleFieldChange = useCallback((className: string, skillName: string, field: string, value: number, original: number) => {
     let classKey: string | null = null;
@@ -246,12 +239,17 @@ export function RankingTable({
             sorted.map((r, i) => {
               const rowKey = `${r.className}-${r.skillName}-${r.tier}`;
               const isExpanded = expandedRows.has(rowKey);
-              const delta = getDelta(r);
+              const delta = deltaMap?.get(deltaMapKey(r.className, r.skillName, r.tier, r.scenario));
+              const change = delta ? (capEnabled ? delta.change : delta.uncappedChange) : 0;
+              const changePercent = delta ? (capEnabled ? delta.changePercent : delta.uncappedChangePercent) : 0;
+              const rankDiff = delta?.rankBefore && delta?.rankAfter && delta.rankBefore !== delta.rankAfter
+                ? delta.rankBefore - delta.rankAfter
+                : 0;
               return (
                 <Fragment key={rowKey}>
                   <tr
                     className={`border-b border-border-subtle hover:bg-white/[0.03] cursor-pointer ${
-                      delta?.change ? 'border-l-2 border-l-accent' : ''
+                      change ? 'border-l-2 border-l-accent' : ''
                     }`}
                     onClick={() => toggleRow(rowKey)}
                   >
@@ -259,14 +257,11 @@ export function RankingTable({
                       <span className="inline-flex items-center gap-1">
                         <span className="text-[10px] text-text-faint">{isExpanded ? '\u25BE' : '\u25B8'}</span>
                         {i + 1}
-                        {delta?.rankBefore && delta?.rankAfter && delta.rankBefore !== delta.rankAfter && (() => {
-                          const diff = delta.rankBefore - delta.rankAfter;
-                          return (
-                            <span className={`text-[9px] font-medium ${diff > 0 ? 'text-emerald-400' : 'text-red-400'}`}>
-                              {diff > 0 ? `\u2191${diff}` : `\u2193${-diff}`}
-                            </span>
-                          );
-                        })()}
+                        {rankDiff !== 0 && (
+                          <span className={`text-[9px] font-medium ${rankDiff > 0 ? 'text-emerald-400' : 'text-red-400'}`}>
+                            {rankDiff > 0 ? `\u2191${rankDiff}` : `\u2193${-rankDiff}`}
+                          </span>
+                        )}
                       </span>
                     </td>
                     <td className="px-3 py-2">
@@ -283,11 +278,11 @@ export function RankingTable({
                     <td className="px-3 py-2 text-right tabular-nums">
                       <div className="flex items-center justify-end gap-2">
                         {formatDps(getDps(r))}
-                        {delta && delta.change !== 0 && (
+                        {change !== 0 && (
                           <span className={`inline-flex items-center rounded-full px-1.5 py-0.5 text-[10px] font-medium leading-none ${
-                            delta.change > 0 ? 'bg-emerald-500/15 text-emerald-400' : 'bg-red-500/15 text-red-400'
+                            change > 0 ? 'bg-emerald-500/15 text-emerald-400' : 'bg-red-500/15 text-red-400'
                           }`}>
-                            {delta.change > 0 ? '+' : ''}{delta.changePercent.toFixed(1)}%
+                            {change > 0 ? '+' : ''}{changePercent.toFixed(1)}%
                           </span>
                         )}
                       </div>
@@ -298,32 +293,19 @@ export function RankingTable({
                       </td>
                     )}
                   </tr>
-                  {isExpanded && (() => {
-                    const editInfo = editEnabled ? getSkillEditInfo(r.className, r.skillName) : null;
-                    const comboSkills = editEnabled && r.isComposite ? getComboSkillEditInfo(r.className, r.skillName) : null;
-                    return (
-                      <tr>
-                        <td colSpan={columnCount} className="p-0">
-                          <SkillDetailPanel
-                            dps={r.dps}
-                            tierData={buildTierData(r, allResults, capEnabled)}
-                            classColor={getClassColor(r.className)}
-                            isComposite={!!r.isComposite}
-                            capEnabled={capEnabled}
-                            currentTier={r.tier}
-                            editEnabled={editEnabled}
-                            skillFields={editInfo?.skillFields}
-                            onFieldChange={(field, value, original) =>
-                              handleFieldChange(r.className, r.skillName, field, value, original)
-                            }
-                            activeChanges={editInfo?.activeChanges}
-                            comboSkills={comboSkills ?? undefined}
-                            onComboFieldChange={applyFieldChange}
-                          />
-                        </td>
-                      </tr>
-                    );
-                  })()}
+                  {isExpanded && (
+                    <ExpandedRow
+                      row={r}
+                      columnCount={columnCount}
+                      allResults={allResults}
+                      capEnabled={capEnabled}
+                      editEnabled={editEnabled}
+                      getSkillEditInfo={getSkillEditInfo}
+                      getComboSkillEditInfo={getComboSkillEditInfo}
+                      handleFieldChange={handleFieldChange}
+                      applyFieldChange={applyFieldChange}
+                    />
+                  )}
                 </Fragment>
               );
             })
@@ -337,5 +319,53 @@ export function RankingTable({
         </div>
       )}
     </>
+  );
+}
+
+function ExpandedRow({
+  row,
+  columnCount,
+  allResults,
+  capEnabled,
+  editEnabled,
+  getSkillEditInfo,
+  getComboSkillEditInfo,
+  handleFieldChange,
+  applyFieldChange,
+}: {
+  row: { className: string; skillName: string; tier: string; dps: DpsResult; isComposite?: boolean };
+  columnCount: number;
+  allResults: ScenarioResult[];
+  capEnabled: boolean;
+  editEnabled: boolean;
+  getSkillEditInfo: (className: string, skillName: string) => { skillFields: Record<string, number>; activeChanges: Record<string, number>; target: string } | null;
+  getComboSkillEditInfo: (className: string, comboGroupName: string) => { name: string; skillFields: Record<string, number>; activeChanges: Record<string, number>; target: string }[] | null;
+  handleFieldChange: (className: string, skillName: string, field: string, value: number, original: number) => void;
+  applyFieldChange: (target: string, field: string, value: number, original: number) => void;
+}) {
+  const editInfo = editEnabled ? getSkillEditInfo(row.className, row.skillName) : null;
+  const comboSkills = editEnabled && row.isComposite ? getComboSkillEditInfo(row.className, row.skillName) : null;
+
+  return (
+    <tr>
+      <td colSpan={columnCount} className="p-0">
+        <SkillDetailPanel
+          dps={row.dps}
+          tierData={buildTierData(row, allResults, capEnabled)}
+          classColor={getClassColor(row.className)}
+          isComposite={!!row.isComposite}
+          capEnabled={capEnabled}
+          currentTier={row.tier}
+          editEnabled={editEnabled}
+          skillFields={editInfo?.skillFields}
+          onFieldChange={(field, value, original) =>
+            handleFieldChange(row.className, row.skillName, field, value, original)
+          }
+          activeChanges={editInfo?.activeChanges}
+          comboSkills={comboSkills ?? undefined}
+          onComboFieldChange={applyFieldChange}
+        />
+      </td>
+    </tr>
   );
 }
