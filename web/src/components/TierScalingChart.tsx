@@ -100,7 +100,7 @@ export function TierScalingChart({ data, capEnabled, showAllSkills, targetCount,
   }
 
   const chartHeight = isMobile ? 400 : 600;
-  const rightMargin = isMobile ? 120 : 180;
+  const rightMargin = isMobile ? 100 : 140;
 
   // Compute label y-offsets to avoid overlap at the rightmost tier
   const labelOffsets = useMemo(() => {
@@ -239,22 +239,31 @@ export function TierScalingChart({ data, capEnabled, showAllSkills, targetCount,
                   if (index !== chartData.length - 1) return <text />;
                   const offset = labelOffsets.get(line.key) ?? 0;
                   return (
-                    <text
-                      x={x + 10}
-                      y={y + offset}
-                      textAnchor="start"
-                      fill={isDimmed
-                        ? colors.textFaint
-                        : getClassColor(line.className)}
-                      fontSize={isMobile ? 9 : 11}
-                      dominantBaseline="central"
-                      opacity={isDimmed ? 0.3 : 1}
+                    <g
                       style={{ cursor: 'pointer' }}
                       onClick={() => setHoveredKey(hoveredKey === line.key ? null : line.key)}
                       onMouseEnter={() => setHoveredKey(line.key)}
+                      opacity={isDimmed ? 0.3 : 1}
                     >
-                      {line.key}
-                    </text>
+                      <text
+                        x={x + 10}
+                        y={y + offset - 5}
+                        textAnchor="start"
+                        fill={isDimmed ? colors.textFaint : getClassColor(line.className)}
+                        fontSize={isMobile ? 9 : 11}
+                      >
+                        {line.className}
+                      </text>
+                      <text
+                        x={x + 10}
+                        y={y + offset + 6}
+                        textAnchor="start"
+                        fill={colors.textFaint}
+                        fontSize={isMobile ? 7 : 9}
+                      >
+                        {line.skillName}
+                      </text>
+                    </g>
                   );
                 }}
                 onMouseEnter={() => setHoveredKey(line.key)}
@@ -285,7 +294,8 @@ export function TierScalingChart({ data, capEnabled, showAllSkills, targetCount,
                 className="inline-block h-2.5 w-2.5 rounded-sm"
                 style={{ backgroundColor: getClassColor(line.className) }}
               />
-              <span className="text-text-secondary">{line.key}</span>
+              <span className="text-text-secondary">{line.className}</span>
+              <span className="text-text-faint text-[10px]">{line.skillName}</span>
             </button>
           );
         })}
