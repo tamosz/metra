@@ -1,6 +1,4 @@
 import { describe, it, expect, beforeAll } from 'vitest';
-import { readFileSync } from 'fs';
-import { resolve } from 'path';
 import {
   loadWeapons,
   loadAttackSpeed,
@@ -15,13 +13,26 @@ import type { Proposal, ScenarioConfig, ScenarioResult } from './proposals/types
 import { renderComparisonReport, renderBaselineReport } from './report/markdown.js';
 import { applyProposal } from './proposals/apply.js';
 
-const DATA_DIR = resolve(import.meta.dirname, '..');
+const brandishBuff: Proposal = {
+  name: 'Brandish +20 Base Power',
+  author: 'ExampleUser',
+  description: 'Increase Hero Brandish base power from 260 to 280.',
+  changes: [
+    { target: 'hero.brandish-sword', field: 'basePower', from: 260, to: 280 },
+  ],
+};
 
-function loadProposal(filename: string): Proposal {
-  return JSON.parse(
-    readFileSync(resolve(DATA_DIR, 'proposals', filename), 'utf-8')
-  );
-}
+const warriorRebalance: Proposal = {
+  name: 'Warrior Rebalance',
+  author: 'BalanceTeam',
+  description: 'Buff Brandish and Blast, nerf Crusher.',
+  changes: [
+    { target: 'hero.brandish-sword', field: 'basePower', from: 260, to: 280 },
+    { target: 'hero-axe.brandish', field: 'basePower', from: 260, to: 280 },
+    { target: 'paladin.blast-holy-sword', field: 'basePower', from: 580, to: 600 },
+    { target: 'dark-knight.spear-crusher-zerked', field: 'basePower', from: 170, to: 150 },
+  ],
+};
 
 let classDataMap: Map<string, ClassSkillData>;
 let gearTemplates: GearTemplateMap;
@@ -43,7 +54,7 @@ beforeAll(() => {
 
 describe('End-to-end: brandish-buff-20 proposal', () => {
   it('produces a complete Markdown report', () => {
-    const proposal = loadProposal('brandish-buff-20.json');
+    const proposal = brandishBuff;
     const result = compareProposal(
       proposal,
       config,
@@ -93,7 +104,7 @@ describe('End-to-end: brandish-buff-20 proposal', () => {
 
 describe('End-to-end: warrior-rebalance proposal', () => {
   it('applies multi-class changes with correct independent deltas', () => {
-    const proposal = loadProposal('warrior-rebalance.json');
+    const proposal = warriorRebalance;
     const result = compareProposal(
       proposal,
       config,
@@ -139,8 +150,8 @@ describe('End-to-end: warrior-rebalance proposal', () => {
   });
 
   it('produces distinct Markdown reports for different proposals', () => {
-    const brandish = loadProposal('brandish-buff-20.json');
-    const rebalance = loadProposal('warrior-rebalance.json');
+    const brandish = brandishBuff;
+    const rebalance = warriorRebalance;
 
     const report1 = renderComparisonReport(
       compareProposal(brandish, config, classDataMap, gearTemplates, weaponData, attackSpeedData, mwData)
@@ -400,7 +411,7 @@ describe('Ranking integrity', () => {
     const scenarios: ScenarioConfig[] = [{ name: 'Buffed' }];
     const rankConfig: SimulationConfig = { ...config, scenarios };
 
-    const proposal = loadProposal('brandish-buff-20.json');
+    const proposal = brandishBuff;
     const result = compareProposal(
       proposal,
       rankConfig,
