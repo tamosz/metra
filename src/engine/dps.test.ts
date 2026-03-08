@@ -150,7 +150,7 @@ describe('Hero Brandish (Sword) DPS', () => {
 
 describe('DrK Spear Crusher DPS', () => {
   it('matches hero charts High tier DPS (I15: 249,418)', () => {
-    const crusher = drkData.skills.find((s) => s.name === 'Spear Crusher')!;
+    const crusher = drkData.skills.find((s) => s.name === 'Spear Crusher (Zerked)')!;
     const result = calculateSkillDps(
       drkHigh,
       drkData,
@@ -173,7 +173,7 @@ describe('DrK Spear Crusher DPS', () => {
   });
 
   it('computes Low tier DPS from gear template', () => {
-    const crusher = drkData.skills.find((s) => s.name === 'Spear Crusher')!;
+    const crusher = drkData.skills.find((s) => s.name === 'Spear Crusher (Zerked)')!;
     const result = calculateSkillDps(
       drkLow,
       drkData,
@@ -194,7 +194,7 @@ describe('DrK Spear Crusher DPS', () => {
   });
 
   it('uses addBeforeMultiply SE formula (default)', () => {
-    const crusher = drkData.skills.find((s) => s.name === 'Spear Crusher')!;
+    const crusher = drkData.skills.find((s) => s.name === 'Spear Crusher (Zerked)')!;
     const result = calculateSkillDps(
       drkHigh,
       drkData,
@@ -211,7 +211,7 @@ describe('DrK Spear Crusher DPS', () => {
   });
 
   it('Spear Crusher uses stab multiplier (5.0)', () => {
-    const crusher = drkData.skills.find((s) => s.name === 'Spear Crusher')!;
+    const crusher = drkData.skills.find((s) => s.name === 'Spear Crusher (Zerked)')!;
     expect(crusher.attackType).toBe('stab');
   });
 });

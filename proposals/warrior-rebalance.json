@@ -22,7 +22,7 @@
       "to": 600
     },
     {
-      "target": "drk.spear-crusher",
+      "target": "drk.spear-crusher-zerked",
       "field": "basePower",
       "from": 170,
       "to": 150
