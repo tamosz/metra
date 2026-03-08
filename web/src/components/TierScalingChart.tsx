@@ -11,6 +11,7 @@ import type { ScenarioResult } from '@engine/proposals/types.js';
 import { getClassColor } from '../utils/class-colors.js';
 import { useIsMobile } from '../hooks/useIsMobile.js';
 import { colors } from '../theme.js';
+import { resolveActiveScenario } from '../utils/scenario.js';
 
 interface TierScalingChartProps {
   data: ScenarioResult[];
@@ -32,12 +33,9 @@ export function TierScalingChart({ data, capEnabled, showAllSkills, targetCount 
   const isMobile = useIsMobile();
   const [hoveredKey, setHoveredKey] = useState<string | null>(null);
 
-  // Group results by class+skill across tiers
-  const { chartData, lines } = useMemo(() => {
-    // Filter to active scenario only (not tier — we want all tiers)
-    const activeScenario = targetCount > 1
-      ? data.find((r) => r.scenario.startsWith('Training'))?.scenario
-      : data[0]?.scenario;
+  // Group results by class+skill across tiers, compute tight Y-axis domain
+  const { chartData, lines, yDomain } = useMemo(() => {
+    const activeScenario = resolveActiveScenario(data, targetCount);
     const filtered = data.filter((r) => {
       if (r.scenario !== activeScenario) return false;
       if (!showAllSkills && r.headline === false) return false;
@@ -76,7 +74,24 @@ export function TierScalingChart({ data, capEnabled, showAllSkills, targetCount 
       skillName: skillForKey.get(key)!,
     }));
 
-    return { chartData, lines };
+    // Compute tight Y-axis domain from actual data
+    const allValues = chartData.flatMap((point) =>
+      Object.entries(point)
+        .filter(([k]) => k !== 'tier')
+        .map(([, v]) => v as number),
+    );
+    let yDomain: [number, number] = [0, 1];
+    if (allValues.length > 0) {
+      const dataMin = Math.min(...allValues);
+      const dataMax = Math.max(...allValues);
+      const padding = (dataMax - dataMin) * 0.08;
+      yDomain = [
+        Math.max(0, Math.floor((dataMin - padding) / 1000) * 1000),
+        Math.ceil((dataMax + padding) / 1000) * 1000,
+      ];
+    }
+
+    return { chartData, lines, yDomain };
   }, [data, capEnabled, showAllSkills, targetCount]);
 
   if (lines.length === 0) {
@@ -85,20 +100,6 @@ export function TierScalingChart({ data, capEnabled, showAllSkills, targetCount 
 
   const chartHeight = isMobile ? 400 : 600;
   const rightMargin = isMobile ? 120 : 180;
-
-  // Compute tight Y-axis domain from actual data to spread lines apart
-  const allValues = chartData.flatMap((point) =>
-    Object.entries(point)
-      .filter(([k]) => k !== 'tier')
-      .map(([, v]) => v as number),
-  );
-  const dataMin = Math.min(...allValues);
-  const dataMax = Math.max(...allValues);
-  const padding = (dataMax - dataMin) * 0.08;
-  const yDomain: [number, number] = [
-    Math.max(0, Math.floor((dataMin - padding) / 1000) * 1000),
-    Math.ceil((dataMax + padding) / 1000) * 1000,
-  ];
 
   // Compute label y-offsets to avoid overlap at the rightmost tier
   const labelOffsets = useMemo(() => {
@@ -120,7 +121,7 @@ export function TierScalingChart({ data, capEnabled, showAllSkills, targetCount 
     const dpsPerPixel = dpsRange / usableHeight;
     const minGapDps = (isMobile ? 12 : 14) * dpsPerPixel;
 
-    // Walk top-to-bottom, push labels down when too close
+    // Pass 1: walk top-to-bottom, push labels down when too close
     const adjusted = new Map<string, number>();
     let lastAdj = Infinity;
     for (const item of items) {
@@ -130,6 +131,18 @@ export function TierScalingChart({ data, capEnabled, showAllSkills, targetCount 
       }
       adjusted.set(item.key, adj);
       lastAdj = adj;
+    }
+
+    // Pass 2: walk bottom-to-top, push labels up if they fell below the chart floor
+    const chartFloorDps = yDomain[0];
+    let prevAdj = chartFloorDps;
+    for (let i = items.length - 1; i >= 0; i--) {
+      let adj = adjusted.get(items[i].key)!;
+      if (adj < prevAdj) {
+        adj = prevAdj;
+      }
+      adjusted.set(items[i].key, adj);
+      prevAdj = adj + minGapDps;
     }
 
     // Higher DPS = lower pixel y, so if adjustedDps < originalDps the label moves down (+y)

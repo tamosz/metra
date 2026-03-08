@@ -18,6 +18,7 @@ import { useSimulationControls } from '../context/SimulationControlsContext.js';
 import { RankingTable } from './dashboard/RankingTable.js';
 import { TargetSpinner } from './dashboard/TargetSpinner.js';
 import { EfficiencyPanel } from './EfficiencyPanel.js';
+import { resolveActiveScenario } from '../utils/scenario.js';
 
 interface DashboardProps {
   simulation: SimulationData;
@@ -33,9 +34,7 @@ export function Dashboard({ simulation, buildsState }: DashboardProps) {
   const [chartView, setChartView] = useState<'bar' | 'scaling'>('bar');
 
   const filtered = useMemo(() => {
-    const activeScenario = targetCount > 1
-      ? results.find((r) => r.scenario.startsWith('Training'))?.scenario
-      : results[0]?.scenario;
+    const activeScenario = resolveActiveScenario(results, targetCount);
     return results
       .filter((r) => {
         if (r.scenario !== activeScenario) return false;
