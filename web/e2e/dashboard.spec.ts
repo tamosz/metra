@@ -67,6 +67,25 @@ test.describe('dashboard', () => {
     expect(firstDpsAfter).not.toBe(firstDpsBefore);
   });
 
+  test('scaling view toggle shows line chart and returns to bar chart', async ({ page }) => {
+    // Bar chart should be visible initially
+    await expect(page.getByTestId('dps-chart')).toBeVisible();
+
+    // Switch to scaling view
+    await page.getByRole('button', { name: 'Scaling' }).click();
+    await expect(page.getByTestId('tier-scaling-chart')).toBeVisible();
+    await expect(page.getByTestId('dps-chart')).not.toBeVisible();
+
+    // Line chart should have SVG with lines
+    const chart = page.getByTestId('tier-scaling-chart');
+    await expect(chart.locator('svg')).toBeVisible();
+
+    // Switch back to bar view
+    await page.getByRole('button', { name: 'Bar' }).click();
+    await expect(page.getByTestId('dps-chart')).toBeVisible();
+    await expect(page.getByTestId('tier-scaling-chart')).not.toBeVisible();
+  });
+
   test('element toggle cycles through states and affects DPS', async ({ page }) => {
     const holyButton = page.getByRole('button', { name: 'Ho' });
     await expect(holyButton).toBeVisible();
