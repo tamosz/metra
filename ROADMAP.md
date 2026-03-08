@@ -31,6 +31,10 @@ A balance simulator for Royals staff and community. Every number traces back to 
 - Element variant competition: Paladin charges auto-pick best element for current scenario
 - Mixed rotations: time-weighted skill blends (Corsair practical bossing 80/20 Cannon/RF)
 - Training skills: Arrow Bomb (Bowmaster), Snatch + Dragon Strike (Buccaneer)
+- Chain lightning bounce decay (70% per chain)
+- Skill efficiency sliders for mixed rotations (Corsair Cannon/RF, DRK zerked/unzerked)
+- Tier scaling line chart alongside bar chart
+- Edit mode: inline skill editing on the dashboard with ghost bars, rank deltas, changes popover, combo sub-skill editing, URL sharing, export
 - Per-slot template editor with GitHub issue integration for proposing template changes
 - Gear template audit: cross-class alignment verified against source spreadsheet, stats aligned across all 14 classes
 - Gear template inheritance: base templates with tier deltas, reducing duplication
@@ -41,11 +45,7 @@ A balance simulator for Royals staff and community. Every number traces back to 
 
 Make the dashboard the primary exploration tool. Reduce the distance between "I wonder what if..." and seeing the answer.
 
-**Inline "what if" editing**
-- Click a skill's damage%, hit count, or multiplier in the dashboard detail view and change it directly
-- Instant before/after without leaving the dashboard
-- Proposal builder stays for formal proposals; this is for casual exploration
-- (Currently only available in the Build Explorer, not on the dashboard)
+**~~Inline "what if" editing~~** → shipped as Edit Mode (see Done)
 
 **Filter state permalinks**
 - Encode dashboard filter state (tier, buffs, elements, KB, targets) in the URL
@@ -77,8 +77,11 @@ Make the dashboard the primary exploration tool. Reduce the distance between "I 
 - Accuracy/miss rate against high-level bosses
 - Buff uptime/sustain (Berserk HP drain, Battleship HP, buff recasting)
 
+**More training/AoE skills:**
+- Piercing Arrow (Bowmaster), Boomerang Step + Band of Thieves (Shadower), Barrage + Dragon Strike (Buccaneer), Torpedo (Corsair, no transformation), Flamethrower + Ice Splitter (mages, with EB30 + capsules)
+
 **Hard problems:**
-- Party DPS modeling (Bishop's value is party buffs, not solo DPS — biggest analytical blind spot, but genuinely hard to model well)
+- Party DPS modeling — biggest analytical blind spot. Solo DPS doesn't capture buff contribution (SE, SI). A party builder would let you pick classes + tiers for a 6-man party and show per-member DPS with/without shared buffs, total party DPS gain from SE/SI, and the real cost of swapping an archer for another attacker. Would help archers make the case for balance adjustments.
 - Training efficiency (kills/hr, EXP/hr on reference mobs — AoE modeling done via `maxTargets`, still needs mob data)
 - Boss encounter simulation — Patchwerk-style sustained DPS with real-world interruptions:
   - Knockback tuning: per-skill `knockbackRecovery` is implemented, but channeled skills (Hurricane, Rapid Fire) may still need more nuance.
