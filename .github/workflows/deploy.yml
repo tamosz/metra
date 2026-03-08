@@ -1,0 +1,25 @@
+name: Deploy Metra
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'web/**'
+      - 'src/**'
+      - 'data/**'
+      - 'packages/**'
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build container image
+        run: colima nerdctl --profile k3s -- --namespace k8s.io build -t tomeblog/metra:latest -f web/Dockerfile .
+
+      - name: Deploy
+        run: |
+          kubectl rollout restart deployment/metra -n tomeblog
+          kubectl rollout status deployment/metra -n tomeblog --timeout=120s
