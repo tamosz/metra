@@ -1,8 +1,8 @@
 # Royals Balance Simulator
 
-DPS calculator for MapleRoyals. All 14 classes, 4 funding tiers, every number backed by a formula.
+DPS calculator for MapleRoyals. All 14 classes, 4 funding tiers.
 
-Balance threads on the forum are mostly vibes. "X feels weak", "Y needs a buff." This puts actual numbers behind it. Toggle buffs on and off, model knockback, compare training scenarios, and see what actually changes.
+Punch in a class and tier, toggle buffs, and see where things land. Useful for balance discussions or just figuring out what to upgrade next.
 
 **Live site:** [tomeblog.com/metra](https://tomeblog.com/metra)
 
@@ -40,11 +40,11 @@ npm run setup
 ### Project Structure
 
 - `data/` - game data as JSON. Skills, gear templates, weapons, attack speeds. One file per class.
-- `src/engine/` - the math. Damage formulas, crit, attack speed, DPS, knockback. Pure functions, no side effects.
+- `src/engine/` - the math. Damage formulas, crit, attack speed, DPS, knockback.
 - `src/proposals/` - apply changes, run simulations, compare before/after.
 - `src/report/` - markdown, BBCode, ASCII charts.
 - `src/audit/` - outlier detection.
-- `web/` - React + Vite SPA, separate package.json. Thin layer over the engine.
+- `web/` - React + Vite SPA, separate package.json.
 
 ### Tests
 
