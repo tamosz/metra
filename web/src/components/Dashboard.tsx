@@ -14,6 +14,7 @@ import { TOGGLE_ON, TOGGLE_OFF } from '../utils/styles.js';
 import { useSimulationControls } from '../context/SimulationControlsContext.js';
 import { RankingTable } from './dashboard/RankingTable.js';
 import { TargetSpinner } from './dashboard/TargetSpinner.js';
+import { EfficiencyPanel } from './EfficiencyPanel.js';
 
 interface DashboardProps {
   simulation: SimulationData;
@@ -78,6 +79,7 @@ export function Dashboard({ simulation, buildsState }: DashboardProps) {
         <KbToggle />
         <CapToggle />
         <AllSkillsToggle enabled={showAllSkills} onToggle={setShowAllSkills} />
+        <EfficiencyPanel />
       </div>
 
       <TierAssumptions />
