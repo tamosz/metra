@@ -1,6 +1,10 @@
 import { describe, it, expect } from 'vitest';
 import { renderComparisonBBCode, renderBaselineBBCode } from './bbcode.js';
-import type { ComparisonResult, ScenarioResult } from '../proposals/types.js';
+import type { ComparisonResult, DeltaEntry, ScenarioResult } from '../proposals/types.js';
+
+function delta(d: Omit<DeltaEntry, 'uncappedBefore' | 'uncappedAfter' | 'uncappedChange' | 'uncappedChangePercent'> & Partial<Pick<DeltaEntry, 'uncappedBefore' | 'uncappedAfter' | 'uncappedChange' | 'uncappedChangePercent'>>): DeltaEntry {
+  return { uncappedBefore: d.before, uncappedAfter: d.after, uncappedChange: d.change, uncappedChangePercent: d.changePercent, ...d };
+}
 
 function mockDpsResult(dps: number) {
   return {
@@ -35,7 +39,7 @@ describe('renderComparisonBBCode', () => {
       before: [],
       after: [],
       deltas: [
-        {
+        delta({
           className: 'Hero',
           skillName: 'Brandish (Sword)',
           tier: 'high',
@@ -44,8 +48,8 @@ describe('renderComparisonBBCode', () => {
           after: 274167,
           change: 18217,
           changePercent: 7.117,
-        },
-        {
+        }),
+        delta({
           className: 'Dark Knight',
           skillName: 'Spear Crusher',
           tier: 'high',
@@ -54,7 +58,7 @@ describe('renderComparisonBBCode', () => {
           after: 249418,
           change: 0,
           changePercent: 0,
-        },
+        }),
       ],
     };
 
@@ -76,7 +80,7 @@ describe('renderComparisonBBCode', () => {
       before: [],
       after: [],
       deltas: [
-        {
+        delta({
           className: 'Hero',
           skillName: 'Brandish',
           tier: 'high',
@@ -87,7 +91,7 @@ describe('renderComparisonBBCode', () => {
           changePercent: 8,
           rankBefore: 2,
           rankAfter: 1,
-        },
+        }),
       ],
     };
 
@@ -102,7 +106,7 @@ describe('renderComparisonBBCode', () => {
       before: [],
       after: [],
       deltas: [
-        {
+        delta({
           className: 'Hero',
           skillName: 'Brandish',
           tier: 'high',
@@ -111,7 +115,7 @@ describe('renderComparisonBBCode', () => {
           after: 270000,
           change: -30000,
           changePercent: -10,
-        },
+        }),
       ],
     };
 
@@ -126,7 +130,7 @@ describe('renderComparisonBBCode', () => {
       before: [],
       after: [],
       deltas: [
-        {
+        delta({
           className: 'Hero',
           skillName: 'Brandish',
           tier: 'high',
@@ -135,8 +139,8 @@ describe('renderComparisonBBCode', () => {
           after: 110000,
           change: 10000,
           changePercent: 10,
-        },
-        {
+        }),
+        delta({
           className: 'Hero',
           skillName: 'Brandish',
           tier: 'high',
@@ -145,7 +149,7 @@ describe('renderComparisonBBCode', () => {
           after: 55000,
           change: 5000,
           changePercent: 10,
-        },
+        }),
       ],
     };
 

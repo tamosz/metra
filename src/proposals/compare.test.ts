@@ -564,6 +564,38 @@ describe('computeDeltas with comparisonKey', () => {
     expect(deltas[0].skillName).toBe('Blast (Holy, Sword)');
   });
 
+  it('includes uncapped delta fields', () => {
+    const before: ScenarioResult[] = [
+      {
+        className: 'Paladin',
+        skillName: 'Blast (Holy, Sword)',
+        tier: 'high',
+        scenario: 'Buffed',
+        dps: { ...makeDpsResult(180000), uncappedDps: 200000 },
+        comparisonKey: 'Blast (Sword)',
+      },
+    ];
+
+    const after: ScenarioResult[] = [
+      {
+        className: 'Paladin',
+        skillName: 'Blast (Holy, Sword)',
+        tier: 'high',
+        scenario: 'Buffed',
+        dps: { ...makeDpsResult(190000), uncappedDps: 220000 },
+        comparisonKey: 'Blast (Sword)',
+      },
+    ];
+
+    const deltas = computeDeltas(before, after);
+    expect(deltas[0].before).toBe(180000);
+    expect(deltas[0].after).toBe(190000);
+    expect(deltas[0].uncappedBefore).toBe(200000);
+    expect(deltas[0].uncappedAfter).toBe(220000);
+    expect(deltas[0].uncappedChange).toBe(20000);
+    expect(deltas[0].uncappedChangePercent).toBeCloseTo(10, 1);
+  });
+
   it('falls back to skillName when comparisonKey is not set', () => {
     const before: ScenarioResult[] = [
       {

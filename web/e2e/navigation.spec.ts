@@ -1,29 +1,14 @@
 import { test, expect } from '@playwright/test';
-import { navigateToProposalBuilder, navigateToDashboard } from './fixtures.js';
 
 test.describe('navigation', () => {
-  test('nav buttons switch between Rankings and Proposal Builder', async ({ page }) => {
+  test('nav buttons switch between pages', async ({ page }) => {
     await page.goto('/');
     await expect(page.getByTestId('ranking-table')).toBeVisible();
 
-    await navigateToProposalBuilder(page);
-    await expect(page.getByRole('heading', { name: 'Proposal Builder' })).toBeVisible();
+    await page.getByRole('button', { name: 'Build Explorer' }).click();
     await expect(page.getByTestId('ranking-table')).not.toBeVisible();
 
-    await navigateToDashboard(page);
+    await page.getByRole('button', { name: 'Rankings' }).click();
     await expect(page.getByTestId('ranking-table')).toBeVisible();
-  });
-
-  test('proposal state persists across page switches', async ({ page }) => {
-    await page.goto('/');
-    await navigateToProposalBuilder(page);
-
-    const nameInput = page.locator('input[placeholder="e.g. Brandish Buff"]');
-    await nameInput.fill('My Test Proposal');
-
-    await navigateToDashboard(page);
-    await navigateToProposalBuilder(page);
-
-    await expect(nameInput).toHaveValue('My Test Proposal');
   });
 });

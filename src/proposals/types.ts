@@ -71,6 +71,14 @@ export interface DeltaEntry {
   after: number;
   change: number;
   changePercent: number;
+  /** Uncapped DPS before the change. */
+  uncappedBefore: number;
+  /** Uncapped DPS after the change. */
+  uncappedAfter: number;
+  /** Uncapped DPS change (uncappedAfter - uncappedBefore). */
+  uncappedChange: number;
+  /** Uncapped DPS change percent. */
+  uncappedChangePercent: number;
   /** DPS rank within (scenario, tier) group before the change. */
   rankBefore?: number;
   /** DPS rank within (scenario, tier) group after the change. */

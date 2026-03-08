@@ -13,8 +13,10 @@ import { KbToggle } from './KbToggle.js';
 import { CapToggle } from './CapToggle.js';
 import { TOGGLE_ON, TOGGLE_OFF } from '../utils/styles.js';
 import { useSimulationControls } from '../context/SimulationControlsContext.js';
+import { useEditComparison } from '../hooks/useEditComparison.js';
 import { RankingTable } from './dashboard/RankingTable.js';
 import { TargetSpinner } from './dashboard/TargetSpinner.js';
+import { EditPopover } from './dashboard/EditPopover.js';
 import { EfficiencyPanel } from './EfficiencyPanel.js';
 import { resolveActiveScenario } from '../utils/scenario.js';
 import { VARIANT_CLASSES } from '../utils/class-colors.js';
@@ -25,8 +27,20 @@ interface DashboardProps {
 }
 
 export function Dashboard({ simulation, buildsState }: DashboardProps) {
-  const { selectedTier, targetCount, capEnabled, cgsValues, setCgsValues, setSelectedTier } = useSimulationControls();
+  const controls = useSimulationControls();
+  const { selectedTier, targetCount, capEnabled, cgsValues, setCgsValues, editEnabled, setEditEnabled, editChanges } = controls;
   const { results, tiers } = simulation;
+
+  const cgsOverride = useMemo(() => ({ tier: selectedTier, values: cgsValues }), [selectedTier, cgsValues]);
+  const comparison = useEditComparison({
+    changes: editChanges,
+    targetCount: targetCount > 1 ? targetCount : undefined,
+    elementModifiers: Object.keys(controls.elementModifiers).length > 0 ? controls.elementModifiers : undefined,
+    buffOverrides: Object.keys(controls.buffOverrides).length > 0 ? controls.buffOverrides : undefined,
+    kbConfig: controls.kbConfig,
+    cgsOverride,
+    efficiencyOverrides: Object.keys(controls.efficiencyOverrides).length > 0 ? controls.efficiencyOverrides : undefined,
+  });
   const [showAllSkills, setShowAllSkills] = useState(false);
 
   const filtered = useMemo(() => {
@@ -79,19 +93,24 @@ export function Dashboard({ simulation, buildsState }: DashboardProps) {
         <CapToggle />
         <AllSkillsToggle enabled={showAllSkills} onToggle={setShowAllSkills} />
         <EfficiencyPanel />
+
+        <div className="ml-auto border-l border-border-default pl-4 flex items-center gap-3">
+          <EditModeToggle enabled={editEnabled} onToggle={setEditEnabled} changeCount={editChanges.length} />
+          {editEnabled && <EditPopover comparison={comparison} />}
+        </div>
       </div>
 
       <TierAssumptions />
 
       <AssassinateBugNote classNames={[...new Set(filtered.map((r) => r.className))]} />
 
-      <TierScalingChart data={results} capEnabled={capEnabled} showAllSkills={showAllSkills} targetCount={targetCount} selectedTier={selectedTier} />
+      <TierScalingChart data={results} capEnabled={capEnabled} showAllSkills={showAllSkills} targetCount={targetCount} selectedTier={selectedTier} editComparison={editEnabled ? comparison.result : null} />
       <div className="mt-6">
-        <DpsChart data={filtered} />
+        <DpsChart data={filtered} editComparison={editEnabled ? comparison.result : null} />
       </div>
 
       <div className="mt-6">
-        <RankingTable data={filtered} allResults={results} capEnabled={capEnabled} />
+        <RankingTable data={filtered} allResults={results} capEnabled={capEnabled} editComparison={editEnabled ? comparison.result : null} />
       </div>
     </div>
   );
@@ -109,6 +128,24 @@ function AllSkillsToggle({ enabled, onToggle }: { enabled: boolean; onToggle: (v
           className={`cursor-pointer rounded px-1.5 py-0.5 text-xs font-medium transition-colors ${enabled ? TOGGLE_ON : TOGGLE_OFF}`}
         >
           All
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function EditModeToggle({ enabled, onToggle, changeCount }: { enabled: boolean; onToggle: (v: boolean) => void; changeCount: number }) {
+  return (
+    <div className="flex flex-col gap-1">
+      <span className="text-[11px] font-medium uppercase tracking-wide text-text-dim">Edit</span>
+      <div className="flex items-center gap-1.5">
+        <button
+          type="button"
+          title={enabled ? 'Edit mode active — click to disable' : 'Click to enable edit mode'}
+          onClick={() => onToggle(!enabled)}
+          className={`cursor-pointer rounded px-1.5 py-0.5 text-xs font-medium transition-colors ${enabled ? TOGGLE_ON : TOGGLE_OFF}`}
+        >
+          {enabled && changeCount > 0 ? `${changeCount} change${changeCount !== 1 ? 's' : ''}` : 'Edit'}
         </button>
       </div>
     </div>

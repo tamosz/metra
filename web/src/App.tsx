@@ -1,12 +1,9 @@
 import { useState, useEffect } from 'react';
 import { Dashboard } from './components/Dashboard.js';
-import { ProposalBuilder } from './components/ProposalBuilder.js';
-import { ProposalResults } from './components/ProposalResults.js';
 import { BuildExplorer } from './components/BuildExplorer.js';
 import { BuildComparison } from './components/BuildComparison.js';
 import { FormulasPage } from './components/FormulasPage.js';
 import { useSimulation } from './hooks/useSimulation.js';
-import { useProposal } from './hooks/useProposal.js';
 import { useBuildExplorer } from './hooks/useBuildExplorer.js';
 import { useBuildComparison } from './hooks/useBuildComparison.js';
 import { useBuilds } from './hooks/useBuilds.js';
@@ -15,7 +12,7 @@ import { getProposalFromUrl, getBuildFromUrl, getComparisonFromUrl } from './uti
 import { SimulationControlsProvider, useSimulationControls } from './context/SimulationControlsContext.js';
 import { ErrorBoundary } from './components/ErrorBoundary.js';
 
-type Page = 'dashboard' | 'proposal' | 'build' | 'compare' | 'formulas';
+type Page = 'dashboard' | 'build' | 'compare' | 'formulas';
 
 export function App() {
   return (
@@ -37,7 +34,6 @@ function AppContent() {
     efficiencyOverrides: Object.keys(controls.efficiencyOverrides).length > 0 ? controls.efficiencyOverrides : undefined,
   });
   const savedBuildsState = useSavedBuilds();
-  const proposalState = useProposal(controls.targetCount > 1 ? controls.targetCount : undefined);
   const buildState = useBuildExplorer();
   const comparisonState = useBuildComparison();
   const [page, setPage] = useState<Page>('dashboard');
@@ -64,9 +60,11 @@ function AppContent() {
     }
     const urlProposal = getProposalFromUrl();
     if (urlProposal) {
-      proposalState.loadProposal(urlProposal);
-      proposalState.simulate(urlProposal);
-      setPage('proposal');
+      controls.loadEditState(
+        urlProposal.changes,
+        urlProposal.name ? { name: urlProposal.name, author: urlProposal.author || '' } : undefined,
+      );
+      setPage('dashboard');
     }
   }, []);
 
@@ -93,9 +91,6 @@ function AppContent() {
           <nav className="hidden gap-1 md:flex">
             <NavButton active={page === 'dashboard'} onClick={() => navigate('dashboard')}>
               rankings
-            </NavButton>
-            <NavButton active={page === 'proposal'} onClick={() => navigate('proposal')}>
-              proposals
             </NavButton>
             <NavButton active={page === 'build'} onClick={() => navigate('build')}>
               builds
@@ -137,9 +132,6 @@ function AppContent() {
             <NavButton active={page === 'dashboard'} onClick={() => navigate('dashboard')}>
               rankings
             </NavButton>
-            <NavButton active={page === 'proposal'} onClick={() => navigate('proposal')}>
-              proposals
-            </NavButton>
             <NavButton active={page === 'build'} onClick={() => navigate('build')}>
               builds
             </NavButton>
@@ -160,17 +152,6 @@ function AppContent() {
               simulation={simulation}
               buildsState={buildsState}
             />
-          </ErrorBoundary>
-        )}
-        {page === 'proposal' && (
-          <ErrorBoundary>
-            <ProposalBuilder proposalState={proposalState} simulation={simulation} />
-            {proposalState.result && (
-              <ProposalResults
-                result={proposalState.result}
-                proposal={proposalState.proposal}
-              />
-            )}
           </ErrorBoundary>
         )}
         {page === 'build' && <ErrorBoundary><BuildExplorer state={buildState} savedBuilds={savedBuildsState} /></ErrorBoundary>}

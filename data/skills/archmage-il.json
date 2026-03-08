@@ -21,7 +21,8 @@
       "weaponType": "Staff",
       "element": "Lightning",
       "maxTargets": 6,
-      "bounceDecay": 0.7
+      "bounceDecay": 0.7,
+      "headline": false
     },
     {
       "name": "Blizzard",

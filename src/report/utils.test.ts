@@ -190,6 +190,10 @@ function makeDelta(overrides: Partial<DeltaEntry> = {}): DeltaEntry {
     after: 100000,
     change: 0,
     changePercent: 0,
+    uncappedBefore: 100000,
+    uncappedAfter: 100000,
+    uncappedChange: 0,
+    uncappedChangePercent: 0,
     ...overrides,
   };
 }

@@ -74,6 +74,10 @@ export function computeDeltas(
     const afterDps = a ? a.dps.dps : beforeDps;
     const change = afterDps - beforeDps;
     const changePercent = beforeDps === 0 ? 0 : (change / beforeDps) * 100;
+    const uncappedBefore = b.dps.uncappedDps;
+    const uncappedAfter = a ? a.dps.uncappedDps : uncappedBefore;
+    const uncappedChange = uncappedAfter - uncappedBefore;
+    const uncappedChangePercent = uncappedBefore === 0 ? 0 : (uncappedChange / uncappedBefore) * 100;
     const key = scenarioKey(b);
 
     return {
@@ -85,6 +89,10 @@ export function computeDeltas(
       after: afterDps,
       change,
       changePercent,
+      uncappedBefore,
+      uncappedAfter,
+      uncappedChange,
+      uncappedChangePercent,
       rankBefore: beforeRanks.get(key),
       rankAfter: afterRanks.get(key),
     };

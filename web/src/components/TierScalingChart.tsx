@@ -8,11 +8,12 @@ import {
   ReferenceLine,
   ResponsiveContainer,
 } from 'recharts';
-import type { ScenarioResult } from '@engine/proposals/types.js';
+import type { ScenarioResult, ComparisonResult } from '@engine/proposals/types.js';
 import { getClassColor, VARIANT_CLASSES } from '../utils/class-colors.js';
 import { useIsMobile } from '../hooks/useIsMobile.js';
 import { colors } from '../theme.js';
 import { resolveActiveScenario } from '../utils/scenario.js';
+import { buildDeltaMap, deltaMapKey } from '../utils/delta-map.js';
 
 interface TierScalingChartProps {
   data: ScenarioResult[];
@@ -20,6 +21,7 @@ interface TierScalingChartProps {
   showAllSkills: boolean;
   targetCount: number;
   selectedTier: string;
+  editComparison?: ComparisonResult | null;
 }
 
 const TIER_ORDER = ['low', 'mid', 'high', 'perfect'];
@@ -30,9 +32,11 @@ const TIER_LABELS: Record<string, string> = {
   perfect: 'Perfect',
 };
 
-export function TierScalingChart({ data, capEnabled, showAllSkills, targetCount, selectedTier }: TierScalingChartProps) {
+export function TierScalingChart({ data, capEnabled, showAllSkills, targetCount, selectedTier, editComparison }: TierScalingChartProps) {
   const isMobile = useIsMobile();
   const [hoveredKey, setHoveredKey] = useState<string | null>(null);
+
+  const deltaMap = useMemo(() => buildDeltaMap(editComparison), [editComparison]);
 
   // Group results by class+skill across tiers, compute tight Y-axis domain
   const { chartData, lines, yDomain } = useMemo(() => {
@@ -53,7 +57,15 @@ export function TierScalingChart({ data, capEnabled, showAllSkills, targetCount,
       if (!groups.has(key)) groups.set(key, new Map());
       classForKey.set(key, r.className);
       skillForKey.set(key, r.skillName);
-      groups.get(key)!.set(r.tier, Math.round(capEnabled ? r.dps.dps : r.dps.uncappedDps));
+      let dps = Math.round(capEnabled ? r.dps.dps : r.dps.uncappedDps);
+      if (deltaMap) {
+        const delta = deltaMap.get(deltaMapKey(r.className, r.skillName, r.tier, r.scenario));
+        const change = delta ? (capEnabled ? delta.change : delta.uncappedChange) : 0;
+        if (delta && change !== 0) {
+          dps = Math.round(capEnabled ? delta.after : delta.uncappedAfter);
+        }
+      }
+      groups.get(key)!.set(r.tier, dps);
     }
 
     // Build Recharts data: one object per tier with all lines as keys
@@ -93,7 +105,7 @@ export function TierScalingChart({ data, capEnabled, showAllSkills, targetCount,
     }
 
     return { chartData, lines, yDomain };
-  }, [data, capEnabled, showAllSkills, targetCount]);
+  }, [data, capEnabled, showAllSkills, targetCount, deltaMap]);
 
   if (lines.length === 0) {
     return <div className="py-10 text-center text-text-dim">No data</div>;
