@@ -1,20 +1,21 @@
 {
   "extends": "shadower",
-  "source": "Theoretical max: godly + 7/7 30% scrolls. Dagger: Maple Kandayo or Crystal Ilbi Dagger (145 WATK). Shield: Dark Impenetrable (48 WATK godly-scrolled). C/G/S 24/24/22. gearStats verified against breakdown totals.",
+  "source": "Perfect tier: Dragon Kanzir (speed 4) 145wa 21luk + Dragon Khanjar 43wa 8luk 14str. C/G/S 24/24/22.",
   "baseStats": {
     "STR": 4,
-    "DEX": 14,
+    "DEX": 25,
     "INT": 4,
-    "LUK": 933
+    "LUK": 997
   },
   "gearBreakdown": {
     "weapon": {
-      "LUK": 26,
+      "LUK": 21,
       "WATK": 145
     },
     "shield": {
-      "STR": 26,
-      "WATK": 48
+      "LUK": 8,
+      "STR": 14,
+      "WATK": 43
     },
     "helmet": {
       "LUK": 87,
@@ -22,54 +23,44 @@
       "STR": 87
     },
     "top": {
-      "LUK": 42,
-      "DEX": 12
-    },
-    "bottom": {
-      "LUK": 14,
-      "DEX": 33
+      "LUK": 64,
+      "DEX": 10
     },
     "earring": {
-      "LUK": 7,
-      "DEX": 20,
-      "STR": 7
+      "LUK": 28,
+      "DEX": 7
     },
     "eye": {
-      "LUK": 13
+      "LUK": 18,
+      "STR": 8
     },
     "face": {
-      "LUK": 13
+      "LUK": 25
     },
-    "pendant": {
-      "LUK": 28,
-      "DEX": 28,
-      "STR": 28
-    },
-    "medal": {
-      "LUK": 2,
-      "DEX": 2,
-      "STR": 2
+    "belt": {
+      "LUK": 5,
+      "DEX": 5,
+      "WATK": 10
     },
     "ring1": {
-      "LUK": 6,
-      "DEX": 1,
-      "STR": 3
-    },
-    "ring2": {
-      "LUK": 6,
-      "DEX": 1,
-      "STR": 4
-    },
-    "ring3": {
-      "LUK": 8,
+      "LUK": 3,
       "DEX": 3,
-      "STR": 3,
       "WATK": 1
     },
+    "ring2": {
+      "LUK": 10,
+      "DEX": 7
+    },
+    "ring3": {
+      "LUK": 14,
+      "DEX": 8
+    },
     "ring4": {
-      "LUK": 8,
-      "DEX": 3,
-      "STR": 3
+      "LUK": 9
+    },
+    "shoulder": {
+      "LUK": 3,
+      "DEX": 3
     }
   }
 }

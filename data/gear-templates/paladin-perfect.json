@@ -1,6 +1,6 @@
 {
   "extends": "paladin",
-  "source": "Theoretical max: godly + 7/7 30% scrolls. 2H Sword: Crushed Skull (base 107 + 7x 30% scrolls = 146 WATK). Weapon speed 6 (Normal). C/G/S 24/24/22. gearStats verified against breakdown totals.",
+  "source": "Perfect tier: Dragon Claymore (speed 6) 150wa 21str. C/G/S 24/24/22.",
   "baseStats": {
     "STR": 999,
     "DEX": 23,
@@ -9,55 +9,52 @@
   },
   "gearBreakdown": {
     "weapon": {
-      "STR": 26,
-      "WATK": 146
+      "STR": 21,
+      "WATK": 150
     },
     "helmet": {
       "STR": 87,
       "DEX": 87
     },
     "top": {
-      "STR": 75,
-      "DEX": 13
+      "STR": 64,
+      "DEX": 12
     },
     "earring": {
-      "STR": 20,
-      "DEX": 5
+      "STR": 28,
+      "DEX": 7
     },
     "eye": {
-      "STR": 6,
-      "DEX": 6
+      "STR": 20
     },
     "face": {
-      "STR": 10,
-      "DEX": 5
-    },
-    "pendant": {
-      "STR": 28,
-      "DEX": 28
+      "STR": 25
     },
     "belt": {
-      "DEX": 5
-    },
-    "medal": {
-      "WATK": 3
+      "STR": 5,
+      "DEX": 5,
+      "WATK": 10
     },
     "ring1": {
-      "STR": 15,
-      "DEX": 5
+      "STR": 3,
+      "DEX": 3,
+      "WATK": 1
     },
     "ring2": {
       "STR": 10,
-      "DEX": 5
+      "DEX": 7
     },
     "ring3": {
-      "STR": 8,
-      "DEX": 2
+      "STR": 14,
+      "DEX": 8
     },
     "ring4": {
       "STR": 8,
-      "DEX": 3,
-      "WATK": 1
+      "DEX": 8
+    },
+    "shoulder": {
+      "STR": 3,
+      "DEX": 3
     }
   }
 }

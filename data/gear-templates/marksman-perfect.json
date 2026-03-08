@@ -1,17 +1,17 @@
 {
   "extends": "marksman",
-  "source": "Theoretical max: godly + 7/7 30% scrolls. Crossbow: Neschere/Olympus Crossbow (base 108 + 7x 30% scrolls = 143 WATK). Marksman Boost passive +15 WATK (Update #65.1). C/G/S 24/24/22. gearStats verified against breakdown totals.",
+  "source": "Perfect tier: Dragon Shiner Cross (speed 6) 148wa 7dex. Marksman Boost +15 WATK. Projectile: Royal Crossbow Quiver 12wa. C/G/S 24/24/22.",
   "projectile": 12,
   "baseStats": {
-    "STR": 4,
+    "STR": 23,
     "DEX": 999,
     "INT": 4,
     "LUK": 4
   },
   "gearBreakdown": {
     "weapon": {
-      "DEX": 5,
-      "WATK": 143
+      "DEX": 7,
+      "WATK": 148
     },
     "crossbowExpert": {
       "WATK": 15
@@ -21,46 +21,44 @@
       "STR": 87
     },
     "top": {
-      "DEX": 75,
-      "STR": 13
+      "DEX": 64,
+      "STR": 12
     },
     "earring": {
-      "DEX": 20
+      "DEX": 28,
+      "STR": 7
     },
     "eye": {
-      "DEX": 6,
-      "STR": 6
+      "DEX": 20
     },
     "face": {
-      "DEX": 10,
-      "STR": 5
-    },
-    "pendant": {
-      "DEX": 28,
-      "STR": 28
+      "DEX": 25
     },
     "belt": {
-      "DEX": 10
-    },
-    "medal": {
-      "WATK": 3
+      "DEX": 5,
+      "STR": 5,
+      "WATK": 10
     },
     "ring1": {
-      "DEX": 13,
-      "STR": 10
-    },
-    "ring2": {
-      "DEX": 10,
-      "STR": 5
-    },
-    "ring3": {
-      "DEX": 8,
-      "STR": 2
-    },
-    "ring4": {
       "DEX": 3,
       "STR": 3,
       "WATK": 1
+    },
+    "ring2": {
+      "DEX": 10,
+      "STR": 7
+    },
+    "ring3": {
+      "DEX": 14,
+      "STR": 8
+    },
+    "ring4": {
+      "DEX": 8,
+      "STR": 8
+    },
+    "shoulder": {
+      "DEX": 3,
+      "STR": 3
     }
   }
 }

@@ -1,6 +1,7 @@
 {
   "extends": "paladin-bw",
-  "source": "Theoretical max: godly Dragon Flame (122) + 7/7 30% scrolls (+35) = 157 WATK. Weapon speed 7 (Slow). C/G/S 24/24/22. gearStats same as paladin-perfect (warriors share stat gear). gearStats verified against breakdown totals.",
+  "source": "Perfect tier: Crushed Skull (speed 6) 160wa 21str + Crossheider 30wa 31str. C/G/S 24/24/22.",
+  "weaponSpeed": 6,
   "baseStats": {
     "STR": 999,
     "DEX": 23,
@@ -9,55 +10,56 @@
   },
   "gearBreakdown": {
     "weapon": {
-      "STR": 26,
-      "WATK": 157
+      "STR": 21,
+      "WATK": 160
+    },
+    "shield": {
+      "STR": 31,
+      "WATK": 30
     },
     "helmet": {
       "STR": 87,
       "DEX": 87
     },
     "top": {
-      "STR": 75,
-      "DEX": 13
+      "STR": 64,
+      "DEX": 12
     },
     "earring": {
-      "STR": 20,
-      "DEX": 5
+      "STR": 28,
+      "DEX": 7
     },
     "eye": {
-      "STR": 6,
-      "DEX": 6
+      "STR": 20
     },
     "face": {
-      "STR": 10,
-      "DEX": 5
-    },
-    "pendant": {
-      "STR": 28,
-      "DEX": 28
+      "STR": 25
     },
     "belt": {
-      "DEX": 5
-    },
-    "medal": {
-      "WATK": 3
+      "STR": 5,
+      "DEX": 5,
+      "WATK": 10
     },
     "ring1": {
-      "STR": 15,
-      "DEX": 5
+      "STR": 3,
+      "DEX": 3,
+      "WATK": 1
     },
     "ring2": {
       "STR": 10,
-      "DEX": 5
+      "DEX": 7
     },
     "ring3": {
-      "STR": 8,
-      "DEX": 2
+      "STR": 14,
+      "DEX": 8
     },
     "ring4": {
       "STR": 8,
-      "DEX": 3,
-      "WATK": 1
+      "DEX": 8
+    },
+    "shoulder": {
+      "STR": 3,
+      "DEX": 3
     }
   }
 }

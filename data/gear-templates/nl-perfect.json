@@ -1,15 +1,16 @@
 {
   "extends": "nl",
-  "source": "Theoretical max: godly + 7/7 30% scrolls. Claw: Dragon Purple Claw (95 WATK, max possible). Projectile: Balanced Fury (30 WATK). C/G/S 24/24/22. gearStats verified against breakdown totals.",
+  "source": "Perfect tier: Dragon Purple Sleeve (speed 4) 95wa 20luk. Projectile: Star 32wa. C/G/S 24/24/22.",
+  "projectile": 32,
   "baseStats": {
     "STR": 4,
     "DEX": 25,
     "INT": 4,
-    "LUK": 999
+    "LUK": 997
   },
   "gearBreakdown": {
     "weapon": {
-      "LUK": 8,
+      "LUK": 20,
       "WATK": 95
     },
     "helmet": {
@@ -17,48 +18,44 @@
       "DEX": 87
     },
     "top": {
-      "LUK": 35,
+      "LUK": 64,
       "DEX": 10
     },
-    "bottom": {
-      "LUK": 10,
-      "DEX": 23
-    },
     "earring": {
-      "LUK": 9,
-      "DEX": 17
+      "LUK": 28,
+      "DEX": 7
     },
     "eye": {
-      "LUK": 1,
-      "DEX": 3
+      "LUK": 18,
+      "STR": 8
     },
     "face": {
-      "LUK": 10,
-      "DEX": 5
-    },
-    "pendant": {
-      "LUK": 28,
-      "DEX": 28
+      "LUK": 25
     },
     "belt": {
-      "DEX": 9
-    },
-    "medal": {
-      "WATK": 3
+      "LUK": 5,
+      "DEX": 5,
+      "WATK": 10
     },
     "ring1": {
-      "LUK": 8
+      "LUK": 3,
+      "DEX": 3,
+      "WATK": 1
     },
     "ring2": {
       "LUK": 10,
-      "DEX": 10
+      "DEX": 7
     },
     "ring3": {
-      "LUK": 7,
-      "DEX": 2
+      "LUK": 14,
+      "DEX": 8
     },
     "ring4": {
-      "WATK": 1
+      "LUK": 9
+    },
+    "shoulder": {
+      "LUK": 3,
+      "DEX": 3
     }
   }
 }

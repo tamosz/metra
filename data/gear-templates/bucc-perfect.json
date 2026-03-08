@@ -1,6 +1,7 @@
 {
   "extends": "bucc",
-  "source": "Theoretical max: godly + 7/7 30% scrolls. Knuckle: Maple Demon Slash (base 88 + 7x 30% scrolls = 123 WATK). C/G/S 24/24/22. gearStats verified against breakdown totals.",
+  "source": "Perfect tier: Dragon Slash Claw (speed 5) 123wa 21str. C/G/S 24/24/22.",
+  "weaponSpeed": 5,
   "baseStats": {
     "STR": 999,
     "DEX": 23,
@@ -9,7 +10,7 @@
   },
   "gearBreakdown": {
     "weapon": {
-      "STR": 26,
+      "STR": 21,
       "WATK": 123
     },
     "helmet": {
@@ -17,46 +18,44 @@
       "DEX": 87
     },
     "top": {
-      "STR": 57,
-      "DEX": 25
+      "STR": 63,
+      "DEX": 13
     },
     "earring": {
-      "STR": 20
+      "STR": 28,
+      "DEX": 7
     },
     "eye": {
-      "STR": 6,
-      "DEX": 6
+      "STR": 20
     },
     "face": {
-      "STR": 15,
-      "DEX": 5
-    },
-    "pendant": {
-      "STR": 28,
-      "DEX": 28
+      "STR": 25
     },
     "belt": {
-      "DEX": 5
-    },
-    "medal": {
-      "WATK": 3
+      "STR": 5,
+      "DEX": 5,
+      "WATK": 10
     },
     "ring1": {
-      "STR": 10,
-      "DEX": 12
-    },
-    "ring2": {
-      "STR": 5,
-      "DEX": 5
-    },
-    "ring3": {
-      "STR": 6,
-      "DEX": 2
-    },
-    "ring4": {
       "STR": 3,
       "DEX": 3,
       "WATK": 1
+    },
+    "ring2": {
+      "STR": 10,
+      "DEX": 7
+    },
+    "ring3": {
+      "STR": 14,
+      "DEX": 8
+    },
+    "ring4": {
+      "STR": 8,
+      "DEX": 8
+    },
+    "shoulder": {
+      "STR": 3,
+      "DEX": 3
     }
   }
 }
