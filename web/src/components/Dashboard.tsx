@@ -6,7 +6,6 @@ import { AssassinateBugNote } from './AssassinateBugNote.js';
 import { TierAssumptions } from './TierAssumptions.js';
 import type { SimulationData } from '../hooks/useSimulation.js';
 import type { BuildsState } from '../hooks/useBuilds.js';
-import { WelcomeBanner } from './WelcomeBanner.js';
 import { ElementToggles } from './ElementToggles.js';
 import { BuffToggles } from './BuffToggles.js';
 import { KbToggle } from './KbToggle.js';
@@ -58,8 +57,6 @@ export function Dashboard({ simulation, buildsState }: DashboardProps) {
 
   return (
     <div>
-      <WelcomeBanner />
-
       {simulation.error && (
         <div className="mb-4 rounded border border-red-700/30 bg-red-950/20 px-4 py-3 text-sm text-red-400">
           Simulation error: {simulation.error.message}
