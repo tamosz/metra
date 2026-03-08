@@ -87,7 +87,8 @@ export function TierScalingChart({ data, capEnabled, showAllSkills, targetCount 
   const rightMargin = isMobile ? 120 : 180;
 
   return (
-    <div data-testid="tier-scaling-chart" style={{ width: '100%', height: chartHeight }}>
+    <div data-testid="tier-scaling-chart">
+      <div style={{ width: '100%', height: chartHeight }}>
       <ResponsiveContainer>
         <LineChart
           data={chartData}
@@ -138,6 +139,7 @@ export function TierScalingChart({ data, capEnabled, showAllSkills, targetCount 
             return (
               <Line
                 key={line.key}
+                type="monotone"
                 dataKey={line.key}
                 stroke={getClassColor(line.className)}
                 strokeWidth={isHovered ? 3 : 2}
@@ -182,6 +184,32 @@ export function TierScalingChart({ data, capEnabled, showAllSkills, targetCount 
           })}
         </LineChart>
       </ResponsiveContainer>
+      </div>
+      <div
+        className="mt-3 flex flex-wrap gap-x-4 gap-y-1.5 px-1"
+        onMouseLeave={() => setHoveredKey(null)}
+      >
+        {lines.map((line) => {
+          const isHovered = hoveredKey === line.key;
+          const isDimmed = hoveredKey != null && !isHovered;
+          return (
+            <button
+              key={line.key}
+              type="button"
+              className="flex cursor-pointer items-center gap-1.5 rounded px-1 py-0.5 text-xs transition-opacity hover:bg-bg-surface"
+              style={{ opacity: isDimmed ? 0.25 : 1 }}
+              onMouseEnter={() => setHoveredKey(line.key)}
+              onClick={() => setHoveredKey(hoveredKey === line.key ? null : line.key)}
+            >
+              <span
+                className="inline-block h-2.5 w-2.5 rounded-sm"
+                style={{ backgroundColor: getClassColor(line.className) }}
+              />
+              <span className="text-text-secondary">{line.key}</span>
+            </button>
+          );
+        })}
+      </div>
     </div>
   );
 }
