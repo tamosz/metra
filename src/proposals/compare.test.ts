@@ -175,7 +175,7 @@ describe('compareProposal', () => {
       author: 'test',
       changes: [
         { target: 'hero.brandish-sword', field: 'basePower', from: 260, to: 300 },
-        { target: 'dark-knight.spear-crusher', field: 'basePower', from: 170, to: 150 },
+        { target: 'dark-knight.spear-crusher-zerked', field: 'basePower', from: 170, to: 150 },
       ],
     };
 
