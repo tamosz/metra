@@ -1,7 +1,6 @@
 import { useState, useMemo } from 'react';
 import { DpsChart } from './DpsChart.js';
 import { TierPresets } from './TierPresets.js';
-import { SupportClassNote } from './SupportClassNote.js';
 import { AssassinateBugNote } from './AssassinateBugNote.js';
 import { TierAssumptions } from './TierAssumptions.js';
 import type { SimulationData } from '../hooks/useSimulation.js';
@@ -85,7 +84,6 @@ export function Dashboard({ simulation, buildsState }: DashboardProps) {
 
       <TierAssumptions />
 
-      <SupportClassNote classNames={[...new Set(filtered.map((r) => r.className))]} />
       <AssassinateBugNote classNames={[...new Set(filtered.map((r) => r.className))]} />
 
       <DpsChart data={filtered} />

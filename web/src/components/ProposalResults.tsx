@@ -4,7 +4,6 @@ import { renderComparisonReport } from '@engine/report/markdown.js';
 import { renderComparisonBBCode } from '@engine/report/bbcode.js';
 import { setProposalInUrl } from '../utils/url-encoding.js';
 import { FilterGroup } from './FilterGroup.js';
-import { SupportClassNote } from './SupportClassNote.js';
 import { getScenarioDescription } from '../utils/game-terms.js';
 import { ComparisonChart } from './proposal/ComparisonChart.js';
 import { RankBumpChart } from './proposal/RankBumpChart.js';
@@ -160,8 +159,6 @@ export function ProposalResults({ result, proposal }: ProposalResultsProps) {
           />
         )}
       </div>
-
-      <SupportClassNote classNames={[...new Set(filtered.map((d) => d.className))]} />
 
       {changed.length > 0 && <ComparisonChart deltas={changed} />}
 

@@ -4,7 +4,6 @@ import type { SavedBuildsState } from '../hooks/useSavedBuilds.js';
 import { BuildStatEditor } from './BuildStatEditor.js';
 import { BuildBuffToggles } from './BuildBuffToggles.js';
 import { BuildDpsResults } from './BuildDpsResults.js';
-import { SupportClassNote } from './SupportClassNote.js';
 import { ArcherPassiveNote } from './ArcherPassiveNote.js';
 import { MarginalGainsTable } from './MarginalGainsTable.js';
 import { TemplateEditor } from './TemplateEditor.js';
@@ -139,7 +138,6 @@ export function BuildExplorer({ state, savedBuilds }: BuildExplorerProps) {
         )}
       </div>
 
-      <SupportClassNote classNames={[formatClassName(selectedClass)]} />
       <ArcherPassiveNote classNames={[formatClassName(selectedClass)]} />
 
       {template && (
