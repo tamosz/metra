@@ -1,6 +1,6 @@
-# Royals Balance Simulator
+# metra
 
-DPS calculator for MapleRoyals. All 14 classes, 4 funding tiers.
+DPS calculator for Royals.
 
 Punch in a class and tier, toggle buffs, and see where things land. Useful for balance discussions or just figuring out what to upgrade next.
 
