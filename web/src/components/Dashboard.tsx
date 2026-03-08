@@ -100,7 +100,7 @@ export function Dashboard({ simulation, buildsState }: DashboardProps) {
 
       <TierScalingChart data={results} capEnabled={capEnabled} showAllSkills={showAllSkills} targetCount={targetCount} selectedTier={selectedTier} />
       <div className="mt-6">
-        <DpsChart data={filtered} />
+        <DpsChart data={filtered} whatIfComparison={whatIfEnabled ? comparison.result : null} />
       </div>
 
       <div className="mt-6">
