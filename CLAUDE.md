@@ -180,68 +180,32 @@ This is a v62-based Royals private server. Key differences from official GMS:
 3. **Source spreadsheet** (`data/source-sheet.xlsx`) — reference implementation being translated. Cross-check against forum when values seem uncertain.
 4. **In-game verification** — ultimate authority when other sources disagree.
 
-### Damage Formula (verified, from `damage.ts`)
+### Game Mechanics
 
-**Standard (warriors, archers, Shadower):**
-```
-MaxDamage = floor((primaryStat * weaponMultiplier + secondaryStat) * totalAttack / 100)
-MinDamage = floor((primaryStat * weaponMultiplier * 0.9 * mastery + secondaryStat) * totalAttack / 100)
-```
-Source: range calculator E18/E19. Weapon multipliers come from `weapons.json` (e.g., 4.6 for 2H Sword slash, 3.6 for Dagger). Mastery is per-class (e.g., 0.6 for Hero). `secondaryStat` can be an array (e.g., Shadower uses `["STR", "DEX"]` — both are summed).
+Detailed formulas (damage, crit, attack speed, KB) are in `data/references/`. Read those files when working on engine code — don't rely on summaries here.
 
-**Throwing stars (NL):**
-```
-MaxDamage = floor(5.0 * LUK * totalAttack / 100)
-MinDamage = floor(2.5 * LUK * totalAttack / 100)
-```
-Source: range calculator F18/F19. No weapon multiplier or secondary stat — flat LUK scaling.
+Key design points:
+- Three damage formulas: standard (physical), throwing star (NL), magic. Dispatched via `classData.damageFormula`.
+- Three SE crit formula variants: `addBeforeMultiply` (default), `multiplicative` (mages), `scaleOnBase` (Arrow Bomb). Set per-class, overridable per-skill.
+- `secondaryStat` can be an array (e.g., Shadower uses `["STR", "DEX"]`).
 
-### Crit Damage
-Three formula variants exist, configured per class via `seCritFormula` (can also be overridden per-skill):
-- **`addBeforeMultiply`** (default, most physical classes): `critDmg% = (basePower + totalCritBonus) * multiplier`
-- **`multiplicative`** (mages): `critDmg% = basePower * multiplier * totalCritBonus / 100` (1.4× with SE)
-- **`scaleOnBase`** (Arrow Bomb): `critDmg% = basePower * multiplier * (1 + totalCritBonus / 100)`
+### Classes
 
-`totalCritBonus` = built-in crit bonus (e.g., TT +100) + SE bonus (+140 if active). Crit rate is also additive: built-in (e.g., TT 0.50) + SE (0.15), capped at 1.0.
+14 classes implemented. Per-class details (weapons, multipliers, skill data, combo rotations) live in `data/skills/*.json` and `data/references/class-guides.md`. Classes with weapon variants (Hero/Axe, Paladin/BW) have separate skill files and gear templates.
 
-### Key Classes
+### Funding & Gear
 
-**Implemented (14 classes):**
-- **Hero** — 2H Sword, Brandish (2-hit)
-- **Hero (Axe)** — 2H Axe, Brandish (2-hit). Separate skill file and gear templates. Weapon speed 6 (no speed-5 2H Axe exists), 4.8× multiplier. Buffed DPS matches Sword (SI resolves both to speed 2); unbuffed Axe is slower.
-- **Dark Knight (DrK)** — Spear, Crusher
-- **Paladin** — 2H Sword, Blast (Holy and F/I/L Charge variants)
-- **Paladin (BW)** — 2H BW, Blast (Holy and F/I/L Charge variants). Separate skill file and gear templates. BW uses `attackRatio` for weighted swing/stab multiplier (3:2 → effective 4.24×).
-- **Night Lord (NL)** — Claw, Triple Throw (3-hit, built-in 50% crit, Shadow Partner)
-- **Bowmaster** — Bow, Hurricane (fixed 0.12s attack time) and Strafe (4-hit), built-in 40% crit from Critical Shot
-- **Marksman (MM)** — Crossbow, Snipe + Strafe weave rotation (combo via `comboGroup`: 1 Snipe per 5s cycle + N Strafes as filler) and standalone Strafe (4-hit). Snipe has ~5s effective cooldown (4s programmed + ~1s server tick). DEX primary, Crossbow 3.6× multiplier, 1.0 mastery (Update #71), 40% crit from Critical Shot. Shares gear with Bowmaster (Marksman Boost +15 WATK, Update #65.1).
-- **Corsair (Sair)** — Gun, Battleship Cannon (4-hit, 0.60s) and Rapid Fire (Hurricane-style 0.12s). DEX primary, 3.6× weapon multiplier. Has `mixedRotations` for Practical Bossing (80/20 Cannon/RF split).
-- **Buccaneer (Bucc)** — Knuckle, Demolition (8-hit, fixed 2.34s cycle), Barrage + Demolition (multi-part combo via `comboGroup`, fixed 4.04s cycle), and Snatch + Dragon Strike (training combo, 1.6s cycle, 6 targets). STR primary, 4.8× weapon multiplier.
-- **Shadower** — Dagger + Shield, Boomerang Step + Assassinate 30 (combo via `comboGroup`, 2.31s cycle) and Savage Blow (6-hit standalone). LUK primary, STR+DEX secondary (array `secondaryStat`), Dagger 3.6× multiplier, standard damage formula, Shadow Partner, no built-in crit.
-- **Archmage (I/L)** — magic, Ice/Lightning spells
-- **Archmage (F/P)** — magic, Fire/Poison spells
-- **Bishop** — magic, party utility
-
-### Funding Tiers
-Balance is evaluated across funding levels. Current tiers:
-- **low** — base/tradeable gear, no scrolling, Stopper potion (~lv160-170). C/G/S 10/12/10.
-- **mid** — reasonable scrolling, Stopper potion (~lv185). C/G/S 15/16/13.
-- **high** — well-scrolled endgame gear, Apple potion (lv200). C/G/S 20/18/16.
-- **perfect** — theoretical max gear (godly clean +5 over MS max + 7/7 30% dark scrolls), Apple potion. C/G/S 24/24/22.
-
-A change that looks balanced at high funding might be wildly unbalanced at low funding, and vice versa. Always evaluate across tiers.
-
-### Gear Template Assumptions
-All templates assume a fully buffed party scenario: MW20, Sharp Eyes, Speed Infusion, Echo of Hero, and Booster (implicit). Low and mid tiers use Heartstopper (60 WATK), high and perfect tiers use Onyx Apple (100 WATK). Mage low/mid tiers use Lollipop (45 MATK), mage high and perfect tiers use Ssiws Cheese (220 MATK). See `data/gear-assumptions.md` for the full per-slot breakdown, forum cross-references, and flagged concerns.
+Four tiers: low, mid, high, perfect. A change that looks balanced at one tier may be wildly unbalanced at another — always evaluate across tiers. Templates assume full party buffs (MW20, SE, SI, Echo, Booster). See `data/gear-assumptions.md` for the full breakdown.
 
 ### Simulation Controls
-All simulation conditions are composed from individual toggles rather than predefined scenarios:
-- **Buff toggles** — SE, Echo, SI, MW, Attack Potion. Each can be toggled on/off independently.
-- **Element toggles** (web only) — Holy, Fire, Ice, Lightning, Poison. Each cycles neutral → weak (1.5×) → strong (0.5×). Element modifiers are passed into `calculateSkillDps` so they interact with the per-line damage cap (199,999).
-- **KB toggle** — Knockback modeling. When enabled, accounts for DPS lost to boss attacks interrupting skills. Classes with Stance (warriors, Bucc) or Shadow Shifter (NL, Shadower) lose less uptime. Configurable boss attack interval (default 1.5s) and accuracy (default 250). CLI: `--kb` flag with optional `--kb-interval` and `--kb-accuracy`.
-- **Target count** — Multi-target training simulation. AoE skills scale with `min(maxTargets, targetCount)`. CLI: `--targets N`.
 
-`ScenarioConfig` in the engine still supports buff overrides, element modifiers, target count, and knockback parameters — these are built on-the-fly from the active toggles rather than selected from a list.
+All conditions are composed from individual toggles (not predefined scenarios):
+- **Buff toggles** — SE, Echo, SI, MW, Attack Potion
+- **Element toggles** (web only) — interact with per-line 199,999 damage cap
+- **KB toggle** — boss attack interval/accuracy modeling. CLI: `--kb`
+- **Target count** — multi-target training. CLI: `--targets N`
+
+`ScenarioConfig` is built on-the-fly from active toggles.
 
 ## Tech Stack
 
