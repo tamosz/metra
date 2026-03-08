@@ -187,16 +187,26 @@ export function RankingTable({
 
   const sorted = useMemo(() => {
     const dir = sortDirection === 'asc' ? 1 : -1;
+    const getEffectiveDps = (r: typeof data[0]) => {
+      if (deltaMap) {
+        const delta = deltaMap.get(deltaMapKey(r.className, r.skillName, r.tier, r.scenario));
+        const change = delta ? (capEnabled ? delta.change : delta.uncappedChange) : 0;
+        if (delta && change !== 0) {
+          return capEnabled ? delta.after : delta.uncappedAfter;
+        }
+      }
+      return getDps(r);
+    };
     return [...data].sort((a, b) => {
       switch (sortColumn) {
         case 'class': return dir * a.className.localeCompare(b.className);
         case 'skill': return dir * a.skillName.localeCompare(b.skillName);
         case 'tier': return dir * compareTiers(a.tier, b.tier);
-        case 'dps': return dir * (getDps(a) - getDps(b));
+        case 'dps': return dir * (getEffectiveDps(a) - getEffectiveDps(b));
         case 'capLoss': return dir * (a.dps.capLossPercent - b.dps.capLossPercent);
       }
     });
-  }, [data, sortColumn, sortDirection, capEnabled]);
+  }, [data, sortColumn, sortDirection, capEnabled, deltaMap]);
 
   const thBase = 'px-3 py-2 text-[11px] uppercase tracking-wide text-text-dim font-medium';
   const thSortable = `${thBase} cursor-pointer select-none`;

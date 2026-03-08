@@ -71,7 +71,7 @@ export function DpsChart({ data, editComparison }: DpsChartProps) {
       description: r.description,
       baselineDps,
     };
-  });
+  }).sort((a, b) => b.dps - a.dps);
 
   if (chartData.length === 0) {
     return <div className="py-10 text-center text-text-dim">No data</div>;

@@ -104,7 +104,7 @@ export function Dashboard({ simulation, buildsState }: DashboardProps) {
 
       <AssassinateBugNote classNames={[...new Set(filtered.map((r) => r.className))]} />
 
-      <TierScalingChart data={results} capEnabled={capEnabled} showAllSkills={showAllSkills} targetCount={targetCount} selectedTier={selectedTier} />
+      <TierScalingChart data={results} capEnabled={capEnabled} showAllSkills={showAllSkills} targetCount={targetCount} selectedTier={selectedTier} editComparison={editEnabled ? comparison.result : null} />
       <div className="mt-6">
         <DpsChart data={filtered} editComparison={editEnabled ? comparison.result : null} />
       </div>
