@@ -720,8 +720,9 @@ describe('targetCount (multi-target scaling)', () => {
       r => r.skillName === 'Blizzard' && r.scenario === 'Training 6'
     )!;
 
-    // Chain Lightning maxTargets: 6, targetCount: 6 → 6x
-    expect(chainTraining.dps.dps).toBeCloseTo(chainBuffed.dps.dps * 6, 0);
+    // Chain Lightning maxTargets: 6, targetCount: 6, bounceDecay: 0.7 → geometric series ≈ 2.94x
+    const clExpected = (1 - 0.7 ** 6) / (1 - 0.7);
+    expect(chainTraining.dps.dps).toBeCloseTo(chainBuffed.dps.dps * clExpected, 0);
     // Blizzard maxTargets: 15, targetCount: 6 → capped at 6x
     expect(blizzTraining.dps.dps).toBeCloseTo(blizzBuffed.dps.dps * 6, 0);
   });

@@ -20,7 +20,8 @@
       "speedCategory": "Chain Lightning",
       "weaponType": "Staff",
       "element": "Lightning",
-      "maxTargets": 6
+      "maxTargets": 6,
+      "bounceDecay": 0.7
     },
     {
       "name": "Blizzard",
