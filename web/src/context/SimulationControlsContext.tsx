@@ -23,6 +23,8 @@ interface SimulationControlsContextType {
   cgsValues: CgsValues;
   setCgsValues: (values: CgsValues) => void;
   kbConfig: KbConfig | undefined;
+  efficiencyOverrides: Record<string, number[]>;
+  setEfficiencyOverrides: (overrides: Record<string, number[]>) => void;
 }
 
 const SimulationControlsContext = createContext<SimulationControlsContextType | null>(null);
@@ -37,6 +39,7 @@ export function SimulationControlsProvider({ children }: { children: ReactNode }
   const [capEnabled, setCapEnabled] = useState(true);
   const [selectedTier, setSelectedTier] = useState('high');
   const [cgsValues, setCgsValues] = useState<CgsValues>({ ...CGS_DEFAULTS.high });
+  const [efficiencyOverrides, setEfficiencyOverrides] = useState<Record<string, number[]>>({});
 
   const kbConfig = useMemo(
     () => (kbEnabled ? { bossAttackInterval, bossAccuracy } : undefined),
@@ -64,8 +67,10 @@ export function SimulationControlsProvider({ children }: { children: ReactNode }
       cgsValues,
       setCgsValues,
       kbConfig,
+      efficiencyOverrides,
+      setEfficiencyOverrides,
     }),
-    [targetCount, elementModifiers, buffOverrides, kbEnabled, bossAttackInterval, bossAccuracy, capEnabled, selectedTier, cgsValues, kbConfig],
+    [targetCount, elementModifiers, buffOverrides, kbEnabled, bossAttackInterval, bossAccuracy, capEnabled, selectedTier, cgsValues, kbConfig, efficiencyOverrides],
   );
 
   return (
