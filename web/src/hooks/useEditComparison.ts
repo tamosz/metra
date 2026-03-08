@@ -13,7 +13,7 @@ import type { BuffOverrides } from '../components/BuffToggles.js';
 import { applyCgsOverride, type CgsValues } from '../utils/cgs.js';
 import type { KbConfig } from './useSimulation.js';
 
-export interface WhatIfComparisonOptions {
+export interface EditComparisonOptions {
   changes: ProposalChange[];
   targetCount?: number;
   elementModifiers?: Record<string, number>;
@@ -23,7 +23,7 @@ export interface WhatIfComparisonOptions {
   efficiencyOverrides?: Record<string, number[]>;
 }
 
-export interface WhatIfComparisonData {
+export interface EditComparisonData {
   result: ComparisonResult | null;
   error: Error | null;
 }
@@ -101,13 +101,13 @@ function runComparison(
   }
 }
 
-export function useWhatIfComparison(options: WhatIfComparisonOptions): WhatIfComparisonData {
+export function useEditComparison(options: EditComparisonOptions): EditComparisonData {
   const { changes, targetCount, elementModifiers, buffOverrides, kbConfig, cgsOverride, efficiencyOverrides } = options;
 
   // Run synchronously on first call with changes (no flash of empty state),
   // then debounce subsequent updates to avoid jank from rapid edits.
   const hasRun = useRef(false);
-  const [state, setState] = useState<WhatIfComparisonData>(() => {
+  const [state, setState] = useState<EditComparisonData>(() => {
     if (changes.length > 0) {
       hasRun.current = true;
       return runComparison(changes, targetCount, elementModifiers, buffOverrides, kbConfig, cgsOverride, efficiencyOverrides);

@@ -13,10 +13,10 @@ import { KbToggle } from './KbToggle.js';
 import { CapToggle } from './CapToggle.js';
 import { TOGGLE_ON, TOGGLE_OFF } from '../utils/styles.js';
 import { useSimulationControls } from '../context/SimulationControlsContext.js';
-import { useWhatIfComparison } from '../hooks/useWhatIfComparison.js';
+import { useEditComparison } from '../hooks/useEditComparison.js';
 import { RankingTable } from './dashboard/RankingTable.js';
 import { TargetSpinner } from './dashboard/TargetSpinner.js';
-import { WhatIfPopover } from './dashboard/WhatIfPopover.js';
+import { EditPopover } from './dashboard/EditPopover.js';
 import { EfficiencyPanel } from './EfficiencyPanel.js';
 import { resolveActiveScenario } from '../utils/scenario.js';
 import { VARIANT_CLASSES } from '../utils/class-colors.js';
@@ -28,11 +28,11 @@ interface DashboardProps {
 
 export function Dashboard({ simulation, buildsState }: DashboardProps) {
   const controls = useSimulationControls();
-  const { selectedTier, targetCount, capEnabled, cgsValues, setCgsValues, whatIfEnabled, setWhatIfEnabled, whatIfChanges } = controls;
+  const { selectedTier, targetCount, capEnabled, cgsValues, setCgsValues, editEnabled, setEditEnabled, editChanges } = controls;
   const { results, tiers } = simulation;
 
-  const comparison = useWhatIfComparison({
-    changes: whatIfChanges,
+  const comparison = useEditComparison({
+    changes: editChanges,
     targetCount: targetCount > 1 ? targetCount : undefined,
     elementModifiers: Object.keys(controls.elementModifiers).length > 0 ? controls.elementModifiers : undefined,
     buffOverrides: Object.keys(controls.buffOverrides).length > 0 ? controls.buffOverrides : undefined,
@@ -94,8 +94,8 @@ export function Dashboard({ simulation, buildsState }: DashboardProps) {
         <EfficiencyPanel />
 
         <div className="ml-auto border-l border-border-default pl-4 flex items-center gap-3">
-          <EditModeToggle enabled={whatIfEnabled} onToggle={setWhatIfEnabled} changeCount={whatIfChanges.length} />
-          {whatIfEnabled && <WhatIfPopover comparison={comparison} />}
+          <EditModeToggle enabled={editEnabled} onToggle={setEditEnabled} changeCount={editChanges.length} />
+          {editEnabled && <EditPopover comparison={comparison} />}
         </div>
       </div>
 
@@ -105,11 +105,11 @@ export function Dashboard({ simulation, buildsState }: DashboardProps) {
 
       <TierScalingChart data={results} capEnabled={capEnabled} showAllSkills={showAllSkills} targetCount={targetCount} selectedTier={selectedTier} />
       <div className="mt-6">
-        <DpsChart data={filtered} whatIfComparison={whatIfEnabled ? comparison.result : null} />
+        <DpsChart data={filtered} editComparison={editEnabled ? comparison.result : null} />
       </div>
 
       <div className="mt-6">
-        <RankingTable data={filtered} allResults={results} capEnabled={capEnabled} whatIfComparison={whatIfEnabled ? comparison.result : null} />
+        <RankingTable data={filtered} allResults={results} capEnabled={capEnabled} editComparison={editEnabled ? comparison.result : null} />
       </div>
     </div>
   );

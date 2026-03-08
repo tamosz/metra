@@ -15,7 +15,7 @@ import { colors } from '../theme.js';
 import { useSimulationControls } from '../context/SimulationControlsContext.js';
 import type { DeltaEntry } from '@engine/proposals/types.js';
 
-// Custom bar shape that overlays a ghost bar showing the baseline DPS when a what-if change is active.
+// Custom bar shape that overlays a ghost bar showing the baseline DPS when an edit change is active.
 // Recharts renders multiple <Bar> components side-by-side (grouped), so we use a single Bar with a
 // custom shape to draw both the ghost (baseline width) and the actual bar on the same row.
 function GhostBarShape(props: unknown) {
@@ -39,21 +39,21 @@ function GhostBarShape(props: unknown) {
 
 interface DpsChartProps {
   data: ScenarioResult[];
-  whatIfComparison?: ComparisonResult | null;
+  editComparison?: ComparisonResult | null;
 }
 
-export function DpsChart({ data, whatIfComparison }: DpsChartProps) {
+export function DpsChart({ data, editComparison }: DpsChartProps) {
   const { capEnabled } = useSimulationControls();
   const isMobile = useIsMobile();
 
   const deltaMap = useMemo(() => {
-    if (!whatIfComparison) return null;
+    if (!editComparison) return null;
     const map = new Map<string, DeltaEntry>();
-    for (const d of whatIfComparison.deltas) {
+    for (const d of editComparison.deltas) {
       map.set(`${d.className}\0${d.skillName}\0${d.tier}\0${d.scenario}`, d);
     }
     return map;
-  }, [whatIfComparison]);
+  }, [editComparison]);
 
   const chartData = data.map((r) => {
     let baselineDps: number | undefined;
@@ -176,7 +176,7 @@ export function DpsChart({ data, whatIfComparison }: DpsChartProps) {
             dataKey="dps"
             radius={[0, 3, 3, 0]}
             barSize={18}
-            shape={whatIfComparison ? GhostBarShape : undefined}
+            shape={editComparison ? GhostBarShape : undefined}
           >
             {chartData.map((entry, index) => (
               <Cell key={index} fill={getClassColor(entry.className)} fillOpacity={0.8} />
