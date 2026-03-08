@@ -229,6 +229,9 @@ export function TierScalingChart({ data, capEnabled, showAllSkills, targetCount 
                       fontSize={isMobile ? 9 : 11}
                       dominantBaseline="central"
                       opacity={isDimmed ? 0.3 : 1}
+                      style={{ cursor: 'pointer' }}
+                      onClick={() => setHoveredKey(hoveredKey === line.key ? null : line.key)}
+                      onMouseEnter={() => setHoveredKey(line.key)}
                     >
                       {line.key}
                     </text>
