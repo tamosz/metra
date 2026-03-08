@@ -16,6 +16,7 @@ interface TierScalingChartProps {
   data: ScenarioResult[];
   capEnabled: boolean;
   showAllSkills: boolean;
+  targetCount: number;
 }
 
 const TIER_ORDER = ['low', 'mid', 'high', 'perfect'];
@@ -27,14 +28,16 @@ const TIER_LABELS: Record<string, string> = {
 };
 const VARIANT_CLASSES = new Set(['Hero (Axe)', 'Paladin (BW)']);
 
-export function TierScalingChart({ data, capEnabled, showAllSkills }: TierScalingChartProps) {
+export function TierScalingChart({ data, capEnabled, showAllSkills, targetCount }: TierScalingChartProps) {
   const isMobile = useIsMobile();
   const [hoveredKey, setHoveredKey] = useState<string | null>(null);
 
   // Group results by class+skill across tiers
   const { chartData, lines } = useMemo(() => {
     // Filter to active scenario only (not tier — we want all tiers)
-    const activeScenario = data[0]?.scenario;
+    const activeScenario = targetCount > 1
+      ? data.find((r) => r.scenario.startsWith('Training'))?.scenario
+      : data[0]?.scenario;
     const filtered = data.filter((r) => {
       if (r.scenario !== activeScenario) return false;
       if (!showAllSkills && r.headline === false) return false;
@@ -74,13 +77,13 @@ export function TierScalingChart({ data, capEnabled, showAllSkills }: TierScalin
     }));
 
     return { chartData, lines };
-  }, [data, capEnabled, showAllSkills]);
+  }, [data, capEnabled, showAllSkills, targetCount]);
 
   if (lines.length === 0) {
     return <div className="py-10 text-center text-text-dim">No data</div>;
   }
 
-  const chartHeight = Math.max(350, isMobile ? 300 : 450);
+  const chartHeight = isMobile ? 350 : 450;
   const rightMargin = isMobile ? 120 : 180;
 
   return (
