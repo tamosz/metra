@@ -1,4 +1,4 @@
-import { memo } from 'react';
+import { memo, useCallback, type KeyboardEvent } from 'react';
 import type { DpsResult } from '@metra/engine';
 import { formatDps } from '../utils/format.js';
 
@@ -14,7 +14,21 @@ interface SkillDetailPanelProps {
   isComposite: boolean;
   capEnabled: boolean;
   currentTier: string;
+  whatIfEnabled?: boolean;
+  /** Current skill field values: { basePower: 260, multiplier: 1, ... } */
+  skillFields?: Record<string, number>;
+  /** Called when user edits a field: (fieldName, newValue, originalValue) */
+  onFieldChange?: (field: string, value: number, original: number) => void;
+  /** Fields with active what-if changes: { basePower: 280 } */
+  activeChanges?: Record<string, number>;
 }
+
+const FIELD_LABELS: Record<string, string> = {
+  basePower: 'Base Power',
+  multiplier: 'Multiplier',
+  hitCount: 'Hit Count',
+  maxTargets: 'Max Targets',
+};
 
 function SkillDetailPanelInner({
   dps,
@@ -23,6 +37,10 @@ function SkillDetailPanelInner({
   isComposite,
   capEnabled,
   currentTier,
+  whatIfEnabled,
+  skillFields,
+  onFieldChange,
+  activeChanges,
 }: SkillDetailPanelProps) {
   const maxTierDps = Math.max(...tierData.map((t) => t.dps));
 
@@ -34,12 +52,36 @@ function SkillDetailPanelInner({
           dps.critDamagePercent * dps.totalCritRate)
       : 0;
 
+  const showEditFields = whatIfEnabled && skillFields && !isComposite;
+
   return (
     <div
       className="bg-bg-raised px-3 py-4"
       style={{ borderTop: `2px solid ${classColor}` }}
       data-testid="skill-detail-panel"
     >
+      {showEditFields && (
+        <div className="border-b border-border-subtle mb-3 pb-3">
+          <div className="flex flex-wrap gap-x-4 gap-y-2">
+            {Object.entries(skillFields).map(([field, original]) => {
+              const changed = activeChanges?.[field];
+              const hasChange = changed !== undefined;
+              return (
+                <FieldInput
+                  key={`${field}-${changed ?? original}`}
+                  field={field}
+                  label={FIELD_LABELS[field] ?? field}
+                  defaultValue={hasChange ? changed : original}
+                  original={original}
+                  hasChange={hasChange}
+                  onCommit={onFieldChange}
+                />
+              );
+            })}
+          </div>
+        </div>
+      )}
+
       <div className="flex flex-col gap-4 md:flex-row md:gap-8">
         {/* Left: Formula breakdown (non-composite only) */}
         {!isComposite && (
@@ -128,5 +170,67 @@ function StatRow({
         {value}
       </span>
     </div>
+  );
+}
+
+function FieldInput({
+  field,
+  label,
+  defaultValue,
+  original,
+  hasChange,
+  onCommit,
+}: {
+  field: string;
+  label: string;
+  defaultValue: number;
+  original: number;
+  hasChange: boolean;
+  onCommit?: (field: string, value: number, original: number) => void;
+}) {
+  const commit = useCallback(
+    (el: HTMLInputElement) => {
+      const parsed = parseFloat(el.value);
+      if (!isNaN(parsed)) {
+        onCommit?.(field, parsed, original);
+      }
+    },
+    [field, original, onCommit],
+  );
+
+  const handleBlur = useCallback(
+    (e: React.FocusEvent<HTMLInputElement>) => commit(e.currentTarget),
+    [commit],
+  );
+
+  const handleKeyDown = useCallback(
+    (e: KeyboardEvent<HTMLInputElement>) => {
+      if (e.key === 'Enter') {
+        commit(e.currentTarget);
+        e.currentTarget.blur();
+      }
+    },
+    [commit],
+  );
+
+  return (
+    <label className="flex flex-col gap-0.5">
+      <span className="text-[10px] text-text-dim">{label}</span>
+      <div className="flex items-center gap-1.5">
+        <input
+          type="number"
+          defaultValue={defaultValue}
+          onBlur={handleBlur}
+          onKeyDown={handleKeyDown}
+          step={field === 'multiplier' ? 0.1 : 1}
+          className={`w-20 rounded border bg-bg-surface px-1.5 py-0.5 text-sm tabular-nums text-text-primary focus:outline-none focus:border-accent ${
+            hasChange ? 'border-accent' : 'border-border-default'
+          }`}
+        />
+        {hasChange && (
+          <span className="text-[10px] text-text-muted">was {original}</span>
+        )}
+      </div>
+    </label>
   );
 }
