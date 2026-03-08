@@ -67,8 +67,8 @@ describe('calculateDamageRange', () => {
     expect(range.average).toBe(7831.5);
   });
 
-  it('matches DrK range calculator values', () => {
-    // From range calculator (DrK, spear mult=5.0, mastery=0.8)
+  it('matches Dark Knight range calculator values', () => {
+    // From range calculator (Dark Knight, spear mult=5.0, mastery=0.8)
     // STR=1272, DEX=127, totalAttack=203+100+12=315
     // E18=14824, E19=20434
     const range = calculateDamageRange(1272, 127, 5.0, 0.8, 315);
@@ -78,7 +78,7 @@ describe('calculateDamageRange', () => {
 });
 
 describe('calculateThrowingStarRange', () => {
-  it('computes NL throwing star range correctly', () => {
+  it('computes Night Lord throwing star range correctly', () => {
     // max = floor(5.0 * 1000 * 300 / 100) = 15000
     // min = floor(2.5 * 1000 * 300 / 100) = 7500
     const range = calculateThrowingStarRange(1000, 300);

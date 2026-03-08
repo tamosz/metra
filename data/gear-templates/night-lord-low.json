@@ -1,6 +1,6 @@
 {
-  "extends": "nl",
-  "source": "Royals forum NL guides (Darko 2024, Comprehensive, Gearing Discussion)",
+  "extends": "night-lord",
+  "source": "Royals forum Night Lord guides (Darko 2024, Comprehensive, Gearing Discussion)",
   "projectile": 27,
   "baseStats": {
     "STR": 4,

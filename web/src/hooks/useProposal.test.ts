@@ -60,7 +60,7 @@ describe('useProposal', () => {
     });
     act(() => {
       result.current.addChange({
-        target: 'drk.crusher',
+        target: 'dark-knight.crusher',
         field: 'basePower',
         to: 300,
       });
@@ -72,7 +72,7 @@ describe('useProposal', () => {
     });
 
     expect(result.current.proposal.changes).toHaveLength(1);
-    expect(result.current.proposal.changes[0].target).toBe('drk.crusher');
+    expect(result.current.proposal.changes[0].target).toBe('dark-knight.crusher');
   });
 
   it('updateChange replaces a change at the given index', () => {
@@ -198,7 +198,7 @@ describe('useProposal', () => {
       name: 'Override Proposal',
       author: '',
       changes: [
-        { target: 'drk.spear-crusher', field: 'basePower', to: 300 },
+        { target: 'dark-knight.spear-crusher', field: 'basePower', to: 300 },
       ],
     };
 

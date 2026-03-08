@@ -1,6 +1,6 @@
 {
-  "extends": "drk",
-  "source": "gear templates sheet, DrK rows 52-74, Mid. Stats reduced to match spreadsheet totals.",
+  "extends": "dark-knight",
+  "source": "gear templates sheet, Dark Knight rows 52-74, Mid. Stats reduced to match spreadsheet totals.",
   "baseStats": {
     "STR": 893,
     "DEX": 4,

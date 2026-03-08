@@ -28,8 +28,8 @@ Community feedback from the simulator's public launch thread.
 ### DPS Accuracy (Donn1e)
 
 - Bucc DPS lower than in-game testing (301k calc vs 331k tested)
-- NL showing inflated DPS relative to real results
-- Hero > DrK for 3–4 targets claimed impossible (needs investigation)
+- Night Lord showing inflated DPS relative to real results
+- Hero > Dark Knight for 3–4 targets claimed impossible (needs investigation)
 - General concern that formula inaccuracies undermine reliability
 
 ### Paladin Element Boost (Sylafia)

@@ -9,8 +9,8 @@ Cross-referenced against Royals forum guides:
 - [Sire's Warrior Guide](https://royals.ms/forum/threads/sires-complete-mapleroyals-warrior-guide.8474/)
 - [Dark Knight Guide 2026](https://royals.ms/forum/threads/a-guide-to-dark-knight-2026.230387/)
 - [Comprehensive Paladin Guide](https://royals.ms/forum/threads/comprehensive-paladin-guide-haplopelma.161247/)
-- [Darko's NL Guide 2024](https://royals.ms/forum/threads/darkos-night-lord-guide-2024.227431/)
-- [Comprehensive NL Guide](https://royals.ms/forum/threads/a-comprehensive-night-lord-guide.23303/)
+- [Darko's Night Lord Guide 2024](https://royals.ms/forum/threads/darkos-night-lord-guide-2024.227431/)
+- [Comprehensive Night Lord Guide](https://royals.ms/forum/threads/a-comprehensive-night-lord-guide.23303/)
 
 ---
 
@@ -53,9 +53,9 @@ all other equipment stats.
 |--------|-------|:---:|:---:|:---:|:---:|
 | Stonetooth Sword | Hero, Paladin | 106 | 111 | +35 | 146 |
 | Dragon Battle Axe | Hero (Axe) | 112 | 117 | +35 | 152 |
-| Sky Ski | DrK | 99 | 104 | +35 | 139 |
+| Sky Ski | Dark Knight | 99 | 104 | +35 | 139 |
 | Dragon Flame | Paladin (BW) | 117 | 122 | +35 | 157 |
-| Dragon Purple Claw | NL | 55 | 60 | +35 | 95 |
+| Dragon Purple Claw | Night Lord | 55 | 60 | +35 | 95 |
 | White Nisrock | Bowmaster | 100 | 105 | +35 | 140 |
 | Dark Neschere | Marksman | 103 | 108 | +35 | 143 |
 | Concerto | Corsair | 79 | 84 | +35 | 119 |
@@ -69,7 +69,7 @@ hard ceiling of character power, not a typical endgame character.
 
 ---
 
-## 3. Warrior Assumptions (Hero, DrK, Paladin, Paladin BW)
+## 3. Warrior Assumptions (Hero, Dark Knight, Paladin, Paladin BW)
 
 ### Base Stats
 
@@ -85,7 +85,7 @@ Hero weapon per community consensus. With SI active, speed 5 and speed 6 both re
 effective speed 2 (0.63s Brandish), so buffed DPS is identical. Without SI, Stonetooth at
 speed 5 yields 0.69s vs 0.75s for speed 6 — an 8.7% DPS advantage in unbuffed scenarios.
 
-DrK/Paladin (Sword) templates use weapon speed 6 (Normal), correct for Sky Ski and 2H Sword.
+Dark Knight/Paladin (Sword) templates use weapon speed 6 (Normal), correct for Sky Ski and 2H Sword.
 
 Paladin (BW) templates use weapon speed 7 (Slow), correct for Dragon Flame — the only
 viable endgame 2H BW. With SI+Booster, speed 7 resolves to effective speed 3 (0.69s Blast)
@@ -95,12 +95,12 @@ speed disadvantage is a significant BW DPS penalty.
 ### Gear — Hero & Paladin share identical gear
 
 The source spreadsheet treats Hero and Paladin identically for gear. This is reasonable —
-same class archetype, same equipment slots. DrK uses the same stat gear but a different
+same class archetype, same equipment slots. Dark Knight uses the same stat gear but a different
 weapon.
 
 ### High Tier WATK Breakdown
 
-| Slot | Hero/Paladin | DrK | Forum "endgame" range | Assessment |
+| Slot | Hero/Paladin | Dark Knight | Forum "endgame" range | Assessment |
 |------|-------------|-----|----------------------|------------|
 | Weapon | 140 | 134 | ST Sword ~135-145; Sky Ski ~120+ | ~1 failed scroll below perfect (godly+34). |
 | Gloves | 20 | 20 | 15-16+ late-game, 21 godly | Top-1%. Standardized across all classes. |
@@ -115,7 +115,7 @@ all classes (warriors, thieves, archers, pirates) for consistent cross-class com
 
 ### Perfect Tier WATK Breakdown
 
-| Slot | Hero/Paladin | DrK | Hero (Axe) | Paladin (BW) | Notes |
+| Slot | Hero/Paladin | Dark Knight | Hero (Axe) | Paladin (BW) | Notes |
 |------|-------------|-----|-----------|-------------|-------|
 | Weapon | 146 | 139 | 152 | 157 | Theoretical max: godly clean + 7× 30% scroll. |
 | Gloves | 24 | 24 | 24 | 24 | Perfect tier C/G/S: 24/24/22. |
@@ -146,7 +146,7 @@ scrolling, approximately +70 primary / +30 secondary over high tier). These are 
 
 ### Mid Tier WATK Breakdown
 
-| Slot | Hero/Paladin | DrK | Notes |
+| Slot | Hero/Paladin | Dark Knight | Notes |
 |------|-------------|-----|-------|
 | Weapon | 140 | 133 | Mid-range scrolled. Hero/Pal share gear. |
 | Gloves | 15 | 15 | Standardized mid-tier C/G/S. |
@@ -167,7 +167,7 @@ All classes use the same HTP all-stat value per tier:
 - **High (27)**: 7 base + 5 godly + 15 egg
 - **Perfect (28)**: near-max
 
-Stats applied per class: warriors/bucc get STR+DEX, archers/sair get DEX+STR, NL gets LUK+DEX,
+Stats applied per class: warriors/bucc get STR+DEX, archers/sair get DEX+STR, Night Lord gets LUK+DEX,
 Shadower gets LUK+DEX+STR, mages get INT only.
 
 ### Paladin (BW) Weapon — Dragon Flame
@@ -323,7 +323,7 @@ Modeled without cooldown (sustained DPS ceiling). At 0.6s attack time, Snipe DPS
 | Stat | High | Mid | Low | Notes |
 |------|------|-----|-----|-------|
 | LUK | 999 | 850 | 700 | Same pattern as warriors. |
-| DEX | 25 | 25 | 25 | Standard NL build. |
+| DEX | 25 | 25 | 25 | Standard Night Lord build. |
 
 ### Weapon Speed
 
@@ -331,7 +331,7 @@ All claws are speed 4 (Fast). Confirmed.
 
 ### Shadow Partner
 
-Always active. Reasonable — NL always uses SP for DPS (1.5x multiplier).
+Always active. Reasonable — Night Lord always uses SP for DPS (1.5x multiplier).
 
 ### High Tier WATK Breakdown
 
@@ -364,7 +364,7 @@ classes.
 
 ### Perfect Tier WATK Breakdown
 
-At perfect tier, NL upgrades from Raven's Claw to **Dragon Purple Claw** (godly clean 60,
+At perfect tier, Night Lord upgrades from Raven's Claw to **Dragon Purple Claw** (godly clean 60,
 theoretical max 95 WATK). RC tops out at 91 (77 clean godly + 14 scroll) — Dragon Purple
 Claw's theoretical max exceeds it by 4 WATK.
 
@@ -441,7 +441,7 @@ Claw's theoretical max exceeds it by 4 WATK.
 
 | Stat | Perfect | High | Mid | Low | Notes |
 |------|---------|------|-----|-----|-------|
-| LUK | 999 | 999 | 850 | 700 | Same pattern as NL. |
+| LUK | 999 | 999 | 850 | 700 | Same pattern as Night Lord. |
 | STR | 20 | 20 | 20 | 20 | Secondary stat (with DEX). |
 | DEX | 20 | 20 | 20 | 20 | Secondary stat. |
 
@@ -507,7 +507,7 @@ mobbing skill with no sourced attack speed data.
 ### Resolved: Archer weapon WATK calibrated by tier (Q6, March 2026)
 
 **Finding:** BM/MM weapon WATK was flat 120 across all three funding tiers. Every other
-class had proper tiered weapon values (e.g., Hero 130→140→150, DrK 127→133→139). The
+class had proper tiered weapon values (e.g., Hero 130→140→150, Dark Knight 127→133→139). The
 source spreadsheet has no archer gear template data — templates were adapted from warrior
 templates with a single estimated WATK that was never differentiated.
 
@@ -533,7 +533,7 @@ failed scroll slot below the godly cap (i.e., godly clean + ~6× 30% scroll inst
 | Class | Old High | New High | Perfect | Rationale |
 |-------|----------|----------|---------|-----------|
 | Hero/Paladin | 150 | 140 | 146 | Stonetooth: godly 111 + ~29 scroll (vs 35 perfect) |
-| DrK | 139 | 134 | 139 | Sky Ski: godly 104 + ~30 scroll |
+| Dark Knight | 139 | 134 | 139 | Sky Ski: godly 104 + ~30 scroll |
 | Corsair | 120 | 114 | 119 | Concerto: godly 84 + ~30 scroll |
 | Buccaneer | 128 | 118 | 123 | Dragon Slash Claw: godly 88 + ~30 scroll |
 | Shadower (dagger) | 145 | 140 | 145 | Dragon Kanzir: godly 110 + ~30 scroll |
@@ -541,9 +541,9 @@ failed scroll slot below the godly cap (i.e., godly clean + ~6× 30% scroll inst
 These corrections ground high tier at ~1 failed scroll slot below perfect, giving each
 class a realistic tier gap. Hero Axe and Paladin BW were unaffected (already reasonable).
 
-Note: DrK high weapon (134) still falls 5 WATK below DrK perfect (139 = godly Sky Ski).
+Note: Dark Knight high weapon (134) still falls 5 WATK below Dark Knight perfect (139 = godly Sky Ski).
 Sky Ski's lower godly cap (104) means 139 is also the theoretical max, so high ≈ perfect
-for DrK weapon.
+for Dark Knight weapon.
 
 ---
 
@@ -552,9 +552,9 @@ for DrK weapon.
 ### Resolved: C/G/S standardized across all tiers (Q1, February 2026; updated March 2026)
 
 **Finding:** Original templates had inconsistent C/G/S WATK across classes (warriors at
-20/20/20, NL at 21/18/17, Corsair at 20/20/18, etc.). 20/20/20 was extreme godly
+20/20/20, Night Lord at 21/18/17, Corsair at 20/20/18, etc.). 20/20/20 was extreme godly
 (top ~0.01%), with 20 ATT shoes not even found on the marketplace. Low tier also varied
-wildly by class (warriors 15/12/10, archers 12/5/0, NL 12/8/6, etc.).
+wildly by class (warriors 15/12/10, archers 12/5/0, Night Lord 12/8/6, etc.).
 
 **Decision:** Standardize C/G/S across all physical classes at every tier:
 
@@ -579,7 +579,7 @@ Sources: [Paladin Guide](https://royals.ms/forum/threads/comprehensive-paladin-g
 lists 130 WATK 2H sword as "mid-range." Community recommends "a 128 ST for 2b" as
 budget entry point.
 
-**Decision:** Reduce Hero and Paladin low-tier weapon from 140 → 130 WATK. DrK low
+**Decision:** Reduce Hero and Paladin low-tier weapon from 140 → 130 WATK. Dark Knight low
 already at 127 — no change needed. 130 represents a genuine budget-to-mid funded character.
 
 Sources: [Paladin Guide](https://royals.ms/forum/threads/comprehensive-paladin-guide-haplopelma.161247/),

@@ -15,10 +15,10 @@ import { getClassColor } from '../../utils/class-colors.js';
 const CLASS_ICON_MAP: Record<string, React.ComponentType<{ size?: number; color?: string }>> = {
   Hero: SwordIcon,
   'Hero (Axe)': AxeIcon,
-  DrK: SpearIcon,
+  'Dark Knight': SpearIcon,
   Paladin: ShieldIcon,
   'Paladin (BW)': ShieldIcon,
-  NL: ShurikenIcon,
+  'Night Lord': ShurikenIcon,
   Bowmaster: BowIcon,
   Marksman: CrossbowIcon,
   Corsair: GunIcon,

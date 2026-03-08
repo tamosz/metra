@@ -33,7 +33,7 @@ describe('url-encoding', () => {
       author: 'Staff',
       changes: [
         { target: 'hero.brandish-sword', field: 'basePower', to: 280 },
-        { target: 'drk.spear-crusher', field: 'basePower', to: 200 },
+        { target: 'dark-knight.spear-crusher', field: 'basePower', to: 200 },
         { target: 'paladin.blast-holy-sword', field: 'multiplier', to: 1.5 },
       ],
     };
@@ -81,7 +81,7 @@ describe('build url encoding', () => {
 
   it('roundtrips a build with empty overrides', () => {
     const payload: BuildUrlPayload = {
-      class: 'nl',
+      class: 'night-lord',
       tier: 'low',
       overrides: {},
     };
@@ -101,7 +101,7 @@ describe('comparison url encoding', () => {
   it('roundtrips two builds with different classes', () => {
     const payload: ComparisonUrlPayload = {
       a: { class: 'hero', tier: 'high', overrides: {} },
-      b: { class: 'drk', tier: 'high', overrides: {} },
+      b: { class: 'dark-knight', tier: 'high', overrides: {} },
     };
 
     const encoded = encodeComparison(payload);
@@ -117,7 +117,7 @@ describe('comparison url encoding', () => {
   it('preserves nested overrides on both builds', () => {
     const payload: ComparisonUrlPayload = {
       a: { class: 'hero', tier: 'high', overrides: { gearSTR: 300, totalWeaponAttack: 250 } },
-      b: { class: 'nl', tier: 'low', overrides: { gearLUK: 400 } },
+      b: { class: 'night-lord', tier: 'low', overrides: { gearLUK: 400 } },
     };
 
     const encoded = encodeComparison(payload);

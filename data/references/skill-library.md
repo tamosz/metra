@@ -13,19 +13,19 @@ may override some of these (check `data/references/balance-changes.md`).
 | Skill | Job | Damage% | Hits | Targets | Notes |
 |-------|-----|---------|------|---------|-------|
 | Brandish | Hero (4th) | 260 | 2 | 3 | |
-| Spear Crusher | DrK (3rd) | 170 | 3 | 3 | Main DPS skill, boosted by Berserk |
-| Pole Arm Crusher | DrK (3rd) | 170 | 3 | 3 | Identical stats to Spear Crusher |
+| Spear Crusher | Dark Knight (3rd) | 170 | 3 | 3 | Main DPS skill, boosted by Berserk |
+| Pole Arm Crusher | Dark Knight (3rd) | 170 | 3 | 3 | Identical stats to Spear Crusher |
 | Blast | Paladin (4th) | 580 | 1 | 1 | |
 | Holy Charge: Sword | Paladin (4th) | 140% multiplier | — | — | 300s duration |
 | Divine Charge: BW | Paladin (4th) | 140% multiplier | — | — | 300s duration |
 | Fire/Ice/Lightning Charge | WK (3rd) | 130% multiplier | — | — | 200s duration |
-| Berserk | DrK (4th) | 210% multiplier | — | — | Below 50% HP |
+| Berserk | Dark Knight (4th) | 210% multiplier | — | — | Below 50% HP |
 
 ## Thieves
 
 | Skill | Job | Damage% | Hits | Targets | Notes |
 |-------|-----|---------|------|---------|-------|
-| Triple Throw | NL (4th) | 150 | 3 | 1 | |
+| Triple Throw | Night Lord (4th) | 150 | 3 | 1 | |
 | Boomerang Step | Shadower (4th) | 600 | 2 | 4 | Fixed: code was 6 |
 | Assassinate | Shadower (4th) | 950 | 3 (+conditional 4th dash) | 1 | Code correct at 3 |
 | Savage Blow | Bandit (2nd) | 80 | 6 | 1 | |
@@ -33,7 +33,7 @@ may override some of these (check `data/references/balance-changes.md`).
 
 **Critical Throw** (Assassin 2nd): 50% crit rate, 200% crit damage (= +100 bonus)
 **Shadow Partner** (Hermit 3rd): 50% skill damage clone
-**Shadow Shifter** (NL/Shad 4th): 30% avoid rate
+**Shadow Shifter** (Night Lord/Shad 4th): 30% avoid rate
 
 ## Archers
 

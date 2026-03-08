@@ -97,7 +97,7 @@ At speed 2: 7 Strafes fit in the remaining time (5.0 / 0.714 ≈ 7).
 | Other 2H Swords | 6 (Normal) | Hero low/mid, Paladin |
 | 2H Axe | 6 (Normal) | Hero (Axe), all tiers |
 | 2H BW | 6 (Normal) | Paladin BW variant |
-| Spear (Sky Ski) | 6 (Normal) | DrK |
+| Spear (Sky Ski) | 6 (Normal) | Dark Knight |
 | Claw | 4 (Fast) | Night Lord |
 | Bow | 6 (Normal) | Bowmaster |
 | Crossbow | 6 (Normal) | Marksman |

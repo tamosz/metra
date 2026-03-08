@@ -36,12 +36,12 @@ describe('useSavedBuilds', () => {
     const beforeSave = Date.now();
     let saved: SavedBuild;
     act(() => {
-      saved = result.current.save('Test Build', 'nl', 'high', { totalWeaponAttack: 150 });
+      saved = result.current.save('Test Build', 'night-lord', 'high', { totalWeaponAttack: 150 });
     });
 
     expect(saved!.id).toMatch(/^sb-/);
     expect(saved!.name).toBe('Test Build');
-    expect(saved!.className).toBe('nl');
+    expect(saved!.className).toBe('night-lord');
     expect(saved!.tier).toBe('high');
     expect(saved!.overrides).toEqual({ totalWeaponAttack: 150 });
     expect(saved!.savedAt).toBeGreaterThanOrEqual(beforeSave);
@@ -60,7 +60,7 @@ describe('useSavedBuilds', () => {
     let second: SavedBuild;
     act(() => {
       first = result.current.save('First', 'hero', 'low', {});
-      second = result.current.save('Second', 'drk', 'high', {});
+      second = result.current.save('Second', 'dark-knight', 'high', {});
     });
 
     act(() => {

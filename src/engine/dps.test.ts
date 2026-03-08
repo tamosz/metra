@@ -22,17 +22,17 @@ let mwData: MWData;
 let heroData: ClassSkillData;
 let heroHigh: CharacterBuild;
 let heroLow: CharacterBuild;
-let drkData: ClassSkillData;
-let drkHigh: CharacterBuild;
-let drkLow: CharacterBuild;
+let darkKnightData: ClassSkillData;
+let darkKnightHigh: CharacterBuild;
+let darkKnightLow: CharacterBuild;
 let paladinData: ClassSkillData;
 let paladinHigh: CharacterBuild;
 let paladinLow: CharacterBuild;
 let paladinBwData: ClassSkillData;
 let paladinBwHigh: CharacterBuild;
-let nlData: ClassSkillData;
-let nlHigh: CharacterBuild;
-let nlLow: CharacterBuild;
+let nightLordData: ClassSkillData;
+let nightLordHigh: CharacterBuild;
+let nightLordLow: CharacterBuild;
 
 beforeAll(() => {
   weaponData = loadWeapons();
@@ -41,17 +41,17 @@ beforeAll(() => {
   heroData = loadClassSkills('Hero');
   heroHigh = TEST_BUILDS['hero-high'];
   heroLow = TEST_BUILDS['hero-low'];
-  drkData = loadClassSkills('DrK');
-  drkHigh = TEST_BUILDS['drk-high'];
-  drkLow = TEST_BUILDS['drk-low'];
+  darkKnightData = loadClassSkills('Dark Knight');
+  darkKnightHigh = TEST_BUILDS['dark-knight-high'];
+  darkKnightLow = TEST_BUILDS['dark-knight-low'];
   paladinData = loadClassSkills('Paladin');
   paladinHigh = TEST_BUILDS['paladin-high'];
   paladinLow = TEST_BUILDS['paladin-low'];
   paladinBwData = loadClassSkills('paladin-bw');
   paladinBwHigh = TEST_BUILDS['paladin-bw-high'];
-  nlData = loadClassSkills('NL');
-  nlHigh = TEST_BUILDS['nl-high'];
-  nlLow = TEST_BUILDS['nl-low'];
+  nightLordData = loadClassSkills('Night Lord');
+  nightLordHigh = TEST_BUILDS['night-lord-high'];
+  nightLordLow = TEST_BUILDS['night-lord-low'];
 });
 
 describe('Hero Brandish (Sword) DPS', () => {
@@ -148,12 +148,12 @@ describe('Hero Brandish (Sword) DPS', () => {
   });
 });
 
-describe('DrK Spear Crusher DPS', () => {
+describe('Dark Knight Spear Crusher DPS', () => {
   it('matches hero charts High tier DPS (I15: 249,418)', () => {
-    const crusher = drkData.skills.find((s) => s.name === 'Spear Crusher (Zerked)')!;
+    const crusher = darkKnightData.skills.find((s) => s.name === 'Spear Crusher (Zerked)')!;
     const result = calculateSkillDps(
-      drkHigh,
-      drkData,
+      darkKnightHigh,
+      darkKnightData,
       crusher,
       weaponData,
       attackSpeedData,
@@ -173,10 +173,10 @@ describe('DrK Spear Crusher DPS', () => {
   });
 
   it('computes Low tier DPS from gear template', () => {
-    const crusher = drkData.skills.find((s) => s.name === 'Spear Crusher (Zerked)')!;
+    const crusher = darkKnightData.skills.find((s) => s.name === 'Spear Crusher (Zerked)')!;
     const result = calculateSkillDps(
-      drkLow,
-      drkData,
+      darkKnightLow,
+      darkKnightData,
       crusher,
       weaponData,
       attackSpeedData,
@@ -194,10 +194,10 @@ describe('DrK Spear Crusher DPS', () => {
   });
 
   it('uses addBeforeMultiply SE formula (default)', () => {
-    const crusher = drkData.skills.find((s) => s.name === 'Spear Crusher (Zerked)')!;
+    const crusher = darkKnightData.skills.find((s) => s.name === 'Spear Crusher (Zerked)')!;
     const result = calculateSkillDps(
-      drkHigh,
-      drkData,
+      darkKnightHigh,
+      darkKnightData,
       crusher,
       weaponData,
       attackSpeedData,
@@ -211,7 +211,7 @@ describe('DrK Spear Crusher DPS', () => {
   });
 
   it('Spear Crusher uses stab multiplier (5.0)', () => {
-    const crusher = drkData.skills.find((s) => s.name === 'Spear Crusher (Zerked)')!;
+    const crusher = darkKnightData.skills.find((s) => s.name === 'Spear Crusher (Zerked)')!;
     expect(crusher.attackType).toBe('stab');
   });
 });
@@ -382,12 +382,12 @@ describe('Paladin (BW) Blast DPS', () => {
   });
 });
 
-describe('NL Gear Template DPS', () => {
+describe('Night Lord Gear Template DPS', () => {
   it('High tier damage range matches computed values', () => {
-    const tt = nlData.skills.find((s) => s.name === 'Triple Throw')!;
+    const tt = nightLordData.skills.find((s) => s.name === 'Triple Throw')!;
     const result = calculateSkillDps(
-      nlHigh,
-      nlData,
+      nightLordHigh,
+      nightLordData,
       tt,
       weaponData,
       attackSpeedData,
@@ -403,10 +403,10 @@ describe('NL Gear Template DPS', () => {
   });
 
   it('Low tier damage range matches computed values', () => {
-    const tt = nlData.skills.find((s) => s.name === 'Triple Throw')!;
+    const tt = nightLordData.skills.find((s) => s.name === 'Triple Throw')!;
     const result = calculateSkillDps(
-      nlLow,
-      nlData,
+      nightLordLow,
+      nightLordData,
       tt,
       weaponData,
       attackSpeedData,
@@ -422,18 +422,18 @@ describe('NL Gear Template DPS', () => {
   });
 
   it('High tier DPS is greater than Low tier', () => {
-    const tt = nlData.skills.find((s) => s.name === 'Triple Throw')!;
+    const tt = nightLordData.skills.find((s) => s.name === 'Triple Throw')!;
     const highResult = calculateSkillDps(
-      nlHigh,
-      nlData,
+      nightLordHigh,
+      nightLordData,
       tt,
       weaponData,
       attackSpeedData,
       mwData
     );
     const lowResult = calculateSkillDps(
-      nlLow,
-      nlData,
+      nightLordLow,
+      nightLordData,
       tt,
       weaponData,
       attackSpeedData,
@@ -446,10 +446,10 @@ describe('NL Gear Template DPS', () => {
   });
 
   it('uses attack time 0.60s', () => {
-    const tt = nlData.skills.find((s) => s.name === 'Triple Throw')!;
+    const tt = nightLordData.skills.find((s) => s.name === 'Triple Throw')!;
     const result = calculateSkillDps(
-      nlHigh,
-      nlData,
+      nightLordHigh,
+      nightLordData,
       tt,
       weaponData,
       attackSpeedData,
@@ -460,15 +460,15 @@ describe('NL Gear Template DPS', () => {
   });
 
   it('Shadow Partner is active in both templates', () => {
-    expect(nlHigh.shadowPartner).toBe(true);
-    expect(nlLow.shadowPartner).toBe(true);
+    expect(nightLordHigh.shadowPartner).toBe(true);
+    expect(nightLordLow.shadowPartner).toBe(true);
   });
 });
 
 describe('Night Lord Triple Throw DPS', () => {
-  let nlData: ClassSkillData;
-  const nlBuild: CharacterBuild = {
-    className: 'NL',
+  let nightLordData: ClassSkillData;
+  const nightLordBuild: CharacterBuild = {
+    className: 'Night Lord',
     baseStats: { STR: 4, DEX: 25, INT: 4, LUK: 605 },
     gearStats: { STR: 18, DEX: 0, INT: 0, LUK: 195 },
     totalWeaponAttack: 250,
@@ -484,22 +484,22 @@ describe('Night Lord Triple Throw DPS', () => {
   };
 
   beforeAll(() => {
-    nlData = loadClassSkills('NL');
+    nightLordData = loadClassSkills('Night Lord');
   });
 
-  it('loads NL skill data correctly', () => {
-    expect(nlData.className).toBe('NL');
-    expect(nlData.mastery).toBe(0.6);
-    expect(nlData.primaryStat).toBe('LUK');
-    expect(nlData.skills.length).toBe(1);
-    expect(nlData.skills[0].name).toBe('Triple Throw');
+  it('loads Night Lord skill data correctly', () => {
+    expect(nightLordData.className).toBe('Night Lord');
+    expect(nightLordData.mastery).toBe(0.6);
+    expect(nightLordData.primaryStat).toBe('LUK');
+    expect(nightLordData.skills.length).toBe(1);
+    expect(nightLordData.skills[0].name).toBe('Triple Throw');
   });
 
   it('uses throwing star range formula (not standard)', () => {
-    const tt = nlData.skills.find((s) => s.name === 'Triple Throw')!;
+    const tt = nightLordData.skills.find((s) => s.name === 'Triple Throw')!;
     const result = calculateSkillDps(
-      nlBuild,
-      nlData,
+      nightLordBuild,
+      nightLordData,
       tt,
       weaponData,
       attackSpeedData,
@@ -517,10 +517,10 @@ describe('Night Lord Triple Throw DPS', () => {
   });
 
   it('computes crit damage% with built-in + SE bonuses', () => {
-    const tt = nlData.skills.find((s) => s.name === 'Triple Throw')!;
+    const tt = nightLordData.skills.find((s) => s.name === 'Triple Throw')!;
     const result = calculateSkillDps(
-      nlBuild,
-      nlData,
+      nightLordBuild,
+      nightLordData,
       tt,
       weaponData,
       attackSpeedData,
@@ -534,11 +534,11 @@ describe('Night Lord Triple Throw DPS', () => {
   });
 
   it('computes crit damage% without SE (built-in crit only)', () => {
-    const tt = nlData.skills.find((s) => s.name === 'Triple Throw')!;
-    const noSeBuild = { ...nlBuild, sharpEyes: false };
+    const tt = nightLordData.skills.find((s) => s.name === 'Triple Throw')!;
+    const noSeBuild = { ...nightLordBuild, sharpEyes: false };
     const result = calculateSkillDps(
       noSeBuild,
-      nlData,
+      nightLordData,
       tt,
       weaponData,
       attackSpeedData,
@@ -551,10 +551,10 @@ describe('Night Lord Triple Throw DPS', () => {
   });
 
   it('uses 0.65 crit rate with SE (0.50 built-in + 0.15 SE)', () => {
-    const tt = nlData.skills.find((s) => s.name === 'Triple Throw')!;
+    const tt = nightLordData.skills.find((s) => s.name === 'Triple Throw')!;
     const result = calculateSkillDps(
-      nlBuild,
-      nlData,
+      nightLordBuild,
+      nightLordData,
       tt,
       weaponData,
       attackSpeedData,
@@ -565,10 +565,10 @@ describe('Night Lord Triple Throw DPS', () => {
     // With 65% crit rate, normal rate = 0.35
     // avgDmg = ((150/100)*0.35*adjRange + (390/100)*0.65*adjRangeCrit) * 3 * 1.5
     // We check the DPS is consistent with these rates
-    const noSpBuild = { ...nlBuild, shadowPartner: false };
+    const noSpBuild = { ...nightLordBuild, shadowPartner: false };
     const resultNoSp = calculateSkillDps(
       noSpBuild,
-      nlData,
+      nightLordData,
       tt,
       weaponData,
       attackSpeedData,
@@ -579,19 +579,19 @@ describe('Night Lord Triple Throw DPS', () => {
   });
 
   it('Shadow Partner multiplies DPS by 1.5', () => {
-    const tt = nlData.skills.find((s) => s.name === 'Triple Throw')!;
+    const tt = nightLordData.skills.find((s) => s.name === 'Triple Throw')!;
     const withSp = calculateSkillDps(
-      nlBuild,
-      nlData,
+      nightLordBuild,
+      nightLordData,
       tt,
       weaponData,
       attackSpeedData,
       mwData
     );
-    const noSpBuild = { ...nlBuild, shadowPartner: false };
+    const noSpBuild = { ...nightLordBuild, shadowPartner: false };
     const withoutSp = calculateSkillDps(
       noSpBuild,
-      nlData,
+      nightLordData,
       tt,
       weaponData,
       attackSpeedData,
@@ -602,10 +602,10 @@ describe('Night Lord Triple Throw DPS', () => {
   });
 
   it('uses Triple Throw attack speed (0.60s at speed 2)', () => {
-    const tt = nlData.skills.find((s) => s.name === 'Triple Throw')!;
+    const tt = nightLordData.skills.find((s) => s.name === 'Triple Throw')!;
     const result = calculateSkillDps(
-      nlBuild,
-      nlData,
+      nightLordBuild,
+      nightLordData,
       tt,
       weaponData,
       attackSpeedData,
@@ -617,9 +617,9 @@ describe('Night Lord Triple Throw DPS', () => {
   });
 
   it('includes hasShadowPartner and built-in crit rate', () => {
-    const tt = nlData.skills.find((s) => s.name === 'Triple Throw')!;
-    const result = calculateSkillDps(nlHigh, nlData, tt, weaponData, attackSpeedData, mwData);
-    // NL: builtInCritRate 0.50 + SE 0.15 = 0.65
+    const tt = nightLordData.skills.find((s) => s.name === 'Triple Throw')!;
+    const result = calculateSkillDps(nightLordHigh, nightLordData, tt, weaponData, attackSpeedData, mwData);
+    // Night Lord: builtInCritRate 0.50 + SE 0.15 = 0.65
     expect(result.totalCritRate).toBeCloseTo(0.65, 2);
     expect(result.hitCount).toBe(3);
     expect(result.hasShadowPartner).toBe(true);

@@ -16,7 +16,7 @@ test.describe('comparison view', () => {
     // Build B panel is the second one — find its class select by scoping
     const panelB = page.locator('div').filter({ hasText: /^Build B$/ }).locator('..');
     const classBSelect = panelB.locator('select').first();
-    await classBSelect.selectOption('nl');
+    await classBSelect.selectOption('night-lord');
 
     // Should show "vs" in comparison summary
     await expect(page.getByText('vs')).toBeVisible();
@@ -57,7 +57,7 @@ test.describe('comparison view', () => {
   test('#c= URL loads comparison with correct classes', async ({ page }) => {
     const payload = {
       a: { class: 'hero', tier: 'high', overrides: {} },
-      b: { class: 'nl', tier: 'high', overrides: {} },
+      b: { class: 'night-lord', tier: 'high', overrides: {} },
     };
     const encoded = LZString.compressToEncodedURIComponent(JSON.stringify(payload));
     // Navigate away first, then to the hash URL — ensures a fresh React mount

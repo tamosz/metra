@@ -28,7 +28,7 @@ describe('formatAuditReport', () => {
     const audit: BalanceAudit = { groups: [makeGroup()], outliers: [outlier], tierSensitivities: [] };
     const output = formatAuditReport(audit);
     expect(output).toContain('| Class | Skill |');
-    expect(output).toContain('NL');
+    expect(output).toContain('Night Lord');
     expect(output).toContain('+2.5\u03C3');
   });
 
@@ -90,7 +90,7 @@ function makeGroup(overrides: Partial<GroupSummary> = {}): GroupSummary {
 
 function makeOutlier(overrides: Partial<OutlierEntry> = {}): OutlierEntry {
   return {
-    className: 'NL', skillName: 'Triple Throw',
+    className: 'Night Lord', skillName: 'Triple Throw',
     scenario: 'Buffed', tier: 'high', dps: 350000,
     deviations: 2.5, direction: 'over' as const, ...overrides,
   };
@@ -98,7 +98,7 @@ function makeOutlier(overrides: Partial<OutlierEntry> = {}): OutlierEntry {
 
 function makeTierSensitivity(overrides: Partial<TierSensitivity> = {}): TierSensitivity {
   return {
-    className: 'NL', skillName: 'Triple Throw', scenario: 'Buffed',
+    className: 'Night Lord', skillName: 'Triple Throw', scenario: 'Buffed',
     highDps: 300000, lowDps: 100000, ratio: 3.0,
     medianRatio: 2.0, deviation: 1.0, ...overrides,
   };

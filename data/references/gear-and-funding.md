@@ -46,7 +46,7 @@ Low tier standardized across all physical classes for consistent cross-class com
 
 **Source:** [Hero Guide](https://royals.ms/forum/threads/hero-guide.57080/)
 **Source:** [DK Guide 2026](https://royals.ms/forum/threads/a-guide-to-dark-knight-2026.230387/)
-**Source:** [Darko's NL Guide 2024](https://royals.ms/forum/threads/darkos-night-lord-guide-2024.227431/)
+**Source:** [Darko's Night Lord Guide 2024](https://royals.ms/forum/threads/darkos-night-lord-guide-2024.227431/)
 **Accessed:** 2026-02-01
 **Used in:** `data/gear-templates/*-high.json`
 
@@ -54,10 +54,10 @@ Low tier standardized across all physical classes for consistent cross-class com
 |-------|--------|-------------|------------|-------|
 | Hero | Stonetooth Sword | 150 | 130 | 5 |
 | Hero (Axe) | 2H Axe | 150 | 130 | 6 |
-| DrK | Sky Ski | 139 | 127 | 6 |
+| Dark Knight | Sky Ski | 139 | 127 | 6 |
 | Paladin (Sword) | 2H Sword | 150 | 130 | 6 |
 | Paladin (BW) | Dragon Flame (2H BW) | 156 | 136 | 7 |
-| NL | Raven's Claw | 91 | 76 | 4 |
+| Night Lord | Raven's Claw | 91 | 76 | 4 |
 | BM/MM | Bow / Crossbow | 130 | 105 | 6 |
 | Corsair | Gun | — | — | 5 |
 | Buccaneer | Knuckle | — | — | 6 |
@@ -100,7 +100,7 @@ Other 2H BWs considered and rejected:
 
 ## Throwing Stars
 
-**Source:** [Darko's NL Guide 2024](https://royals.ms/forum/threads/darkos-night-lord-guide-2024.227431/)
+**Source:** [Darko's Night Lord Guide 2024](https://royals.ms/forum/threads/darkos-night-lord-guide-2024.227431/)
 **Accessed:** 2026-02-01
 **Used in:** `data/gear-templates/nl-*.json`
 
@@ -127,11 +127,11 @@ Other 2H BWs considered and rejected:
 **Source:** Community consensus, level progression tables
 **Used in:** `data/gear-templates/*.json`
 
-| Tier | Warriors (STR) | NL (LUK) | Archers (DEX) | Pirates (STR/DEX) |
+| Tier | Warriors (STR) | Night Lord (LUK) | Archers (DEX) | Pirates (STR/DEX) |
 |------|---------------|-----------|---------------|-------------------|
 | High | 999 | 999 | 999 | 999 |
 | Mid | 850 | 850 | 850 | 850 |
 | Low | 700 | 700 | 700 | 700 |
 
-Secondary stats are minimal (dexless/lukless builds): warriors 22-23 DEX, NL 25 DEX,
+Secondary stats are minimal (dexless/lukless builds): warriors 22-23 DEX, Night Lord 25 DEX,
 archers 25 STR.

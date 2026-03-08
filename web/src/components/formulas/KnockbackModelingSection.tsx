@@ -3,7 +3,7 @@ import { SectionHeading } from './SectionHeading.js';
 
 export function KnockbackModelingSection() {
   const kbDefenses: Array<{ classes: string; defense: string; rate: string }> = [
-    { classes: 'Hero, DrK, Paladin', defense: 'Power Stance', rate: '90%' },
+    { classes: 'Hero, Dark Knight, Paladin', defense: 'Power Stance', rate: '90%' },
     { classes: 'Buccaneer', defense: 'Energy Charge', rate: '90%' },
     { classes: 'Shadower', defense: 'Shadow Shifter', rate: '40%' },
     { classes: 'Night Lord', defense: 'Shadow Shifter', rate: '30%' },

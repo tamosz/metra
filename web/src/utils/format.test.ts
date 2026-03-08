@@ -3,8 +3,8 @@ import { formatClassName } from './format.js';
 
 describe('formatClassName', () => {
   // Special aliases
-  it('maps drk to DrK', () => { expect(formatClassName('drk')).toBe('DrK'); });
-  it('maps nl to NL', () => { expect(formatClassName('nl')).toBe('NL'); });
+  it('maps dark-knight to Dark Knight', () => { expect(formatClassName('dark-knight')).toBe('Dark Knight'); });
+  it('maps night-lord to Night Lord', () => { expect(formatClassName('night-lord')).toBe('Night Lord'); });
   it('maps sair to Corsair', () => { expect(formatClassName('sair')).toBe('Corsair'); });
   it('maps bucc to Buccaneer', () => { expect(formatClassName('bucc')).toBe('Buccaneer'); });
   it('maps hero-axe to Hero (Axe)', () => { expect(formatClassName('hero-axe')).toBe('Hero (Axe)'); });

@@ -67,18 +67,18 @@ describe('End-to-end: brandish-buff-20 proposal', () => {
     expect(heroDelta.change).toBeGreaterThan(0);
     expect(heroDelta.changePercent).toBeCloseTo(7.1, 0);
 
-    // DrK unchanged
-    const drkDelta = result.deltas.find(
-      (d) => d.className === 'DrK' && d.tier === 'high'
+    // Dark Knight unchanged
+    const darkKnightDelta = result.deltas.find(
+      (d) => d.className === 'Dark Knight' && d.tier === 'high'
     )!;
-    expect(drkDelta.change).toBe(0);
+    expect(darkKnightDelta.change).toBe(0);
 
-    // NL unchanged (not a warrior skill)
-    const nlDelta = result.deltas.find(
-      (d) => d.className === 'NL' && d.tier === 'high'
+    // Night Lord unchanged (not a warrior skill)
+    const nightLordDelta = result.deltas.find(
+      (d) => d.className === 'Night Lord' && d.tier === 'high'
     )!;
-    expect(nlDelta).toBeDefined();
-    expect(nlDelta.change).toBe(0);
+    expect(nightLordDelta).toBeDefined();
+    expect(nightLordDelta.change).toBe(0);
 
     // All 5 new classes appear with zero change
     for (const className of ['Bowmaster', 'Marksman', 'Corsair', 'Buccaneer', 'Shadower']) {
@@ -110,11 +110,11 @@ describe('End-to-end: warrior-rebalance proposal', () => {
     )!;
     expect(heroDelta.change).toBeGreaterThan(0);
 
-    // DrK goes down (Crusher nerfed 170→150)
-    const drkDelta = result.deltas.find(
-      (d) => d.className === 'DrK' && d.tier === 'high'
+    // Dark Knight goes down (Crusher nerfed 170→150)
+    const darkKnightDelta = result.deltas.find(
+      (d) => d.className === 'Dark Knight' && d.tier === 'high'
     )!;
-    expect(drkDelta.change).toBeLessThan(0);
+    expect(darkKnightDelta.change).toBeLessThan(0);
 
     // Paladin Blast (Holy) goes up (580→600)
     const paladinHolyDelta = result.deltas.find(
@@ -130,12 +130,12 @@ describe('End-to-end: warrior-rebalance proposal', () => {
     expect(paladinDeltas).toHaveLength(1);
     expect(paladinDeltas[0].skillName).toBe('Blast (Holy, Sword)');
 
-    // NL unchanged (warrior-only proposal)
-    const nlDelta = result.deltas.find(
-      (d) => d.className === 'NL' && d.tier === 'high'
+    // Night Lord unchanged (warrior-only proposal)
+    const nightLordDelta = result.deltas.find(
+      (d) => d.className === 'Night Lord' && d.tier === 'high'
     )!;
-    expect(nlDelta).toBeDefined();
-    expect(nlDelta.change).toBe(0);
+    expect(nightLordDelta).toBeDefined();
+    expect(nightLordDelta.change).toBe(0);
   });
 
   it('produces distinct Markdown reports for different proposals', () => {
@@ -154,7 +154,7 @@ describe('End-to-end: warrior-rebalance proposal', () => {
     expect(report1).toContain('Brandish +20 Base Power');
     expect(report2).toContain('Warrior Rebalance');
 
-    // Rebalance report should show DrK change (nerf)
+    // Rebalance report should show Dark Knight change (nerf)
     expect(report2).toMatch(/-\d/); // negative change value
   });
 });
@@ -184,7 +184,7 @@ describe('Baseline mode', () => {
     expect(baselineReport).toContain('## Buffed');
 
     const expectedClasses = [
-      'Hero', 'Hero (Axe)', 'DrK', 'Paladin', 'NL',
+      'Hero', 'Hero (Axe)', 'Dark Knight', 'Paladin', 'Night Lord',
       'Bowmaster', 'Marksman', 'Corsair', 'Buccaneer', 'Shadower',
     ];
     for (const name of expectedClasses) {
@@ -296,10 +296,10 @@ describe('Special mechanics', () => {
     );
     expect(heroBrandish?.isComposite).toBeUndefined();
 
-    const nlTripleThrow = buffedResults.find(
-      (r) => r.className === 'NL' && r.skillName === 'Triple Throw'
+    const nightLordTripleThrow = buffedResults.find(
+      (r) => r.className === 'Night Lord' && r.skillName === 'Triple Throw'
     );
-    expect(nlTripleThrow?.isComposite).toBeUndefined();
+    expect(nightLordTripleThrow?.isComposite).toBeUndefined();
   });
 
   it('comboGroup aggregation sums uncappedDps and computes capLossPercent', () => {
@@ -463,10 +463,10 @@ describe('Multi-target training scenario', () => {
     const heroTraining = find('Hero', 'Brandish (Sword)', 'Training (6 mobs)');
     expect(heroTraining.dps.dps).toBeCloseTo(heroBuffed.dps.dps * 3, 0);
 
-    // NL Triple Throw: single-target (no maxTargets), unchanged
-    const nlBuffed = find('NL', 'Triple Throw', 'Buffed');
-    const nlTraining = find('NL', 'Triple Throw', 'Training (6 mobs)');
-    expect(nlTraining.dps.dps).toBe(nlBuffed.dps.dps);
+    // Night Lord Triple Throw: single-target (no maxTargets), unchanged
+    const nightLordBuffed = find('Night Lord', 'Triple Throw', 'Buffed');
+    const nightLordTraining = find('Night Lord', 'Triple Throw', 'Training (6 mobs)');
+    expect(nightLordTraining.dps.dps).toBe(nightLordBuffed.dps.dps);
 
     // Shadower BStep+Assassinate combo: BStep has maxTargets 4, Assassinate defaults to 1
     const shadBuffed = find('Shadower', 'BStep + Assassinate', 'Buffed');

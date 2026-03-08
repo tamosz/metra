@@ -31,7 +31,7 @@ Per-class verified values extracted from community guides on royals.ms.
 
 **Source:** [A Guide to Dark Knight 2026](https://royals.ms/forum/threads/a-guide-to-dark-knight-2026.230387/)
 **Accessed:** 2026-02-01
-**Used in:** `data/skills/drk.json`, `data/gear-templates/drk-*.json`
+**Used in:** `data/skills/dark-knight.json`, `data/gear-templates/dark-knight-*.json`
 
 - Mastery: 0.8 (highest among warriors)
 - Spear Crusher: 170% base, 2.1x Berserk multiplier, 3 hits, stab (5.0x Spear multiplier)
@@ -59,7 +59,7 @@ Per-class verified values extracted from community guides on royals.ms.
 **Source:** [Darko's Night Lord Guide 2024](https://royals.ms/forum/threads/darkos-night-lord-guide-2024.227431/)
 **Source:** [Comprehensive Night Lord Guide](https://royals.ms/forum/threads/a-comprehensive-night-lord-guide.23303/)
 **Accessed:** 2026-02-01
-**Used in:** `data/skills/nl.json`, `data/gear-templates/nl-*.json`
+**Used in:** `data/skills/night-lord.json`, `data/gear-templates/nl-*.json`
 
 - Triple Throw: 150% base, 3 hits, built-in 50% crit (+100 dmg bonus)
 - Throwing star formula (LUK-only scaling, no weapon multiplier)

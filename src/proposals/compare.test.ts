@@ -30,24 +30,24 @@ beforeAll(() => {
 
   classDataMap = new Map([
     ['hero', loadClassSkills('Hero')],
-    ['drk', loadClassSkills('DrK')],
+    ['dark-knight', loadClassSkills('Dark Knight')],
     ['paladin', loadClassSkills('Paladin')],
-    ['nl', loadClassSkills('NL')],
+    ['night-lord', loadClassSkills('Night Lord')],
   ]);
 
   gearTemplates = new Map([
     ['hero-low', TEST_BUILDS['hero-low']],
     ['hero-high', TEST_BUILDS['hero-high']],
-    ['drk-low', TEST_BUILDS['drk-low']],
-    ['drk-high', TEST_BUILDS['drk-high']],
+    ['dark-knight-low', TEST_BUILDS['dark-knight-low']],
+    ['dark-knight-high', TEST_BUILDS['dark-knight-high']],
     ['paladin-low', TEST_BUILDS['paladin-low']],
     ['paladin-high', TEST_BUILDS['paladin-high']],
-    ['nl-low', TEST_BUILDS['nl-low']],
-    ['nl-high', TEST_BUILDS['nl-high']],
+    ['night-lord-low', TEST_BUILDS['night-lord-low']],
+    ['night-lord-high', TEST_BUILDS['night-lord-high']],
   ]);
 
   config = {
-    classes: ['hero', 'drk', 'paladin', 'nl'],
+    classes: ['hero', 'dark-knight', 'paladin', 'night-lord'],
     tiers: ['low', 'high'],
   };
 });
@@ -104,15 +104,15 @@ describe('compareProposal', () => {
     // After CGS update (193→198 WATK): Brandish +20 High DPS
     expect(heroBrandishHigh.after).toBeCloseTo(260069, -1);
 
-    // DrK should be unchanged
-    const drkCrusherHigh = result.deltas.find(
+    // Dark Knight should be unchanged
+    const darkKnightCrusherHigh = result.deltas.find(
       (d) =>
-        d.className === 'DrK' &&
+        d.className === 'Dark Knight' &&
         d.skillName === 'Spear Crusher' &&
         d.tier === 'high'
     )!;
-    expect(drkCrusherHigh.change).toBe(0);
-    expect(drkCrusherHigh.changePercent).toBe(0);
+    expect(darkKnightCrusherHigh.change).toBe(0);
+    expect(darkKnightCrusherHigh.changePercent).toBe(0);
 
     // Paladin should be unchanged
     const paladinBlastHigh = result.deltas.find(
@@ -123,15 +123,15 @@ describe('compareProposal', () => {
     )!;
     expect(paladinBlastHigh.change).toBe(0);
 
-    // NL should be unchanged
-    const nlTtHigh = result.deltas.find(
+    // Night Lord should be unchanged
+    const nightLordTtHigh = result.deltas.find(
       (d) =>
-        d.className === 'NL' &&
+        d.className === 'Night Lord' &&
         d.skillName === 'Triple Throw' &&
         d.tier === 'high'
     )!;
-    expect(nlTtHigh.change).toBe(0);
-    expect(nlTtHigh.changePercent).toBe(0);
+    expect(nightLordTtHigh.change).toBe(0);
+    expect(nightLordTtHigh.changePercent).toBe(0);
   });
 
   it('cross-checks Brandish +20 Low DPS against hero charts scenario 3', () => {
@@ -175,7 +175,7 @@ describe('compareProposal', () => {
       author: 'test',
       changes: [
         { target: 'hero.brandish-sword', field: 'basePower', from: 260, to: 300 },
-        { target: 'drk.spear-crusher', field: 'basePower', from: 170, to: 150 },
+        { target: 'dark-knight.spear-crusher', field: 'basePower', from: 170, to: 150 },
       ],
     };
 
@@ -195,11 +195,11 @@ describe('compareProposal', () => {
     )!;
     expect(heroDelta.change).toBeGreaterThan(0);
 
-    // DrK goes down
-    const drkDelta = result.deltas.find(
-      (d) => d.className === 'DrK' && d.skillName === 'Spear Crusher' && d.tier === 'high'
+    // Dark Knight goes down
+    const darkKnightDelta = result.deltas.find(
+      (d) => d.className === 'Dark Knight' && d.skillName === 'Spear Crusher' && d.tier === 'high'
     )!;
-    expect(drkDelta.change).toBeLessThan(0);
+    expect(darkKnightDelta.change).toBeLessThan(0);
 
     // Paladin unaffected
     const pallyDelta = result.deltas.find(
@@ -207,11 +207,11 @@ describe('compareProposal', () => {
     )!;
     expect(pallyDelta.change).toBe(0);
 
-    // NL unaffected
-    const nlDelta = result.deltas.find(
-      (d) => d.className === 'NL' && d.skillName === 'Triple Throw' && d.tier === 'high'
+    // Night Lord unaffected
+    const nightLordDelta = result.deltas.find(
+      (d) => d.className === 'Night Lord' && d.skillName === 'Triple Throw' && d.tier === 'high'
     )!;
-    expect(nlDelta.change).toBe(0);
+    expect(nightLordDelta.change).toBe(0);
   });
 });
 
@@ -427,12 +427,12 @@ describe('compareProposal with multiple scenarios', () => {
     const scenarios: ScenarioConfig[] = [{ name: 'Buffed' }];
 
     const multiConfig: SimulationConfig = {
-      classes: ['hero', 'drk'],
+      classes: ['hero', 'dark-knight'],
       tiers: ['high'],
       scenarios,
     };
 
-    // Buff Hero Brandish significantly so it overtakes DrK Crusher
+    // Buff Hero Brandish significantly so it overtakes Dark Knight Crusher
     const proposal: Proposal = {
       name: 'Brandish +40',
       author: 'test',

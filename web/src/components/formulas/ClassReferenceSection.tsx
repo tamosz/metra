@@ -11,11 +11,11 @@ function getNotables(classData: ClassSkillData): string[] {
     notes.push(`Shadow Shifter (${Math.round(classData.shadowShifterRate * 100)}%)`);
   }
   // Shadow Partner / Berserk — hardcoded, no explicit data field
-  const name = classData.className.toLowerCase();
-  if (name === 'nl' || name === 'shadower') {
+  const name = classData.className;
+  if (name === 'Night Lord' || name === 'Shadower') {
     notes.push('Shadow Partner');
   }
-  if (name === 'drk') {
+  if (name === 'Dark Knight') {
     notes.push('Berserk (2.1×)');
   }
   if (classData.spellAmplification && classData.spellAmplification !== 1) {

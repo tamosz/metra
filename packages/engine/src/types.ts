@@ -159,7 +159,7 @@ export interface ClassSkillData {
   /**
    * Which damage formula to use.
    * - "standard" (default): warrior-style (primary * weapMult + secondary) * totalAtk / 100
-   * - "throwingStar": NL-style 5.0 * LUK * totalAtk / 100
+   * - "throwingStar": Night Lord-style 5.0 * LUK * totalAtk / 100
    * - "magic": mage TMA-based formula with spell/weapon amplification
    */
   damageFormula?: 'standard' | 'throwingStar' | 'magic';
@@ -169,7 +169,7 @@ export interface ClassSkillData {
   weaponAmplification?: number;
   /** Power Stance rate (0-1). Warriors 0.9, Bucc 0.9. Default 0. */
   stanceRate?: number;
-  /** Shadow Shifter dodge rate (0-1). NL 0.30, Shadower 0.40. Default 0. */
+  /** Shadow Shifter dodge rate (0-1). Night Lord 0.30, Shadower 0.40. Default 0. */
   shadowShifterRate?: number;
   skills: SkillEntry[];
   /** Optional mixed rotation estimates (time-weighted skill blends, not fixed rotation cycles). */

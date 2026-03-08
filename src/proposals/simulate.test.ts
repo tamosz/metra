@@ -104,7 +104,7 @@ beforeAll(() => {
     ['paladin-bw', loadClassSkills('paladin-bw')],
     ['shadower', loadClassSkills('Shadower')],
     ['archmage-il', loadClassSkills('Archmage I/L')],
-    ['nl', loadClassSkills('NL')],
+    ['night-lord', loadClassSkills('Night Lord')],
   ]);
 
   gearTemplates = new Map([
@@ -116,7 +116,7 @@ beforeAll(() => {
     ['paladin-bw-high', loadGearTemplate('paladin-bw-high')],
     ['shadower-high', loadGearTemplate('shadower-high')],
     ['archmage-il-high', loadGearTemplate('archmage-il-high')],
-    ['nl-high', loadGearTemplate('nl-high')],
+    ['night-lord-high', loadGearTemplate('night-lord-high')],
   ]);
 });
 
@@ -623,7 +623,7 @@ describe('targetCount (multi-target scaling)', () => {
 
   it('single-target skills are unaffected by targetCount', () => {
     const config: SimulationConfig = {
-      classes: ['nl'],
+      classes: ['night-lord'],
       tiers: ['high'],
       scenarios: [
         { name: 'Buffed' },
@@ -639,7 +639,7 @@ describe('targetCount (multi-target scaling)', () => {
     const buffed = results.find(r => r.scenario === 'Buffed')!;
     const training = results.find(r => r.scenario === 'Training')!;
 
-    // NL Triple Throw has no maxTargets (defaults to 1), so DPS unchanged
+    // Night Lord Triple Throw has no maxTargets (defaults to 1), so DPS unchanged
     expect(training.dps.dps).toBe(buffed.dps.dps);
   });
 
