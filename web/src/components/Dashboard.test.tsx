@@ -64,8 +64,9 @@ describe('Dashboard', () => {
 
   it('shows class names in the table', () => {
     renderDashboard();
-    expect(screen.getByText('Night Lord')).toBeTruthy();
-    expect(screen.getByText('Hero')).toBeTruthy();
+    const table = screen.getByTestId('ranking-table');
+    expect(table.textContent).toContain('Night Lord');
+    expect(table.textContent).toContain('Hero');
   });
 
   it('sorts by DPS descending by default (highest first)', () => {
