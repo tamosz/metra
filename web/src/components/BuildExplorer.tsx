@@ -5,6 +5,7 @@ import { BuildStatEditor } from './BuildStatEditor.js';
 import { BuildBuffToggles } from './BuildBuffToggles.js';
 import { BuildDpsResults } from './BuildDpsResults.js';
 import { SupportClassNote } from './SupportClassNote.js';
+import { ArcherPassiveNote } from './ArcherPassiveNote.js';
 import { MarginalGainsTable } from './MarginalGainsTable.js';
 import { TemplateEditor } from './TemplateEditor.js';
 import { formatClassName } from '../utils/format.js';
@@ -139,6 +140,7 @@ export function BuildExplorer({ state, savedBuilds }: BuildExplorerProps) {
       </div>
 
       <SupportClassNote classNames={[formatClassName(selectedClass)]} />
+      <ArcherPassiveNote classNames={[formatClassName(selectedClass)]} />
 
       {template && (
         <div className="mb-6 flex gap-4 text-xs text-text-dim">

@@ -3,7 +3,6 @@ import { DpsChart } from './DpsChart.js';
 import { TierPresets } from './TierPresets.js';
 import { SupportClassNote } from './SupportClassNote.js';
 import { AssassinateBugNote } from './AssassinateBugNote.js';
-import { ArcherPassiveNote } from './ArcherPassiveNote.js';
 import { TierAssumptions } from './TierAssumptions.js';
 import type { SimulationData } from '../hooks/useSimulation.js';
 import type { BuildsState } from '../hooks/useBuilds.js';
@@ -88,7 +87,6 @@ export function Dashboard({ simulation, buildsState }: DashboardProps) {
 
       <SupportClassNote classNames={[...new Set(filtered.map((r) => r.className))]} />
       <AssassinateBugNote classNames={[...new Set(filtered.map((r) => r.className))]} />
-      <ArcherPassiveNote classNames={[...new Set(filtered.map((r) => r.className))]} />
 
       <DpsChart data={filtered} />
 
