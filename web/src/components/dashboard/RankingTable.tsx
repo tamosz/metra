@@ -4,8 +4,7 @@ import { ClassIcon } from '../icons/index.js';
 import { Tooltip } from '../Tooltip.js';
 import { formatDps } from '../../utils/format.js';
 import { getClassColor } from '../../utils/class-colors.js';
-import { compareTiers } from '@engine/data/types.js';
-import type { DpsResult } from '@engine/engine/dps.js';
+import { compareTiers, type DpsResult } from '@metra/engine';
 import type { ScenarioResult } from '@engine/proposals/types.js';
 
 type SortColumn = 'class' | 'skill' | 'tier' | 'dps' | 'capLoss';

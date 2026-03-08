@@ -8,6 +8,7 @@ export default defineConfig({
   plugins: [tailwindcss(), react()],
   resolve: {
     alias: {
+      '@metra/engine': resolve(__dirname, '../packages/engine/src/index.ts'),
       '@engine': resolve(__dirname, '../src'),
       '@data': resolve(__dirname, '../data'),
     },

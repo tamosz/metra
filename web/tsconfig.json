@@ -11,12 +11,13 @@
     "isolatedModules": true,
     "noEmit": true,
     "paths": {
+      "@metra/engine": ["../packages/engine/src/index.ts"],
       "@engine/*": ["../src/*"],
       "@data/*": ["../data/*"]
     },
     "baseUrl": "."
   },
-  "include": ["src/**/*", "../src/**/*"],
+  "include": ["src/**/*", "../src/**/*", "../packages/engine/src/**/*"],
   "exclude": [
     "node_modules",
     "../src/cli.ts",

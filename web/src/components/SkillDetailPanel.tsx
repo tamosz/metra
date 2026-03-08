@@ -1,5 +1,5 @@
 import { memo } from 'react';
-import type { DpsResult } from '@engine/engine/dps.js';
+import type { DpsResult } from '@metra/engine';
 import { formatDps } from '../utils/format.js';
 
 interface TierDpsEntry {

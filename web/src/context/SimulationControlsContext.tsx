@@ -37,8 +37,8 @@ export function SimulationControlsProvider({ children }: { children: ReactNode }
   const [bossAttackInterval, setBossAttackInterval] = useState(1.5);
   const [bossAccuracy, setBossAccuracy] = useState(250);
   const [capEnabled, setCapEnabled] = useState(true);
-  const [selectedTier, setSelectedTier] = useState('high');
-  const [cgsValues, setCgsValues] = useState<CgsValues>({ ...CGS_DEFAULTS.high });
+  const [selectedTier, setSelectedTier] = useState('perfect');
+  const [cgsValues, setCgsValues] = useState<CgsValues>({ ...CGS_DEFAULTS.perfect });
   const [efficiencyOverrides, setEfficiencyOverrides] = useState<Record<string, number[]>>({});
 
   const kbConfig = useMemo(

@@ -1,4 +1,4 @@
-import type { CharacterBuild } from '../data/types.js';
+import type { CharacterBuild } from '@metra/engine';
 
 /**
  * Frozen CharacterBuild fixtures for unit tests.

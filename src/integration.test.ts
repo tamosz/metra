@@ -7,7 +7,7 @@ import {
   loadMW,
   discoverClassesAndTiers,
 } from './data/loader.js';
-import type { ClassSkillData } from './data/types.js';
+import type { ClassSkillData } from '@metra/engine';
 import { compareProposal } from './proposals/compare.js';
 import { runSimulation } from './proposals/simulate.js';
 import type { SimulationConfig, GearTemplateMap } from './proposals/simulate.js';

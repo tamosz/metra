@@ -1,5 +1,4 @@
-import type { CharacterBuild } from '../data/types.js';
-import type { DpsResult } from '../engine/dps.js';
+import type { CharacterBuild, DpsResult } from '@metra/engine';
 
 /** A single change within a proposal. */
 export interface ProposalChange {

@@ -1,4 +1,4 @@
-import type { CharacterBuild, ClassSkillData } from '@engine/data/types.js';
+import type { CharacterBuild, ClassSkillData } from '@metra/engine';
 
 export interface CgsValues {
   cape: number;

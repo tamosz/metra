@@ -1,5 +1,5 @@
 import type { DeltaEntry, ScenarioResult } from '../proposals/types.js';
-import { compareTiers } from '../data/types.js';
+import { compareTiers } from '@metra/engine';
 
 /**
  * Format a number with thousands separators (locale-independent).

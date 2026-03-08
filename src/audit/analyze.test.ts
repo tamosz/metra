@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { analyzeBalance } from './analyze.js';
 import type { ScenarioResult } from '../proposals/types.js';
-import type { DpsResult } from '../engine/dps.js';
+import type { DpsResult } from '@metra/engine';
 
 function makeDpsResult(dps: number): DpsResult {
   return {
