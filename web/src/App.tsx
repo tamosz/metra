@@ -92,19 +92,19 @@ function AppContent() {
           {/* Desktop nav */}
           <nav className="hidden gap-1 md:flex">
             <NavButton active={page === 'dashboard'} onClick={() => navigate('dashboard')}>
-              Rankings
+              rankings
             </NavButton>
             <NavButton active={page === 'proposal'} onClick={() => navigate('proposal')}>
-              Proposal Builder
+              proposals
             </NavButton>
             <NavButton active={page === 'build'} onClick={() => navigate('build')}>
-              Build Explorer
+              builds
             </NavButton>
             <NavButton active={page === 'compare'} onClick={() => navigate('compare')}>
-              Compare
+              compare
             </NavButton>
             <NavButton active={page === 'formulas'} onClick={() => navigate('formulas')}>
-              Formulas
+              formulas
             </NavButton>
           </nav>
 
@@ -135,19 +135,19 @@ function AppContent() {
         {menuOpen && (
           <nav className="mt-3 flex flex-col gap-1 md:hidden">
             <NavButton active={page === 'dashboard'} onClick={() => navigate('dashboard')}>
-              Rankings
+              rankings
             </NavButton>
             <NavButton active={page === 'proposal'} onClick={() => navigate('proposal')}>
-              Proposal Builder
+              proposals
             </NavButton>
             <NavButton active={page === 'build'} onClick={() => navigate('build')}>
-              Build Explorer
+              builds
             </NavButton>
             <NavButton active={page === 'compare'} onClick={() => navigate('compare')}>
-              Compare
+              compare
             </NavButton>
             <NavButton active={page === 'formulas'} onClick={() => navigate('formulas')}>
-              Formulas
+              formulas
             </NavButton>
           </nav>
         )}
