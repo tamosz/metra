@@ -37,6 +37,16 @@
     "face": {
       "LUK": 25
     },
+    "pendant": {
+      "LUK": 28,
+      "DEX": 28,
+      "STR": 28
+    },
+    "medal": {
+      "LUK": 2,
+      "DEX": 2,
+      "STR": 2
+    },
     "belt": {
       "LUK": 5,
       "DEX": 5,

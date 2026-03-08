@@ -30,6 +30,13 @@
     "face": {
       "STR": 25
     },
+    "pendant": {
+      "STR": 28,
+      "DEX": 28
+    },
+    "medal": {
+      "WATK": 3
+    },
     "belt": {
       "STR": 5,
       "DEX": 5,
