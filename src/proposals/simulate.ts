@@ -194,7 +194,7 @@ export function runSimulation(
             skillResultsByName,
             classData.className,
             tier,
-            scenario.name,
+            scenario,
           );
           results.push(...mixedResults);
         }
@@ -311,21 +311,27 @@ function processMixedRotations(
   allSkillResults: Map<string, ScenarioResult>,
   className: string,
   tier: string,
-  scenario: string,
+  scenario: ScenarioConfig,
 ): ScenarioResult[] {
   const output: ScenarioResult[] = [];
 
   for (const rotation of mixedRotations) {
+    // Check for efficiency override
+    const overrideKey = `${className}.${rotation.name}`;
+    const override = scenario.efficiencyOverrides?.[overrideKey];
+    const useOverride = override != null && override.length === rotation.components.length;
+
     const componentResults: { result: ScenarioResult; weight: number }[] = [];
     let valid = true;
 
-    for (const component of rotation.components) {
+    for (let i = 0; i < rotation.components.length; i++) {
+      const component = rotation.components[i];
       const result = allSkillResults.get(component.skill);
       if (!result) {
         valid = false;
         break;
       }
-      componentResults.push({ result, weight: component.weight });
+      componentResults.push({ result, weight: useOverride ? override![i] : component.weight });
     }
 
     if (!valid || componentResults.length === 0) continue;
@@ -352,7 +358,7 @@ function processMixedRotations(
       className,
       skillName: rotation.name,
       tier,
-      scenario,
+      scenario: scenario.name,
       description: rotation.description,
       ...(isHeadline ? {} : { headline: false }),
       isComposite: true,

@@ -11,14 +11,36 @@
   "stanceRate": 0.9,
   "skills": [
     {
-      "name": "Spear Crusher",
+      "name": "Spear Crusher (Zerked)",
       "basePower": 170,
       "multiplier": 2.1,
       "hitCount": 3,
       "speedCategory": "Crusher",
       "weaponType": "Spear",
       "attackType": "stab",
-      "maxTargets": 3
+      "maxTargets": 3,
+      "headline": false
+    },
+    {
+      "name": "Spear Crusher",
+      "basePower": 170,
+      "multiplier": 1.0,
+      "hitCount": 3,
+      "speedCategory": "Crusher",
+      "weaponType": "Spear",
+      "attackType": "stab",
+      "maxTargets": 3,
+      "headline": false
+    }
+  ],
+  "mixedRotations": [
+    {
+      "name": "Berserk Crusher",
+      "description": "Weighted average of zerked (2.1x) and unzerked Crusher. Adjust Berserk uptime in the Skill Efficiency panel.",
+      "components": [
+        { "skill": "Spear Crusher (Zerked)", "weight": 0.9 },
+        { "skill": "Spear Crusher", "weight": 0.1 }
+      ]
     }
   ]
 }

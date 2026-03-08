@@ -40,6 +40,8 @@ export interface ScenarioConfig {
   bossAttackInterval?: number;
   /** Boss accuracy value. Default: very high (dodge ≈ 0). */
   bossAccuracy?: number;
+  /** Override mixed rotation weights. Key: "ClassName.Rotation Name", value: weight array matching component order. */
+  efficiencyOverrides?: Record<string, number[]>;
 }
 
 /** DPS result for a single class/skill/tier combination. */
