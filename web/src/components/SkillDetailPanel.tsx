@@ -14,12 +14,12 @@ interface SkillDetailPanelProps {
   isComposite: boolean;
   capEnabled: boolean;
   currentTier: string;
-  whatIfEnabled?: boolean;
+  editEnabled?: boolean;
   /** Current skill field values: { basePower: 260, multiplier: 1, ... } */
   skillFields?: Record<string, number>;
   /** Called when user edits a field: (fieldName, newValue, originalValue) */
   onFieldChange?: (field: string, value: number, original: number) => void;
-  /** Fields with active what-if changes: { basePower: 280 } */
+  /** Fields with active edit changes: { basePower: 280 } */
   activeChanges?: Record<string, number>;
   /** Sub-skills for combo group editing */
   comboSkills?: Array<{
@@ -46,7 +46,7 @@ function SkillDetailPanelInner({
   isComposite,
   capEnabled,
   currentTier,
-  whatIfEnabled,
+  editEnabled,
   skillFields,
   onFieldChange,
   activeChanges,
@@ -63,8 +63,8 @@ function SkillDetailPanelInner({
           dps.critDamagePercent * dps.totalCritRate)
       : 0;
 
-  const showEditFields = whatIfEnabled && skillFields && !isComposite;
-  const showComboEditFields = whatIfEnabled && isComposite && comboSkills && comboSkills.length > 0;
+  const showEditFields = editEnabled && skillFields && !isComposite;
+  const showComboEditFields = editEnabled && isComposite && comboSkills && comboSkills.length > 0;
 
   return (
     <div

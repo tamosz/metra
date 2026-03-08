@@ -4,12 +4,12 @@ import { CGS_DEFAULTS, type CgsValues } from '../utils/cgs.js';
 import type { KbConfig } from '../hooks/useSimulation.js';
 import type { ProposalChange } from '@engine/proposals/types.js';
 
-interface WhatIfMeta {
+interface EditMeta {
   name: string;
   author: string;
 }
 
-const EMPTY_WHAT_IF_META: WhatIfMeta = { name: '', author: '' };
+const EMPTY_EDIT_META: EditMeta = { name: '', author: '' };
 
 interface SimulationControlsContextType {
   targetCount: number;
@@ -33,15 +33,15 @@ interface SimulationControlsContextType {
   kbConfig: KbConfig | undefined;
   efficiencyOverrides: Record<string, number[]>;
   setEfficiencyOverrides: (overrides: Record<string, number[]>) => void;
-  whatIfEnabled: boolean;
-  setWhatIfEnabled: (enabled: boolean) => void;
-  whatIfChanges: ProposalChange[];
-  addWhatIfChange: (change: ProposalChange) => void;
-  removeWhatIfChange: (index: number) => void;
-  updateWhatIfChange: (index: number, change: ProposalChange) => void;
-  clearWhatIfChanges: () => void;
-  whatIfMeta: WhatIfMeta;
-  setWhatIfMeta: (meta: WhatIfMeta) => void;
+  editEnabled: boolean;
+  setEditEnabled: (enabled: boolean) => void;
+  editChanges: ProposalChange[];
+  addEditChange: (change: ProposalChange) => void;
+  removeEditChange: (index: number) => void;
+  updateEditChange: (index: number, change: ProposalChange) => void;
+  clearEditChanges: () => void;
+  editMeta: EditMeta;
+  setEditMeta: (meta: EditMeta) => void;
 }
 
 const SimulationControlsContext = createContext<SimulationControlsContextType | null>(null);
@@ -57,36 +57,36 @@ export function SimulationControlsProvider({ children }: { children: ReactNode }
   const [selectedTier, setSelectedTier] = useState('perfect');
   const [cgsValues, setCgsValues] = useState<CgsValues>({ ...CGS_DEFAULTS.perfect });
   const [efficiencyOverrides, setEfficiencyOverrides] = useState<Record<string, number[]>>({});
-  const [whatIfEnabled, setWhatIfEnabledRaw] = useState(false);
-  const [whatIfChanges, setWhatIfChanges] = useState<ProposalChange[]>([]);
-  const [whatIfMeta, setWhatIfMetaRaw] = useState<WhatIfMeta>(EMPTY_WHAT_IF_META);
+  const [editEnabled, setEditEnabledRaw] = useState(false);
+  const [editChanges, setEditChanges] = useState<ProposalChange[]>([]);
+  const [editMeta, setEditMetaRaw] = useState<EditMeta>(EMPTY_EDIT_META);
 
-  const setWhatIfEnabled = useCallback((enabled: boolean) => {
-    setWhatIfEnabledRaw(enabled);
+  const setEditEnabled = useCallback((enabled: boolean) => {
+    setEditEnabledRaw(enabled);
     if (!enabled) {
-      setWhatIfChanges([]);
-      setWhatIfMetaRaw(EMPTY_WHAT_IF_META);
+      setEditChanges([]);
+      setEditMetaRaw(EMPTY_EDIT_META);
     }
   }, []);
 
-  const addWhatIfChange = useCallback((change: ProposalChange) => {
-    setWhatIfChanges((prev) => [...prev, change]);
+  const addEditChange = useCallback((change: ProposalChange) => {
+    setEditChanges((prev) => [...prev, change]);
   }, []);
 
-  const removeWhatIfChange = useCallback((index: number) => {
-    setWhatIfChanges((prev) => prev.filter((_, i) => i !== index));
+  const removeEditChange = useCallback((index: number) => {
+    setEditChanges((prev) => prev.filter((_, i) => i !== index));
   }, []);
 
-  const updateWhatIfChange = useCallback((index: number, change: ProposalChange) => {
-    setWhatIfChanges((prev) => prev.map((c, i) => (i === index ? change : c)));
+  const updateEditChange = useCallback((index: number, change: ProposalChange) => {
+    setEditChanges((prev) => prev.map((c, i) => (i === index ? change : c)));
   }, []);
 
-  const clearWhatIfChanges = useCallback(() => {
-    setWhatIfChanges([]);
+  const clearEditChanges = useCallback(() => {
+    setEditChanges([]);
   }, []);
 
-  const setWhatIfMeta = useCallback((meta: WhatIfMeta) => {
-    setWhatIfMetaRaw(meta);
+  const setEditMeta = useCallback((meta: EditMeta) => {
+    setEditMetaRaw(meta);
   }, []);
 
   const kbConfig = useMemo(
@@ -117,17 +117,17 @@ export function SimulationControlsProvider({ children }: { children: ReactNode }
       kbConfig,
       efficiencyOverrides,
       setEfficiencyOverrides,
-      whatIfEnabled,
-      setWhatIfEnabled,
-      whatIfChanges,
-      addWhatIfChange,
-      removeWhatIfChange,
-      updateWhatIfChange,
-      clearWhatIfChanges,
-      whatIfMeta,
-      setWhatIfMeta,
+      editEnabled,
+      setEditEnabled,
+      editChanges,
+      addEditChange,
+      removeEditChange,
+      updateEditChange,
+      clearEditChanges,
+      editMeta,
+      setEditMeta,
     }),
-    [targetCount, elementModifiers, buffOverrides, kbEnabled, bossAttackInterval, bossAccuracy, capEnabled, selectedTier, cgsValues, kbConfig, efficiencyOverrides, whatIfEnabled, whatIfChanges, whatIfMeta, setWhatIfEnabled, addWhatIfChange, removeWhatIfChange, updateWhatIfChange, clearWhatIfChanges, setWhatIfMeta],
+    [targetCount, elementModifiers, buffOverrides, kbEnabled, bossAttackInterval, bossAccuracy, capEnabled, selectedTier, cgsValues, kbConfig, efficiencyOverrides, editEnabled, editChanges, editMeta, setEditEnabled, addEditChange, removeEditChange, updateEditChange, clearEditChanges, setEditMeta],
   );
 
   return (

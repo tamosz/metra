@@ -1,23 +1,23 @@
 import { describe, it, expect, vi } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
-import { useWhatIfComparison, type WhatIfComparisonOptions } from './useWhatIfComparison.js';
+import { useEditComparison, type EditComparisonOptions } from './useEditComparison.js';
 
-describe('useWhatIfComparison', () => {
+describe('useEditComparison', () => {
   it('returns null result and null error when changes is empty', () => {
     const { result } = renderHook(() =>
-      useWhatIfComparison({ changes: [] }),
+      useEditComparison({ changes: [] }),
     );
     expect(result.current.result).toBeNull();
     expect(result.current.error).toBeNull();
   });
 
   it('returns a ComparisonResult when given a valid change', () => {
-    const options: WhatIfComparisonOptions = {
+    const options: EditComparisonOptions = {
       changes: [
         { target: 'hero.brandish-sword', field: 'basePower', to: 280 },
       ],
     };
-    const { result } = renderHook(() => useWhatIfComparison(options));
+    const { result } = renderHook(() => useEditComparison(options));
     expect(result.current.error).toBeNull();
     expect(result.current.result).not.toBeNull();
     const comparison = result.current.result!;
@@ -28,13 +28,13 @@ describe('useWhatIfComparison', () => {
   });
 
   it('includes training scenario when targetCount > 1', () => {
-    const options: WhatIfComparisonOptions = {
+    const options: EditComparisonOptions = {
       changes: [
         { target: 'hero.brandish-sword', field: 'basePower', to: 280 },
       ],
       targetCount: 6,
     };
-    const { result } = renderHook(() => useWhatIfComparison(options));
+    const { result } = renderHook(() => useEditComparison(options));
     expect(result.current.error).toBeNull();
     const scenarios = new Set(
       result.current.result!.before.map((r) => r.scenario),
@@ -44,25 +44,25 @@ describe('useWhatIfComparison', () => {
   });
 
   it('passes buff overrides through to scenarios', () => {
-    const options: WhatIfComparisonOptions = {
+    const options: EditComparisonOptions = {
       changes: [
         { target: 'hero.brandish-sword', field: 'basePower', to: 280 },
       ],
       buffOverrides: { sharpEyes: false },
     };
-    const { result } = renderHook(() => useWhatIfComparison(options));
+    const { result } = renderHook(() => useEditComparison(options));
     expect(result.current.error).toBeNull();
     expect(result.current.result).not.toBeNull();
     expect(result.current.result!.before.length).toBeGreaterThan(0);
   });
 
   it('returns an error when the change targets a nonexistent class', () => {
-    const options: WhatIfComparisonOptions = {
+    const options: EditComparisonOptions = {
       changes: [
         { target: 'fakeclass.fakeskill', field: 'basePower', to: 999 },
       ],
     };
-    const { result } = renderHook(() => useWhatIfComparison(options));
+    const { result } = renderHook(() => useEditComparison(options));
     expect(result.current.result).toBeNull();
     expect(result.current.error).toBeInstanceOf(Error);
   });
@@ -78,7 +78,7 @@ describe('useWhatIfComparison', () => {
     ];
 
     const { result, rerender } = renderHook(
-      ({ changes }) => useWhatIfComparison({ changes }),
+      ({ changes }) => useEditComparison({ changes }),
       { initialProps: { changes: changes1 } },
     );
 

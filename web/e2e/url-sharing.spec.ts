@@ -2,11 +2,11 @@ import { test, expect } from '@playwright/test';
 import { encodeProposalHash, BRANDISH_BUFF } from './fixtures.js';
 
 test.describe('url sharing', () => {
-  test('navigating to /#p=<valid hash> enables what-if mode with changes', async ({ page }) => {
+  test('navigating to /#p=<valid hash> enables edit mode with changes', async ({ page }) => {
     const hash = encodeProposalHash(BRANDISH_BUFF);
     await page.goto('/' + hash);
 
-    // Should stay on dashboard with what-if mode active
+    // Should stay on dashboard with edit mode active
     await expect(page.getByTestId('ranking-table')).toBeVisible();
   });
 

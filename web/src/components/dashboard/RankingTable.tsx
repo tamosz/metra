@@ -57,14 +57,14 @@ export function RankingTable({
   data,
   allResults,
   capEnabled,
-  whatIfComparison,
+  editComparison,
 }: {
   data: { className: string; skillName: string; tier: string; dps: DpsResult; description?: string; isComposite?: boolean }[];
   allResults: ScenarioResult[];
   capEnabled: boolean;
-  whatIfComparison?: ComparisonResult | null;
+  editComparison?: ComparisonResult | null;
 }) {
-  const { whatIfEnabled, whatIfChanges, addWhatIfChange, updateWhatIfChange, removeWhatIfChange } = useSimulationControls();
+  const { editEnabled, editChanges, addEditChange, updateEditChange, removeEditChange } = useSimulationControls();
 
   const [sortColumn, setSortColumn] = useState<SortColumn>('dps');
   const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
@@ -91,13 +91,13 @@ export function RankingTable({
   const getDps = (r: typeof data[0]) => capEnabled ? r.dps.dps : r.dps.uncappedDps;
 
   const deltaMap = useMemo(() => {
-    if (!whatIfComparison) return null;
+    if (!editComparison) return null;
     const map = new Map<string, DeltaEntry>();
-    for (const d of whatIfComparison.deltas) {
+    for (const d of editComparison.deltas) {
       map.set(`${d.className}\0${d.skillName}\0${d.tier}`, d);
     }
     return map;
-  }, [whatIfComparison]);
+  }, [editComparison]);
 
   function getDelta(r: typeof data[0]): DeltaEntry | undefined {
     return deltaMap?.get(`${r.className}\0${r.skillName}\0${r.tier}`);
@@ -127,14 +127,14 @@ export function RankingTable({
     if (skill.maxTargets !== undefined) skillFields.maxTargets = skill.maxTargets;
 
     const activeChanges: Record<string, number> = {};
-    for (const change of whatIfChanges) {
+    for (const change of editChanges) {
       if (change.target === target && typeof change.to === 'number') {
         activeChanges[change.field] = change.to;
       }
     }
 
     return { skillFields, activeChanges, target };
-  }, [whatIfChanges]);
+  }, [editChanges]);
 
   const getComboSkillEditInfo = useCallback((className: string, comboGroupName: string) => {
     const classEntry = [...discoveredData.classDataMap.entries()]
@@ -155,14 +155,14 @@ export function RankingTable({
       if (skill.maxTargets !== undefined) skillFields.maxTargets = skill.maxTargets;
 
       const activeChanges: Record<string, number> = {};
-      for (const change of whatIfChanges) {
+      for (const change of editChanges) {
         if (change.target === target && typeof change.to === 'number') {
           activeChanges[change.field] = change.to;
         }
       }
       return { name: skill.name, skillFields, activeChanges, target };
     });
-  }, [whatIfChanges]);
+  }, [editChanges]);
 
   const handleFieldChange = useCallback((className: string, skillName: string, field: string, value: number, original: number) => {
     // Find the class key
@@ -179,19 +179,19 @@ export function RankingTable({
 
     if (value === original) {
       // Remove existing change for this target+field
-      const index = whatIfChanges.findIndex((c) => c.target === target && c.field === field);
-      if (index !== -1) removeWhatIfChange(index);
+      const index = editChanges.findIndex((c) => c.target === target && c.field === field);
+      if (index !== -1) removeEditChange(index);
       return;
     }
 
     // Check if change already exists for this target+field
-    const existingIndex = whatIfChanges.findIndex((c) => c.target === target && c.field === field);
+    const existingIndex = editChanges.findIndex((c) => c.target === target && c.field === field);
     if (existingIndex !== -1) {
-      updateWhatIfChange(existingIndex, { target, field, from: original, to: value });
+      updateEditChange(existingIndex, { target, field, from: original, to: value });
     } else {
-      addWhatIfChange({ target, field, from: original, to: value });
+      addEditChange({ target, field, from: original, to: value });
     }
-  }, [whatIfChanges, addWhatIfChange, updateWhatIfChange, removeWhatIfChange]);
+  }, [editChanges, addEditChange, updateEditChange, removeEditChange]);
 
   const sorted = useMemo(() => {
     const dir = sortDirection === 'asc' ? 1 : -1;
@@ -306,8 +306,8 @@ export function RankingTable({
                     )}
                   </tr>
                   {isExpanded && (() => {
-                    const editInfo = whatIfEnabled ? getSkillEditInfo(r.className, r.skillName) : null;
-                    const comboSkills = whatIfEnabled && r.isComposite ? getComboSkillEditInfo(r.className, r.skillName) : null;
+                    const editInfo = editEnabled ? getSkillEditInfo(r.className, r.skillName) : null;
+                    const comboSkills = editEnabled && r.isComposite ? getComboSkillEditInfo(r.className, r.skillName) : null;
                     return (
                       <tr>
                         <td colSpan={columnCount} className="p-0">
@@ -318,7 +318,7 @@ export function RankingTable({
                             isComposite={!!r.isComposite}
                             capEnabled={capEnabled}
                             currentTier={r.tier}
-                            whatIfEnabled={whatIfEnabled}
+                            editEnabled={editEnabled}
                             skillFields={editInfo?.skillFields}
                             onFieldChange={(field, value, original) =>
                               handleFieldChange(r.className, r.skillName, field, value, original)
@@ -326,13 +326,13 @@ export function RankingTable({
                             activeChanges={editInfo?.activeChanges}
                             comboSkills={comboSkills ?? undefined}
                             onComboFieldChange={(target, field, value, original) => {
-                              const existingIndex = whatIfChanges.findIndex(c => c.target === target && c.field === field);
+                              const existingIndex = editChanges.findIndex(c => c.target === target && c.field === field);
                               if (value === original) {
-                                if (existingIndex >= 0) removeWhatIfChange(existingIndex);
+                                if (existingIndex >= 0) removeEditChange(existingIndex);
                               } else if (existingIndex >= 0) {
-                                updateWhatIfChange(existingIndex, { target, field, from: original, to: value });
+                                updateEditChange(existingIndex, { target, field, from: original, to: value });
                               } else {
-                                addWhatIfChange({ target, field, from: original, to: value });
+                                addEditChange({ target, field, from: original, to: value });
                               }
                             }}
                           />

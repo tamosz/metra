@@ -60,10 +60,10 @@ function AppContent() {
     }
     const urlProposal = getProposalFromUrl();
     if (urlProposal) {
-      controls.setWhatIfEnabled(true);
-      urlProposal.changes.forEach(c => controls.addWhatIfChange(c));
+      controls.setEditEnabled(true);
+      urlProposal.changes.forEach(c => controls.addEditChange(c));
       if (urlProposal.name) {
-        controls.setWhatIfMeta({ name: urlProposal.name, author: urlProposal.author || '' });
+        controls.setEditMeta({ name: urlProposal.name, author: urlProposal.author || '' });
       }
       setPage('dashboard');
     }

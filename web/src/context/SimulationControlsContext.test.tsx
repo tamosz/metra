@@ -11,99 +11,99 @@ function renderControls() {
   return renderHook(() => useSimulationControls(), { wrapper });
 }
 
-describe('what-if state', () => {
+describe('edit state', () => {
   afterEach(cleanup);
 
   it('defaults to disabled with empty changes and meta', () => {
     const { result } = renderControls();
 
-    expect(result.current.whatIfEnabled).toBe(false);
-    expect(result.current.whatIfChanges).toEqual([]);
-    expect(result.current.whatIfMeta).toEqual({ name: '', author: '' });
+    expect(result.current.editEnabled).toBe(false);
+    expect(result.current.editChanges).toEqual([]);
+    expect(result.current.editMeta).toEqual({ name: '', author: '' });
   });
 
-  it('enables what-if mode', () => {
+  it('enables edit mode', () => {
     const { result } = renderControls();
 
     act(() => {
-      result.current.setWhatIfEnabled(true);
+      result.current.setEditEnabled(true);
     });
 
-    expect(result.current.whatIfEnabled).toBe(true);
+    expect(result.current.editEnabled).toBe(true);
   });
 
-  it('clears changes and meta when disabling what-if mode', () => {
+  it('clears changes and meta when disabling edit mode', () => {
     const { result } = renderControls();
 
     act(() => {
-      result.current.setWhatIfEnabled(true);
-      result.current.addWhatIfChange({
+      result.current.setEditEnabled(true);
+      result.current.addEditChange({
         target: 'hero.brandish-sword',
         field: 'basePower',
         to: 280,
       });
-      result.current.setWhatIfMeta({ name: 'Test', author: 'User' });
+      result.current.setEditMeta({ name: 'Test', author: 'User' });
     });
 
-    expect(result.current.whatIfChanges).toHaveLength(1);
-    expect(result.current.whatIfMeta.name).toBe('Test');
+    expect(result.current.editChanges).toHaveLength(1);
+    expect(result.current.editMeta.name).toBe('Test');
 
     act(() => {
-      result.current.setWhatIfEnabled(false);
+      result.current.setEditEnabled(false);
     });
 
-    expect(result.current.whatIfEnabled).toBe(false);
-    expect(result.current.whatIfChanges).toEqual([]);
-    expect(result.current.whatIfMeta).toEqual({ name: '', author: '' });
+    expect(result.current.editEnabled).toBe(false);
+    expect(result.current.editChanges).toEqual([]);
+    expect(result.current.editMeta).toEqual({ name: '', author: '' });
   });
 
   it('adds a change', () => {
     const { result } = renderControls();
 
     act(() => {
-      result.current.addWhatIfChange({
+      result.current.addEditChange({
         target: 'hero.brandish-sword',
         field: 'basePower',
         to: 280,
       });
     });
 
-    expect(result.current.whatIfChanges).toHaveLength(1);
-    expect(result.current.whatIfChanges[0].target).toBe('hero.brandish-sword');
-    expect(result.current.whatIfChanges[0].to).toBe(280);
+    expect(result.current.editChanges).toHaveLength(1);
+    expect(result.current.editChanges[0].target).toBe('hero.brandish-sword');
+    expect(result.current.editChanges[0].to).toBe(280);
   });
 
   it('removes a change by index', () => {
     const { result } = renderControls();
 
     act(() => {
-      result.current.addWhatIfChange({
+      result.current.addEditChange({
         target: 'hero.brandish-sword',
         field: 'basePower',
         to: 280,
       });
-      result.current.addWhatIfChange({
+      result.current.addEditChange({
         target: 'drk.spear-crusher',
         field: 'basePower',
         to: 300,
       });
     });
 
-    expect(result.current.whatIfChanges).toHaveLength(2);
+    expect(result.current.editChanges).toHaveLength(2);
 
     act(() => {
-      result.current.removeWhatIfChange(0);
+      result.current.removeEditChange(0);
     });
 
-    expect(result.current.whatIfChanges).toHaveLength(1);
-    expect(result.current.whatIfChanges[0].target).toBe('drk.spear-crusher');
+    expect(result.current.editChanges).toHaveLength(1);
+    expect(result.current.editChanges[0].target).toBe('drk.spear-crusher');
   });
 
   it('updates a change at a given index', () => {
     const { result } = renderControls();
 
     act(() => {
-      result.current.addWhatIfChange({
+      result.current.addEditChange({
         target: 'hero.brandish-sword',
         field: 'basePower',
         to: 280,
@@ -111,70 +111,70 @@ describe('what-if state', () => {
     });
 
     act(() => {
-      result.current.updateWhatIfChange(0, {
+      result.current.updateEditChange(0, {
         target: 'hero.brandish-sword',
         field: 'basePower',
         to: 300,
       });
     });
 
-    expect(result.current.whatIfChanges[0].to).toBe(300);
+    expect(result.current.editChanges[0].to).toBe(300);
   });
 
   it('clears all changes', () => {
     const { result } = renderControls();
 
     act(() => {
-      result.current.addWhatIfChange({
+      result.current.addEditChange({
         target: 'hero.brandish-sword',
         field: 'basePower',
         to: 280,
       });
-      result.current.addWhatIfChange({
+      result.current.addEditChange({
         target: 'drk.spear-crusher',
         field: 'basePower',
         to: 300,
       });
     });
 
-    expect(result.current.whatIfChanges).toHaveLength(2);
+    expect(result.current.editChanges).toHaveLength(2);
 
     act(() => {
-      result.current.clearWhatIfChanges();
+      result.current.clearEditChanges();
     });
 
-    expect(result.current.whatIfChanges).toEqual([]);
+    expect(result.current.editChanges).toEqual([]);
   });
 
-  it('sets what-if meta', () => {
+  it('sets edit meta', () => {
     const { result } = renderControls();
 
     act(() => {
-      result.current.setWhatIfMeta({ name: 'Brandish Buff', author: 'Staff' });
+      result.current.setEditMeta({ name: 'Brandish Buff', author: 'Staff' });
     });
 
-    expect(result.current.whatIfMeta).toEqual({ name: 'Brandish Buff', author: 'Staff' });
+    expect(result.current.editMeta).toEqual({ name: 'Brandish Buff', author: 'Staff' });
   });
 
   it('setters are stable references across renders', () => {
     const { result, rerender } = renderControls();
 
     const first = {
-      setWhatIfEnabled: result.current.setWhatIfEnabled,
-      addWhatIfChange: result.current.addWhatIfChange,
-      removeWhatIfChange: result.current.removeWhatIfChange,
-      updateWhatIfChange: result.current.updateWhatIfChange,
-      clearWhatIfChanges: result.current.clearWhatIfChanges,
-      setWhatIfMeta: result.current.setWhatIfMeta,
+      setEditEnabled: result.current.setEditEnabled,
+      addEditChange: result.current.addEditChange,
+      removeEditChange: result.current.removeEditChange,
+      updateEditChange: result.current.updateEditChange,
+      clearEditChanges: result.current.clearEditChanges,
+      setEditMeta: result.current.setEditMeta,
     };
 
     rerender();
 
-    expect(result.current.setWhatIfEnabled).toBe(first.setWhatIfEnabled);
-    expect(result.current.addWhatIfChange).toBe(first.addWhatIfChange);
-    expect(result.current.removeWhatIfChange).toBe(first.removeWhatIfChange);
-    expect(result.current.updateWhatIfChange).toBe(first.updateWhatIfChange);
-    expect(result.current.clearWhatIfChanges).toBe(first.clearWhatIfChanges);
-    expect(result.current.setWhatIfMeta).toBe(first.setWhatIfMeta);
+    expect(result.current.setEditEnabled).toBe(first.setEditEnabled);
+    expect(result.current.addEditChange).toBe(first.addEditChange);
+    expect(result.current.removeEditChange).toBe(first.removeEditChange);
+    expect(result.current.updateEditChange).toBe(first.updateEditChange);
+    expect(result.current.clearEditChanges).toBe(first.clearEditChanges);
+    expect(result.current.setEditMeta).toBe(first.setEditMeta);
   });
 });
