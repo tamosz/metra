@@ -33,10 +33,7 @@ export function WelcomeBanner() {
           <line x1="3" y1="11" x2="11" y2="3" />
         </svg>
       </button>
-      <div className="text-sm font-medium text-text-bright">
-        Royals Balance Simulator
-      </div>
-      <p className="m-0 mt-1.5 text-xs leading-relaxed text-text-muted">
+      <p className="m-0 text-xs leading-relaxed text-text-muted">
         Compare DPS across Royals classes at different funding tiers and buff scenarios.
         Use the <strong className="text-text-secondary">Proposal Builder</strong> to test balance changes,
         or explore individual builds in <strong className="text-text-secondary">Build Explorer</strong>.

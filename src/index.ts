@@ -1,4 +1,4 @@
-// Public API for the Royals Balance Simulator
+// Public API for metra
 
 // Engine (re-exported from @metra/engine)
 export * from '@metra/engine';
