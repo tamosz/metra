@@ -1,26 +1,9 @@
 // Public API for the Royals Balance Simulator
 
-// Engine
-export { calculateSkillDps, type DpsResult } from './engine/dps.js';
-export {
-  calculateDamageRange,
-  calculateAdjustedRange,
-  calculateRangeCap,
-  getWeaponMultiplier,
-  type DamageRange,
-} from './engine/damage.js';
-export {
-  calculateTotalAttack,
-  calculateTotalStats,
-  applyMW,
-  calculateEcho,
-} from './engine/buffs.js';
-export {
-  resolveEffectiveWeaponSpeed,
-  lookupAttackTime,
-} from './engine/attack-speed.js';
+// Engine (re-exported from @metra/engine)
+export * from '@metra/engine';
 
-// Data loading
+// Data loading (fs-based, Node.js only)
 export {
   loadWeapons,
   loadAttackSpeed,
@@ -31,18 +14,9 @@ export {
   type DiscoveryResult,
 } from './data/loader.js';
 
-// Types
-export type {
-  WeaponData,
-  WeaponType,
-  AttackSpeedData,
-  AttackSpeedEntry,
-  MWData,
-  MWEntry,
-  ClassSkillData,
-  SkillEntry,
-  CharacterBuild,
-} from './data/types.js';
+// Data utilities
+export { computeGearTotals, type GearTotals } from './data/gear-utils.js';
+export { mergeGearTemplate, type TierDefaults, type ClassBase, type TierOverride } from './data/gear-merge.js';
 
 // Proposal system
 export { applyProposal, skillSlug } from './proposals/apply.js';
