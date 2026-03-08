@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { calculateMarginalGains } from './marginal.js';
+import { calculateMarginalGains } from '@metra/engine';
 import { loadWeapons, loadAttackSpeed, loadMW, loadClassSkills, loadGearTemplate } from '../data/loader.js';
 
 const weaponData = loadWeapons();
