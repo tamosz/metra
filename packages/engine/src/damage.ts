@@ -1,4 +1,4 @@
-import type { WeaponData } from '../data/types.js';
+import type { WeaponData } from './types.js';
 
 /** Min damage mastery factor applied to physical attacks. Source: range calculator E19. */
 const MIN_DAMAGE_MASTERY_FACTOR = 0.9;
