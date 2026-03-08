@@ -1,6 +1,5 @@
 import { useState, useMemo, useCallback } from 'react';
-import { calculateBuildDps } from '@engine/engine/build-dps.js';
-import type { CharacterBuild, ClassSkillData } from '@engine/data/types.js';
+import { calculateBuildDps, type CharacterBuild, type ClassSkillData } from '@metra/engine';
 import {
   discoveredData,
   weaponData,

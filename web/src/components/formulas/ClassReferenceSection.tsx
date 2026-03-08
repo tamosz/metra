@@ -1,5 +1,5 @@
 import { discoveredData } from '../../data/bundle.js';
-import type { ClassSkillData } from '@engine/data/types.js';
+import type { ClassSkillData } from '@metra/engine';
 import { SectionHeading } from './SectionHeading.js';
 
 function getNotables(classData: ClassSkillData): string[] {

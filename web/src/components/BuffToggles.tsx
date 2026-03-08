@@ -1,4 +1,4 @@
-import type { CharacterBuild } from '@engine/data/types.js';
+import type { CharacterBuild } from '@metra/engine';
 import { useSimulationControls } from '../context/SimulationControlsContext.js';
 import { TOGGLE_ON, TOGGLE_OFF_RED } from '../utils/styles.js';
 

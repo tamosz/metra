@@ -9,7 +9,7 @@ import {
   Cell,
 } from 'recharts';
 import type { DeltaEntry } from '@engine/proposals/types.js';
-import { compareTiers } from '@engine/data/types.js';
+import { compareTiers } from '@metra/engine';
 import { getClassColor } from '../../utils/class-colors.js';
 import { useIsMobile } from '../../hooks/useIsMobile.js';
 import { colors } from '../../theme.js';
