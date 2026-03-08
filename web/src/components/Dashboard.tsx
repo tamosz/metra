@@ -25,7 +25,7 @@ interface DashboardProps {
 }
 
 export function Dashboard({ simulation, buildsState }: DashboardProps) {
-  const { selectedTier, targetCount, capEnabled, cgsValues, setCgsValues, setSelectedTier } = useSimulationControls();
+  const { selectedTier, targetCount, capEnabled, cgsValues, setCgsValues, setSelectedTier, whatIfEnabled, setWhatIfEnabled, whatIfChanges } = useSimulationControls();
   const { results, tiers } = simulation;
   const [showAllSkills, setShowAllSkills] = useState(false);
 
@@ -78,6 +78,7 @@ export function Dashboard({ simulation, buildsState }: DashboardProps) {
         <KbToggle />
         <CapToggle />
         <AllSkillsToggle enabled={showAllSkills} onToggle={setShowAllSkills} />
+        <WhatIfToggle enabled={whatIfEnabled} onToggle={setWhatIfEnabled} changeCount={whatIfChanges.length} />
         <EfficiencyPanel />
       </div>
 
@@ -109,6 +110,24 @@ function AllSkillsToggle({ enabled, onToggle }: { enabled: boolean; onToggle: (v
           className={`cursor-pointer rounded px-1.5 py-0.5 text-xs font-medium transition-colors ${enabled ? TOGGLE_ON : TOGGLE_OFF}`}
         >
           All
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function WhatIfToggle({ enabled, onToggle, changeCount }: { enabled: boolean; onToggle: (v: boolean) => void; changeCount: number }) {
+  return (
+    <div className="flex flex-col gap-1">
+      <span className="text-[11px] font-medium uppercase tracking-wide text-text-dim">What If</span>
+      <div className="flex items-center gap-1.5">
+        <button
+          type="button"
+          title={enabled ? 'What-if mode active — click to disable' : 'Click to enable what-if mode'}
+          onClick={() => onToggle(!enabled)}
+          className={`cursor-pointer rounded px-1.5 py-0.5 text-xs font-medium transition-colors ${enabled ? TOGGLE_ON : TOGGLE_OFF}`}
+        >
+          {enabled && changeCount > 0 ? `${changeCount} change${changeCount !== 1 ? 's' : ''}` : 'Edit'}
         </button>
       </div>
     </div>
