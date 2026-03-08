@@ -34,6 +34,7 @@ function AppContent() {
     buffOverrides: Object.keys(controls.buffOverrides).length > 0 ? controls.buffOverrides : undefined,
     kbConfig: controls.kbConfig,
     cgsOverride: { tier: controls.selectedTier, values: controls.cgsValues },
+    efficiencyOverrides: Object.keys(controls.efficiencyOverrides).length > 0 ? controls.efficiencyOverrides : undefined,
   });
   const savedBuildsState = useSavedBuilds();
   const proposalState = useProposal(controls.targetCount > 1 ? controls.targetCount : undefined);

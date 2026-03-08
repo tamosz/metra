@@ -30,10 +30,11 @@ export interface SimulationOptions {
   buffOverrides?: BuffOverrides;
   kbConfig?: KbConfig;
   cgsOverride?: { tier: string; values: CgsValues };
+  efficiencyOverrides?: Record<string, number[]>;
 }
 
 export function useSimulation(options: SimulationOptions = {}): SimulationData {
-  const { targetCount, elementModifiers, buffOverrides, kbConfig, cgsOverride } = options;
+  const { targetCount, elementModifiers, buffOverrides, kbConfig, cgsOverride, efficiencyOverrides } = options;
   return useMemo(() => {
     const { classNames, tiers, classDataMap, gearTemplates } = discoveredData;
 
@@ -52,6 +53,7 @@ export function useSimulation(options: SimulationOptions = {}): SimulationData {
 
       const hasElementMods = elementModifiers && Object.keys(elementModifiers).length > 0;
       const hasBuffOverrides = buffOverrides && Object.keys(buffOverrides).length > 0;
+      const hasEfficiencyOverrides = efficiencyOverrides && Object.keys(efficiencyOverrides).length > 0;
       // Build a single scenario from controls
       const scenario: ScenarioConfig = { name: 'Baseline' };
       if (hasElementMods) scenario.elementModifiers = { ...elementModifiers };
@@ -60,6 +62,7 @@ export function useSimulation(options: SimulationOptions = {}): SimulationData {
         scenario.bossAttackInterval = kbConfig.bossAttackInterval;
         scenario.bossAccuracy = kbConfig.bossAccuracy;
       }
+      if (hasEfficiencyOverrides) scenario.efficiencyOverrides = { ...efficiencyOverrides };
       const scenarios: ScenarioConfig[] = [scenario];
       if (targetCount != null && targetCount > 1) {
         const training: ScenarioConfig = { name: `Training (${targetCount} mobs)`, targetCount };
@@ -69,6 +72,7 @@ export function useSimulation(options: SimulationOptions = {}): SimulationData {
           training.bossAttackInterval = kbConfig.bossAttackInterval;
           training.bossAccuracy = kbConfig.bossAccuracy;
         }
+        if (hasEfficiencyOverrides) training.efficiencyOverrides = { ...efficiencyOverrides };
         scenarios.push(training);
       }
 
@@ -91,5 +95,5 @@ export function useSimulation(options: SimulationOptions = {}): SimulationData {
     } catch (e) {
       return { results: [], classNames, tiers, error: e instanceof Error ? e : new Error(String(e)) };
     }
-  }, [targetCount, elementModifiers, buffOverrides, kbConfig, cgsOverride]);
+  }, [targetCount, elementModifiers, buffOverrides, kbConfig, cgsOverride, efficiencyOverrides]);
 }
