@@ -100,6 +100,47 @@ export function TierScalingChart({ data, capEnabled, showAllSkills, targetCount 
     Math.ceil((dataMax + padding) / 1000) * 1000,
   ];
 
+  // Compute label y-offsets to avoid overlap at the rightmost tier
+  const labelOffsets = useMemo(() => {
+    if (chartData.length === 0) return new Map<string, number>();
+    const lastTier = chartData[chartData.length - 1];
+
+    // Get each line's DPS at the last tier, sorted descending (top of chart first)
+    const items = lines
+      .map((line) => ({
+        key: line.key,
+        dps: (lastTier[line.key] as number) ?? 0,
+      }))
+      .sort((a, b) => b.dps - a.dps);
+
+    // Convert DPS range to approximate pixels so we can enforce a min gap
+    const usableHeight = chartHeight - 32; // minus top + bottom margins
+    const dpsRange = yDomain[1] - yDomain[0];
+    if (dpsRange === 0) return new Map<string, number>();
+    const dpsPerPixel = dpsRange / usableHeight;
+    const minGapDps = (isMobile ? 12 : 14) * dpsPerPixel;
+
+    // Walk top-to-bottom, push labels down when too close
+    const adjusted = new Map<string, number>();
+    let lastAdj = Infinity;
+    for (const item of items) {
+      let adj = item.dps;
+      if (lastAdj - adj < minGapDps) {
+        adj = lastAdj - minGapDps;
+      }
+      adjusted.set(item.key, adj);
+      lastAdj = adj;
+    }
+
+    // Higher DPS = lower pixel y, so if adjustedDps < originalDps the label moves down (+y)
+    const offsets = new Map<string, number>();
+    for (const item of items) {
+      const delta = item.dps - adjusted.get(item.key)!;
+      offsets.set(item.key, delta / dpsPerPixel);
+    }
+    return offsets;
+  }, [chartData, lines, chartHeight, yDomain, isMobile]);
+
   return (
     <div data-testid="tier-scaling-chart">
       <div style={{ width: '100%', height: chartHeight }}>
@@ -176,10 +217,11 @@ export function TierScalingChart({ data, capEnabled, showAllSkills, targetCount 
                 label={({ x, y, index }: { x: number; y: number; index: number }) => {
                   // Only label the last point (rightmost tier)
                   if (index !== chartData.length - 1) return <g />;
+                  const offset = labelOffsets.get(line.key) ?? 0;
                   return (
                     <text
                       x={x + 10}
-                      y={y}
+                      y={y + offset}
                       textAnchor="start"
                       fill={isDimmed
                         ? colors.textFaint
