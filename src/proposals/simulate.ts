@@ -56,9 +56,18 @@ function applyPdr(dps: DpsResult, pdr: number): DpsResult {
 /**
  * Apply multi-target scaling to a DPS result.
  * effectiveTargets = min(skill.maxTargets, scenario.targetCount).
+ * When bounceDecay is set (0 < d < 1), uses a geometric series:
+ *   multiplier = (1 - d^n) / (1 - d)
+ * Otherwise, flat linear scaling by effectiveTargets.
  */
-function applyTargetCount(dps: DpsResult, effectiveTargets: number): DpsResult {
-  return { ...dps, dps: dps.dps * effectiveTargets, averageDamage: dps.averageDamage * effectiveTargets, uncappedDps: dps.uncappedDps * effectiveTargets };
+function applyTargetCount(dps: DpsResult, effectiveTargets: number, bounceDecay?: number): DpsResult {
+  let multiplier: number;
+  if (bounceDecay != null && bounceDecay > 0 && bounceDecay < 1) {
+    multiplier = (1 - bounceDecay ** effectiveTargets) / (1 - bounceDecay);
+  } else {
+    multiplier = effectiveTargets;
+  }
+  return { ...dps, dps: dps.dps * multiplier, averageDamage: dps.averageDamage * multiplier, uncappedDps: dps.uncappedDps * multiplier };
 }
 
 /**
@@ -140,7 +149,7 @@ export function runSimulation(
           let effectiveDps = scenario.pdr != null ? applyPdr(dps, scenario.pdr) : dps;
           if (scenario.targetCount != null && scenario.targetCount > 1) {
             const effectiveTargets = Math.min(skill.maxTargets ?? 1, scenario.targetCount);
-            if (effectiveTargets > 1) effectiveDps = applyTargetCount(effectiveDps, effectiveTargets);
+            if (effectiveTargets > 1) effectiveDps = applyTargetCount(effectiveDps, effectiveTargets, skill.bounceDecay);
           }
           if (scenario.bossAttackInterval != null && scenario.bossAttackInterval > 0) {
             const dodgeChance = calculateDodgeChance(
