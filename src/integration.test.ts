@@ -284,9 +284,9 @@ describe('Special mechanics', () => {
     );
     expect(shadCombo?.isComposite).toBe(true);
 
-    // Mixed rotation: Corsair Practical Bossing
+    // Mixed rotation: Corsair Battleship Cannon + Rapid Fire
     const practicalBossing = buffedResults.find(
-      (r) => r.className === 'Corsair' && r.skillName === 'Practical Bossing'
+      (r) => r.className === 'Corsair' && r.skillName === 'Battleship Cannon + Rapid Fire'
     );
     expect(practicalBossing?.isComposite).toBe(true);
 

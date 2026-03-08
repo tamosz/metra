@@ -35,8 +35,8 @@
   ],
   "mixedRotations": [
     {
-      "name": "Practical Bossing",
-      "description": "80/20 Cannon/RF split for periodic ship destruction. Use the Skills toggle to see individual skills.",
+      "name": "Battleship Cannon + Rapid Fire",
+      "description": "80/20 Cannon/RF split for periodic ship destruction. Adjust the ratio in the Skill Efficiency panel.",
       "components": [
         { "skill": "Battleship Cannon", "weight": 0.8 },
         { "skill": "Rapid Fire", "weight": 0.2 }
