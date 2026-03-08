@@ -242,6 +242,9 @@ export function RankingTable({
               const delta = deltaMap?.get(deltaMapKey(r.className, r.skillName, r.tier, r.scenario));
               const change = delta ? (capEnabled ? delta.change : delta.uncappedChange) : 0;
               const changePercent = delta ? (capEnabled ? delta.changePercent : delta.uncappedChangePercent) : 0;
+              const displayDps = change !== 0 && delta
+                ? (capEnabled ? delta.after : delta.uncappedAfter)
+                : getDps(r);
               const rankDiff = delta?.rankBefore && delta?.rankAfter && delta.rankBefore !== delta.rankAfter
                 ? delta.rankBefore - delta.rankAfter
                 : 0;
@@ -277,7 +280,7 @@ export function RankingTable({
                     <td className="px-3 py-2 text-text-muted">{tierDisplayName(r.tier)}</td>
                     <td className="px-3 py-2 text-right tabular-nums">
                       <div className="flex items-center justify-end gap-2">
-                        {formatDps(getDps(r))}
+                        {formatDps(displayDps)}
                         {change !== 0 && (
                           <span className={`inline-flex items-center rounded-full px-1.5 py-0.5 text-[10px] font-medium leading-none ${
                             change > 0 ? 'bg-emerald-500/15 text-emerald-400' : 'bg-red-500/15 text-red-400'

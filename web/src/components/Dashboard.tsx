@@ -31,13 +31,14 @@ export function Dashboard({ simulation, buildsState }: DashboardProps) {
   const { selectedTier, targetCount, capEnabled, cgsValues, setCgsValues, editEnabled, setEditEnabled, editChanges } = controls;
   const { results, tiers } = simulation;
 
+  const cgsOverride = useMemo(() => ({ tier: selectedTier, values: cgsValues }), [selectedTier, cgsValues]);
   const comparison = useEditComparison({
     changes: editChanges,
     targetCount: targetCount > 1 ? targetCount : undefined,
     elementModifiers: Object.keys(controls.elementModifiers).length > 0 ? controls.elementModifiers : undefined,
     buffOverrides: Object.keys(controls.buffOverrides).length > 0 ? controls.buffOverrides : undefined,
     kbConfig: controls.kbConfig,
-    cgsOverride: { tier: selectedTier, values: cgsValues },
+    cgsOverride,
     efficiencyOverrides: Object.keys(controls.efficiencyOverrides).length > 0 ? controls.efficiencyOverrides : undefined,
   });
   const [showAllSkills, setShowAllSkills] = useState(false);

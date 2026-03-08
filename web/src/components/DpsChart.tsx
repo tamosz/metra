@@ -49,12 +49,15 @@ export function DpsChart({ data, editComparison }: DpsChartProps) {
   const deltaMap = useMemo(() => buildDeltaMap(editComparison), [editComparison]);
 
   const chartData = data.map((r) => {
+    const baseDps = Math.round(capEnabled ? r.dps.dps : r.dps.uncappedDps);
+    let dps = baseDps;
     let baselineDps: number | undefined;
     if (deltaMap) {
       const delta = deltaMap.get(deltaMapKey(r.className, r.skillName, r.tier, r.scenario));
       const change = capEnabled ? delta?.change : delta?.uncappedChange;
       if (delta && change !== 0) {
-        baselineDps = Math.round(capEnabled ? delta.before : delta.uncappedBefore);
+        dps = Math.round(capEnabled ? delta.after : delta.uncappedAfter);
+        baselineDps = baseDps;
       }
     }
     return {
@@ -63,7 +66,7 @@ export function DpsChart({ data, editComparison }: DpsChartProps) {
       sublabel: r.tier.charAt(0).toUpperCase() + r.tier.slice(1),
       // Unique key for Recharts YAxis — includes tier to avoid duplicate labels
       uid: `${r.className} — ${r.skillName} [${r.tier}]`,
-      dps: Math.round(capEnabled ? r.dps.dps : r.dps.uncappedDps),
+      dps,
       className: r.className,
       description: r.description,
       baselineDps,
