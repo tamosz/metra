@@ -1,4 +1,4 @@
-import type { ClassSkillData } from '../data/types.js';
+import type { ClassSkillData } from '@metra/engine';
 import type { Proposal } from './types.js';
 
 /** Valid numeric/string fields that a proposal can modify on a SkillEntry. */

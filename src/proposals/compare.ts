@@ -3,7 +3,7 @@ import type {
   WeaponData,
   AttackSpeedData,
   MWData,
-} from '../data/types.js';
+} from '@metra/engine';
 import { applyProposal } from './apply.js';
 import { runSimulation, type SimulationConfig, type GearTemplateMap } from './simulate.js';
 import type { Proposal, ComparisonResult, DeltaEntry, ScenarioResult } from './types.js';

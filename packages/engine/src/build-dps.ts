@@ -4,7 +4,7 @@ import type {
   WeaponData,
   AttackSpeedData,
   MWData,
-} from '../data/types.js';
+} from './types.js';
 import { calculateSkillDps, type DpsResult } from './dps.js';
 
 export interface SkillDpsRow {

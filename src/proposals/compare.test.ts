@@ -11,7 +11,7 @@ import type {
   AttackSpeedData,
   MWData,
   ClassSkillData,
-} from '../data/types.js';
+} from '@metra/engine';
 import { compareProposal, computeDeltas } from './compare.js';
 import type { SimulationConfig, GearTemplateMap } from './simulate.js';
 import type { Proposal, ScenarioConfig, ScenarioResult } from './types.js';

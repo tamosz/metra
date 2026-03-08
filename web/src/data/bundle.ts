@@ -5,7 +5,7 @@ import {
   type MWData,
   type ClassSkillData,
   type CharacterBuild,
-} from '@engine/data/types.js';
+} from '@metra/engine';
 import { computeGearTotals } from '@engine/data/gear-utils.js';
 import { mergeGearTemplate, type TierDefaults, type ClassBase, type TierOverride } from '@engine/data/gear-merge.js';
 

@@ -6,8 +6,8 @@ import {
   getKnockbackRecovery,
   DEFAULT_KB_RECOVERY,
   CHANNEL_KB_RECOVERY,
-} from './knockback.js';
-import type { SkillEntry } from '../data/types.js';
+} from '@metra/engine';
+import type { SkillEntry } from '@metra/engine';
 
 function makeSkill(overrides: Partial<SkillEntry> = {}): SkillEntry {
   return {

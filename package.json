@@ -5,6 +5,9 @@
   "main": "src/index.ts",
   "description": "Royals class balance simulator",
   "license": "MIT",
+  "workspaces": [
+    "packages/*"
+  ],
   "scripts": {
     "test": "vitest run",
     "test:watch": "vitest",

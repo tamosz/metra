@@ -1,4 +1,4 @@
-import type { CharacterBuild, ClassSkillData, MWData } from '../data/types.js';
+import type { CharacterBuild, ClassSkillData, MWData } from './types.js';
 
 /** Echo of Hero bonus multiplier (4%). Source: range calculator E10. */
 const ECHO_MULTIPLIER = 0.04;

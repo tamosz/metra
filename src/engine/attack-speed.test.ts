@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeAll } from 'vitest';
 import { loadAttackSpeed } from '../data/loader.js';
-import type { AttackSpeedData } from '../data/types.js';
-import { resolveEffectiveWeaponSpeed, lookupAttackTime } from './attack-speed.js';
+import type { AttackSpeedData } from '@metra/engine';
+import { resolveEffectiveWeaponSpeed, lookupAttackTime } from '@metra/engine';
 
 let attackSpeedData: AttackSpeedData;
 

@@ -1,7 +1,7 @@
 import { describe, it, expect, afterEach } from 'vitest';
 import { render, screen, cleanup } from '@testing-library/react';
 import { SkillDetailPanel } from './SkillDetailPanel.js';
-import type { DpsResult } from '@engine/engine/dps.js';
+import type { DpsResult } from '@metra/engine';
 
 const mockDps: DpsResult = {
   skillName: 'Brandish (Sword)',

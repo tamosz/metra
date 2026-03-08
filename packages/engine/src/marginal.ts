@@ -6,7 +6,7 @@ import type {
   AttackSpeedData,
   MWData,
   StatName,
-} from '../data/types.js';
+} from './types.js';
 import { calculateSkillDps } from './dps.js';
 
 export interface MarginalGain {

@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { renderComparisonReport, renderBaselineReport } from './markdown.js';
 import type { ComparisonResult, ScenarioResult } from '../proposals/types.js';
-import type { DpsResult } from '../engine/dps.js';
+import type { DpsResult } from '@metra/engine';
 
 describe('renderComparisonReport', () => {
   it('renders a Markdown table with changes and unchanged rows', () => {

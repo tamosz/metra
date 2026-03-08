@@ -1,4 +1,4 @@
-import type { AttackSpeedData } from '../data/types.js';
+import type { AttackSpeedData } from './types.js';
 
 /**
  * Calculate effective weapon speed after booster and Speed Infusion.

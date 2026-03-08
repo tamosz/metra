@@ -7,11 +7,11 @@
     "esModuleInterop": true,
     "skipLibCheck": true,
     "outDir": "dist",
-    "rootDir": ".",
+    "rootDir": "src",
     "resolveJsonModule": true,
     "declaration": true,
     "sourceMap": true
   },
-  "include": ["src/**/*", "scripts/**/*", "packages/*/src/**/*"],
+  "include": ["src/**/*"],
   "exclude": ["node_modules", "dist"]
 }
