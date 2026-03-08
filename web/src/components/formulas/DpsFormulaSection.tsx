@@ -54,6 +54,13 @@ export function DpsFormulaSection() {
         DPS is multiplied by effective targets.
       </p>
 
+      <p className="text-text-secondary text-sm mb-4 leading-relaxed">
+        Skills with bounce decay (e.g., Chain Lightning) deal reduced damage to each successive
+        target. Instead of flat multiplication, the effective target multiplier uses a geometric
+        series: <InlineMath math="\frac{1 - d^n}{1 - d}" /> where <InlineMath math="d" /> is the
+        decay rate and <InlineMath math="n" /> is the number of effective targets.
+      </p>
+
       <h4 className="text-sm font-semibold text-text-bright mt-8 mb-3">Combo Groups</h4>
 
       <p className="text-text-secondary text-sm mb-4 leading-relaxed">
