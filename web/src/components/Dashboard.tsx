@@ -99,7 +99,7 @@ export function Dashboard({ simulation, buildsState }: DashboardProps) {
 
       <AssassinateBugNote classNames={[...new Set(filtered.map((r) => r.className))]} />
 
-      <DpsChart data={filtered} />
+      <DpsChart data={filtered} whatIfComparison={whatIfEnabled ? comparison.result : null} />
 
       <div className="mt-6">
         <RankingTable data={filtered} allResults={results} capEnabled={capEnabled} whatIfComparison={whatIfEnabled ? comparison.result : null} />
