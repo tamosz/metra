@@ -20,7 +20,8 @@
       "speedCategory": "Paralyze",
       "weaponType": "Staff",
       "element": "Poison",
-      "maxTargets": 1
+      "maxTargets": 1,
+      "headline": false
     },
     {
       "name": "Meteor",
