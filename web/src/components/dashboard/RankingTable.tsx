@@ -1,4 +1,4 @@
-import { Fragment, useState, useMemo } from 'react';
+import { Fragment, useState, useMemo, useCallback } from 'react';
 import { SkillDetailPanel } from '../SkillDetailPanel.js';
 import { ClassIcon } from '../icons/index.js';
 import { Tooltip } from '../Tooltip.js';
@@ -6,6 +6,9 @@ import { formatDps } from '../../utils/format.js';
 import { getClassColor } from '../../utils/class-colors.js';
 import { compareTiers, type DpsResult } from '@metra/engine';
 import type { ScenarioResult } from '@engine/proposals/types.js';
+import { useSimulationControls } from '../../context/SimulationControlsContext.js';
+import { discoveredData } from '../../data/bundle.js';
+import { skillSlug } from '@engine/proposals/apply.js';
 
 type SortColumn = 'class' | 'skill' | 'tier' | 'dps' | 'capLoss';
 type SortDirection = 'asc' | 'desc';
@@ -59,6 +62,8 @@ export function RankingTable({
   allResults: ScenarioResult[];
   capEnabled: boolean;
 }) {
+  const { whatIfEnabled, whatIfChanges, addWhatIfChange, updateWhatIfChange, removeWhatIfChange } = useSimulationControls();
+
   const [sortColumn, setSortColumn] = useState<SortColumn>('dps');
   const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
   const [expandedRows, setExpandedRows] = useState<Set<string>>(new Set());
@@ -82,6 +87,68 @@ export function RankingTable({
   };
 
   const getDps = (r: typeof data[0]) => capEnabled ? r.dps.dps : r.dps.uncappedDps;
+
+  const getSkillEditInfo = useCallback((className: string, skillName: string) => {
+    // Find the class key whose classData.className matches the display name
+    let classKey: string | null = null;
+    let classData = null;
+    for (const [key, data] of discoveredData.classDataMap) {
+      if (data.className === className) {
+        classKey = key;
+        classData = data;
+        break;
+      }
+    }
+    if (!classKey || !classData) return null;
+
+    const skill = classData.skills.find((s) => s.name === skillName);
+    if (!skill) return null;
+
+    const target = `${classKey}.${skillSlug(skillName)}`;
+    const skillFields: Record<string, number> = {};
+    if (skill.basePower !== undefined) skillFields.basePower = skill.basePower;
+    if (skill.multiplier !== undefined) skillFields.multiplier = skill.multiplier;
+    if (skill.hitCount !== undefined) skillFields.hitCount = skill.hitCount;
+    if (skill.maxTargets !== undefined) skillFields.maxTargets = skill.maxTargets;
+
+    const activeChanges: Record<string, number> = {};
+    for (const change of whatIfChanges) {
+      if (change.target === target && typeof change.to === 'number') {
+        activeChanges[change.field] = change.to;
+      }
+    }
+
+    return { skillFields, activeChanges, target };
+  }, [whatIfChanges]);
+
+  const handleFieldChange = useCallback((className: string, skillName: string, field: string, value: number, original: number) => {
+    // Find the class key
+    let classKey: string | null = null;
+    for (const [key, data] of discoveredData.classDataMap) {
+      if (data.className === className) {
+        classKey = key;
+        break;
+      }
+    }
+    if (!classKey) return;
+
+    const target = `${classKey}.${skillSlug(skillName)}`;
+
+    if (value === original) {
+      // Remove existing change for this target+field
+      const index = whatIfChanges.findIndex((c) => c.target === target && c.field === field);
+      if (index !== -1) removeWhatIfChange(index);
+      return;
+    }
+
+    // Check if change already exists for this target+field
+    const existingIndex = whatIfChanges.findIndex((c) => c.target === target && c.field === field);
+    if (existingIndex !== -1) {
+      updateWhatIfChange(existingIndex, { target, field, from: original, to: value });
+    } else {
+      addWhatIfChange({ target, field, from: original, to: value });
+    }
+  }, [whatIfChanges, addWhatIfChange, updateWhatIfChange, removeWhatIfChange]);
 
   const sorted = useMemo(() => {
     const dir = sortDirection === 'asc' ? 1 : -1;
@@ -169,20 +236,29 @@ export function RankingTable({
                       </td>
                     )}
                   </tr>
-                  {isExpanded && (
-                    <tr>
-                      <td colSpan={columnCount} className="p-0">
-                        <SkillDetailPanel
-                          dps={r.dps}
-                          tierData={buildTierData(r, allResults, capEnabled)}
-                          classColor={getClassColor(r.className)}
-                          isComposite={!!r.isComposite}
-                          capEnabled={capEnabled}
-                          currentTier={r.tier}
-                        />
-                      </td>
-                    </tr>
-                  )}
+                  {isExpanded && (() => {
+                    const editInfo = whatIfEnabled ? getSkillEditInfo(r.className, r.skillName) : null;
+                    return (
+                      <tr>
+                        <td colSpan={columnCount} className="p-0">
+                          <SkillDetailPanel
+                            dps={r.dps}
+                            tierData={buildTierData(r, allResults, capEnabled)}
+                            classColor={getClassColor(r.className)}
+                            isComposite={!!r.isComposite}
+                            capEnabled={capEnabled}
+                            currentTier={r.tier}
+                            whatIfEnabled={whatIfEnabled}
+                            skillFields={editInfo?.skillFields}
+                            onFieldChange={(field, value, original) =>
+                              handleFieldChange(r.className, r.skillName, field, value, original)
+                            }
+                            activeChanges={editInfo?.activeChanges}
+                          />
+                        </td>
+                      </tr>
+                    );
+                  })()}
                 </Fragment>
               );
             })
