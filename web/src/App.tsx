@@ -76,9 +76,12 @@ function AppContent() {
         <div className="flex items-center gap-6">
           <button
             onClick={() => navigate('dashboard')}
-            className="flex cursor-pointer items-baseline gap-2.5 border-none bg-transparent p-0"
+            className="flex cursor-pointer items-baseline gap-3 border-none bg-transparent p-0"
           >
-            <h1 className="m-0 text-xl font-semibold tracking-[0.12em] text-text-bright">
+            <h1
+              className="m-0 text-lg text-text-bright"
+              style={{ fontFamily: '"Press Start 2P", monospace', letterSpacing: '0.08em' }}
+            >
               metra
             </h1>
             <span className="text-[10px] font-medium tracking-[0.2em] text-text-dim">
