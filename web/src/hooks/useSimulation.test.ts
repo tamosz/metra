@@ -26,7 +26,7 @@ describe('useSimulation buff overrides', () => {
   it('disabling SE reduces DPS vs baseline', () => {
     const { result: baseline } = renderHook(() => useSimulation());
     const { result: noSe } = renderHook(() =>
-      useSimulation(undefined, undefined, { sharpEyes: false })
+      useSimulation({ buffOverrides: { sharpEyes: false } })
     );
 
     const baseHero = baseline.current.results.find(
@@ -42,12 +42,14 @@ describe('useSimulation buff overrides', () => {
   it('disabling all buffs significantly reduces DPS', () => {
     const { result: baseline } = renderHook(() => useSimulation());
     const { result: noBuffs } = renderHook(() =>
-      useSimulation(undefined, undefined, {
-        sharpEyes: false,
-        echoActive: false,
-        speedInfusion: false,
-        mwLevel: 0,
-        attackPotion: 0,
+      useSimulation({
+        buffOverrides: {
+          sharpEyes: false,
+          echoActive: false,
+          speedInfusion: false,
+          mwLevel: 0,
+          attackPotion: 0,
+        },
       })
     );
 
@@ -66,7 +68,7 @@ describe('useSimulation element modifiers', () => {
   it('Holy 1.5x boosts Paladin DPS', () => {
     const { result: baseline } = renderHook(() => useSimulation());
     const { result: holy } = renderHook(() =>
-      useSimulation(undefined, { Holy: 1.5 })
+      useSimulation({ elementModifiers: { Holy: 1.5 } })
     );
 
     const basePaladin = baseline.current.results.find(
@@ -82,7 +84,7 @@ describe('useSimulation element modifiers', () => {
   it('element modifiers do not affect non-elemental classes', () => {
     const { result: baseline } = renderHook(() => useSimulation());
     const { result: holy } = renderHook(() =>
-      useSimulation(undefined, { Holy: 1.5 })
+      useSimulation({ elementModifiers: { Holy: 1.5 } })
     );
 
     const baseHero = baseline.current.results.find(
@@ -100,10 +102,7 @@ describe('useSimulation KB config', () => {
   it('KB reduces DPS vs baseline', () => {
     const { result: baseline } = renderHook(() => useSimulation());
     const { result: kb } = renderHook(() =>
-      useSimulation(undefined, undefined, undefined, {
-        bossAttackInterval: 1.5,
-        bossAccuracy: 250,
-      })
+      useSimulation({ kbConfig: { bossAttackInterval: 1.5, bossAccuracy: 250 } })
     );
 
     const baseHero = baseline.current.results.find(
@@ -120,7 +119,7 @@ describe('useSimulation KB config', () => {
 describe('useSimulation target count', () => {
   it('targetCount > 1 adds a Training scenario', () => {
     const { result } = renderHook(() =>
-      useSimulation(6)
+      useSimulation({ targetCount: 6 })
     );
 
     const scenarios = new Set(result.current.results.map(r => r.scenario));
@@ -130,7 +129,7 @@ describe('useSimulation target count', () => {
 
   it('AoE skills scale up in Training scenario', () => {
     const { result } = renderHook(() =>
-      useSimulation(6)
+      useSimulation({ targetCount: 6 })
     );
 
     const baselineHero = result.current.results.find(
@@ -146,7 +145,7 @@ describe('useSimulation target count', () => {
 
   it('targetCount of 1 does not add a Training scenario', () => {
     const { result } = renderHook(() =>
-      useSimulation(1)
+      useSimulation({ targetCount: 1 })
     );
 
     const scenarios = new Set(result.current.results.map(r => r.scenario));
@@ -159,9 +158,8 @@ describe('useSimulation CGS override', () => {
   it('increasing CGS boosts WATK-dependent DPS', () => {
     const { result: baseline } = renderHook(() => useSimulation());
     const { result: boosted } = renderHook(() =>
-      useSimulation(undefined, undefined, undefined, undefined, {
-        tier: 'high',
-        values: { cape: 22, glove: 22, shoe: 18 },
+      useSimulation({
+        cgsOverride: { tier: 'high', values: { cape: 22, glove: 22, shoe: 18 } },
       })
     );
 
@@ -179,9 +177,8 @@ describe('useSimulation CGS override', () => {
   it('CGS override does not affect mage classes', () => {
     const { result: baseline } = renderHook(() => useSimulation());
     const { result: boosted } = renderHook(() =>
-      useSimulation(undefined, undefined, undefined, undefined, {
-        tier: 'high',
-        values: { cape: 22, glove: 22, shoe: 18 },
+      useSimulation({
+        cgsOverride: { tier: 'high', values: { cape: 22, glove: 22, shoe: 18 } },
       })
     );
 
