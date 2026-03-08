@@ -24,13 +24,16 @@ export interface SimulationData {
   error: Error | null;
 }
 
-export function useSimulation(
-  targetCount?: number,
-  elementModifiers?: Record<string, number>,
-  buffOverrides?: BuffOverrides,
-  kbConfig?: KbConfig,
-  cgsOverride?: { tier: string; values: CgsValues },
-): SimulationData {
+export interface SimulationOptions {
+  targetCount?: number;
+  elementModifiers?: Record<string, number>;
+  buffOverrides?: BuffOverrides;
+  kbConfig?: KbConfig;
+  cgsOverride?: { tier: string; values: CgsValues };
+}
+
+export function useSimulation(options: SimulationOptions = {}): SimulationData {
+  const { targetCount, elementModifiers, buffOverrides, kbConfig, cgsOverride } = options;
   return useMemo(() => {
     const { classNames, tiers, classDataMap, gearTemplates } = discoveredData;
 

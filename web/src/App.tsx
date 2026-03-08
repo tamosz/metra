@@ -28,13 +28,13 @@ export function App() {
 function AppContent() {
   const controls = useSimulationControls();
   const buildsState = useBuilds();
-  const simulation = useSimulation(
-    controls.targetCount > 1 ? controls.targetCount : undefined,
-    Object.keys(controls.elementModifiers).length > 0 ? controls.elementModifiers : undefined,
-    Object.keys(controls.buffOverrides).length > 0 ? controls.buffOverrides : undefined,
-    controls.kbConfig,
-    { tier: controls.selectedTier, values: controls.cgsValues },
-  );
+  const simulation = useSimulation({
+    targetCount: controls.targetCount > 1 ? controls.targetCount : undefined,
+    elementModifiers: Object.keys(controls.elementModifiers).length > 0 ? controls.elementModifiers : undefined,
+    buffOverrides: Object.keys(controls.buffOverrides).length > 0 ? controls.buffOverrides : undefined,
+    kbConfig: controls.kbConfig,
+    cgsOverride: { tier: controls.selectedTier, values: controls.cgsValues },
+  });
   const savedBuildsState = useSavedBuilds();
   const proposalState = useProposal(controls.targetCount > 1 ? controls.targetCount : undefined);
   const buildState = useBuildExplorer();
