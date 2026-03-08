@@ -1,4 +1,4 @@
-import type { SkillEntry } from '../data/types.js';
+import type { SkillEntry } from './types.js';
 
 /**
  * Default KB recovery time for burst/normal skills (seconds).
