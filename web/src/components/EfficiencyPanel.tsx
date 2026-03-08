@@ -14,13 +14,16 @@ const CONFIGURABLE_ROTATIONS: RotationConfig[] = [];
 for (const [, classData] of discoveredData.classDataMap) {
   if (classData.mixedRotations) {
     for (const rotation of classData.mixedRotations) {
-      CONFIGURABLE_ROTATIONS.push({
-        key: `${classData.className}.${rotation.name}`,
-        className: classData.className,
-        rotationName: rotation.name,
-        components: rotation.components,
-        description: rotation.description,
-      });
+      // Only 2-component rotations are supported by the slider UI
+      if (rotation.components.length === 2) {
+        CONFIGURABLE_ROTATIONS.push({
+          key: `${classData.className}.${rotation.name}`,
+          className: classData.className,
+          rotationName: rotation.name,
+          components: rotation.components,
+          description: rotation.description,
+        });
+      }
     }
   }
 }
