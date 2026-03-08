@@ -8,10 +8,34 @@ import {
   Cell,
 } from 'recharts';
 import type { ScenarioResult, ComparisonResult } from '@engine/proposals/types.js';
+import { useMemo } from 'react';
 import { getClassColor } from '../utils/class-colors.js';
 import { useIsMobile } from '../hooks/useIsMobile.js';
 import { colors } from '../theme.js';
 import { useSimulationControls } from '../context/SimulationControlsContext.js';
+import type { DeltaEntry } from '@engine/proposals/types.js';
+
+// Custom bar shape that overlays a ghost bar showing the baseline DPS when a what-if change is active.
+// Recharts renders multiple <Bar> components side-by-side (grouped), so we use a single Bar with a
+// custom shape to draw both the ghost (baseline width) and the actual bar on the same row.
+function GhostBarShape(props: unknown) {
+  const { x, y, width, height, fill, fillOpacity, baselineDps, dps } = props as {
+    x: number; y: number; width: number; height: number;
+    fill: string; fillOpacity: number;
+    baselineDps?: number; dps: number;
+  };
+  if (baselineDps === undefined || baselineDps === dps) {
+    return <rect x={x} y={y} width={width} height={height} rx={3} fill={fill} fillOpacity={fillOpacity} />;
+  }
+  // Ghost width = baseline / dps * actual width
+  const ghostWidth = (baselineDps / dps) * width;
+  return (
+    <g>
+      <rect x={x} y={y} width={ghostWidth} height={height} rx={3} fill={fill} fillOpacity={0.15} />
+      <rect x={x} y={y} width={width} height={height} rx={3} fill={fill} fillOpacity={fillOpacity} />
+    </g>
+  );
+}
 
 interface DpsChartProps {
   data: ScenarioResult[];
@@ -22,12 +46,19 @@ export function DpsChart({ data, whatIfComparison }: DpsChartProps) {
   const { capEnabled } = useSimulationControls();
   const isMobile = useIsMobile();
 
+  const deltaMap = useMemo(() => {
+    if (!whatIfComparison) return null;
+    const map = new Map<string, DeltaEntry>();
+    for (const d of whatIfComparison.deltas) {
+      map.set(`${d.className}\0${d.skillName}\0${d.tier}\0${d.scenario}`, d);
+    }
+    return map;
+  }, [whatIfComparison]);
+
   const chartData = data.map((r) => {
     let baselineDps: number | undefined;
-    if (whatIfComparison) {
-      const delta = whatIfComparison.deltas.find(
-        (d) => d.className === r.className && d.skillName === r.skillName && d.tier === r.tier && d.scenario === r.scenario,
-      );
+    if (deltaMap) {
+      const delta = deltaMap.get(`${r.className}\0${r.skillName}\0${r.tier}\0${r.scenario}`);
       if (delta && delta.change !== 0) {
         baselineDps = Math.round(delta.before);
       }
@@ -141,18 +172,12 @@ export function DpsChart({ data, whatIfComparison }: DpsChartProps) {
             }}
             cursor={{ fill: 'rgba(255,255,255,0.03)' }}
           />
-          {whatIfComparison && (
-            <Bar dataKey="baselineDps" radius={[0, 3, 3, 0]} barSize={18} isAnimationActive={false}>
-              {chartData.map((entry, index) => (
-                <Cell
-                  key={index}
-                  fill={entry.baselineDps !== undefined ? getClassColor(entry.className) : 'transparent'}
-                  fillOpacity={0.2}
-                />
-              ))}
-            </Bar>
-          )}
-          <Bar dataKey="dps" radius={[0, 3, 3, 0]} barSize={18}>
+          <Bar
+            dataKey="dps"
+            radius={[0, 3, 3, 0]}
+            barSize={18}
+            shape={whatIfComparison ? GhostBarShape : undefined}
+          >
             {chartData.map((entry, index) => (
               <Cell key={index} fill={getClassColor(entry.className)} fillOpacity={0.8} />
             ))}

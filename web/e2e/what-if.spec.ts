@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { encodeProposalHash, BRANDISH_BUFF } from './fixtures.js';
+import { encodeProposalHash, BRANDISH_BUFF, SNIPE_DOUBLE_HIT } from './fixtures.js';
 
 test.describe('Edit mode', () => {
   test.beforeEach(async ({ page }) => {
@@ -60,5 +60,19 @@ test.describe('Edit mode', () => {
 
     // The changes pill should be visible, confirming edit mode activated with changes loaded
     await expect(page.getByText('1 change')).toBeVisible();
+  });
+
+  test('snipe hitCount change shows positive delta for marksman', async ({ page }) => {
+    const hash = encodeProposalHash(SNIPE_DOUBLE_HIT);
+    await page.goto(`/${hash}`);
+    await page.waitForSelector('[data-testid="ranking-table"]');
+
+    // Should have 1 change loaded
+    await expect(page.getByText('1 change')).toBeVisible();
+
+    // Find a Marksman row with a positive delta badge
+    const marksmanRow = page.locator('[data-testid="ranking-table"] tbody tr').filter({ hasText: 'Marksman' });
+    const deltaBadge = marksmanRow.locator('span').filter({ hasText: /^\+[\d.]+%$/ });
+    await expect(deltaBadge.first()).toBeVisible();
   });
 });

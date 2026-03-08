@@ -32,6 +32,20 @@ export function encodeProposalHash(proposal: TestProposal): string {
   return `#p=${LZString.compressToEncodedURIComponent(json)}`;
 }
 
+export const SNIPE_DOUBLE_HIT: TestProposal = {
+  name: 'Snipe Double Hit',
+  author: 'Tester',
+  description: 'Double Snipe hitCount',
+  changes: [
+    {
+      target: 'marksman.snipe',
+      field: 'hitCount',
+      from: 1,
+      to: 2,
+    },
+  ],
+};
+
 export async function navigateToDashboard(page: Page) {
   await page.getByRole('button', { name: 'Rankings' }).click();
 }
