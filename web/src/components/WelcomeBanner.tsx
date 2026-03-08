@@ -3,9 +3,13 @@ import { useState } from 'react';
 const STORAGE_KEY = 'metra-welcome-dismissed';
 
 export function WelcomeBanner() {
-  const [dismissed, setDismissed] = useState(
-    () => localStorage.getItem(STORAGE_KEY) === '1',
-  );
+  const [dismissed, setDismissed] = useState(() => {
+    try {
+      return localStorage.getItem(STORAGE_KEY) === '1';
+    } catch {
+      return false;
+    }
+  });
 
   if (dismissed) return null;
 
