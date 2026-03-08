@@ -27,7 +27,7 @@ const VARIANT_CLASSES = new Set(['Hero (Axe)', 'Paladin (BW)']);
 
 export function Dashboard({ simulation, buildsState }: DashboardProps) {
   const controls = useSimulationControls();
-  const { selectedTier, targetCount, capEnabled, cgsValues, setCgsValues, setSelectedTier, whatIfEnabled, setWhatIfEnabled, whatIfChanges } = controls;
+  const { selectedTier, targetCount, capEnabled, cgsValues, setCgsValues, whatIfEnabled, setWhatIfEnabled, whatIfChanges } = controls;
   const { results, tiers } = simulation;
 
   const comparison = useWhatIfComparison({
