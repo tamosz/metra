@@ -12,7 +12,7 @@ import type {
   MWData,
   ClassSkillData,
   CharacterBuild,
-} from '../data/types.js';
+} from '@metra/engine';
 import { runSimulation } from './simulate.js';
 import type { SimulationConfig, GearTemplateMap } from './simulate.js';
 import type { ScenarioConfig } from './types.js';

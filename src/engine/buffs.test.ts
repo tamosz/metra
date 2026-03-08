@@ -1,13 +1,15 @@
 import { describe, it, expect, beforeAll } from 'vitest';
 import { loadMW, loadClassSkills } from '../data/loader.js';
-import type { MWData, ClassSkillData, CharacterBuild } from '../data/types.js';
 import {
   applyMW,
   calculateEcho,
   calculateMageEcho,
   calculateTotalAttack,
   calculateTotalStats,
-} from './buffs.js';
+  type MWData,
+  type ClassSkillData,
+  type CharacterBuild,
+} from '@metra/engine';
 
 let mwData: MWData;
 let heroData: ClassSkillData;

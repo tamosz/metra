@@ -6,15 +6,15 @@ import {
   loadClassSkills,
   loadGearTemplate,
 } from '../data/loader.js';
-import type {
-  WeaponData,
-  AttackSpeedData,
-  MWData,
-  ClassSkillData,
-  CharacterBuild,
-} from '../data/types.js';
-import { calculateBuildDps } from './build-dps.js';
-import { calculateSkillDps } from './dps.js';
+import {
+  calculateBuildDps,
+  calculateSkillDps,
+  type WeaponData,
+  type AttackSpeedData,
+  type MWData,
+  type ClassSkillData,
+  type CharacterBuild,
+} from '@metra/engine';
 
 let weaponData: WeaponData;
 let attackSpeedData: AttackSpeedData;

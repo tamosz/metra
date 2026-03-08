@@ -13,7 +13,7 @@ import type {
   ClassSkillData,
   CharacterBuild,
   StatName,
-} from './types.js';
+} from '@metra/engine';
 
 let weaponData: WeaponData;
 let attackSpeedData: AttackSpeedData;

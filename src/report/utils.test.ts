@@ -10,7 +10,7 @@ import {
   groupResultsByScenario,
 } from './utils.js';
 import type { DeltaEntry, ScenarioResult } from '../proposals/types.js';
-import type { DpsResult } from '../engine/dps.js';
+import type { DpsResult } from '@metra/engine';
 
 describe('formatNumber', () => {
   it('formats zero as "0"', () => {
