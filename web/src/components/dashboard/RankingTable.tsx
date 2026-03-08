@@ -185,18 +185,19 @@ export function RankingTable({
     applyFieldChange(`${classKey}.${skillSlug(skillName)}`, field, value, original);
   }, [applyFieldChange]);
 
+  const getEffectiveDps = useCallback((r: typeof data[0]) => {
+    if (deltaMap) {
+      const delta = deltaMap.get(deltaMapKey(r.className, r.skillName, r.tier, r.scenario));
+      const change = delta ? (capEnabled ? delta.change : delta.uncappedChange) : 0;
+      if (delta && change !== 0) {
+        return capEnabled ? delta.after : delta.uncappedAfter;
+      }
+    }
+    return getDps(r);
+  }, [deltaMap, capEnabled]);
+
   const sorted = useMemo(() => {
     const dir = sortDirection === 'asc' ? 1 : -1;
-    const getEffectiveDps = (r: typeof data[0]) => {
-      if (deltaMap) {
-        const delta = deltaMap.get(deltaMapKey(r.className, r.skillName, r.tier, r.scenario));
-        const change = delta ? (capEnabled ? delta.change : delta.uncappedChange) : 0;
-        if (delta && change !== 0) {
-          return capEnabled ? delta.after : delta.uncappedAfter;
-        }
-      }
-      return getDps(r);
-    };
     return [...data].sort((a, b) => {
       switch (sortColumn) {
         case 'class': return dir * a.className.localeCompare(b.className);
@@ -206,7 +207,29 @@ export function RankingTable({
         case 'capLoss': return dir * (a.dps.capLossPercent - b.dps.capLossPercent);
       }
     });
-  }, [data, sortColumn, sortDirection, capEnabled, deltaMap]);
+  }, [data, sortColumn, sortDirection, capEnabled, deltaMap, getEffectiveDps]);
+
+  // Compute visible rank diffs: compare baseline order (data) vs edit-adjusted order (sorted by DPS desc)
+  const visibleRankDiffs = useMemo(() => {
+    if (!deltaMap || sortColumn !== 'dps') return null;
+    // data is already sorted by baseline DPS descending
+    const baselineOrder = new Map<string, number>();
+    for (let i = 0; i < data.length; i++) {
+      const r = data[i];
+      baselineOrder.set(`${r.className}\0${r.skillName}\0${r.tier}`, i + 1);
+    }
+    // sorted by edit-adjusted DPS (when sorting by DPS desc)
+    const editOrder = [...data].sort((a, b) => getEffectiveDps(b) - getEffectiveDps(a));
+    const diffs = new Map<string, number>();
+    for (let i = 0; i < editOrder.length; i++) {
+      const r = editOrder[i];
+      const key = `${r.className}\0${r.skillName}\0${r.tier}`;
+      const baseRank = baselineOrder.get(key) ?? i + 1;
+      const diff = baseRank - (i + 1);
+      if (diff !== 0) diffs.set(key, diff);
+    }
+    return diffs;
+  }, [data, deltaMap, sortColumn, getEffectiveDps]);
 
   const thBase = 'px-3 py-2 text-[11px] uppercase tracking-wide text-text-dim font-medium';
   const thSortable = `${thBase} cursor-pointer select-none`;
@@ -255,9 +278,7 @@ export function RankingTable({
               const displayDps = change !== 0 && delta
                 ? (capEnabled ? delta.after : delta.uncappedAfter)
                 : getDps(r);
-              const rankDiff = delta?.rankBefore && delta?.rankAfter && delta.rankBefore !== delta.rankAfter
-                ? delta.rankBefore - delta.rankAfter
-                : 0;
+              const rankDiff = visibleRankDiffs?.get(`${r.className}\0${r.skillName}\0${r.tier}`) ?? 0;
               return (
                 <Fragment key={rowKey}>
                   <tr
