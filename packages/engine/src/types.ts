@@ -91,6 +91,10 @@ export interface SkillEntry {
   elementOptions?: string[];
   /** Maximum number of targets this skill can hit per attack. Default 1 (single-target). */
   maxTargets?: number;
+  /** Per-bounce damage decay multiplier for skills like Chain Lightning.
+   *  Each bounce deals this fraction of the previous bounce's damage (e.g., 0.7 = 70%).
+   *  When set, multi-target scaling uses geometric series instead of flat multiplication. */
+  bounceDecay?: number;
   /** If true, skill is excluded from simulation output (e.g., standalone Demolition when combo is strictly better). */
   hidden?: boolean;
   /** If false, skill is shown only when "show all skills" is toggled on. Default true. */

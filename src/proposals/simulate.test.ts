@@ -720,10 +720,102 @@ describe('targetCount (multi-target scaling)', () => {
       r => r.skillName === 'Blizzard' && r.scenario === 'Training 6'
     )!;
 
-    // Chain Lightning maxTargets: 6, targetCount: 6 → 6x
-    expect(chainTraining.dps.dps).toBeCloseTo(chainBuffed.dps.dps * 6, 0);
+    // Chain Lightning maxTargets: 6, targetCount: 6, bounceDecay: 0.7 → geometric series ≈ 2.94x
+    const clExpected = (1 - 0.7 ** 6) / (1 - 0.7);
+    expect(chainTraining.dps.dps).toBeCloseTo(chainBuffed.dps.dps * clExpected, 0);
     // Blizzard maxTargets: 15, targetCount: 6 → capped at 6x
     expect(blizzTraining.dps.dps).toBeCloseTo(blizzBuffed.dps.dps * 6, 0);
+  });
+
+  it('applies bounce decay for multi-target scaling', () => {
+    // Use inline class data with bounceDecay to test independently of archmage-il.json
+    const classData: ClassSkillData = {
+      className: 'TestBounce',
+      mastery: 0.6,
+      primaryStat: 'INT',
+      secondaryStat: 'LUK',
+      sharpEyesCritRate: 0.15,
+      sharpEyesCritDamageBonus: 140,
+      damageFormula: 'magic',
+      seCritFormula: 'multiplicative',
+      spellAmplification: 1.4,
+      weaponAmplification: 1.25,
+      skills: [
+        {
+          name: 'Bouncy Skill',
+          basePower: 210,
+          multiplier: 1,
+          hitCount: 1,
+          speedCategory: 'Chain Lightning',
+          weaponType: 'Staff',
+          maxTargets: 6,
+          bounceDecay: 0.7,
+        },
+        {
+          name: 'Flat AoE',
+          basePower: 210,
+          multiplier: 1,
+          hitCount: 1,
+          speedCategory: 'Chain Lightning',
+          weaponType: 'Staff',
+          maxTargets: 6,
+        },
+      ],
+    };
+
+    const build: CharacterBuild = {
+      className: 'TestBounce',
+      baseStats: { STR: 4, DEX: 4, INT: 700, LUK: 120 },
+      gearStats: { STR: 0, DEX: 0, INT: 200, LUK: 40 },
+      totalWeaponAttack: 140,
+      weaponType: 'Staff',
+      weaponSpeed: 6,
+      attackPotion: 60,
+      projectile: 0,
+      echoActive: true,
+      mwLevel: 20,
+      speedInfusion: false,
+      sharpEyes: true,
+    };
+
+    const localClassDataMap = new Map([['testbounce', classData]]);
+    const localGearTemplates: GearTemplateMap = new Map([['testbounce-high', build]]);
+
+    const config: SimulationConfig = {
+      classes: ['testbounce'],
+      tiers: ['high'],
+      scenarios: [
+        { name: 'Buffed' },
+        { name: 'Training 6', targetCount: 6 },
+      ],
+    };
+
+    const results = runSimulation(
+      config, localClassDataMap, localGearTemplates,
+      weaponData, attackSpeedData, mwData
+    );
+
+    const bouncyBuffed = results.find(
+      r => r.skillName === 'Bouncy Skill' && r.scenario === 'Buffed'
+    )!;
+    const bouncyTraining = results.find(
+      r => r.skillName === 'Bouncy Skill' && r.scenario === 'Training 6'
+    )!;
+    const flatBuffed = results.find(
+      r => r.skillName === 'Flat AoE' && r.scenario === 'Buffed'
+    )!;
+    const flatTraining = results.find(
+      r => r.skillName === 'Flat AoE' && r.scenario === 'Training 6'
+    )!;
+
+    // bounceDecay: 0.7, 6 targets → geometric series ≈ 2.9412x
+    const expectedMultiplier = (1 - 0.7 ** 6) / (1 - 0.7);
+    expect(bouncyTraining.dps.dps).toBeCloseTo(
+      bouncyBuffed.dps.dps * expectedMultiplier, 0
+    );
+
+    // No bounceDecay → flat 6x scaling
+    expect(flatTraining.dps.dps).toBeCloseTo(flatBuffed.dps.dps * 6, 0);
   });
 });
 
