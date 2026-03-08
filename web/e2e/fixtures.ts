@@ -27,11 +27,6 @@ export const BRANDISH_BUFF: TestProposal = {
   ],
 };
 
-export function encodeProposalHash(proposal: TestProposal): string {
-  const json = JSON.stringify(proposal);
-  return `#p=${LZString.compressToEncodedURIComponent(json)}`;
-}
-
 export const SNIPE_DOUBLE_HIT: TestProposal = {
   name: 'Snipe Double Hit',
   author: 'Tester',
@@ -45,6 +40,21 @@ export const SNIPE_DOUBLE_HIT: TestProposal = {
     },
   ],
 };
+
+export const MULTI_CLASS_CHANGE: TestProposal = {
+  name: 'Multi-class change',
+  author: 'Tester',
+  description: 'Buff Hero and Marksman simultaneously',
+  changes: [
+    { target: 'hero.brandish-sword', field: 'basePower', from: 260, to: 400 },
+    { target: 'marksman.snipe', field: 'hitCount', from: 1, to: 2 },
+  ],
+};
+
+export function encodeProposalHash(proposal: TestProposal): string {
+  const json = JSON.stringify(proposal);
+  return `#p=${LZString.compressToEncodedURIComponent(json)}`;
+}
 
 export async function navigateToDashboard(page: Page) {
   await page.getByRole('button', { name: 'Rankings' }).click();
