@@ -5,7 +5,7 @@ import { Tooltip } from '../Tooltip.js';
 import { formatDps } from '../../utils/format.js';
 import { getClassColor } from '../../utils/class-colors.js';
 import { compareTiers, type DpsResult } from '@metra/engine';
-import type { ScenarioResult } from '@engine/proposals/types.js';
+import type { ScenarioResult, ComparisonResult, DeltaEntry } from '@engine/proposals/types.js';
 import { useSimulationControls } from '../../context/SimulationControlsContext.js';
 import { discoveredData } from '../../data/bundle.js';
 import { skillSlug } from '@engine/proposals/apply.js';
@@ -57,10 +57,12 @@ export function RankingTable({
   data,
   allResults,
   capEnabled,
+  whatIfComparison,
 }: {
   data: { className: string; skillName: string; tier: string; dps: DpsResult; description?: string; isComposite?: boolean }[];
   allResults: ScenarioResult[];
   capEnabled: boolean;
+  whatIfComparison?: ComparisonResult | null;
 }) {
   const { whatIfEnabled, whatIfChanges, addWhatIfChange, updateWhatIfChange, removeWhatIfChange } = useSimulationControls();
 
@@ -87,6 +89,13 @@ export function RankingTable({
   };
 
   const getDps = (r: typeof data[0]) => capEnabled ? r.dps.dps : r.dps.uncappedDps;
+
+  function getDelta(r: typeof data[0]): DeltaEntry | undefined {
+    if (!whatIfComparison) return undefined;
+    return whatIfComparison.deltas.find(
+      d => d.className === r.className && d.skillName === r.skillName && d.tier === r.tier
+    );
+  }
 
   const getSkillEditInfo = useCallback((className: string, skillName: string) => {
     // Find the class key whose classData.className matches the display name
@@ -207,13 +216,25 @@ export function RankingTable({
               return (
                 <Fragment key={rowKey}>
                   <tr
-                    className="border-b border-border-subtle hover:bg-white/[0.03] cursor-pointer"
+                    className={`border-b border-border-subtle hover:bg-white/[0.03] cursor-pointer ${
+                      getDelta(r)?.change ? 'border-l-2 border-l-accent' : ''
+                    }`}
                     onClick={() => toggleRow(rowKey)}
                   >
                     <td className="px-3 py-2 w-8 text-text-faint">
                       <span className="inline-flex items-center gap-1">
                         <span className="text-[10px] text-text-faint">{isExpanded ? '\u25BE' : '\u25B8'}</span>
                         {i + 1}
+                        {(() => {
+                          const delta = getDelta(r);
+                          if (!delta?.rankBefore || !delta?.rankAfter || delta.rankBefore === delta.rankAfter) return null;
+                          const diff = delta.rankBefore - delta.rankAfter;
+                          return (
+                            <span className={`text-[9px] font-medium ${diff > 0 ? 'text-emerald-400' : 'text-red-400'}`}>
+                              {diff > 0 ? `\u2191${diff}` : `\u2193${-diff}`}
+                            </span>
+                          );
+                        })()}
                       </span>
                     </td>
                     <td className="px-3 py-2">
@@ -228,7 +249,21 @@ export function RankingTable({
                     </td>
                     <td className="px-3 py-2 text-text-muted">{tierDisplayName(r.tier)}</td>
                     <td className="px-3 py-2 text-right tabular-nums">
-                      {formatDps(getDps(r))}
+                      <div className="flex items-center justify-end gap-2">
+                        {formatDps(getDps(r))}
+                        {(() => {
+                          const delta = getDelta(r);
+                          if (!delta || delta.change === 0) return null;
+                          const isPositive = delta.change > 0;
+                          return (
+                            <span className={`inline-flex items-center rounded-full px-1.5 py-0.5 text-[10px] font-medium leading-none ${
+                              isPositive ? 'bg-emerald-500/15 text-emerald-400' : 'bg-red-500/15 text-red-400'
+                            }`}>
+                              {isPositive ? '+' : ''}{delta.changePercent.toFixed(1)}%
+                            </span>
+                          );
+                        })()}
+                      </div>
                     </td>
                     {capEnabled && (
                       <td className="px-3 py-2 text-right tabular-nums text-text-muted">
