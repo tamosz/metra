@@ -198,7 +198,7 @@ describe('useProposal', () => {
       name: 'Override Proposal',
       author: '',
       changes: [
-        { target: 'dark-knight.spear-crusher', field: 'basePower', to: 300 },
+        { target: 'dark-knight.spear-crusher-zerked', field: 'basePower', to: 300 },
       ],
     };
 
