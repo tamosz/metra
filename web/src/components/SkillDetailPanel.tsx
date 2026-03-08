@@ -21,6 +21,15 @@ interface SkillDetailPanelProps {
   onFieldChange?: (field: string, value: number, original: number) => void;
   /** Fields with active what-if changes: { basePower: 280 } */
   activeChanges?: Record<string, number>;
+  /** Sub-skills for combo group editing */
+  comboSkills?: Array<{
+    name: string;
+    skillFields: Record<string, number>;
+    activeChanges: Record<string, number>;
+    target: string;
+  }>;
+  /** Called when a combo sub-skill field is edited */
+  onComboFieldChange?: (target: string, field: string, value: number, original: number) => void;
 }
 
 const FIELD_LABELS: Record<string, string> = {
@@ -41,6 +50,8 @@ function SkillDetailPanelInner({
   skillFields,
   onFieldChange,
   activeChanges,
+  comboSkills,
+  onComboFieldChange,
 }: SkillDetailPanelProps) {
   const maxTierDps = Math.max(...tierData.map((t) => t.dps));
 
@@ -53,6 +64,7 @@ function SkillDetailPanelInner({
       : 0;
 
   const showEditFields = whatIfEnabled && skillFields && !isComposite;
+  const showComboEditFields = whatIfEnabled && isComposite && comboSkills && comboSkills.length > 0;
 
   return (
     <div
@@ -79,6 +91,34 @@ function SkillDetailPanelInner({
               );
             })}
           </div>
+        </div>
+      )}
+      {showComboEditFields && (
+        <div className="border-b border-border-subtle mb-3 pb-3 flex flex-col gap-3">
+          {comboSkills.map((sub) => (
+            <div key={sub.target}>
+              <div className="text-[11px] font-medium uppercase tracking-wide text-text-dim mb-1.5">
+                {sub.name}
+              </div>
+              <div className="flex flex-wrap gap-x-4 gap-y-2">
+                {Object.entries(sub.skillFields).map(([field, original]) => {
+                  const changed = sub.activeChanges[field];
+                  const hasChange = changed !== undefined;
+                  return (
+                    <FieldInput
+                      key={`${sub.target}-${field}-${changed ?? original}`}
+                      field={field}
+                      label={FIELD_LABELS[field] ?? field}
+                      defaultValue={hasChange ? changed : original}
+                      original={original}
+                      hasChange={hasChange}
+                      onCommit={(f, value, orig) => onComboFieldChange?.(sub.target, f, value, orig)}
+                    />
+                  );
+                })}
+              </div>
+            </div>
+          ))}
         </div>
       )}
 

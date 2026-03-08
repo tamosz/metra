@@ -130,6 +130,34 @@ export function RankingTable({
     return { skillFields, activeChanges, target };
   }, [whatIfChanges]);
 
+  const getComboSkillEditInfo = useCallback((className: string, comboGroupName: string) => {
+    const classEntry = [...discoveredData.classDataMap.entries()]
+      .find(([, data]) => data.className === className);
+    if (!classEntry) return null;
+    const [classKey, classData] = classEntry;
+
+    const subSkills = classData.skills.filter(s => s.comboGroup === comboGroupName);
+    if (subSkills.length === 0) return null;
+
+    return subSkills.map(skill => {
+      const slug = skillSlug(skill.name);
+      const target = `${classKey}.${slug}`;
+      const skillFields: Record<string, number> = {};
+      if (skill.basePower !== undefined) skillFields.basePower = skill.basePower;
+      if (skill.multiplier !== undefined) skillFields.multiplier = skill.multiplier;
+      if (skill.hitCount !== undefined) skillFields.hitCount = skill.hitCount;
+      if (skill.maxTargets !== undefined) skillFields.maxTargets = skill.maxTargets;
+
+      const activeChanges: Record<string, number> = {};
+      for (const change of whatIfChanges) {
+        if (change.target === target && typeof change.to === 'number') {
+          activeChanges[change.field] = change.to;
+        }
+      }
+      return { name: skill.name, skillFields, activeChanges, target };
+    });
+  }, [whatIfChanges]);
+
   const handleFieldChange = useCallback((className: string, skillName: string, field: string, value: number, original: number) => {
     // Find the class key
     let classKey: string | null = null;
@@ -273,6 +301,7 @@ export function RankingTable({
                   </tr>
                   {isExpanded && (() => {
                     const editInfo = whatIfEnabled ? getSkillEditInfo(r.className, r.skillName) : null;
+                    const comboSkills = whatIfEnabled && r.isComposite ? getComboSkillEditInfo(r.className, r.skillName) : null;
                     return (
                       <tr>
                         <td colSpan={columnCount} className="p-0">
@@ -289,6 +318,17 @@ export function RankingTable({
                               handleFieldChange(r.className, r.skillName, field, value, original)
                             }
                             activeChanges={editInfo?.activeChanges}
+                            comboSkills={comboSkills ?? undefined}
+                            onComboFieldChange={(target, field, value, original) => {
+                              const existingIndex = whatIfChanges.findIndex(c => c.target === target && c.field === field);
+                              if (value === original) {
+                                if (existingIndex >= 0) removeWhatIfChange(existingIndex);
+                              } else if (existingIndex >= 0) {
+                                updateWhatIfChange(existingIndex, { target, field, from: original, to: value });
+                              } else {
+                                addWhatIfChange({ target, field, from: original, to: value });
+                              }
+                            }}
                           />
                         </td>
                       </tr>
