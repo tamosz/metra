@@ -17,7 +17,7 @@ beforeAll(() => {
 describe('skillSlug', () => {
   it('converts skill names to slugs', () => {
     expect(skillSlug('Brandish (Sword)')).toBe('brandish-sword');
-    expect(skillSlug('Spear Crusher')).toBe('spear-crusher');
+    expect(skillSlug('Spear Crusher (Unzerked)')).toBe('spear-crusher-unzerked');
     expect(skillSlug('Blast (Holy, Sword)')).toBe('blast-holy-sword');
     expect(skillSlug('Blast (F/I/L Charge, Sword)')).toBe(
       'blast-fil-charge-sword'
@@ -69,7 +69,7 @@ describe('applyProposal', () => {
     // Dark Knight should be unchanged
     const crusher = modified
       .get('dark-knight')!
-      .skills.find((s) => s.name === 'Spear Crusher')!;
+      .skills.find((s) => s.name === 'Spear Crusher (Zerked)')!;
     expect(crusher.basePower).toBe(170);
   });
 
@@ -185,7 +185,7 @@ describe('applyProposal', () => {
       author: 'test',
       changes: [
         { target: 'hero.brandish-sword', field: 'basePower', to: 300 },
-        { target: 'dark-knight.spear-crusher', field: 'basePower', to: 200 },
+        { target: 'dark-knight.spear-crusher-zerked', field: 'basePower', to: 200 },
       ],
     };
 
@@ -196,7 +196,7 @@ describe('applyProposal', () => {
         .basePower
     ).toBe(300);
     expect(
-      modified.get('dark-knight')!.skills.find((s) => s.name === 'Spear Crusher')!
+      modified.get('dark-knight')!.skills.find((s) => s.name === 'Spear Crusher (Zerked)')!
         .basePower
     ).toBe(200);
   });
