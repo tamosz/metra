@@ -15,9 +15,9 @@
       "basePower": 600,
       "multiplier": 1,
       "hitCount": 2,
-      "speedCategory": "BStep + Assassinate",
+      "speedCategory": "Boomerang Step + Assassinate",
       "weaponType": "Dagger",
-      "comboGroup": "BStep + Assassinate",
+      "comboGroup": "Boomerang Step + Assassinate",
       "maxTargets": 4,
       "source": "dmg D43=600, E43=600*1.0, N43 hitCount=2, C43=0.69 (combo cycle 2.31s)"
     },
@@ -26,9 +26,9 @@
       "basePower": 950,
       "multiplier": 1,
       "hitCount": 3,
-      "speedCategory": "BStep + Assassinate",
+      "speedCategory": "Boomerang Step + Assassinate",
       "weaponType": "Dagger",
-      "comboGroup": "BStep + Assassinate",
+      "comboGroup": "Boomerang Step + Assassinate",
       "source": "dmg D44=950, E44=950*1.0, N44 hitCount=3, C44=1.62 (combo cycle 2.31s)"
     },
     {

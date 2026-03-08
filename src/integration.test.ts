@@ -267,7 +267,7 @@ describe('Special mechanics', () => {
     expect(shadHigh).toHaveLength(1);
     expect(shadLow).toHaveLength(1);
     expect(shadHigh.map((r) => r.skillName)).toEqual(
-      ['BStep + Assassinate']
+      ['Boomerang Step + Assassinate']
     );
   });
 
@@ -278,9 +278,9 @@ describe('Special mechanics', () => {
     );
     expect(barrageDemoCombo?.isComposite).toBe(true);
 
-    // Combo group: Shadower BStep + Assassinate
+    // Combo group: Shadower Boomerang Step + Assassinate
     const shadCombo = buffedResults.find(
-      (r) => r.className === 'Shadower' && r.skillName === 'BStep + Assassinate'
+      (r) => r.className === 'Shadower' && r.skillName === 'Boomerang Step + Assassinate'
     );
     expect(shadCombo?.isComposite).toBe(true);
 
@@ -469,8 +469,8 @@ describe('Multi-target training scenario', () => {
     expect(nightLordTraining.dps.dps).toBe(nightLordBuffed.dps.dps);
 
     // Shadower BStep+Assassinate combo: BStep has maxTargets 4, Assassinate defaults to 1
-    const shadBuffed = find('Shadower', 'BStep + Assassinate', 'Buffed');
-    const shadTraining = find('Shadower', 'BStep + Assassinate', 'Training (6 mobs)');
+    const shadBuffed = find('Shadower', 'Boomerang Step + Assassinate', 'Buffed');
+    const shadTraining = find('Shadower', 'Boomerang Step + Assassinate', 'Training (6 mobs)');
     expect(shadTraining.dps.dps).toBeGreaterThan(shadBuffed.dps.dps);
     expect(shadTraining.dps.dps).toBeLessThan(shadBuffed.dps.dps * 4);
   });
