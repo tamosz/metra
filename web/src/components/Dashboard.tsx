@@ -92,9 +92,12 @@ export function Dashboard({ simulation, buildsState }: DashboardProps) {
         <KbToggle />
         <CapToggle />
         <AllSkillsToggle enabled={showAllSkills} onToggle={setShowAllSkills} />
-        <WhatIfToggle enabled={whatIfEnabled} onToggle={setWhatIfEnabled} changeCount={whatIfChanges.length} />
-        {whatIfEnabled && <WhatIfPopover comparison={comparison} />}
         <EfficiencyPanel />
+
+        <div className="ml-auto border-l border-border-default pl-4 flex items-center gap-3">
+          <EditModeToggle enabled={whatIfEnabled} onToggle={setWhatIfEnabled} changeCount={whatIfChanges.length} />
+          {whatIfEnabled && <WhatIfPopover comparison={comparison} />}
+        </div>
       </div>
 
       <TierAssumptions />
@@ -128,14 +131,14 @@ function AllSkillsToggle({ enabled, onToggle }: { enabled: boolean; onToggle: (v
   );
 }
 
-function WhatIfToggle({ enabled, onToggle, changeCount }: { enabled: boolean; onToggle: (v: boolean) => void; changeCount: number }) {
+function EditModeToggle({ enabled, onToggle, changeCount }: { enabled: boolean; onToggle: (v: boolean) => void; changeCount: number }) {
   return (
     <div className="flex flex-col gap-1">
-      <span className="text-[11px] font-medium uppercase tracking-wide text-text-dim">What If</span>
+      <span className="text-[11px] font-medium uppercase tracking-wide text-text-dim">Edit</span>
       <div className="flex items-center gap-1.5">
         <button
           type="button"
-          title={enabled ? 'What-if mode active — click to disable' : 'Click to enable what-if mode'}
+          title={enabled ? 'Edit mode active — click to disable' : 'Click to enable edit mode'}
           onClick={() => onToggle(!enabled)}
           className={`cursor-pointer rounded px-1.5 py-0.5 text-xs font-medium transition-colors ${enabled ? TOGGLE_ON : TOGGLE_OFF}`}
         >

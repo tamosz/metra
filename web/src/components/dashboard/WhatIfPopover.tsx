@@ -34,7 +34,7 @@ export function WhatIfPopover({ comparison }: WhatIfPopoverProps) {
   useEffect(() => {
     if (whatIfChanges.length > 0) {
       setProposalInUrl({
-        name: whatIfMeta.name || 'What-if',
+        name: whatIfMeta.name || '(Edit)',
         author: whatIfMeta.author,
         changes: whatIfChanges,
       });
