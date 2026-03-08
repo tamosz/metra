@@ -1,54 +1,13 @@
-// Browser-safe entry point — everything except fs-based data loaders.
+// Browser-safe entry point.
+// Now that the engine is its own package (@metra/engine), this file
+// simply re-exports everything from there plus local browser-safe modules.
+// Kept for backward compatibility — new code should import @metra/engine directly.
 
-// Engine
-export { calculateSkillDps, type DpsResult } from './engine/dps.js';
-export {
-  calculateDamageRange,
-  calculateAdjustedRange,
-  calculateRangeCap,
-  getWeaponMultiplier,
-  type DamageRange,
-} from './engine/damage.js';
-export {
-  calculateTotalAttack,
-  calculateTotalStats,
-  applyMW,
-  calculateEcho,
-} from './engine/buffs.js';
-export {
-  resolveEffectiveWeaponSpeed,
-  lookupAttackTime,
-} from './engine/attack-speed.js';
-export {
-  calculateDodgeChance,
-  calculateKnockbackProbability,
-  calculateKnockbackUptime,
-  getKnockbackRecovery,
-  DEFAULT_KB_RECOVERY,
-  CHANNEL_KB_RECOVERY,
-} from './engine/knockback.js';
-export { calculateMarginalGains, type MarginalGain } from './engine/marginal.js';
-export { calculateBuildDps, type SkillDpsRow, type BuildDpsResult } from './engine/build-dps.js';
+export * from '@metra/engine';
 
-// Data utilities
+// Data utilities (pure functions, no fs)
 export { computeGearTotals, type GearTotals } from './data/gear-utils.js';
 export { mergeGearTemplate, type TierDefaults, type ClassBase, type TierOverride } from './data/gear-merge.js';
-
-// Constants
-export { TIER_ORDER, compareTiers } from './data/types.js';
-
-// Types
-export type {
-  WeaponData,
-  WeaponType,
-  AttackSpeedData,
-  AttackSpeedEntry,
-  MWData,
-  MWEntry,
-  ClassSkillData,
-  SkillEntry,
-  CharacterBuild,
-} from './data/types.js';
 
 // Proposal system
 export { applyProposal, skillSlug } from './proposals/apply.js';
