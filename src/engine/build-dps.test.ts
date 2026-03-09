@@ -23,8 +23,6 @@ let heroData: ClassSkillData;
 let heroHigh: CharacterBuild;
 let buccData: ClassSkillData;
 let buccHigh: CharacterBuild;
-let _nightLordData: ClassSkillData;
-let _nightLordHigh: CharacterBuild;
 
 beforeAll(() => {
   weaponData = loadWeapons();
@@ -34,8 +32,6 @@ beforeAll(() => {
   heroHigh = loadGearTemplate('hero-high');
   buccData = loadClassSkills('bucc');
   buccHigh = loadGearTemplate('bucc-high');
-  _nightLordData = loadClassSkills('night-lord');
-  _nightLordHigh = loadGearTemplate('night-lord-high');
 });
 
 describe('calculateBuildDps', () => {
