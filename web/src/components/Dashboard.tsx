@@ -143,6 +143,7 @@ function SkillGroupToggles({ activeGroups, onToggle }: { activeGroups: Set<Skill
             key={group.id}
             type="button"
             title={GROUP_TOOLTIPS[group.id]}
+            aria-pressed={activeGroups.has(group.id)}
             onClick={() => onToggle(group.id)}
             className={`cursor-pointer rounded px-1.5 py-0.5 text-xs font-medium transition-colors ${activeGroups.has(group.id) ? TOGGLE_ON : TOGGLE_OFF}`}
           >
