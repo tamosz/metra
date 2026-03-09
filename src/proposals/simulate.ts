@@ -171,6 +171,7 @@ export function runSimulation(
           }
 
           const isHeadline = skill.headline !== false;
+          const effectiveMaxTargets = skill.maxTargets ?? 1;
           const result: ScenarioResult = {
             className: classData.className,
             skillName: resolvedSkillName,
@@ -179,6 +180,7 @@ export function runSimulation(
             dps: effectiveDps,
             ...(skill.description ? { description: skill.description } : {}),
             ...(isHeadline ? {} : { headline: false }),
+            ...(effectiveMaxTargets > 1 ? { maxTargets: effectiveMaxTargets } : {}),
           };
 
           // Store all skills (including hidden) for mixed rotation lookups
@@ -286,6 +288,7 @@ function aggregateComboGroups(
     const totalUncappedDps = groupResults.reduce((sum, r) => sum + r.dps.uncappedDps, 0);
     const capLossPercent = totalUncappedDps > 0 ? ((totalUncappedDps - totalDps) / totalUncappedDps) * 100 : 0;
     const isHeadline = skills.some(s => s.headline !== false);
+    const comboMaxTargets = Math.max(...skills.map(s => s.maxTargets ?? 1));
 
     output.push({
       className: first.className,
@@ -293,6 +296,7 @@ function aggregateComboGroups(
       tier: first.tier,
       scenario: first.scenario,
       ...(isHeadline ? {} : { headline: false }),
+      ...(comboMaxTargets > 1 ? { maxTargets: comboMaxTargets } : {}),
       isComposite: true,
       dps: {
         ...first.dps,
@@ -361,6 +365,7 @@ function processMixedRotations(
       : 0;
 
     const isHeadline = rotation.headline !== false;
+    const rotationMaxTargets = Math.max(...componentResults.map(c => c.result.maxTargets ?? 1));
     const first = componentResults[0].result;
     output.push({
       className,
@@ -369,6 +374,7 @@ function processMixedRotations(
       scenario: scenario.name,
       description: rotation.description,
       ...(isHeadline ? {} : { headline: false }),
+      ...(rotationMaxTargets > 1 ? { maxTargets: rotationMaxTargets } : {}),
       isComposite: true,
       dps: {
         ...first.dps,
