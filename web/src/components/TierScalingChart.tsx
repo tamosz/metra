@@ -106,10 +106,6 @@ export function TierScalingChart({ data, capEnabled, activeGroups, targetCount, 
     return { chartData, lines, yDomain };
   }, [data, capEnabled, activeGroups, targetCount, deltaMap]);
 
-  if (lines.length === 0) {
-    return <div className="py-10 text-center text-text-dim">No data</div>;
-  }
-
   const chartHeight = isMobile ? 400 : 600;
   const rightMargin = isMobile ? 100 : 140;
 
@@ -165,6 +161,10 @@ export function TierScalingChart({ data, capEnabled, activeGroups, targetCount, 
     }
     return offsets;
   }, [chartData, lines, chartHeight, yDomain, isMobile]);
+
+  if (lines.length === 0) {
+    return <div className="py-10 text-center text-text-dim">No data</div>;
+  }
 
   return (
     <div data-testid="tier-scaling-chart">
