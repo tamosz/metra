@@ -23,14 +23,23 @@ jobs:
       - run: npm ci
       - run: cd web && npm ci
 
-      - name: Engine tests
-        run: npm test
+      - name: Engine lint
+        run: npm run lint
+
+      - name: Web lint
+        run: npm run lint:web
 
       - name: Engine type-check
         run: npm run type-check
 
+      - name: Web type-check
+        run: npm run type-check:web
+
+      - name: Engine tests
+        run: npm test
+
       - name: Web tests
         run: cd web && npm test
 
-      - name: Web type-check
-        run: npm run type-check:web
+      - name: Data validation
+        run: npm run validate-data

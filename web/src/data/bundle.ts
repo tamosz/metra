@@ -119,7 +119,7 @@ export function discoverClassesAndTiers(): DiscoveryResult {
   // Extract template names and tiers
   const templateNames: string[] = [];
   const gearTemplates = new Map<string, CharacterBuild>();
-  for (const [path, raw] of Object.entries(templateModules)) {
+  for (const [path] of Object.entries(templateModules)) {
     const match = path.match(/\/([^/]+)\.json$/);
     if (match) {
       templateNames.push(match[1]);
