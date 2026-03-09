@@ -74,7 +74,7 @@ export function Dashboard({ simulation, buildsState }: DashboardProps) {
       )}
 
 
-      <div className="mb-6 flex items-center gap-4">
+      <div className="mb-6 flex flex-wrap items-end gap-x-4 gap-y-3">
         <TierPresets
           tiers={tiers}
           builds={buildsState.builds}
@@ -101,7 +101,7 @@ export function Dashboard({ simulation, buildsState }: DashboardProps) {
         <SkillGroupToggles activeGroups={activeGroups} onToggle={toggleGroup} />
         <EfficiencyPanel />
 
-        <div className="ml-auto border-l border-border-default pl-4 flex items-center gap-3">
+        <div className="ml-auto border-l border-border-default pl-4 flex items-end gap-3">
           <EditModeToggle enabled={editEnabled} onToggle={setEditEnabled} changeCount={editChanges.length} />
           {editEnabled && <EditPopover comparison={comparison} />}
         </div>
