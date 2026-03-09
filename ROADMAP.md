@@ -39,7 +39,7 @@ A balance simulator for Royals staff and community. Every number traces back to 
 - Gear template audit: cross-class alignment verified against source spreadsheet, stats aligned across all 14 classes
 - Gear template inheritance: base templates with tier deltas, reducing duplication
 - Pre-commit hooks, comprehensive test coverage
-- Deployed on Vercel: https://tomeblog.com/metra
+- Deployed at: https://tomeblog.com/metra
 
 ## Phase 2: Interactive UX
 
@@ -91,11 +91,11 @@ Make the dashboard the primary exploration tool. Reduce the distance between "I 
 
 ```
 Now:
-  Static site (Vercel) ← Vite build ← React SPA
+  Static site ← Vite build ← React SPA
   Engine runs client-side (no server needed)
 
 Phase 3 (if community features need persistence):
-  Static site (Vercel) ← React SPA
+  Static site ← React SPA
        ↕ lightweight backend (TBD)
   Social data: proposals, votes, comments
 ```
