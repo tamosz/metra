@@ -146,8 +146,6 @@ describe('useBuildExplorer', () => {
       result.current.setTier('high');
     });
 
-    const templateSTR = result.current.template!.baseStats.STR;
-
     act(() => {
       result.current.setOverride('baseSTR', 999);
     });

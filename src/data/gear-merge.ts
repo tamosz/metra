@@ -1,4 +1,4 @@
-import type { CharacterBuild, StatName } from '@metra/engine';
+import type { CharacterBuild } from '@metra/engine';
 import { computeGearTotals } from './gear-utils.js';
 
 export interface TierDefaults {

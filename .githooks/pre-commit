@@ -3,6 +3,50 @@
 echo "Running pre-commit checks..."
 echo ""
 
+# --- Lint checks (fast, catch style/correctness issues early) ---
+
+echo "==> Lint (engine)"
+npx eslint src/ scripts/
+if [ $? -ne 0 ]; then
+  echo ""
+  echo "Pre-commit hook failed: engine lint"
+  echo "Run 'npm run lint:fix' to auto-fix some issues."
+  exit 1
+fi
+echo ""
+
+echo "==> Lint (web)"
+(cd web && npx eslint src/)
+if [ $? -ne 0 ]; then
+  echo ""
+  echo "Pre-commit hook failed: web lint"
+  echo "Run 'cd web && npx eslint src/ --fix' to auto-fix some issues."
+  exit 1
+fi
+echo ""
+
+# --- Type checks ---
+
+echo "==> Type-check (engine)"
+npx tsc --noEmit
+if [ $? -ne 0 ]; then
+  echo ""
+  echo "Pre-commit hook failed: engine type-check"
+  exit 1
+fi
+echo ""
+
+echo "==> Type-check (web)"
+(cd web && npx tsc --noEmit)
+if [ $? -ne 0 ]; then
+  echo ""
+  echo "Pre-commit hook failed: web type-check"
+  exit 1
+fi
+echo ""
+
+# --- Unit tests ---
+
 echo "==> Unit tests"
 npx vitest run
 if [ $? -ne 0 ]; then
@@ -21,20 +65,13 @@ if [ $? -ne 0 ]; then
 fi
 echo ""
 
-echo "==> Type-check (engine)"
-npx tsc --noEmit
-if [ $? -ne 0 ]; then
-  echo ""
-  echo "Pre-commit hook failed: engine type-check"
-  exit 1
-fi
-echo ""
+# --- Data validation ---
 
-echo "==> Type-check (web)"
-(cd web && npx tsc --noEmit)
+echo "==> Data file validation"
+npx tsx scripts/validate-data.ts
 if [ $? -ne 0 ]; then
   echo ""
-  echo "Pre-commit hook failed: web type-check"
+  echo "Pre-commit hook failed: data validation"
   exit 1
 fi
 echo ""

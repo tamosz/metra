@@ -18,17 +18,10 @@ export function TemplateEditor({ className, tier }: TemplateEditorProps) {
   const breakdown = useMemo(() => getGearBreakdown(templateKey), [templateKey]);
   const [edits, setEdits] = useState<Edits>({});
 
-  if (!breakdown) {
-    return (
-      <div className="py-4 text-sm text-text-dim">
-        No gear breakdown available for this template.
-      </div>
-    );
-  }
-
-  const slots = Object.keys(breakdown);
+  const slots = useMemo(() => breakdown ? Object.keys(breakdown) : [], [breakdown]);
 
   const statColumns = useMemo(() => {
+    if (!breakdown) return [];
     const stats = new Set<string>();
     for (const slotStats of Object.values(breakdown)) {
       for (const stat of Object.keys(slotStats)) {
@@ -45,6 +38,7 @@ export function TemplateEditor({ className, tier }: TemplateEditorProps) {
 
   const getValue = useCallback(
     (slot: string, stat: string): number | null => {
+      if (!breakdown) return null;
       const edited = edits[slot]?.[stat];
       if (edited !== undefined) return edited;
       return breakdown[slot]?.[stat] ?? null;
@@ -54,6 +48,7 @@ export function TemplateEditor({ className, tier }: TemplateEditorProps) {
 
   const getOriginal = useCallback(
     (slot: string, stat: string): number | null => {
+      if (!breakdown) return null;
       return breakdown[slot]?.[stat] ?? null;
     },
     [breakdown]
@@ -61,6 +56,7 @@ export function TemplateEditor({ className, tier }: TemplateEditorProps) {
 
   const isEdited = useCallback(
     (slot: string, stat: string): boolean => {
+      if (!breakdown) return false;
       const edited = edits[slot]?.[stat];
       if (edited === undefined) return false;
       const original = breakdown[slot]?.[stat] ?? 0;
@@ -92,6 +88,7 @@ export function TemplateEditor({ className, tier }: TemplateEditorProps) {
   }, [statColumns, slots, getValue]);
 
   const originalTotals = useMemo(() => {
+    if (!breakdown) return {};
     const t: Record<string, number> = {};
     for (const stat of statColumns) {
       t[stat] = 0;
@@ -104,6 +101,7 @@ export function TemplateEditor({ className, tier }: TemplateEditorProps) {
   }, [statColumns, slots, breakdown]);
 
   const changes: SlotChange[] = useMemo(() => {
+    if (!breakdown) return [];
     const result: SlotChange[] = [];
     for (const slot of slots) {
       for (const stat of statColumns) {
@@ -119,6 +117,14 @@ export function TemplateEditor({ className, tier }: TemplateEditorProps) {
     }
     return result;
   }, [slots, statColumns, isEdited, breakdown, edits]);
+
+  if (!breakdown) {
+    return (
+      <div className="py-4 text-sm text-text-dim">
+        No gear breakdown available for this template.
+      </div>
+    );
+  }
 
   return (
     <div className="rounded-lg border border-border-subtle bg-bg-raised p-4">

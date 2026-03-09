@@ -5,24 +5,34 @@
   "main": "src/index.ts",
   "description": "Royals class balance simulator",
   "license": "MIT",
-  "workspaces": ["packages/*"],
+  "workspaces": [
+    "packages/*"
+  ],
   "scripts": {
     "test": "vitest run",
     "test:watch": "vitest",
     "dump-sheet": "tsx scripts/dump-sheet.ts",
     "simulate": "tsx src/cli.ts",
+    "lint": "eslint src/ scripts/",
+    "lint:fix": "eslint src/ scripts/ --fix",
+    "lint:web": "cd web && eslint src/",
+    "lint:all": "eslint src/ scripts/ && cd web && eslint src/",
+    "validate-data": "tsx scripts/validate-data.ts",
     "type-check": "tsc --noEmit",
     "type-check:web": "cd web && tsc --noEmit",
     "type-check:all": "tsc --noEmit && cd web && tsc --noEmit",
+    "check-all": "npm run lint:all && npm run type-check:all && npm test && cd web && npm test",
     "setup": "git config core.hooksPath .githooks",
     "vercel-build": "cd web && npm install && npm run build"
   },
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
     "@types/node": "^25.3.2",
+    "eslint": "^10.0.3",
     "tsx": "^4.7.0",
     "typescript": "^5.4.0",
+    "typescript-eslint": "^8.57.0",
     "vitest": "^4.0.0",
     "xlsx": "^0.18.5"
-  },
-  "dependencies": {}
+  }
 }

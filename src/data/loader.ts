@@ -19,7 +19,8 @@ function loadJson<T>(relativePath: string): T {
     return JSON.parse(readFileSync(fullPath, 'utf-8')) as T;
   } catch (err) {
     throw new Error(
-      `Failed to load data from ${relativePath}: ${err instanceof Error ? err.message : String(err)}`
+      `Failed to load data from ${relativePath}: ${err instanceof Error ? err.message : String(err)}`,
+      { cause: err }
     );
   }
 }
