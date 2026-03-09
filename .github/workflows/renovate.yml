@@ -7,7 +7,7 @@ on:
 
 jobs:
   renovate:
-    runs-on: self-hosted
+    runs-on: arc-k3s
     permissions:
       contents: write
       pull-requests: write
