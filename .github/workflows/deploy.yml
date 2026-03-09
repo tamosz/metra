@@ -12,6 +12,7 @@ on:
 jobs:
   deploy:
     runs-on: self-hosted
+    timeout-minutes: 15
     environment: production
     permissions:
       contents: read
