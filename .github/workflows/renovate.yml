@@ -14,9 +14,6 @@ jobs:
     steps:
       - uses: actions/checkout@v6
 
-      - name: Update Renovate
-        run: npm update -g renovate
-
       - name: Run Renovate
         run: renovate --platform=github --token=$RENOVATE_TOKEN ${{ github.repository }}
         env:
