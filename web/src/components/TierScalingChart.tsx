@@ -245,9 +245,10 @@ export function TierScalingChart({ data, capEnabled, activeGroups, targetCount, 
                 }}
                 isAnimationActive={false}
                 connectNulls
-                label={({ x, y, index }: { x: number; y: number; index: number }) => {
+                label={(props: { x?: string | number; y?: string | number; index?: number }) => {
+                  const { x, y, index } = props;
                   // Only label the last point (rightmost tier)
-                  if (index !== chartData.length - 1) return <text />;
+                  if (index !== chartData.length - 1 || typeof x !== 'number' || typeof y !== 'number') return <text />;
                   const offset = labelOffsets.get(line.key) ?? 0;
                   return (
                     <g
