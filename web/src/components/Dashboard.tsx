@@ -18,7 +18,7 @@ import { TargetSpinner } from './dashboard/TargetSpinner.js';
 import { EditPopover } from './dashboard/EditPopover.js';
 import { EfficiencyPanel } from './EfficiencyPanel.js';
 import { resolveActiveScenario } from '../utils/scenario.js';
-import { VARIANT_CLASSES } from '../utils/class-colors.js';
+import { SKILL_GROUPS, DEFAULT_SKILL_GROUPS, isResultVisible, type SkillGroupId } from '../utils/skill-groups.js';
 
 interface DashboardProps {
   simulation: SimulationData;
@@ -40,7 +40,19 @@ export function Dashboard({ simulation, buildsState }: DashboardProps) {
     cgsOverride,
     efficiencyOverrides: Object.keys(controls.efficiencyOverrides).length > 0 ? controls.efficiencyOverrides : undefined,
   });
-  const [showAllSkills, setShowAllSkills] = useState(false);
+  const [activeGroups, setActiveGroups] = useState<Set<SkillGroupId>>(() => new Set(DEFAULT_SKILL_GROUPS));
+
+  const toggleGroup = (id: SkillGroupId) => {
+    setActiveGroups((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) {
+        next.delete(id);
+      } else {
+        next.add(id);
+      }
+      return next;
+    });
+  };
 
   const filtered = useMemo(() => {
     const activeScenario = resolveActiveScenario(results, targetCount);
@@ -48,12 +60,10 @@ export function Dashboard({ simulation, buildsState }: DashboardProps) {
       .filter((r) => {
         if (r.scenario !== activeScenario) return false;
         if (r.tier !== selectedTier) return false;
-        if (!showAllSkills && r.headline === false) return false;
-        if (!showAllSkills && VARIANT_CLASSES.has(r.className)) return false;
-        return true;
+        return isResultVisible(r, activeGroups);
       })
       .sort((a, b) => capEnabled ? b.dps.dps - a.dps.dps : b.dps.uncappedDps - a.dps.uncappedDps);
-  }, [results, selectedTier, targetCount, capEnabled, showAllSkills]);
+  }, [results, selectedTier, targetCount, capEnabled, activeGroups]);
 
   return (
     <div>
@@ -88,7 +98,7 @@ export function Dashboard({ simulation, buildsState }: DashboardProps) {
         <BuffToggles />
         <KbToggle />
         <CapToggle />
-        <AllSkillsToggle enabled={showAllSkills} onToggle={setShowAllSkills} />
+        <SkillGroupToggles activeGroups={activeGroups} onToggle={toggleGroup} />
         <EfficiencyPanel />
 
         <div className="ml-auto border-l border-border-default pl-4 flex items-center gap-3">
@@ -101,7 +111,7 @@ export function Dashboard({ simulation, buildsState }: DashboardProps) {
 
       <AssassinateBugNote classNames={[...new Set(filtered.map((r) => r.className))]} />
 
-      <TierScalingChart data={results} capEnabled={capEnabled} showAllSkills={showAllSkills} targetCount={targetCount} selectedTier={selectedTier} editComparison={editEnabled ? comparison.result : null} />
+      <TierScalingChart data={results} capEnabled={capEnabled} activeGroups={activeGroups} targetCount={targetCount} selectedTier={selectedTier} editComparison={editEnabled ? comparison.result : null} />
       <div className="mt-6">
         <DpsChart data={filtered} editComparison={editEnabled ? comparison.result : null} />
       </div>
@@ -113,19 +123,21 @@ export function Dashboard({ simulation, buildsState }: DashboardProps) {
   );
 }
 
-function AllSkillsToggle({ enabled, onToggle }: { enabled: boolean; onToggle: (v: boolean) => void }) {
+function SkillGroupToggles({ activeGroups, onToggle }: { activeGroups: Set<SkillGroupId>; onToggle: (id: SkillGroupId) => void }) {
   return (
     <div className="flex flex-col gap-1">
       <span className="text-[11px] font-medium uppercase tracking-wide text-text-dim">Skills</span>
       <div className="flex items-center gap-1.5">
-        <button
-          type="button"
-          title={enabled ? 'Showing all skills — click to show only headline skills' : 'Showing headline skills only — click to show all'}
-          onClick={() => onToggle(!enabled)}
-          className={`cursor-pointer rounded px-1.5 py-0.5 text-xs font-medium transition-colors ${enabled ? TOGGLE_ON : TOGGLE_OFF}`}
-        >
-          All
-        </button>
+        {SKILL_GROUPS.map((group) => (
+          <button
+            key={group.id}
+            type="button"
+            onClick={() => onToggle(group.id)}
+            className={`cursor-pointer rounded px-1.5 py-0.5 text-xs font-medium transition-colors ${activeGroups.has(group.id) ? TOGGLE_ON : TOGGLE_OFF}`}
+          >
+            {group.label}
+          </button>
+        ))}
       </div>
     </div>
   );
