@@ -11,7 +11,7 @@ on:
 
 jobs:
   deploy:
-    runs-on: self-hosted
+    runs-on: arc-k3s
     environment: production
     permissions:
       contents: read
@@ -29,7 +29,7 @@ jobs:
           fi
 
       - name: Build container image
-        run: colima nerdctl --profile k3s -- --namespace k8s.io build -t tomeblog/metra:${{ steps.slot.outputs.target }} -f web/Dockerfile .
+        run: nerdctl --address /run/containerd/containerd.sock --namespace k8s.io build -t tomeblog/metra:${{ steps.slot.outputs.target }} -f web/Dockerfile .
 
       - name: Deploy to inactive slot
         run: |
