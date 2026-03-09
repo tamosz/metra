@@ -18,10 +18,24 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Build container image
-        run: colima nerdctl --profile k3s -- --namespace k8s.io build -t tomeblog/metra:latest -f web/Dockerfile .
-
-      - name: Deploy
+      - name: Determine target slot
+        id: slot
         run: |
-          kubectl rollout restart deployment/metra -n tomeblog
-          kubectl rollout status deployment/metra -n tomeblog --timeout=120s
+          ACTIVE=$(kubectl get svc metra -n tomeblog -o jsonpath='{.spec.selector.slot}')
+          if [ "$ACTIVE" = "blue" ]; then
+            echo "target=green" >> "$GITHUB_OUTPUT"
+          else
+            echo "target=blue" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Build container image
+        run: colima nerdctl --profile k3s -- --namespace k8s.io build -t tomeblog/metra:${{ steps.slot.outputs.target }} -f web/Dockerfile .
+
+      - name: Deploy to inactive slot
+        run: |
+          kubectl set image deployment/metra-${{ steps.slot.outputs.target }} metra=tomeblog/metra:${{ steps.slot.outputs.target }} -n tomeblog
+          kubectl rollout restart deployment/metra-${{ steps.slot.outputs.target }} -n tomeblog
+          kubectl rollout status deployment/metra-${{ steps.slot.outputs.target }} -n tomeblog --timeout=120s
+
+      - name: Switch traffic
+        run: kubectl patch svc metra -n tomeblog -p '{"spec":{"selector":{"slot":"${{ steps.slot.outputs.target }}"}}}'
