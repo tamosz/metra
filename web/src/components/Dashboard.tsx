@@ -123,6 +123,16 @@ export function Dashboard({ simulation, buildsState }: DashboardProps) {
   );
 }
 
+const GROUP_TOOLTIPS: Record<SkillGroupId, string> = {
+  main: 'Headline skills for each class (excludes weapon variants)',
+  warriors: 'All skills for Hero, Dark Knight, and Paladin',
+  mages: 'All skills for Bishop, Archmage I/L, and Archmage F/P',
+  archers: 'All skills for Bowmaster and Marksman',
+  thieves: 'All skills for Night Lord and Shadower',
+  pirates: 'All skills for Corsair and Buccaneer',
+  'multi-target': 'Skills that hit multiple targets',
+};
+
 function SkillGroupToggles({ activeGroups, onToggle }: { activeGroups: Set<SkillGroupId>; onToggle: (id: SkillGroupId) => void }) {
   return (
     <div className="flex flex-col gap-1">
@@ -132,6 +142,7 @@ function SkillGroupToggles({ activeGroups, onToggle }: { activeGroups: Set<Skill
           <button
             key={group.id}
             type="button"
+            title={GROUP_TOOLTIPS[group.id]}
             onClick={() => onToggle(group.id)}
             className={`cursor-pointer rounded px-1.5 py-0.5 text-xs font-medium transition-colors ${activeGroups.has(group.id) ? TOGGLE_ON : TOGGLE_OFF}`}
           >

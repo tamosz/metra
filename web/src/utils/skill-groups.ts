@@ -18,7 +18,7 @@ export const SKILL_GROUPS: SkillGroup[] = [
   { id: 'multi-target', label: 'Multi-target' },
 ];
 
-export const DEFAULT_SKILL_GROUPS: Set<SkillGroupId> = new Set(['main']);
+export const DEFAULT_SKILL_GROUPS: readonly SkillGroupId[] = ['main'] as const;
 
 const CLASS_TO_GROUP: Record<string, SkillGroupId> = {
   'Hero': 'warriors',
