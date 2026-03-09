@@ -9,7 +9,8 @@ import {
   ResponsiveContainer,
 } from 'recharts';
 import type { ScenarioResult, ComparisonResult } from '@engine/proposals/types.js';
-import { getClassColor, VARIANT_CLASSES } from '../utils/class-colors.js';
+import { getClassColor } from '../utils/class-colors.js';
+import { isResultVisible, type SkillGroupId } from '../utils/skill-groups.js';
 import { useIsMobile } from '../hooks/useIsMobile.js';
 import { colors } from '../theme.js';
 import { resolveActiveScenario } from '../utils/scenario.js';
@@ -18,7 +19,7 @@ import { buildDeltaMap, deltaMapKey } from '../utils/delta-map.js';
 interface TierScalingChartProps {
   data: ScenarioResult[];
   capEnabled: boolean;
-  showAllSkills: boolean;
+  activeGroups: Set<SkillGroupId>;
   targetCount: number;
   selectedTier: string;
   editComparison?: ComparisonResult | null;
@@ -32,7 +33,7 @@ const TIER_LABELS: Record<string, string> = {
   perfect: 'Perfect',
 };
 
-export function TierScalingChart({ data, capEnabled, showAllSkills, targetCount, selectedTier, editComparison }: TierScalingChartProps) {
+export function TierScalingChart({ data, capEnabled, activeGroups, targetCount, selectedTier, editComparison }: TierScalingChartProps) {
   const isMobile = useIsMobile();
   const [hoveredKey, setHoveredKey] = useState<string | null>(null);
 
@@ -43,9 +44,7 @@ export function TierScalingChart({ data, capEnabled, showAllSkills, targetCount,
     const activeScenario = resolveActiveScenario(data, targetCount);
     const filtered = data.filter((r) => {
       if (r.scenario !== activeScenario) return false;
-      if (!showAllSkills && r.headline === false) return false;
-      if (!showAllSkills && VARIANT_CLASSES.has(r.className)) return false;
-      return true;
+      return isResultVisible(r, activeGroups);
     });
 
     // Group by className + skillName
@@ -105,7 +104,7 @@ export function TierScalingChart({ data, capEnabled, showAllSkills, targetCount,
     }
 
     return { chartData, lines, yDomain };
-  }, [data, capEnabled, showAllSkills, targetCount, deltaMap]);
+  }, [data, capEnabled, activeGroups, targetCount, deltaMap]);
 
   if (lines.length === 0) {
     return <div className="py-10 text-center text-text-dim">No data</div>;
