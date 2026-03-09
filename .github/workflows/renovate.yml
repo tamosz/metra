@@ -12,10 +12,13 @@ jobs:
       contents: write
       pull-requests: write
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
+
+      - name: Update Renovate
+        run: npm update -g renovate
 
       - name: Run Renovate
-        run: renovate --platform=github --token=$RENOVATE_TOKEN --repositories=${{ github.repository }}
+        run: renovate --platform=github --token=$RENOVATE_TOKEN ${{ github.repository }}
         env:
           RENOVATE_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           LOG_LEVEL: info
