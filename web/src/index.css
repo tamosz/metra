@@ -37,6 +37,7 @@
   }
 
   .katex { color: var(--color-text-bright); }
+  .katex-display { overflow-x: auto; overflow-y: hidden; }
 
   /* Remove default focus outlines, replaced by Tailwind focus: classes */
   :focus {
