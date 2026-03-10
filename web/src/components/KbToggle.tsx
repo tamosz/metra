@@ -17,7 +17,7 @@ export function KbToggle() {
       <div className="flex items-center gap-1.5">
         <button
           type="button"
-          title={enabled ? 'Knockback (experimental): ON (click to disable)' : 'Knockback (experimental): OFF (click to enable)'}
+          title={enabled ? 'Knockback: ON (click to disable)' : 'Knockback: OFF (click to enable)'}
           onClick={() => onToggle(!enabled)}
           className={`cursor-pointer rounded px-1.5 py-0.5 text-xs font-medium transition-colors ${enabled ? TOGGLE_ON : TOGGLE_OFF}`}
         >

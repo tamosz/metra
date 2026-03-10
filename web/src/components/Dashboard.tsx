@@ -208,7 +208,7 @@ function SkillGroupToggles({ activeGroups, onToggle }: { activeGroups: Set<Skill
 function EditModeToggle({ enabled, onToggle, changeCount }: { enabled: boolean; onToggle: (v: boolean) => void; changeCount: number }) {
   return (
     <div className="flex flex-col gap-1">
-      <span className="text-[11px] font-medium uppercase tracking-wide text-text-dim">&nbsp;</span>
+      <span className="invisible text-[11px] font-medium uppercase tracking-wide">Label</span>
       <button
         type="button"
         title={enabled ? 'Edit mode active — click to disable' : 'Click to enable edit mode'}
