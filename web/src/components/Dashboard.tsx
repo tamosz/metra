@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useRef, useEffect } from 'react';
 import { DpsChart } from './DpsChart.js';
 import { TierScalingChart } from './TierScalingChart.js';
 import { TierPresets } from './TierPresets.js';
@@ -134,22 +134,61 @@ const GROUP_TOOLTIPS: Record<SkillGroupId, string> = {
 };
 
 function SkillGroupToggles({ activeGroups, onToggle }: { activeGroups: Set<SkillGroupId>; onToggle: (id: SkillGroupId) => void }) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!open) return;
+    function handleClick(e: MouseEvent) {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    }
+    function handleKey(e: KeyboardEvent) {
+      if (e.key === 'Escape') setOpen(false);
+    }
+    document.addEventListener('mousedown', handleClick);
+    document.addEventListener('keydown', handleKey);
+    return () => {
+      document.removeEventListener('mousedown', handleClick);
+      document.removeEventListener('keydown', handleKey);
+    };
+  }, [open]);
+
+  const label = activeGroups.size === 0
+    ? 'None'
+    : activeGroups.size === 1
+      ? SKILL_GROUPS.find((g) => activeGroups.has(g.id))?.label ?? 'Skills'
+      : `${activeGroups.size} selected`;
+
   return (
-    <div className="flex flex-col gap-1">
+    <div className="flex flex-col gap-1" ref={ref}>
       <span className="text-[11px] font-medium uppercase tracking-wide text-text-dim">Skills</span>
-      <div className="flex items-center gap-1.5">
-        {SKILL_GROUPS.map((group) => (
-          <button
-            key={group.id}
-            type="button"
-            title={GROUP_TOOLTIPS[group.id]}
-            aria-pressed={activeGroups.has(group.id)}
-            onClick={() => onToggle(group.id)}
-            className={`cursor-pointer rounded px-1.5 py-0.5 text-xs font-medium transition-colors ${activeGroups.has(group.id) ? TOGGLE_ON : TOGGLE_OFF}`}
-          >
-            {group.label}
-          </button>
-        ))}
+      <div className="relative">
+        <button
+          type="button"
+          onClick={() => setOpen((v) => !v)}
+          className={`cursor-pointer rounded border px-2 py-0.5 text-xs font-medium transition-colors flex items-center gap-1 ${TOGGLE_OFF}`}
+        >
+          {label}
+          <svg className={`h-3 w-3 transition-transform ${open ? 'rotate-180' : ''}`} viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clipRule="evenodd" /></svg>
+        </button>
+        {open && (
+          <div role="group" aria-label="Skill group filters" className="absolute left-0 top-full z-50 mt-1 min-w-[160px] rounded border border-border-default bg-bg-raised py-1 shadow-lg">
+            {SKILL_GROUPS.map((group) => (
+              <button
+                key={group.id}
+                type="button"
+                role="menuitemcheckbox"
+                aria-checked={activeGroups.has(group.id)}
+                title={GROUP_TOOLTIPS[group.id]}
+                onClick={() => onToggle(group.id)}
+                className="flex w-full cursor-pointer items-center gap-2 px-3 py-1.5 text-xs transition-colors hover:bg-white/5"
+              >
+                <span className={`inline-block h-3 w-3 rounded-sm border ${activeGroups.has(group.id) ? 'border-emerald-500 bg-emerald-600' : 'border-border-default bg-transparent'}`} />
+                <span className={activeGroups.has(group.id) ? 'text-emerald-400 font-medium' : 'text-text-muted'}>{group.label}</span>
+              </button>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
