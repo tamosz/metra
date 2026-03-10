@@ -142,8 +142,15 @@ function SkillGroupToggles({ activeGroups, onToggle }: { activeGroups: Set<Skill
     function handleClick(e: MouseEvent) {
       if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
     }
+    function handleKey(e: KeyboardEvent) {
+      if (e.key === 'Escape') setOpen(false);
+    }
     document.addEventListener('mousedown', handleClick);
-    return () => document.removeEventListener('mousedown', handleClick);
+    document.addEventListener('keydown', handleKey);
+    return () => {
+      document.removeEventListener('mousedown', handleClick);
+      document.removeEventListener('keydown', handleKey);
+    };
   }, [open]);
 
   const label = activeGroups.size === 0
@@ -165,11 +172,13 @@ function SkillGroupToggles({ activeGroups, onToggle }: { activeGroups: Set<Skill
           <svg className={`h-3 w-3 transition-transform ${open ? 'rotate-180' : ''}`} viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clipRule="evenodd" /></svg>
         </button>
         {open && (
-          <div className="absolute left-0 top-full z-50 mt-1 min-w-[160px] rounded border border-border-default bg-bg-raised py-1 shadow-lg">
+          <div role="group" aria-label="Skill group filters" className="absolute left-0 top-full z-50 mt-1 min-w-[160px] rounded border border-border-default bg-bg-raised py-1 shadow-lg">
             {SKILL_GROUPS.map((group) => (
               <button
                 key={group.id}
                 type="button"
+                role="menuitemcheckbox"
+                aria-checked={activeGroups.has(group.id)}
                 title={GROUP_TOOLTIPS[group.id]}
                 onClick={() => onToggle(group.id)}
                 className="flex w-full cursor-pointer items-center gap-2 px-3 py-1.5 text-xs transition-colors hover:bg-white/5"
