@@ -149,7 +149,7 @@ Analyzes simulation results and flags statistical outliers. Pure functions, no I
 CLI: `npm run simulate -- --audit` appends the audit report after baseline rankings.
 
 ### 5. Web Interface (`/web`)
-React + Vite single-page app with its own `package.json`. Consumes the engine via `src/core.ts` (a browser-safe re-export that excludes fs-based loaders). Deployed to Vercel (`vercel.json` config in root).
+React + Vite single-page app with its own `package.json`. Consumes the engine via `src/core.ts` (a browser-safe re-export that excludes fs-based loaders).
 
 - Dashboard with baseline DPS rankings and composable filter controls (buff toggles, element toggles, KB toggle with boss parameters, target count, damage cap toggle)
 - Skill detail drilldown — click a ranking row to see DPS breakdown by tier, crit contribution, damage range, attack time, cap loss, Shadow Partner status
@@ -248,7 +248,6 @@ metra/
 ├── package.json
 ├── tsconfig.json
 ├── vitest.config.ts
-├── vercel.json
 ├── data/
 │   ├── source-sheet.xlsx        # original spreadsheet (read-only reference)
 │   ├── gear-assumptions.md      # gear template assumptions documentation

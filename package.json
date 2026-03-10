@@ -22,8 +22,7 @@
     "type-check:web": "cd web && tsc --noEmit",
     "type-check:all": "tsc --noEmit && cd web && tsc --noEmit",
     "check-all": "npm run lint:all && npm run type-check:all && npm test && cd web && npm test",
-    "setup": "git config core.hooksPath .githooks",
-    "vercel-build": "cd web && npm install && npm run build"
+    "setup": "git config core.hooksPath .githooks"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
