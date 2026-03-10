@@ -13,7 +13,7 @@ export function KbToggle() {
 
   return (
     <div className="flex flex-col gap-1">
-      <span className="text-[11px] font-medium uppercase tracking-wide text-text-dim">Knockback <span className="normal-case tracking-normal text-text-muted">(experimental)</span></span>
+      <span className="text-[11px] font-medium uppercase tracking-wide text-text-dim">Knockback</span>
       <div className="flex items-center gap-1.5">
         <button
           type="button"

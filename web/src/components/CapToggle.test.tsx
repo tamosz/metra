@@ -16,7 +16,7 @@ describe('CapToggle', () => {
 
   it('toggles cap off on click (starts enabled)', () => {
     renderWithContext();
-    const capButton = screen.getByText('Cap');
+    const capButton = screen.getByRole('button', { name: 'Cap' });
     // Initially ON (emerald style)
     expect(capButton.className).toContain('emerald');
     act(() => { fireEvent.click(capButton); });
@@ -26,7 +26,7 @@ describe('CapToggle', () => {
 
   it('toggles cap back on when clicked again', () => {
     renderWithContext();
-    const capButton = screen.getByText('Cap');
+    const capButton = screen.getByRole('button', { name: 'Cap' });
     act(() => { fireEvent.click(capButton); });
     expect(capButton.className).not.toContain('emerald');
     act(() => { fireEvent.click(capButton); });

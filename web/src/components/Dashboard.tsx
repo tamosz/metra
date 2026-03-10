@@ -74,36 +74,47 @@ export function Dashboard({ simulation, buildsState }: DashboardProps) {
       )}
 
 
-      <div className="mb-6 flex flex-wrap items-end gap-x-4 gap-y-3">
-        <TierPresets
-          tiers={tiers}
-          builds={buildsState.builds}
-          activeBuildId={buildsState.activeBuildId}
-          onSaveBuild={(name) => {
-            const build = buildsState.save(name, cgsValues);
-            buildsState.setActive(build.id);
-          }}
-          onSelectBuild={(id) => {
-            const build = buildsState.builds.find((b) => b.id === id);
-            if (build) {
-              setCgsValues({ ...build.cgs });
-              buildsState.setActive(id);
-            }
-          }}
-          onDeleteBuild={(id) => buildsState.remove(id)}
-          onClearBuild={() => buildsState.setActive(null)}
-        />
-        <TargetSpinner />
-        <ElementToggles />
-        <BuffToggles />
-        <KbToggle />
-        <CapToggle />
-        <SkillGroupToggles activeGroups={activeGroups} onToggle={toggleGroup} />
-        <EfficiencyPanel />
+      <div className="mb-6 rounded-lg border border-border-subtle bg-bg-raised/50 px-5 py-4 space-y-3">
+        {/* Row 1: Character setup */}
+        <div className="flex flex-wrap items-end gap-x-5 gap-y-3">
+          <TierPresets
+            tiers={tiers}
+            builds={buildsState.builds}
+            activeBuildId={buildsState.activeBuildId}
+            onSaveBuild={(name) => {
+              const build = buildsState.save(name, cgsValues);
+              buildsState.setActive(build.id);
+            }}
+            onSelectBuild={(id) => {
+              const build = buildsState.builds.find((b) => b.id === id);
+              if (build) {
+                setCgsValues({ ...build.cgs });
+                buildsState.setActive(id);
+              }
+            }}
+            onDeleteBuild={(id) => buildsState.remove(id)}
+            onClearBuild={() => buildsState.setActive(null)}
+          />
+          <div className="self-stretch border-l border-border-default" />
+          <TargetSpinner />
+        </div>
 
-        <div className="ml-auto border-l border-border-default pl-4 flex items-end gap-3">
-          <EditModeToggle enabled={editEnabled} onToggle={setEditEnabled} changeCount={editChanges.length} />
-          {editEnabled && <EditPopover comparison={comparison} />}
+        {/* Row 2: Simulation controls */}
+        <div className="flex flex-wrap items-end gap-x-4 gap-y-3 border-t border-border-default pt-3">
+          <BuffToggles />
+          <ElementToggles />
+          <CapToggle />
+          <KbToggle />
+
+          <div className="self-stretch border-l border-border-default" />
+
+          <SkillGroupToggles activeGroups={activeGroups} onToggle={toggleGroup} />
+          <EfficiencyPanel />
+
+          <div className="ml-auto flex items-end gap-3">
+            <EditModeToggle enabled={editEnabled} onToggle={setEditEnabled} changeCount={editChanges.length} />
+            {editEnabled && <EditPopover comparison={comparison} />}
+          </div>
         </div>
       </div>
 
@@ -197,17 +208,15 @@ function SkillGroupToggles({ activeGroups, onToggle }: { activeGroups: Set<Skill
 function EditModeToggle({ enabled, onToggle, changeCount }: { enabled: boolean; onToggle: (v: boolean) => void; changeCount: number }) {
   return (
     <div className="flex flex-col gap-1">
-      <span className="text-[11px] font-medium uppercase tracking-wide text-text-dim">Edit</span>
-      <div className="flex items-center gap-1.5">
-        <button
-          type="button"
-          title={enabled ? 'Edit mode active — click to disable' : 'Click to enable edit mode'}
-          onClick={() => onToggle(!enabled)}
-          className={`cursor-pointer rounded px-1.5 py-0.5 text-xs font-medium transition-colors ${enabled ? TOGGLE_ON : TOGGLE_OFF}`}
-        >
-          {enabled && changeCount > 0 ? `${changeCount} change${changeCount !== 1 ? 's' : ''}` : 'Edit'}
-        </button>
-      </div>
+      <span className="text-[11px] font-medium uppercase tracking-wide text-text-dim">&nbsp;</span>
+      <button
+        type="button"
+        title={enabled ? 'Edit mode active — click to disable' : 'Click to enable edit mode'}
+        onClick={() => onToggle(!enabled)}
+        className={`cursor-pointer rounded px-1.5 py-0.5 text-xs font-medium transition-colors ${enabled ? TOGGLE_ON : TOGGLE_OFF}`}
+      >
+        {enabled && changeCount > 0 ? `${changeCount} change${changeCount !== 1 ? 's' : ''}` : 'Edit'}
+      </button>
     </div>
   );
 }
