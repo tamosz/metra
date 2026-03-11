@@ -110,6 +110,30 @@ Engine stays client-side — simulation is fast enough in the browser. Backend (
 - **Forum-native output**: BBCode and Markdown — results flow into royals.ms discussions.
 - **Small increments**: each phase delivers standalone value.
 
+## Stretch Goal: Meta Snapshot & Tier List Generator
+
+Auto-generate visual tier lists from simulation data — the kind of content that drives forum debates and makes balance conversations concrete.
+
+**Tier list generation**
+- Compute a composite "balance score" per class by weighting DPS across scenarios: bossing (single target, KB on), training (6 targets), and buffed/unbuffed conditions. Weights are user-adjustable.
+- Bucket classes into S/A/B/C/D tiers using standard deviation bands from the weighted mean.
+- Render as a visual tier list with class icons arranged in rows by tier, styled like the tier list images people already share on the forums.
+- Each class card shows its composite score, best scenario, worst scenario, and a spark line of its DPS across tiers (low → perfect) so you can see at a glance whether a class is "funding-dependent" or "always mid."
+
+**Radar charts**
+- Per-class radar chart with axes like: single-target DPS, multi-target DPS, cap efficiency, tier scaling, KB resilience, buff independence.
+- Overlay two classes for head-to-head comparison ("Class Showdown" mode) — pick two classes and get a split-screen with overlapping radar charts and a scenario-by-scenario win/loss record, presented like a fighting game matchup screen.
+
+**Snapshot history**
+- Save a tier list as a named snapshot (stored in localStorage).
+- Compare two snapshots side-by-side to see how a proposal or data correction shifted the meta. Arrows show classes that moved up or down between snapshots.
+- Export a snapshot diff as BBCode for forum posts: "Here's how Proposal X reshuffles the tier list."
+
+**Image export**
+- Render the tier list as a downloadable PNG (via html2canvas or similar) so people can drop it straight into a forum post or Discord message without needing a link to the app.
+
+**Why this is fun:** Tier lists are inherently engaging — people love arguing about them. Generating them from actual simulation data (instead of vibes) is exactly the kind of "make balance legible" move this project is about. And the snapshot diff feature turns every proposal into a visual story: "this change moves Corsair from B to A and drops Hero from S to A."
+
 ## Non-Goals
 
 - Not a game wiki — only balance-relevant DPS stuff.
