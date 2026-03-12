@@ -8,6 +8,10 @@
     {
       "matchUpdateTypes": ["major"],
       "automerge": false
+    },
+    {
+      "matchPackageNames": ["eslint-plugin-react-hooks"],
+      "allowedVersions": "!/canary/"
     }
   ]
 }
