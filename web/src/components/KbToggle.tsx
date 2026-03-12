@@ -13,11 +13,11 @@ export function KbToggle() {
 
   return (
     <div className="flex flex-col gap-1">
-      <span className="text-[11px] font-medium uppercase tracking-wide text-text-dim">Knockback <span className="normal-case tracking-normal text-text-muted">(experimental)</span></span>
+      <span className="text-[11px] font-medium uppercase tracking-wide text-text-dim">Knockback</span>
       <div className="flex items-center gap-1.5">
         <button
           type="button"
-          title={enabled ? 'Knockback (experimental): ON (click to disable)' : 'Knockback (experimental): OFF (click to enable)'}
+          title={enabled ? 'Knockback: ON (click to disable)' : 'Knockback: OFF (click to enable)'}
           onClick={() => onToggle(!enabled)}
           className={`cursor-pointer rounded px-1.5 py-0.5 text-xs font-medium transition-colors ${enabled ? TOGGLE_ON : TOGGLE_OFF}`}
         >

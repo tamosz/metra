@@ -10,7 +10,7 @@ import { compareProposal } from './proposals/compare.js';
 import { runSimulation } from './proposals/simulate.js';
 import type { SimulationConfig } from './proposals/simulate.js';
 import type { ScenarioConfig } from './proposals/types.js';
-import { validateProposal, ProposalValidationError } from './proposals/validate.js';
+import { validateProposal } from './proposals/validate.js';
 import { renderComparisonReport, renderBaselineReport } from './report/markdown.js';
 import { renderAsciiChart } from './report/ascii-chart.js';
 import { capitalize } from './report/utils.js';
@@ -24,7 +24,7 @@ export function loadProposal(path: string) {
     raw = JSON.parse(readFileSync(fullPath, 'utf-8'));
   } catch (e) {
     const msg = e instanceof Error ? e.message : String(e);
-    throw new Error(`Failed to parse ${path}: ${msg}`);
+    throw new Error(`Failed to parse ${path}: ${msg}`, { cause: e });
   }
   return validateProposal(raw);
 }

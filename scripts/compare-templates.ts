@@ -1,7 +1,7 @@
 import { readFileSync, mkdirSync, writeFileSync } from 'fs';
 import { resolve } from 'path';
 import XLSX from 'xlsx';
-import { loadWorkbook, readSheet, type CellInfo } from '../src/sheets/extract.js';
+import { loadWorkbook } from '../src/sheets/extract.js';
 import { computeGearTotals } from '../src/data/gear-utils.js';
 import type { TierDefaults, ClassBase, TierOverride } from '../src/data/gear-merge.js';
 

@@ -1,4 +1,4 @@
-import { useMemo, useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { compareProposal } from '@engine/proposals/compare.js';
 import type { SimulationConfig } from '@engine/proposals/simulate.js';
 import type { ScenarioConfig, ComparisonResult, ProposalChange } from '@engine/proposals/types.js';
