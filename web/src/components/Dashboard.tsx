@@ -13,6 +13,7 @@ import { CapToggle } from './CapToggle.js';
 import { TOGGLE_ON, TOGGLE_OFF } from '../utils/styles.js';
 import { useSimulationControls } from '../context/SimulationControlsContext.js';
 import { useEditComparison } from '../hooks/useEditComparison.js';
+import { useBuffBreakdown } from '../hooks/useBuffBreakdown.js';
 import { RankingTable } from './dashboard/RankingTable.js';
 import { TargetSpinner } from './dashboard/TargetSpinner.js';
 import { EditPopover } from './dashboard/EditPopover.js';
@@ -27,19 +28,24 @@ interface DashboardProps {
 
 export function Dashboard({ simulation, buildsState }: DashboardProps) {
   const controls = useSimulationControls();
-  const { selectedTier, targetCount, capEnabled, cgsValues, setCgsValues, editEnabled, setEditEnabled, editChanges } = controls;
+  const { selectedTier, targetCount, capEnabled, cgsValues, setCgsValues, editEnabled, setEditEnabled, editChanges, breakdownEnabled, setBreakdownEnabled } = controls;
   const { results, tiers } = simulation;
 
   const cgsOverride = useMemo(() => ({ tier: selectedTier, values: cgsValues }), [selectedTier, cgsValues]);
-  const comparison = useEditComparison({
-    changes: editChanges,
+  const simOptions = useMemo(() => ({
     targetCount: targetCount > 1 ? targetCount : undefined,
     elementModifiers: Object.keys(controls.elementModifiers).length > 0 ? controls.elementModifiers : undefined,
     buffOverrides: Object.keys(controls.buffOverrides).length > 0 ? controls.buffOverrides : undefined,
     kbConfig: controls.kbConfig,
     cgsOverride,
     efficiencyOverrides: Object.keys(controls.efficiencyOverrides).length > 0 ? controls.efficiencyOverrides : undefined,
+  }), [targetCount, controls.elementModifiers, controls.buffOverrides, controls.kbConfig, cgsOverride, controls.efficiencyOverrides]);
+  const comparison = useEditComparison({
+    changes: editChanges,
+    ...simOptions,
   });
+  const showBreakdown = breakdownEnabled && !editEnabled;
+  const breakdownMap = useBuffBreakdown(simOptions, results, showBreakdown, capEnabled);
   const [activeGroups, setActiveGroups] = useState<Set<SkillGroupId>>(() => new Set(DEFAULT_SKILL_GROUPS));
 
   const toggleGroup = (id: SkillGroupId) => {
@@ -109,6 +115,7 @@ export function Dashboard({ simulation, buildsState }: DashboardProps) {
           <div className="self-stretch border-l border-border-default" />
 
           <SkillGroupToggles activeGroups={activeGroups} onToggle={toggleGroup} />
+          <BreakdownToggle enabled={breakdownEnabled} onToggle={setBreakdownEnabled} />
           <EfficiencyPanel />
 
           <div className="ml-auto flex items-end gap-3">
@@ -124,7 +131,7 @@ export function Dashboard({ simulation, buildsState }: DashboardProps) {
 
       <TierScalingChart data={results} capEnabled={capEnabled} activeGroups={activeGroups} targetCount={targetCount} selectedTier={selectedTier} editComparison={editEnabled ? comparison.result : null} />
       <div className="mt-6">
-        <DpsChart data={filtered} editComparison={editEnabled ? comparison.result : null} />
+        <DpsChart data={filtered} editComparison={editEnabled ? comparison.result : null} breakdownMap={showBreakdown ? breakdownMap : undefined} />
       </div>
 
       <div className="mt-6">
@@ -200,6 +207,24 @@ function SkillGroupToggles({ activeGroups, onToggle }: { activeGroups: Set<Skill
             ))}
           </div>
         )}
+      </div>
+    </div>
+  );
+}
+
+function BreakdownToggle({ enabled, onToggle }: { enabled: boolean; onToggle: (v: boolean) => void }) {
+  return (
+    <div className="flex flex-col gap-1">
+      <span className="text-[11px] font-medium uppercase tracking-wide text-text-dim">Breakdown</span>
+      <div className="flex items-center gap-1.5">
+        <button
+          type="button"
+          title={enabled ? 'Buff breakdown active — click to hide' : 'Show buff contribution breakdown on bars'}
+          onClick={() => onToggle(!enabled)}
+          className={`cursor-pointer rounded px-1.5 py-0.5 text-xs font-medium transition-colors ${enabled ? TOGGLE_ON : TOGGLE_OFF}`}
+        >
+          Buffs
+        </button>
       </div>
     </div>
   );
