@@ -80,42 +80,17 @@ export function Dashboard({ simulation, buildsState }: DashboardProps) {
       )}
 
 
-      <div className="mb-6 rounded-lg border border-border-subtle bg-bg-raised/50 px-5 py-4 space-y-3">
-        {/* Row 1: Character setup */}
-        <div className="flex flex-wrap items-end gap-x-5 gap-y-3">
-          <TierPresets
-            tiers={tiers}
-            builds={buildsState.builds}
-            activeBuildId={buildsState.activeBuildId}
-            onSaveBuild={(name) => {
-              const build = buildsState.save(name, cgsValues);
-              buildsState.setActive(build.id);
-            }}
-            onSelectBuild={(id) => {
-              const build = buildsState.builds.find((b) => b.id === id);
-              if (build) {
-                setCgsValues({ ...build.cgs });
-                buildsState.setActive(id);
-              }
-            }}
-            onDeleteBuild={(id) => buildsState.remove(id)}
-            onClearBuild={() => buildsState.setActive(null)}
-          />
-          <div className="self-stretch border-l border-border-default" />
-          <TargetSpinner />
-        </div>
-
-        {/* Row 2: Simulation controls */}
-        <div className="flex flex-wrap items-end gap-x-4 gap-y-3 border-t border-border-default pt-3">
+      <div className="mb-6 rounded-lg border border-border-subtle bg-bg-raised/50 px-5 py-4">
+        <div className="flex flex-wrap items-end gap-x-4 gap-y-3">
           <BuffToggles />
           <ElementToggles />
           <CapToggle />
           <KbToggle />
+          <TargetSpinner />
 
           <div className="self-stretch border-l border-border-default" />
 
           <SkillGroupToggles activeGroups={activeGroups} onToggle={toggleGroup} />
-          <BreakdownToggle enabled={breakdownEnabled} onToggle={setBreakdownEnabled} />
           <EfficiencyPanel />
 
           <div className="ml-auto flex items-end gap-3">
@@ -130,6 +105,29 @@ export function Dashboard({ simulation, buildsState }: DashboardProps) {
       <AssassinateBugNote classNames={[...new Set(filtered.map((r) => r.className))]} />
 
       <TierScalingChart data={results} capEnabled={capEnabled} activeGroups={activeGroups} targetCount={targetCount} selectedTier={selectedTier} editComparison={editEnabled ? comparison.result : null} />
+
+      <div className="mt-8 flex flex-wrap items-end gap-x-5 gap-y-3">
+        <TierPresets
+          tiers={tiers}
+          builds={buildsState.builds}
+          activeBuildId={buildsState.activeBuildId}
+          onSaveBuild={(name) => {
+            const build = buildsState.save(name, cgsValues);
+            buildsState.setActive(build.id);
+          }}
+          onSelectBuild={(id) => {
+            const build = buildsState.builds.find((b) => b.id === id);
+            if (build) {
+              setCgsValues({ ...build.cgs });
+              buildsState.setActive(id);
+            }
+          }}
+          onDeleteBuild={(id) => buildsState.remove(id)}
+          onClearBuild={() => buildsState.setActive(null)}
+        />
+        <BreakdownToggle enabled={breakdownEnabled} onToggle={setBreakdownEnabled} />
+      </div>
+
       <div className="mt-6">
         <DpsChart data={filtered} editComparison={editEnabled ? comparison.result : null} breakdownMap={showBreakdown ? breakdownMap : undefined} />
       </div>
