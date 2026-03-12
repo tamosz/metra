@@ -30,4 +30,9 @@ export const colors = {
   // Semantic
   positive: '#22c55e',
   negative: '#ef4444',
+
+  // Buff breakdown segments
+  buffSe: '#f59e0b',
+  buffSi: '#8b5cf6',
+  buffEcho: '#06b6d4',
 } as const;

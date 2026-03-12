@@ -43,6 +43,8 @@ interface SimulationControlsContextType {
   editMeta: EditMeta;
   setEditMeta: (meta: EditMeta) => void;
   loadEditState: (changes: ProposalChange[], meta?: EditMeta) => void;
+  breakdownEnabled: boolean;
+  setBreakdownEnabled: (enabled: boolean) => void;
 }
 
 const SimulationControlsContext = createContext<SimulationControlsContextType | null>(null);
@@ -61,6 +63,7 @@ export function SimulationControlsProvider({ children }: { children: ReactNode }
   const [editEnabled, setEditEnabledRaw] = useState(false);
   const [editChanges, setEditChanges] = useState<ProposalChange[]>([]);
   const [editMeta, setEditMetaRaw] = useState<EditMeta>(EMPTY_EDIT_META);
+  const [breakdownEnabled, setBreakdownEnabled] = useState(false);
 
   const setEditEnabled = useCallback((enabled: boolean) => {
     setEditEnabledRaw(enabled);
@@ -134,8 +137,10 @@ export function SimulationControlsProvider({ children }: { children: ReactNode }
       editMeta,
       setEditMeta,
       loadEditState,
+      breakdownEnabled,
+      setBreakdownEnabled,
     }),
-    [targetCount, elementModifiers, buffOverrides, kbEnabled, bossAttackInterval, bossAccuracy, capEnabled, selectedTier, cgsValues, kbConfig, efficiencyOverrides, editEnabled, editChanges, editMeta, setEditEnabled, addEditChange, removeEditChange, updateEditChange, clearEditChanges, setEditMeta, loadEditState],
+    [targetCount, elementModifiers, buffOverrides, kbEnabled, bossAttackInterval, bossAccuracy, capEnabled, selectedTier, cgsValues, kbConfig, efficiencyOverrides, editEnabled, editChanges, editMeta, setEditEnabled, addEditChange, removeEditChange, updateEditChange, clearEditChanges, setEditMeta, loadEditState, breakdownEnabled],
   );
 
   return (
