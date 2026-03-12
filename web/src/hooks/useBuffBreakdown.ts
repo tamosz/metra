@@ -9,7 +9,7 @@ import {
   mwData,
 } from '../data/bundle.js';
 import type { SimulationOptions } from './useSimulation.js';
-import { applyCgsOverride, type CgsValues } from '../utils/cgs.js';
+import { applyCgsOverride } from '../utils/cgs.js';
 
 export interface BuffBreakdown {
   baseDps: number;
