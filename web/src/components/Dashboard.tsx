@@ -80,7 +80,13 @@ export function Dashboard({ simulation, buildsState }: DashboardProps) {
       )}
 
 
-      <div className="mb-6 rounded-lg border border-border-subtle bg-bg-raised/50 px-5 py-4">
+      <TierAssumptions />
+
+      <AssassinateBugNote classNames={[...new Set(filtered.map((r) => r.className))]} />
+
+      <TierScalingChart data={results} capEnabled={capEnabled} activeGroups={activeGroups} targetCount={targetCount} selectedTier={selectedTier} editComparison={editEnabled ? comparison.result : null} />
+
+      <div className="mt-8 rounded-lg border border-border-subtle bg-bg-raised/50 px-5 py-4">
         <div className="flex flex-wrap items-end gap-x-4 gap-y-3">
           <BuffToggles />
           <ElementToggles />
@@ -93,39 +99,33 @@ export function Dashboard({ simulation, buildsState }: DashboardProps) {
           <SkillGroupToggles activeGroups={activeGroups} onToggle={toggleGroup} />
           <EfficiencyPanel />
 
+          <div className="self-stretch border-l border-border-default" />
+
+          <TierPresets
+            tiers={tiers}
+            builds={buildsState.builds}
+            activeBuildId={buildsState.activeBuildId}
+            onSaveBuild={(name) => {
+              const build = buildsState.save(name, cgsValues);
+              buildsState.setActive(build.id);
+            }}
+            onSelectBuild={(id) => {
+              const build = buildsState.builds.find((b) => b.id === id);
+              if (build) {
+                setCgsValues({ ...build.cgs });
+                buildsState.setActive(id);
+              }
+            }}
+            onDeleteBuild={(id) => buildsState.remove(id)}
+            onClearBuild={() => buildsState.setActive(null)}
+          />
+          <BreakdownToggle enabled={breakdownEnabled} onToggle={setBreakdownEnabled} />
+
           <div className="ml-auto flex items-end gap-3">
             <EditModeToggle enabled={editEnabled} onToggle={setEditEnabled} changeCount={editChanges.length} />
             {editEnabled && <EditPopover comparison={comparison} />}
           </div>
         </div>
-      </div>
-
-      <TierAssumptions />
-
-      <AssassinateBugNote classNames={[...new Set(filtered.map((r) => r.className))]} />
-
-      <TierScalingChart data={results} capEnabled={capEnabled} activeGroups={activeGroups} targetCount={targetCount} selectedTier={selectedTier} editComparison={editEnabled ? comparison.result : null} />
-
-      <div className="mt-8 flex flex-wrap items-end gap-x-5 gap-y-3">
-        <TierPresets
-          tiers={tiers}
-          builds={buildsState.builds}
-          activeBuildId={buildsState.activeBuildId}
-          onSaveBuild={(name) => {
-            const build = buildsState.save(name, cgsValues);
-            buildsState.setActive(build.id);
-          }}
-          onSelectBuild={(id) => {
-            const build = buildsState.builds.find((b) => b.id === id);
-            if (build) {
-              setCgsValues({ ...build.cgs });
-              buildsState.setActive(id);
-            }
-          }}
-          onDeleteBuild={(id) => buildsState.remove(id)}
-          onClearBuild={() => buildsState.setActive(null)}
-        />
-        <BreakdownToggle enabled={breakdownEnabled} onToggle={setBreakdownEnabled} />
       </div>
 
       <div className="mt-6">
