@@ -1,6 +1,6 @@
 {
   "extends": "bowmaster",
-  "source": "Perfect tier: Crimson Arclancer (speed 5) 145wa 15dex. Bow Expert +10 WATK. Projectile: Royal Bow Quiver 12wa. C/G/S 24/24/22.",
+  "source": "Perfect tier: Dragon Shiner Bow (speed 5) 145wa 15dex. Bow Expert +10 WATK. Projectile: Royal Bow Quiver 12wa. C/G/S 24/24/22.",
   "weaponSpeed": 5,
   "projectile": 12,
   "baseStats": {

@@ -1,7 +1,7 @@
 {
-  "className": "Hero",
+  "className": "Hero (ST)",
   "weaponType": "2H Sword",
-  "weaponSpeed": 6,
+  "weaponSpeed": 5,
   "projectile": 0,
   "echoActive": true,
   "mwLevel": 20,
