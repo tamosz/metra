@@ -4,7 +4,15 @@ import type { SkillGroupId } from './skill-groups.js';
 import { DEFAULT_SKILL_GROUPS } from './skill-groups.js';
 import type { BuffOverrides } from '../components/BuffToggles.js';
 
-export const FILTER_DEFAULTS = {
+export const FILTER_DEFAULTS: {
+  tier: string;
+  targetCount: number;
+  capEnabled: boolean;
+  kbEnabled: boolean;
+  bossAttackInterval: number;
+  bossAccuracy: number;
+  breakdownEnabled: boolean;
+} = {
   tier: 'perfect',
   targetCount: 1,
   capEnabled: true,
@@ -12,7 +20,7 @@ export const FILTER_DEFAULTS = {
   bossAttackInterval: 1.5,
   bossAccuracy: 250,
   breakdownEnabled: false,
-} as const;
+};
 
 export function defaultCgsForTier(tier: string): CgsValues {
   return { ...(CGS_DEFAULTS[tier] ?? CGS_DEFAULTS.perfect) };
