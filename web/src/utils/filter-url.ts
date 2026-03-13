@@ -34,12 +34,37 @@ export function decodeFilterState(encoded: string): FilterState | null {
     const result: FilterState = {};
 
     if (typeof parsed.tier === 'string') result.tier = parsed.tier;
-    if (typeof parsed.buffs === 'object' && parsed.buffs !== null) result.buffs = parsed.buffs;
-    if (typeof parsed.elements === 'object' && parsed.elements !== null) result.elements = parsed.elements;
-    if (typeof parsed.kb === 'object' && parsed.kb !== null) result.kb = parsed.kb;
+    if (typeof parsed.buffs === 'object' && parsed.buffs !== null) {
+      if (Object.values(parsed.buffs).every((v) => typeof v === 'boolean' || typeof v === 'number'))
+        result.buffs = parsed.buffs;
+      else return null;
+    }
+    if (typeof parsed.elements === 'object' && parsed.elements !== null) {
+      if (Object.values(parsed.elements).every((v) => typeof v === 'number'))
+        result.elements = parsed.elements;
+      else return null;
+    }
+    if (typeof parsed.kb === 'object' && parsed.kb !== null) {
+      const { interval, accuracy, ...rest } = parsed.kb;
+      if (
+        Object.keys(rest).length === 0 &&
+        (interval === undefined || typeof interval === 'number') &&
+        (accuracy === undefined || typeof accuracy === 'number')
+      )
+        result.kb = parsed.kb;
+      else return null;
+    }
     if (typeof parsed.targets === 'number') result.targets = parsed.targets;
     if (typeof parsed.cap === 'boolean') result.cap = parsed.cap;
-    if (typeof parsed.cgs === 'object' && parsed.cgs !== null) result.cgs = parsed.cgs;
+    if (typeof parsed.cgs === 'object' && parsed.cgs !== null) {
+      if (
+        typeof parsed.cgs.cape === 'number' &&
+        typeof parsed.cgs.glove === 'number' &&
+        typeof parsed.cgs.shoe === 'number'
+      )
+        result.cgs = parsed.cgs;
+      else return null;
+    }
     if (typeof parsed.breakdown === 'boolean') result.breakdown = parsed.breakdown;
 
     if (Array.isArray(parsed.groups)) {

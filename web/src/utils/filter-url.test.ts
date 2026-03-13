@@ -92,4 +92,24 @@ describe('filter-url', () => {
     const decoded = decodeFilterState(encoded);
     expect(decoded!.groups).toEqual(['warriors']);
   });
+
+  it('rejects buffs with wrong inner types', () => {
+    const encoded = encodeFilterState({ buffs: { sharpEyes: 'not-a-boolean' } } as unknown as FilterState);
+    expect(decodeFilterState(encoded)).toBeNull();
+  });
+
+  it('rejects elements with wrong inner types', () => {
+    const encoded = encodeFilterState({ elements: { Holy: 'not-a-number' } } as unknown as FilterState);
+    expect(decodeFilterState(encoded)).toBeNull();
+  });
+
+  it('rejects cgs with wrong inner types', () => {
+    const encoded = encodeFilterState({ cgs: { cape: 'x', glove: 20, shoe: 20 } } as unknown as FilterState);
+    expect(decodeFilterState(encoded)).toBeNull();
+  });
+
+  it('rejects kb with wrong inner types', () => {
+    const encoded = encodeFilterState({ kb: { interval: 'bad' } } as unknown as FilterState);
+    expect(decodeFilterState(encoded)).toBeNull();
+  });
 });

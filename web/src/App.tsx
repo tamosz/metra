@@ -85,11 +85,11 @@ function AppContent() {
         if (urlFilter.kb.interval !== undefined) controls.setBossAttackInterval(urlFilter.kb.interval);
         if (urlFilter.kb.accuracy !== undefined) controls.setBossAccuracy(urlFilter.kb.accuracy);
       }
-      if (urlFilter.targets) controls.setTargetCount(urlFilter.targets);
+      if (urlFilter.targets !== undefined) controls.setTargetCount(urlFilter.targets);
       if (urlFilter.cap !== undefined) controls.setCapEnabled(urlFilter.cap);
       if (urlFilter.cgs) controls.setCgsValues(urlFilter.cgs);
       if (urlFilter.groups) controls.setActiveGroups(new Set(urlFilter.groups as SkillGroupId[]));
-      if (urlFilter.breakdown) controls.setBreakdownEnabled(urlFilter.breakdown);
+      if (urlFilter.breakdown !== undefined) controls.setBreakdownEnabled(urlFilter.breakdown);
       setPage('dashboard');
     }
   }, []);
