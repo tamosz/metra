@@ -47,3 +47,37 @@ Community feedback from the simulator's public launch thread.
 
 - Kamuna pointed to CGS optimization thread for pricing data to calibrate tier definitions
 - Consensus: current tier names (low/mid/high/perfect) are ambiguous — funding-based tiers would be more useful and maintainable
+
+### Weapon Formula Issues (PinaColadaPirate, Mar 8)
+
+- Purple Surfboard should use spear formula, not 2H BW
+- Crushed Skull should use 1H BW formula
+- Request to display every weapon type in separate categories in rankings
+- Attack speed reference source: ayumilovemaple.wordpress.com/2009/09/06/maplestory-attack-speed-reference/
+
+### Bullseye Application (Sylafia, Mar 3)
+
+- Bullseye 1.2× should apply as a post-calculation modifier (like Berserk/element), not baked into skill%
+- Current approach: `skill_percent × 1.2` feeds into crit, which is incorrect
+- Should be toggleable independently of skill damage
+
+### Missing Skills (PinaColadaPirate, Mar 7)
+
+- Piercing Arrow (Bowmaster)
+- BStep + Band of Thieves (Shadower)
+- Barrage + Dragon Strike (Buccaneer) — 1.6 sec per macro, 40 casts/min (confirmed by PandemicP)
+- Torpedo (Corsair, no transformation)
+- Flamethrower + Ice Splitter (mages)
+
+### Party DPS (PinaColadaPirate, Mar 7)
+
+- Requested party DPS comparison tab showing buff contributions (SE, SI)
+- Tool to demonstrate SE value for unfunded archers specifically
+- Would help archers argue for balance adjustments
+
+### Graph Scaling (PinaColadaPirate, Mar 8)
+
+- Graphs "very out of scale" due to custom tier assumptions on x-axis
+- Suggested using exact damage range values on x-axis for more linear representation
+- Referenced DPS Charts thread and official Damage Range Thread for methodology
+- Tommy defended exponential scaling as intentional (stat × watk compound)
