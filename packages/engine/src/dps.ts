@@ -129,6 +129,8 @@ function calculateBaseDamageRange(
   }
 
   const totalAttack = calculateTotalAttack(build);
+  // Use build.weaponType (not skill.weaponType) — the build's actual weapon determines
+  // the multiplier, allowing gear templates to override per tier (e.g., 1H vs 2H BW).
   const weaponMultiplier = getWeaponMultiplier(weaponData, build.weaponType, skill.attackType, skill.attackRatio);
   return calculateDamageRange(primary, secondary, weaponMultiplier, classData.mastery, totalAttack);
 }
