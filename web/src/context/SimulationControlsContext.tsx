@@ -3,7 +3,7 @@ import type { BuffOverrides } from '../components/BuffToggles.js';
 import type { CgsValues } from '../utils/cgs.js';
 import type { KbConfig } from '../hooks/useSimulation.js';
 import type { ProposalChange } from '@engine/proposals/types.js';
-import { FILTER_DEFAULTS, defaultCgsForTier, defaultActiveGroups } from '../utils/filter-defaults.js';
+import { FILTER_DEFAULTS, defaultCgsForTier, defaultActiveGroups, defaultBuffOverrides, defaultElementModifiers } from '../utils/filter-defaults.js';
 import type { SkillGroupId } from '../utils/skill-groups.js';
 
 interface EditMeta {
@@ -13,7 +13,7 @@ interface EditMeta {
 
 const EMPTY_EDIT_META: EditMeta = { name: '', author: '' };
 
-interface SimulationControlsContextType {
+export interface SimulationControlsContextType {
   targetCount: number;
   setTargetCount: (n: number) => void;
   elementModifiers: Record<string, number>;
@@ -50,6 +50,7 @@ interface SimulationControlsContextType {
   activeGroups: Set<SkillGroupId>;
   setActiveGroups: (groups: Set<SkillGroupId>) => void;
   toggleGroup: (id: SkillGroupId) => void;
+  resetControls: () => void;
 }
 
 const SimulationControlsContext = createContext<SimulationControlsContextType | null>(null);
@@ -105,6 +106,24 @@ export function SimulationControlsProvider({ children }: { children: ReactNode }
     setEditMetaRaw(meta ?? EMPTY_EDIT_META);
   }, []);
 
+  const resetControls = useCallback(() => {
+    setSelectedTier(FILTER_DEFAULTS.tier);
+    setTargetCount(FILTER_DEFAULTS.targetCount);
+    setCapEnabled(FILTER_DEFAULTS.capEnabled);
+    setKbEnabled(FILTER_DEFAULTS.kbEnabled);
+    setBossAttackInterval(FILTER_DEFAULTS.bossAttackInterval);
+    setBossAccuracy(FILTER_DEFAULTS.bossAccuracy);
+    setBreakdownEnabled(FILTER_DEFAULTS.breakdownEnabled);
+    setBuffOverrides(defaultBuffOverrides());
+    setElementModifiers(defaultElementModifiers());
+    setCgsValues(defaultCgsForTier(FILTER_DEFAULTS.tier));
+    setEfficiencyOverrides({});
+    setEditEnabledRaw(false);
+    setEditChanges([]);
+    setEditMetaRaw(EMPTY_EDIT_META);
+    setActiveGroups(defaultActiveGroups());
+  }, []);
+
   const toggleGroup = useCallback((id: SkillGroupId) => {
     setActiveGroups((prev) => {
       const next = new Set(prev);
@@ -157,8 +176,9 @@ export function SimulationControlsProvider({ children }: { children: ReactNode }
       activeGroups,
       setActiveGroups,
       toggleGroup,
+      resetControls,
     }),
-    [targetCount, elementModifiers, buffOverrides, kbEnabled, bossAttackInterval, bossAccuracy, capEnabled, selectedTier, cgsValues, kbConfig, efficiencyOverrides, editEnabled, editChanges, editMeta, setEditEnabled, addEditChange, removeEditChange, updateEditChange, clearEditChanges, setEditMeta, loadEditState, breakdownEnabled, activeGroups, toggleGroup],
+    [targetCount, elementModifiers, buffOverrides, kbEnabled, bossAttackInterval, bossAccuracy, capEnabled, selectedTier, cgsValues, kbConfig, efficiencyOverrides, editEnabled, editChanges, editMeta, setEditEnabled, addEditChange, removeEditChange, updateEditChange, clearEditChanges, setEditMeta, loadEditState, breakdownEnabled, activeGroups, toggleGroup, resetControls],
   );
 
   return (
