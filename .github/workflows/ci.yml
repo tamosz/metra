@@ -22,8 +22,8 @@ jobs:
       - uses: anthropics/claude-code-action@v1
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
-          claude_args: '--model claude-opus-4-6'
-          prompt: 'Review this PR. Focus on bugs, logic errors, and security issues. Be concise. Post your review as a PR comment using the gh CLI.'
+          claude_args: '--model claude-opus-4-6 --allowedTools "Bash(git diff:*)" "Bash(git log:*)" "Bash(git show:*)" "Bash(gh pr comment:*)" "Read" "Glob" "Grep"'
+          prompt: 'Review this PR. Focus on bugs, logic errors, and security issues. Be concise. Post your review as a PR comment using `gh pr comment`.'
           show_full_output: true
 
   check:
