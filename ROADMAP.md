@@ -38,6 +38,7 @@ A balance simulator for Royals staff and community. Every number traces back to 
 - Per-slot template editor with GitHub issue integration for proposing template changes
 - Gear template audit: cross-class alignment verified against source spreadsheet, stats aligned across all 14 classes
 - Gear template inheritance: base templates with tier deltas, reducing duplication
+- Paladin BW: Crushed Skull (perfect tier) uses 1H BW multiplier via per-tier `weaponType` override
 - Pre-commit hooks, comprehensive test coverage
 - Filter state permalinks: encode dashboard filter state in URL (`#f=`), shareable configuration links, logo reset to defaults
 - Deployed at: https://tomeblog.com/metra
@@ -79,7 +80,7 @@ Bullseye's 1.2× modifier is currently baked into the `multiplier` field on Batt
 Multiple users (PinaColadaPirate, Kamuna, ssmage) want tiers expressed as approximate meso costs (e.g., 10b/30b/60b/100b) rather than abstract names (low/mid/high/perfect). The concern is that "perfect" means 35b for some classes and 140b for others, making cross-class comparisons misleading. Scope: add a `fundingEstimate` field to gear templates (or to `tier-defaults.json`) with a per-class meso value. Display this in the web UI alongside or instead of the tier name (e.g., "Perfect (~80b)" in dropdowns and chart labels). This is a data + UI task, no engine changes.
 
 **Paladin weapon formula corrections**
-Purple Surfboard is categorized as 2H BW but should use the spear damage formula. Crushed Skull should use the 1H BW formula. Scope: verify the correct weapon type multiplier for each weapon in `data/weapons.json` and update the Paladin BW gear templates if the weapon type assignment is wrong. May require adding weapon-specific overrides to gear templates if the same class can use weapons with different formula types. Add tests for the corrected values.
+~~Crushed Skull should use the 1H BW formula~~ → fixed in #128 via per-tier `weaponType` override on gear templates. Purple Surfboard is categorized as 2H BW but should use the spear damage formula — still needs investigation and a fix. May require adding a weapon-specific override if Purple Surfboard is the only weapon with this mismatch.
 
 **Per-weapon-type display in rankings**
 Currently, weapon variants within a class (e.g., Hero Sword vs Hero Axe) are separate "classes" with their own skill files. But within a single class, different weapons (e.g., Paladin BW with Purple Surfboard vs Crushed Skull) aren't shown separately. PinaColadaPirate wants every weapon type displayed in its own row. Scope: investigate whether this is already handled by the existing weapon-variant architecture (separate skill files per weapon type). If not, determine whether the right approach is adding more skill file variants or adding weapon-type grouping in the output layer. This may overlap with the Paladin weapon formula task above.
