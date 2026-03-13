@@ -38,15 +38,17 @@ export function useBuildComparison(): BuildComparisonState {
     return { bestA, bestB, deltaPercent, sameClass };
   }, [buildA.results, buildB.results, buildA.selectedClass, buildB.selectedClass]);
 
+  const { loadFromUrl: loadA } = buildA;
+  const { loadFromUrl: loadB } = buildB;
   const loadFromUrl = useCallback(
     (
       a: { class: string; tier: string; overrides: Partial<BuildOverrides> },
       b: { class: string; tier: string; overrides: Partial<BuildOverrides> },
     ) => {
-      buildA.loadFromUrl(a.class, a.tier, a.overrides);
-      buildB.loadFromUrl(b.class, b.tier, b.overrides);
+      loadA(a.class, a.tier, a.overrides);
+      loadB(b.class, b.tier, b.overrides);
     },
-    [buildA.loadFromUrl, buildB.loadFromUrl],
+    [loadA, loadB],
   );
 
   return { buildA, buildB, comparison, loadFromUrl };

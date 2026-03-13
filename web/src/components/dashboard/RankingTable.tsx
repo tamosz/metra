@@ -89,7 +89,7 @@ export function RankingTable({
     }
   };
 
-  const getDps = (r: typeof data[0]) => capEnabled ? r.dps.dps : r.dps.uncappedDps;
+  const getDps = useCallback((r: typeof data[0]) => capEnabled ? r.dps.dps : r.dps.uncappedDps, [capEnabled]);
 
   const deltaMap = useMemo(() => buildDeltaMap(editComparison), [editComparison]);
 
@@ -126,7 +126,7 @@ export function RankingTable({
     }
 
     return { skillFields, activeChanges, target };
-  }, [editChanges]);
+  }, []);
 
   const getComboSkillEditInfo = useCallback((className: string, comboGroupName: string) => {
     const classEntry = [...discoveredData.classDataMap.entries()]
@@ -154,7 +154,7 @@ export function RankingTable({
       }
       return { name: skill.name, skillFields, activeChanges, target };
     });
-  }, [editChanges]);
+  }, []);
 
   const applyFieldChange = useCallback((target: string, field: string, value: number, original: number) => {
     const changes = editChangesRef.current;
@@ -194,7 +194,7 @@ export function RankingTable({
       }
     }
     return getDps(r);
-  }, [deltaMap, capEnabled]);
+  }, [deltaMap, capEnabled, getDps]);
 
   const sorted = useMemo(() => {
     const dir = sortDirection === 'asc' ? 1 : -1;
@@ -207,7 +207,7 @@ export function RankingTable({
         case 'capLoss': return dir * (a.dps.capLossPercent - b.dps.capLossPercent);
       }
     });
-  }, [data, sortColumn, sortDirection, capEnabled, deltaMap, getEffectiveDps]);
+  }, [data, sortColumn, sortDirection, getEffectiveDps]);
 
   // Compute visible rank diffs: compare baseline order (data) vs edit-adjusted order (sorted by DPS desc)
   const visibleRankDiffs = useMemo(() => {

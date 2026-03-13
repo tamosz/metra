@@ -66,7 +66,7 @@ function AppContent() {
       );
       setPage('dashboard');
     }
-  }, []);
+  }, [buildState, comparisonState, controls]);
 
   return (
     <div className="min-h-screen bg-bg text-text-primary">
