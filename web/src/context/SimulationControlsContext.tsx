@@ -3,7 +3,8 @@ import type { BuffOverrides } from '../components/BuffToggles.js';
 import type { CgsValues } from '../utils/cgs.js';
 import type { KbConfig } from '../hooks/useSimulation.js';
 import type { ProposalChange } from '@engine/proposals/types.js';
-import { FILTER_DEFAULTS, defaultCgsForTier } from '../utils/filter-defaults.js';
+import { FILTER_DEFAULTS, defaultCgsForTier, defaultActiveGroups } from '../utils/filter-defaults.js';
+import type { SkillGroupId } from '../utils/skill-groups.js';
 
 interface EditMeta {
   name: string;
@@ -46,6 +47,9 @@ interface SimulationControlsContextType {
   loadEditState: (changes: ProposalChange[], meta?: EditMeta) => void;
   breakdownEnabled: boolean;
   setBreakdownEnabled: (enabled: boolean) => void;
+  activeGroups: Set<SkillGroupId>;
+  setActiveGroups: (groups: Set<SkillGroupId>) => void;
+  toggleGroup: (id: SkillGroupId) => void;
 }
 
 const SimulationControlsContext = createContext<SimulationControlsContextType | null>(null);
@@ -65,6 +69,7 @@ export function SimulationControlsProvider({ children }: { children: ReactNode }
   const [editChanges, setEditChanges] = useState<ProposalChange[]>([]);
   const [editMeta, setEditMetaRaw] = useState<EditMeta>(EMPTY_EDIT_META);
   const [breakdownEnabled, setBreakdownEnabled] = useState(FILTER_DEFAULTS.breakdownEnabled);
+  const [activeGroups, setActiveGroups] = useState<Set<SkillGroupId>>(defaultActiveGroups);
 
   const setEditEnabled = useCallback((enabled: boolean) => {
     setEditEnabledRaw(enabled);
@@ -98,6 +103,15 @@ export function SimulationControlsProvider({ children }: { children: ReactNode }
     setEditEnabledRaw(true);
     setEditChanges(changes);
     setEditMetaRaw(meta ?? EMPTY_EDIT_META);
+  }, []);
+
+  const toggleGroup = useCallback((id: SkillGroupId) => {
+    setActiveGroups((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
   }, []);
 
   const kbConfig = useMemo(
@@ -140,8 +154,11 @@ export function SimulationControlsProvider({ children }: { children: ReactNode }
       loadEditState,
       breakdownEnabled,
       setBreakdownEnabled,
+      activeGroups,
+      setActiveGroups,
+      toggleGroup,
     }),
-    [targetCount, elementModifiers, buffOverrides, kbEnabled, bossAttackInterval, bossAccuracy, capEnabled, selectedTier, cgsValues, kbConfig, efficiencyOverrides, editEnabled, editChanges, editMeta, setEditEnabled, addEditChange, removeEditChange, updateEditChange, clearEditChanges, setEditMeta, loadEditState, breakdownEnabled],
+    [targetCount, elementModifiers, buffOverrides, kbEnabled, bossAttackInterval, bossAccuracy, capEnabled, selectedTier, cgsValues, kbConfig, efficiencyOverrides, editEnabled, editChanges, editMeta, setEditEnabled, addEditChange, removeEditChange, updateEditChange, clearEditChanges, setEditMeta, loadEditState, breakdownEnabled, activeGroups, toggleGroup],
   );
 
   return (
