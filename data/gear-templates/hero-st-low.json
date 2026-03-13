@@ -1,9 +1,9 @@
 {
   "extends": "hero-st",
-  "source": "Stonetooth Sword (speed 5) 126wa 18str. DEX req 120: base DEX 48 (44 AP from STR). Gear from hero-low.",
+  "source": "Stonetooth Sword (speed 5) 126wa 18str. DEX req 120: base DEX 36 (32 AP from STR). Gear from hero-low.",
   "baseStats": {
-    "STR": 774,
-    "DEX": 48,
+    "STR": 786,
+    "DEX": 36,
     "INT": 4,
     "LUK": 4
   },
