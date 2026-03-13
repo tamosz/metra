@@ -28,6 +28,7 @@ export interface TierOverride {
   projectile?: number;
   attackPotion?: number;
   weaponSpeed?: number;
+  weaponType?: string;
   [key: string]: unknown;
 }
 
@@ -53,7 +54,7 @@ export function mergeGearTemplate(
     baseStats: tier.baseStats,
     gearStats: computed.gearStats,
     totalWeaponAttack: computed.totalWeaponAttack,
-    weaponType: base.weaponType,
+    weaponType: tier.weaponType ?? base.weaponType,
     weaponSpeed: tier.weaponSpeed ?? base.weaponSpeed,
     attackPotion: tier.attackPotion ?? defaults.attackPotion,
     projectile: tier.projectile ?? base.projectile,

@@ -129,7 +129,7 @@ function calculateBaseDamageRange(
   }
 
   const totalAttack = calculateTotalAttack(build);
-  const weaponMultiplier = getWeaponMultiplier(weaponData, skill.weaponType, skill.attackType, skill.attackRatio);
+  const weaponMultiplier = getWeaponMultiplier(weaponData, build.weaponType, skill.attackType, skill.attackRatio);
   return calculateDamageRange(primary, secondary, weaponMultiplier, classData.mastery, totalAttack);
 }
 
