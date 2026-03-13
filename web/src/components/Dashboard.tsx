@@ -19,7 +19,7 @@ import { TargetSpinner } from './dashboard/TargetSpinner.js';
 import { EditPopover } from './dashboard/EditPopover.js';
 import { EfficiencyPanel } from './EfficiencyPanel.js';
 import { resolveActiveScenario } from '../utils/scenario.js';
-import { SKILL_GROUPS, DEFAULT_SKILL_GROUPS, isResultVisible, type SkillGroupId } from '../utils/skill-groups.js';
+import { SKILL_GROUPS, isResultVisible, type SkillGroupId } from '../utils/skill-groups.js';
 
 interface DashboardProps {
   simulation: SimulationData;
@@ -28,7 +28,7 @@ interface DashboardProps {
 
 export function Dashboard({ simulation, buildsState }: DashboardProps) {
   const controls = useSimulationControls();
-  const { selectedTier, targetCount, capEnabled, cgsValues, setCgsValues, editEnabled, setEditEnabled, editChanges, breakdownEnabled, setBreakdownEnabled } = controls;
+  const { selectedTier, targetCount, capEnabled, cgsValues, setCgsValues, editEnabled, setEditEnabled, editChanges, breakdownEnabled, setBreakdownEnabled, activeGroups, toggleGroup } = controls;
   const { results, tiers } = simulation;
 
   const cgsOverride = useMemo(() => ({ tier: selectedTier, values: cgsValues }), [selectedTier, cgsValues]);
@@ -46,20 +46,6 @@ export function Dashboard({ simulation, buildsState }: DashboardProps) {
   });
   const showBreakdown = breakdownEnabled && !editEnabled;
   const breakdownMap = useBuffBreakdown(simOptions, results, showBreakdown, capEnabled);
-  const [activeGroups, setActiveGroups] = useState<Set<SkillGroupId>>(() => new Set(DEFAULT_SKILL_GROUPS));
-
-  const toggleGroup = (id: SkillGroupId) => {
-    setActiveGroups((prev) => {
-      const next = new Set(prev);
-      if (next.has(id)) {
-        next.delete(id);
-      } else {
-        next.add(id);
-      }
-      return next;
-    });
-  };
-
   const filtered = useMemo(() => {
     const activeScenario = resolveActiveScenario(results, targetCount);
     return results

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Dashboard } from './components/Dashboard.js';
 import { BuildExplorer } from './components/BuildExplorer.js';
 import { BuildComparison } from './components/BuildComparison.js';
@@ -9,8 +9,11 @@ import { useBuildComparison } from './hooks/useBuildComparison.js';
 import { useBuilds } from './hooks/useBuilds.js';
 import { useSavedBuilds } from './hooks/useSavedBuilds.js';
 import { getProposalFromUrl, getBuildFromUrl, getComparisonFromUrl } from './utils/url-encoding.js';
+import { getFilterFromUrl } from './utils/filter-url.js';
 import { SimulationControlsProvider, useSimulationControls } from './context/SimulationControlsContext.js';
+import { useFilterPermalink } from './hooks/useFilterPermalink.js';
 import { ErrorBoundary } from './components/ErrorBoundary.js';
+import type { SkillGroupId } from './utils/skill-groups.js';
 
 type Page = 'dashboard' | 'build' | 'compare' | 'formulas';
 
@@ -45,7 +48,12 @@ function AppContent() {
   };
 
   // Load from URL hash on mount
+  const loadedFromUrl = useRef(false);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
+    if (loadedFromUrl.current) return;
+    loadedFromUrl.current = true;
+
     const urlComparison = getComparisonFromUrl();
     if (urlComparison) {
       comparisonState.loadFromUrl(urlComparison.a, urlComparison.b);
@@ -65,15 +73,39 @@ function AppContent() {
         urlProposal.name ? { name: urlProposal.name, author: urlProposal.author || '' } : undefined,
       );
       setPage('dashboard');
+      return;
     }
-  }, [buildState, comparisonState, controls]);
+    const urlFilter = getFilterFromUrl();
+    if (urlFilter) {
+      if (urlFilter.tier) controls.setSelectedTier(urlFilter.tier);
+      if (urlFilter.buffs) controls.setBuffOverrides(urlFilter.buffs);
+      if (urlFilter.elements) controls.setElementModifiers(urlFilter.elements);
+      if (urlFilter.kb) {
+        controls.setKbEnabled(true);
+        if (urlFilter.kb.interval !== undefined) controls.setBossAttackInterval(urlFilter.kb.interval);
+        if (urlFilter.kb.accuracy !== undefined) controls.setBossAccuracy(urlFilter.kb.accuracy);
+      }
+      if (urlFilter.targets !== undefined) controls.setTargetCount(urlFilter.targets);
+      if (urlFilter.cap !== undefined) controls.setCapEnabled(urlFilter.cap);
+      if (urlFilter.cgs) controls.setCgsValues(urlFilter.cgs);
+      if (urlFilter.groups) controls.setActiveGroups(new Set(urlFilter.groups as SkillGroupId[]));
+      if (urlFilter.breakdown !== undefined) controls.setBreakdownEnabled(urlFilter.breakdown);
+      setPage('dashboard');
+    }
+  }, []);
+
+  useFilterPermalink(controls);
 
   return (
     <div className="min-h-screen bg-bg text-text-primary">
       <header className="relative border-b border-border-default px-4 py-4 sm:px-8">
         <div className="flex items-center gap-6">
           <button
-            onClick={() => navigate('dashboard')}
+            onClick={() => {
+              controls.resetControls();
+              window.history.replaceState(null, '', window.location.pathname);
+              navigate('dashboard');
+            }}
             className="flex cursor-pointer items-baseline gap-3 border-none bg-transparent p-0"
           >
             <h1

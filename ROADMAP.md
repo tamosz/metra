@@ -39,6 +39,7 @@ A balance simulator for Royals staff and community. Every number traces back to 
 - Gear template audit: cross-class alignment verified against source spreadsheet, stats aligned across all 14 classes
 - Gear template inheritance: base templates with tier deltas, reducing duplication
 - Pre-commit hooks, comprehensive test coverage
+- Filter state permalinks: encode dashboard filter state in URL (`#f=`), shareable configuration links, logo reset to defaults
 - Deployed at: https://tomeblog.com/metra
 
 ## Phase 2: Interactive UX
@@ -46,10 +47,6 @@ A balance simulator for Royals staff and community. Every number traces back to 
 Make the dashboard the primary exploration tool. Reduce the distance between "I wonder what if..." and seeing the answer.
 
 **~~Inline "what if" editing~~** → shipped as Edit Mode (see Done)
-
-**Filter state permalinks**
-- Encode dashboard filter state (tier, buffs, elements, KB, targets) in the URL
-- Shareable links like "here's what Corsair looks like with KB on and no SI"
 
 **Saved filter presets**
 - Name and save toggle combinations: "Bossing", "Training 6 mobs", "Unbuffed solo"
