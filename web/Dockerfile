@@ -1,4 +1,5 @@
-FROM node:24-alpine@sha256:7fddd9ddeae8196abf4a3ef2de34e11f7b1a722119f91f28ddf1e99dcafdf114 AS build
+FROM cgr.dev/chainguard/node:latest-dev AS build
+USER root
 WORKDIR /app
 COPY package.json package-lock.json tsconfig.json ./
 COPY packages/engine/package.json packages/engine/
