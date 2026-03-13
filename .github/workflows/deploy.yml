@@ -1,4 +1,4 @@
-name: Deploy Metra
+name: deploy
 
 on:
   push:
