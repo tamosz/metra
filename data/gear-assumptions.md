@@ -51,12 +51,13 @@ all other equipment stats.
 
 | Weapon | Class | MS Max Clean | Godly (+5) | +35 scrolling | Theoretical Max |
 |--------|-------|:---:|:---:|:---:|:---:|
-| Stonetooth Sword | Hero, Paladin | 106 | 111 | +35 | 146 |
+| Dragon Claymore | Hero, Paladin | 110 | 115 | +35 | 150 |
+| Stonetooth Sword | Hero (ST), Paladin | 106 | 111 | +35 | 146 |
 | Dragon Battle Axe | Hero (Axe) | 112 | 117 | +35 | 152 |
 | Sky Ski | Dark Knight | 99 | 104 | +35 | 139 |
 | Dragon Flame | Paladin (BW) | 117 | 122 | +35 | 157 |
 | Dragon Purple Claw | Night Lord | 55 | 60 | +35 | 95 |
-| White Nisrock | Bowmaster | 100 | 105 | +35 | 140 |
+| Dragon Shiner Bow | Bowmaster | 105 | 110 | +35 | 145 |
 | Dark Neschere | Marksman | 103 | 108 | +35 | 143 |
 | Concerto | Corsair | 79 | 84 | +35 | 119 |
 | Dragon Slash Claw | Buccaneer | 83 | 88 | +35 | 123 |
@@ -80,12 +81,15 @@ hard ceiling of character power, not a typical endgame character.
 
 ### Weapon Speed
 
-Hero high uses weapon speed 5 (Fast), matching Stonetooth Sword — the standard endgame
-Hero weapon per community consensus. With SI active, speed 5 and speed 6 both resolve to
-effective speed 2 (0.63s Brandish), so buffed DPS is identical. Without SI, Stonetooth at
-speed 5 yields 0.69s vs 0.75s for speed 6 — an 8.7% DPS advantage in unbuffed scenarios.
+Hero is split into two weapon variants:
+- **Hero** uses Dragon Claymore (speed 6, Normal). No DEX requirement — full STR build.
+- **Hero (ST)** uses Stonetooth Sword (speed 5, Fast). Requires 120 DEX — AP reallocated from STR at low/mid/high tiers. Perfect tier meets the req from gear DEX alone.
 
-Dark Knight/Paladin (Sword) templates use weapon speed 6 (Normal), correct for Sky Ski and 2H Sword.
+With SI active, speed 5 and speed 6 both resolve to effective speed 2 (0.63s Brandish),
+so buffed DPS is identical. Without SI, Stonetooth at speed 5 yields 0.69s vs 0.75s for
+speed 6 — an 8.7% DPS advantage in unbuffed scenarios. The tradeoff is STR loss from DEX allocation.
+
+Dark Knight templates use weapon speed 6 (Normal), correct for Sky Ski.
 
 Paladin (BW) templates use weapon speed 7 (Slow), correct for Dragon Flame — the only
 viable endgame 2H BW. With SI+Booster, speed 7 resolves to effective speed 3 (0.69s Blast)

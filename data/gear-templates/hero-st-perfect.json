@@ -1,6 +1,6 @@
 {
-  "extends": "dark-knight",
-  "source": "Perfect tier: Sky Ski (speed 6) 139wa 21str. C/G/S 24/24/22.",
+  "extends": "hero-st",
+  "source": "Perfect tier: Stonetooth Sword (speed 5) 146wa 21str. C/G/S 24/24/22. DEX req 120: met by gear alone (168 gear DEX + 23 base).",
   "baseStats": {
     "STR": 999,
     "DEX": 23,
@@ -10,7 +10,7 @@
   "gearBreakdown": {
     "weapon": {
       "STR": 21,
-      "WATK": 139
+      "WATK": 146
     },
     "helmet": {
       "STR": 87,

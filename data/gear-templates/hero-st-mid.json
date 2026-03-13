@@ -1,0 +1,64 @@
+{
+  "extends": "hero-st",
+  "source": "Stonetooth Sword (speed 5) 136wa 15str. DEX req 120: base DEX 74 (70 AP from STR). Gear from hero-mid.",
+  "baseStats": {
+    "STR": 823,
+    "DEX": 74,
+    "INT": 4,
+    "LUK": 4
+  },
+  "gearBreakdown": {
+    "weapon": {
+      "STR": 15,
+      "WATK": 136
+    },
+    "helmet": {
+      "STR": 20,
+      "DEX": 25
+    },
+    "top": {
+      "STR": 12,
+      "DEX": 3
+    },
+    "bottom": {
+      "STR": 6
+    },
+    "earring": {
+      "STR": 3,
+      "DEX": 2
+    },
+    "eye": {
+      "STR": 1,
+      "DEX": 2
+    },
+    "face": {
+      "STR": 3,
+      "DEX": 1
+    },
+    "pendant": {
+      "STR": 20,
+      "DEX": 12
+    },
+    "medal": {
+      "STR": 1,
+      "WATK": 3
+    },
+    "ring1": {
+      "STR": 3,
+      "WATK": 2
+    },
+    "ring2": {
+      "STR": 2,
+      "WATK": 2
+    },
+    "ring3": {
+      "STR": 2,
+      "DEX": 1,
+      "WATK": 1
+    },
+    "ring4": {
+      "STR": 3,
+      "WATK": 1
+    }
+  }
+}

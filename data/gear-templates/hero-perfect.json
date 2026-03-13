@@ -1,7 +1,6 @@
 {
   "extends": "hero",
   "source": "Perfect tier: Dragon Claymore (speed 6) 150wa 21str. C/G/S 24/24/22.",
-  "weaponSpeed": 6,
   "baseStats": {
     "STR": 999,
     "DEX": 23,
