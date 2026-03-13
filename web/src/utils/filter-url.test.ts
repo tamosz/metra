@@ -112,4 +112,14 @@ describe('filter-url', () => {
     const encoded = encodeFilterState({ kb: { interval: 'bad' } } as unknown as FilterState);
     expect(decodeFilterState(encoded)).toBeNull();
   });
+
+  it('rejects arrays where objects are expected', () => {
+    expect(decodeFilterState(encodeFilterState({ buffs: [true] } as unknown as FilterState))).toBeNull();
+    expect(decodeFilterState(encodeFilterState({ elements: [1, 2] } as unknown as FilterState))).toBeNull();
+  });
+
+  it('rejects NaN and Infinity in numeric fields', () => {
+    expect(decodeFilterState(encodeFilterState({ targets: NaN } as FilterState))).toBeNull();
+    expect(decodeFilterState(encodeFilterState({ targets: Infinity } as FilterState))).toBeNull();
+  });
 });

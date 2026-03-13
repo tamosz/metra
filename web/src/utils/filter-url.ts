@@ -34,33 +34,33 @@ export function decodeFilterState(encoded: string): FilterState | null {
     const result: FilterState = {};
 
     if (typeof parsed.tier === 'string') result.tier = parsed.tier;
-    if (typeof parsed.buffs === 'object' && parsed.buffs !== null) {
+    if (typeof parsed.buffs === 'object' && parsed.buffs !== null && !Array.isArray(parsed.buffs)) {
       if (Object.values(parsed.buffs).every((v) => typeof v === 'boolean' || typeof v === 'number'))
         result.buffs = parsed.buffs;
       else return null;
     }
-    if (typeof parsed.elements === 'object' && parsed.elements !== null) {
-      if (Object.values(parsed.elements).every((v) => typeof v === 'number'))
+    if (typeof parsed.elements === 'object' && parsed.elements !== null && !Array.isArray(parsed.elements)) {
+      if (Object.values(parsed.elements).every((v) => typeof v === 'number' && Number.isFinite(v)))
         result.elements = parsed.elements;
       else return null;
     }
-    if (typeof parsed.kb === 'object' && parsed.kb !== null) {
+    if (typeof parsed.kb === 'object' && parsed.kb !== null && !Array.isArray(parsed.kb)) {
       const { interval, accuracy, ...rest } = parsed.kb;
       if (
         Object.keys(rest).length === 0 &&
-        (interval === undefined || typeof interval === 'number') &&
-        (accuracy === undefined || typeof accuracy === 'number')
+        (interval === undefined || (typeof interval === 'number' && Number.isFinite(interval))) &&
+        (accuracy === undefined || (typeof accuracy === 'number' && Number.isFinite(accuracy)))
       )
         result.kb = parsed.kb;
       else return null;
     }
-    if (typeof parsed.targets === 'number') result.targets = parsed.targets;
+    if (typeof parsed.targets === 'number' && Number.isFinite(parsed.targets)) result.targets = parsed.targets;
     if (typeof parsed.cap === 'boolean') result.cap = parsed.cap;
-    if (typeof parsed.cgs === 'object' && parsed.cgs !== null) {
+    if (typeof parsed.cgs === 'object' && parsed.cgs !== null && !Array.isArray(parsed.cgs)) {
       if (
-        typeof parsed.cgs.cape === 'number' &&
-        typeof parsed.cgs.glove === 'number' &&
-        typeof parsed.cgs.shoe === 'number'
+        typeof parsed.cgs.cape === 'number' && Number.isFinite(parsed.cgs.cape) &&
+        typeof parsed.cgs.glove === 'number' && Number.isFinite(parsed.cgs.glove) &&
+        typeof parsed.cgs.shoe === 'number' && Number.isFinite(parsed.cgs.shoe)
       )
         result.cgs = parsed.cgs;
       else return null;
