@@ -1,6 +1,7 @@
 {
   "extends": "paladin-bw",
   "source": "Perfect tier: Crushed Skull (speed 6) 160wa 21str + Crossheider 30wa 31str. C/G/S 24/24/22.",
+  "weaponType": "1H BW",
   "weaponSpeed": 6,
   "baseStats": {
     "STR": 999,

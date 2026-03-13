@@ -131,17 +131,19 @@ describe('gear template stat consistency', () => {
     }
   });
 
-  it('gear template weaponType matches class skill weaponTypes', () => {
+  it('gear template weaponType is in the same weapon family as class skill weaponTypes', () => {
+    const weaponFamily = (wt: string) => wt.replace(/^[12]H /, '');
+
     for (const [key, build] of gearTemplates) {
       const classData = [...classDataMap.values()].find(
         (cd) => cd.className === build.className
       );
       if (!classData) continue;
 
-      const skillWeaponTypes = new Set(classData.skills.map((s) => s.weaponType));
+      const skillFamilies = new Set(classData.skills.map((s) => weaponFamily(s.weaponType)));
       expect(
-        skillWeaponTypes.has(build.weaponType),
-        `Gear template "${key}" has weaponType "${build.weaponType}" but ${classData.className} skills use: ${[...skillWeaponTypes].join(', ')}`
+        skillFamilies.has(weaponFamily(build.weaponType)),
+        `Gear template "${key}" has weaponType "${build.weaponType}" (family: ${weaponFamily(build.weaponType)}) but ${classData.className} skills use: ${[...new Set(classData.skills.map((s) => s.weaponType))].join(', ')}`
       ).toBe(true);
     }
   });

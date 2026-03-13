@@ -380,6 +380,28 @@ describe('Paladin (BW) Blast DPS', () => {
     expect(swordResult.damageRange.max).toBeGreaterThan(bwResult.damageRange.max);
     expect(swordResult.dps).toBeGreaterThan(bwResult.dps);
   });
+
+  it('1H BW build uses 1H BW multiplier (4.4 slash, 3.2 stab)', () => {
+    const blast = paladinBwData.skills.find(
+      (s) => s.name === 'Blast (Holy, BW)'
+    )!;
+    const build1h: CharacterBuild = {
+      ...paladinBwHigh,
+      weaponType: '1H BW',
+    };
+    const result1h = calculateSkillDps(
+      build1h, paladinBwData, blast, weaponData, attackSpeedData, mwData
+    );
+    const result2h = calculateSkillDps(
+      paladinBwHigh, paladinBwData, blast, weaponData, attackSpeedData, mwData
+    );
+
+    // 1H BW effective = 4.4*0.6 + 3.2*0.4 = 3.92
+    // 2H BW effective = 4.8*0.6 + 3.4*0.4 = 4.24
+    // Lower weapon multiplier → lower damage range average and DPS
+    expect(result1h.damageRange.average).toBeLessThan(result2h.damageRange.average);
+    expect(result1h.dps).toBeLessThan(result2h.dps);
+  });
 });
 
 describe('Night Lord Gear Template DPS', () => {
