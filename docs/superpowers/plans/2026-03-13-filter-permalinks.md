@@ -71,7 +71,7 @@ Replace the hardcoded initial values in `SimulationControlsContext.tsx` with imp
 
 - [ ] **Step 3: Run tests to verify nothing broke**
 
-Run: `cd /Users/tome/dev/metra/web && npx vitest run src/context/SimulationControlsContext.test.tsx`
+Run: `cd web && npx vitest run src/context/SimulationControlsContext.test.tsx`
 Expected: All existing tests pass.
 
 - [ ] **Step 4: Commit**
@@ -121,7 +121,7 @@ In `Dashboard.tsx`:
 
 - [ ] **Step 3: Run tests**
 
-Run: `cd /Users/tome/dev/metra/web && npx vitest run`
+Run: `cd web && npx vitest run`
 Expected: All tests pass. Dashboard test may need updating if it asserts on internal state.
 
 - [ ] **Step 4: Commit**
@@ -180,7 +180,7 @@ it('resetControls restores all state to defaults', () => {
 
 - [ ] **Step 2: Run test to verify it fails**
 
-Run: `cd /Users/tome/dev/metra/web && npx vitest run src/context/SimulationControlsContext.test.tsx -t "resetControls"`
+Run: `cd web && npx vitest run src/context/SimulationControlsContext.test.tsx -t "resetControls"`
 Expected: FAIL — `resetControls` is not defined.
 
 - [ ] **Step 3: Implement resetControls**
@@ -212,7 +212,7 @@ Also export the interface: change `interface SimulationControlsContextType` to `
 
 - [ ] **Step 4: Run test to verify it passes**
 
-Run: `cd /Users/tome/dev/metra/web && npx vitest run src/context/SimulationControlsContext.test.tsx`
+Run: `cd web && npx vitest run src/context/SimulationControlsContext.test.tsx`
 Expected: All tests pass.
 
 - [ ] **Step 5: Commit**
@@ -332,7 +332,7 @@ describe('filter-url', () => {
 
 - [ ] **Step 2: Run tests to verify they fail**
 
-Run: `cd /Users/tome/dev/metra/web && npx vitest run src/utils/filter-url.test.ts`
+Run: `cd web && npx vitest run src/utils/filter-url.test.ts`
 Expected: FAIL — module not found.
 
 - [ ] **Step 3: Implement filter-url.ts**
@@ -416,7 +416,7 @@ export function clearFilterFromUrl(): void {
 
 - [ ] **Step 4: Run tests to verify they pass**
 
-Run: `cd /Users/tome/dev/metra/web && npx vitest run src/utils/filter-url.test.ts`
+Run: `cd web && npx vitest run src/utils/filter-url.test.ts`
 Expected: All tests pass.
 
 - [ ] **Step 5: Commit**
@@ -611,7 +611,7 @@ onClick={() => {
 
 - [ ] **Step 4: Run all web tests**
 
-Run: `cd /Users/tome/dev/metra/web && npx vitest run`
+Run: `cd web && npx vitest run`
 Expected: All tests pass.
 
 - [ ] **Step 5: Commit**
@@ -651,17 +651,17 @@ git commit -m "move filter permalinks to done in roadmap"
 
 - [ ] **Step 1: Run root tests**
 
-Run: `cd /Users/tome/dev/metra && npx vitest run`
+Run: `npx vitest run`
 Expected: All tests pass.
 
 - [ ] **Step 2: Run web tests**
 
-Run: `cd /Users/tome/dev/metra/web && npx vitest run`
+Run: `cd web && npx vitest run`
 Expected: All tests pass.
 
 - [ ] **Step 3: Manual smoke test**
 
-Run: `cd /Users/tome/dev/metra/web && npm run dev`
+Run: `cd web && npm run dev`
 
 Verify:
 1. Toggle some filters (change tier to "high", turn off SE, enable KB) → URL updates to `#f=<something>`
