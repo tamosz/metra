@@ -71,6 +71,28 @@ Make the dashboard the primary exploration tool. Reduce the distance between "I 
 - Proposal gallery: browse, search, filter, share
 - If there's demand: voting, comments, proposal versioning (needs a backend)
 
+## Community Feedback (from [launch thread](https://royals.ms/forum/threads/royals-balance-simulator.255386/))
+
+Items sourced from forum feedback that aren't covered elsewhere in this roadmap.
+
+**Bullseye as a toggleable buff (Corsair)**
+Bullseye's 1.2× modifier is currently baked into the `multiplier` field on Battleship Cannon and Rapid Fire. This means it can't be toggled off independently and it scales with crit in a way that may be incorrect — Sylafia argues Bullseye should apply as a post-calculation multiplier (like Berserk or element damage), not as a skill% modifier that feeds into crit. Scope: add a `bullseye` toggle to `ScenarioConfig` and `SimulationControlsContext`, move the 1.2× out of skill data and into the DPS pipeline as a late-stage multiplier (after crit). Update web UI to include the toggle. Verify against in-game behavior if possible.
+
+**TMA cap enforcement (mages)**
+Total Magic Attack is hard-capped at 2000 in-game. The engine currently has no validation for this. Scope: add a clamp in the magic damage formula path (or in `computeGearTotals` for mage builds) so TMA never exceeds 2000. Add a test. If any perfect-tier mage template exceeds 2000 TMA, cap it and add a note to the gear template.
+
+**Assassinate disclaimer**
+Assassinate is bugged in-game — SE reportedly decreases damage when hitting the damage cap (GIF evidence in thread). The formula used in the sim is based on 2019–2020 speculation, never officially confirmed. Scope: add a visible disclaimer on the web dashboard when Shadower Assassinate results are shown, explaining that in-game behavior differs from the modeled formula and results should be treated as approximate. No engine changes needed — just a UI note. Check if there's already a `hidden` or `headline` flag on Assassinate that could be leveraged for this.
+
+**Funding-based tier labels**
+Multiple users (PinaColadaPirate, Kamuna, ssmage) want tiers expressed as approximate meso costs (e.g., 10b/30b/60b/100b) rather than abstract names (low/mid/high/perfect). The concern is that "perfect" means 35b for some classes and 140b for others, making cross-class comparisons misleading. Scope: add a `fundingEstimate` field to gear templates (or to `tier-defaults.json`) with a per-class meso value. Display this in the web UI alongside or instead of the tier name (e.g., "Perfect (~80b)" in dropdowns and chart labels). This is a data + UI task, no engine changes.
+
+**Paladin weapon formula corrections**
+Purple Surfboard is categorized as 2H BW but should use the spear damage formula. Crushed Skull should use the 1H BW formula. Scope: verify the correct weapon type multiplier for each weapon in `data/weapons.json` and update the Paladin BW gear templates if the weapon type assignment is wrong. May require adding weapon-specific overrides to gear templates if the same class can use weapons with different formula types. Add tests for the corrected values.
+
+**Per-weapon-type display in rankings**
+Currently, weapon variants within a class (e.g., Hero Sword vs Hero Axe) are separate "classes" with their own skill files. But within a single class, different weapons (e.g., Paladin BW with Purple Surfboard vs Crushed Skull) aren't shown separately. PinaColadaPirate wants every weapon type displayed in its own row. Scope: investigate whether this is already handled by the existing weapon-variant architecture (separate skill files per weapon type). If not, determine whether the right approach is adding more skill file variants or adding weapon-type grouping in the output layer. This may overlap with the Paladin weapon formula task above.
+
 ## Phase 4: Advanced Analysis
 
 **Quick wins:**
