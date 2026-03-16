@@ -1,21 +1,34 @@
+import { useEffect } from 'react';
 import type { CharacterBuild } from '@metra/engine';
 import { useSimulationControls } from '../context/SimulationControlsContext.js';
 import { TOGGLE_ON, TOGGLE_OFF_RED } from '../utils/styles.js';
 
-type BuffOverrides = Partial<Pick<CharacterBuild, 'sharpEyes' | 'echoActive' | 'speedInfusion' | 'mwLevel' | 'attackPotion'>>;
+type BuffOverrides = Partial<Pick<CharacterBuild, 'sharpEyes' | 'echoActive' | 'speedInfusion' | 'mwLevel' | 'attackPotion' | 'bullseye'>>;
 
-const BUFFS = [
-  { key: 'sharpEyes' as const, label: 'SE', offValue: false as const, tooltip: 'Sharp Eyes' },
-  { key: 'echoActive' as const, label: 'Echo', offValue: false as const, tooltip: 'Echo of Hero' },
-  { key: 'speedInfusion' as const, label: 'SI', offValue: false as const, tooltip: 'Speed Infusion' },
-  { key: 'mwLevel' as const, label: 'MW', offValue: 0 as const, tooltip: 'Maple Warrior' },
-  { key: 'attackPotion' as const, label: 'Pot', offValue: 0 as const, tooltip: 'Attack Potion' },
-] as const;
+interface BuffDef {
+  key: keyof BuffOverrides;
+  label: string;
+  offValue: boolean | number;
+  tooltip: string;
+  classFilter?: string;
+}
 
+const BUFFS: readonly BuffDef[] = [
+  { key: 'sharpEyes', label: 'SE', offValue: false, tooltip: 'Sharp Eyes' },
+  { key: 'echoActive', label: 'Echo', offValue: false, tooltip: 'Echo of Hero' },
+  { key: 'speedInfusion', label: 'SI', offValue: false, tooltip: 'Speed Infusion' },
+  { key: 'mwLevel', label: 'MW', offValue: 0, tooltip: 'Maple Warrior' },
+  { key: 'attackPotion', label: 'Pot', offValue: 0, tooltip: 'Attack Potion' },
+  { key: 'bullseye', label: 'Bull', offValue: false, tooltip: 'Bullseye (Corsair)', classFilter: 'Corsair' },
+];
 
 export type { BuffOverrides };
 
-export function BuffToggles() {
+interface BuffTogglesProps {
+  visibleClassNames?: Set<string>;
+}
+
+export function BuffToggles({ visibleClassNames }: BuffTogglesProps) {
   const { buffOverrides: overrides, setBuffOverrides: onChange } = useSimulationControls();
 
   const handleClick = (key: keyof BuffOverrides, offValue: boolean | number) => {
@@ -29,11 +42,30 @@ export function BuffToggles() {
     onChange(updated);
   };
 
+  // Clean up overrides for class-specific buffs whose class is no longer visible
+  useEffect(() => {
+    if (!visibleClassNames) return;
+    let needsUpdate = false;
+    const updated = { ...overrides };
+    for (const b of BUFFS) {
+      if (b.classFilter && !visibleClassNames.has(b.classFilter) && b.key in updated) {
+        delete updated[b.key];
+        needsUpdate = true;
+      }
+    }
+    if (needsUpdate) onChange(updated);
+  }, [visibleClassNames, overrides, onChange]);
+
+  const visibleBuffs = BUFFS.filter((b) => {
+    if (!b.classFilter) return true;
+    return !visibleClassNames || visibleClassNames.has(b.classFilter);
+  });
+
   return (
     <div className="flex flex-col gap-1">
       <span className="text-[11px] font-medium uppercase tracking-wide text-text-dim">Buffs</span>
       <div className="flex gap-1">
-        {BUFFS.map(({ key, label, offValue, tooltip }) => {
+        {visibleBuffs.map(({ key, label, offValue, tooltip }) => {
           const isOff = key in overrides;
           return (
             <button

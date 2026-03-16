@@ -1938,3 +1938,79 @@ describe('element modifier × damage cap interaction', () => {
     expect(withResist.dps).toBeCloseTo(withResist.uncappedDps, 5);
   });
 });
+
+describe('Bullseye toggle', () => {
+  const corsairClassData: ClassSkillData = {
+    className: 'Corsair',
+    mastery: 0.6,
+    primaryStat: 'DEX',
+    secondaryStat: 'STR',
+    sharpEyesCritRate: 0.15,
+    sharpEyesCritDamageBonus: 140,
+    seCritFormula: 'addBeforeMultiply',
+    damageFormula: 'standard',
+    skills: [],
+  };
+
+  const corsairBuild: CharacterBuild = {
+    className: 'Corsair',
+    baseStats: { STR: 4, DEX: 535, INT: 4, LUK: 4 },
+    gearStats: { STR: 25, DEX: 195, INT: 0, LUK: 0 },
+    totalWeaponAttack: 150,
+    weaponType: 'Gun',
+    weaponSpeed: 6,
+    attackPotion: 0,
+    projectile: 0,
+    echoActive: false,
+    mwLevel: 20,
+    speedInfusion: true,
+    sharpEyes: true,
+  };
+
+  const cannonSkill: SkillEntry = {
+    name: 'Battleship Cannon',
+    basePower: 380,
+    multiplier: 1,
+    hitCount: 4,
+    speedCategory: 'Battleship Cannon',
+    weaponType: 'Gun',
+    bullseye: true,
+  };
+
+  const cannonSkillNoBullseye: SkillEntry = {
+    ...cannonSkill,
+    bullseye: undefined,
+  };
+
+  it('applies 1.2x when skill.bullseye=true and build.bullseye is undefined (default on)', () => {
+    const result = calculateSkillDps(corsairBuild, corsairClassData, cannonSkill, weaponData, attackSpeedData, mwData);
+    const resultNoBullseye = calculateSkillDps(corsairBuild, corsairClassData, cannonSkillNoBullseye, weaponData, attackSpeedData, mwData);
+    expect(result.skillDamagePercent).toBeCloseTo(cannonSkillNoBullseye.basePower * 1.2, 5);
+    expect(result.dps).toBeGreaterThan(resultNoBullseye.dps);
+  });
+
+  it('does NOT apply 1.2x when build.bullseye=false', () => {
+    const buildOff = { ...corsairBuild, bullseye: false };
+    const result = calculateSkillDps(buildOff, corsairClassData, cannonSkill, weaponData, attackSpeedData, mwData);
+    const resultNoBullseye = calculateSkillDps(buildOff, corsairClassData, cannonSkillNoBullseye, weaponData, attackSpeedData, mwData);
+    expect(result.skillDamagePercent).toBe(resultNoBullseye.skillDamagePercent);
+    expect(result.dps).toBeCloseTo(resultNoBullseye.dps, 5);
+  });
+
+  it('does NOT apply 1.2x to skills without bullseye flag', () => {
+    const plainSkill: SkillEntry = { ...cannonSkill, bullseye: undefined };
+    const buildOn = { ...corsairBuild, bullseye: true };
+    const result = calculateSkillDps(buildOn, corsairClassData, plainSkill, weaponData, attackSpeedData, mwData);
+    const resultDefault = calculateSkillDps(corsairBuild, corsairClassData, plainSkill, weaponData, attackSpeedData, mwData);
+    expect(result.dps).toBeCloseTo(resultDefault.dps, 5);
+  });
+
+  it('applies 1.2x to crit damage path too', () => {
+    const result = calculateSkillDps(corsairBuild, corsairClassData, cannonSkill, weaponData, attackSpeedData, mwData);
+    const resultNoBullseye = calculateSkillDps(corsairBuild, corsairClassData, cannonSkillNoBullseye, weaponData, attackSpeedData, mwData);
+    expect(result.critDamagePercent).toBeGreaterThan(resultNoBullseye.critDamagePercent);
+    // addBeforeMultiply: (380 + 140) * 1.2 = 624 vs (380 + 140) * 1.0 = 520
+    expect(result.critDamagePercent).toBeCloseTo((380 + 140) * 1.2, 5);
+    expect(resultNoBullseye.critDamagePercent).toBeCloseTo((380 + 140) * 1.0, 5);
+  });
+});

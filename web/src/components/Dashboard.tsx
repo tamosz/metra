@@ -31,6 +31,11 @@ export function Dashboard({ simulation, buildsState }: DashboardProps) {
   const { selectedTier, targetCount, capEnabled, cgsValues, setCgsValues, editEnabled, setEditEnabled, editChanges, breakdownEnabled, setBreakdownEnabled, activeGroups, toggleGroup } = controls;
   const { results, tiers } = simulation;
 
+  const visibleClassNames = useMemo(
+    () => new Set(results.map((r) => r.className)),
+    [results],
+  );
+
   const cgsOverride = useMemo(() => ({ tier: selectedTier, values: cgsValues }), [selectedTier, cgsValues]);
   const simOptions = useMemo(() => ({
     targetCount: targetCount > 1 ? targetCount : undefined,
@@ -74,7 +79,7 @@ export function Dashboard({ simulation, buildsState }: DashboardProps) {
 
       <div className="mt-8 rounded-lg border border-border-subtle bg-bg-raised/50 px-5 py-4">
         <div className="flex flex-wrap items-end gap-x-4 gap-y-3">
-          <BuffToggles />
+          <BuffToggles visibleClassNames={visibleClassNames} />
           <ElementToggles />
           <CapToggle />
           <KbToggle />

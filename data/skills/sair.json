@@ -12,25 +12,25 @@
     {
       "name": "Battleship Cannon",
       "basePower": 380,
-      "multiplier": 1.2,
+      "multiplier": 1,
       "hitCount": 4,
       "speedCategory": "Battleship Cannon",
       "weaponType": "Gun",
+      "bullseye": true,
       "headline": false,
-      "description": "Includes Bullseye (+20% damage).",
-      "source": "dmg D9=380, E9=D9*1.2=456, N9 hitCount=4, speed 2 → 0.60s"
+      "source": "dmg D9=380, E9=380 (Bullseye applied via toggle), N9 hitCount=4, speed 2 → 0.60s"
     },
     {
       "name": "Rapid Fire",
       "basePower": 200,
-      "multiplier": 1.2,
+      "multiplier": 1,
       "hitCount": 1,
       "speedCategory": "Hurricane",
       "weaponType": "Gun",
+      "bullseye": true,
       "knockbackRecovery": 0.5,
       "headline": false,
-      "description": "Includes Bullseye (+20% damage).",
-      "source": "dmg D10=200, E10=D10*1.2=240, Hurricane fixed 0.12s. KB recovery lower than Hurricane — Rapid Fire can fire mid-air (data/references/knockback.md)"
+      "source": "dmg D10=200, E10=200 (Bullseye applied via toggle), Hurricane fixed 0.12s. KB recovery lower than Hurricane — Rapid Fire can fire mid-air (data/references/knockback.md)"
     }
   ],
   "mixedRotations": [
