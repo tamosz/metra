@@ -1,16 +1,11 @@
 import { memo, useCallback, type KeyboardEvent } from 'react';
 import type { DpsResult } from '@metra/engine';
+import type { ComboSubResult } from '@engine/proposals/types.js';
 import { formatDps } from '../utils/format.js';
 
 interface TierDpsEntry {
   tier: string;
   dps: number;
-}
-
-interface ComboSubResult {
-  skillName: string;
-  dps: DpsResult;
-  weight?: number;
 }
 
 interface SkillDetailPanelProps {
@@ -62,14 +57,7 @@ function SkillDetailPanelInner({
   onComboFieldChange,
 }: SkillDetailPanelProps) {
   const maxTierDps = Math.max(...tierData.map((t) => t.dps));
-
-  // Crit contribution: what fraction of average damage comes from crits
-  const critContribution =
-    dps.totalCritRate > 0 && dps.critDamagePercent > 0
-      ? (dps.critDamagePercent * dps.totalCritRate) /
-        (dps.skillDamagePercent * (1 - dps.totalCritRate) +
-          dps.critDamagePercent * dps.totalCritRate)
-      : 0;
+  const critContribution = computeCritContribution(dps);
 
   const showEditFields = editEnabled && skillFields && !isComposite;
   const showComboEditFields = editEnabled && isComposite && comboSkills && comboSkills.length > 0;
