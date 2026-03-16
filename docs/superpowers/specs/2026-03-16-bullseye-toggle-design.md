@@ -10,7 +10,7 @@ Bullseye amplifies all damage on a single target. For the purposes of this simul
 - Applies to single-target skills only (`maxTargets === 1` or undefined)
 - Does NOT apply to multi-target skills (e.g., Battleship Torpedo)
 - Defaults to on (matching current behavior and typical bossing scenario)
-- Toggleable via a buff toggle in the web UI
+- Toggleable via a buff toggle in the web UI and CLI
 
 ## Approach
 
@@ -24,32 +24,51 @@ Add a `bullseye: true` field to affected skills in skill data, remove the hardco
 - Add `"bullseye": true` to both skills
 - Update `description` and `source` fields to reflect Bullseye is no longer baked in
 
-### `src/data/types.ts`
+### `packages/engine/src/types.ts`
 
 - Add `bullseye?: boolean` to `SkillEntry`
-- Add `bullseye?: boolean` to `CharacterBuild`, defaulting to `true`
+- Add `bullseye?: boolean` to `CharacterBuild` (default treated as `true` in the engine when undefined — no gear template changes needed)
 
 ## Engine
 
-### `src/engine/dps.ts`
+### `packages/engine/src/dps.ts`
 
-In `calculateSkillDps()`, when computing `skillDamagePercent = basePower * multiplier`, conditionally multiply by 1.2 if:
-- The skill has `bullseye: true`
-- The build has `bullseye: true` (or undefined, since default is on)
+Compute an effective multiplier early in `calculateSkillDps()`:
 
-Same position in the pipeline as before — no change to order of operations. The 1.2x still feeds into `skillDamagePercent`, still interacts with the damage cap correctly via range cap adjustment.
+```typescript
+const effectiveMultiplier = skill.multiplier *
+  (skill.bullseye && build.bullseye !== false ? 1.2 : 1);
+```
+
+Use `effectiveMultiplier` in place of `skill.multiplier` in all 4 locations:
+- `skillDamagePercent = basePower * effectiveMultiplier` (line 249)
+- All 3 crit damage formulas in `calculateCritDamage()` (lines 86, 88, 90)
+
+This ensures the 1.2x feeds into both normal and crit damage paths, matching current behavior. No change to order of operations — the multiplier still interacts with the damage cap correctly via range cap adjustment.
+
+Note: `calculateCritDamage()` is a separate function that receives the skill. Either pass the effective multiplier as a parameter, or compute it inside that function too.
 
 ### `src/proposals/types.ts`
 
-Add `bullseye?: boolean` to the `overrides` type in `ScenarioConfig`, alongside `sharpEyes`, `echoActive`, etc.
+Add `'bullseye'` to the `Pick` union in `ScenarioConfig.overrides`:
+
+```typescript
+overrides?: Partial<Pick<CharacterBuild,
+    'sharpEyes' | 'echoActive' | 'speedInfusion' |
+    'mwLevel' | 'attackPotion' | 'shadowPartner' | 'bullseye'>>;
+```
 
 ### Behavior matrix
 
 | `build.bullseye` | `skill.bullseye` | Result |
 |---|---|---|
-| `true` (default) | `true` | 1.2x applied |
+| `true` / `undefined` (default) | `true` | 1.2x applied |
 | `false` (toggled off) | `true` | no multiplier |
 | any | `false`/undefined | no multiplier |
+
+## CLI
+
+Add `--no-bullseye` flag to the CLI (`src/cli.ts`) that sets `bullseye: false` in scenario overrides. Bullseye is on by default, so no `--bullseye` flag is needed.
 
 ## Web UI
 
@@ -59,18 +78,18 @@ Add a "Bullseye" toggle to the `BuffToggles` component, same style as SE/Echo/SI
 
 ### Conditional visibility
 
-Toggle only appears when Corsair is visible in the simulation results.
+Toggle only appears when Corsair is visible in the simulation results. The `BuffToggles` component will need access to which classes are present — pass this as a prop from the parent.
 
 ### Context changes
 
-- Add `bullseye` to `BuffOverrides` in `SimulationControlsContext`, defaulting to `true`
+- Add `'bullseye'` to the `Pick` union in `BuffOverrides` type, defaulting to `true`
 - Wire through to `ScenarioConfig.overrides` the same way existing buff toggles work
 
 ## Tests
 
-### Engine tests (`src/engine/dps.test.ts`)
+### Engine tests (`packages/engine/src/dps.test.ts`)
 
-- Corsair skill with `bullseye: true` + build `bullseye: true` -> 1.2x applied
+- Corsair skill with `bullseye: true` + build `bullseye: true` -> 1.2x applied to both normal and crit damage
 - Same skill + build `bullseye: false` -> no 1.2x
 - Skill without `bullseye: true` -> unaffected regardless of toggle
 
