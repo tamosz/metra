@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import type { CharacterBuild } from '@metra/engine';
 import { useSimulationControls } from '../context/SimulationControlsContext.js';
 import { TOGGLE_ON, TOGGLE_OFF_RED } from '../utils/styles.js';
@@ -40,6 +41,20 @@ export function BuffToggles({ visibleClassNames }: BuffTogglesProps) {
     }
     onChange(updated);
   };
+
+  // Clean up overrides for class-specific buffs whose class is no longer visible
+  useEffect(() => {
+    if (!visibleClassNames) return;
+    let needsUpdate = false;
+    const updated = { ...overrides };
+    for (const b of BUFFS) {
+      if (b.classFilter && !visibleClassNames.has(b.classFilter) && b.key in updated) {
+        delete updated[b.key];
+        needsUpdate = true;
+      }
+    }
+    if (needsUpdate) onChange(updated);
+  }, [visibleClassNames, overrides, onChange]);
 
   const visibleBuffs = BUFFS.filter((b) => {
     if (!b.classFilter) return true;
