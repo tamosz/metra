@@ -1,5 +1,6 @@
 import { memo, useCallback, type KeyboardEvent } from 'react';
 import type { DpsResult } from '@metra/engine';
+import type { ComboSubResult } from '@engine/proposals/types.js';
 import { formatDps } from '../utils/format.js';
 
 interface TierDpsEntry {
@@ -12,6 +13,7 @@ interface SkillDetailPanelProps {
   tierData: TierDpsEntry[];
   classColor: string;
   isComposite: boolean;
+  comboSubResults?: ComboSubResult[];
   capEnabled: boolean;
   currentTier: string;
   editEnabled?: boolean;
@@ -44,6 +46,7 @@ function SkillDetailPanelInner({
   tierData,
   classColor,
   isComposite,
+  comboSubResults,
   capEnabled,
   currentTier,
   editEnabled,
@@ -54,14 +57,7 @@ function SkillDetailPanelInner({
   onComboFieldChange,
 }: SkillDetailPanelProps) {
   const maxTierDps = Math.max(...tierData.map((t) => t.dps));
-
-  // Crit contribution: what fraction of average damage comes from crits
-  const critContribution =
-    dps.totalCritRate > 0 && dps.critDamagePercent > 0
-      ? (dps.critDamagePercent * dps.totalCritRate) /
-        (dps.skillDamagePercent * (1 - dps.totalCritRate) +
-          dps.critDamagePercent * dps.totalCritRate)
-      : 0;
+  const critContribution = computeCritContribution(dps);
 
   const showEditFields = editEnabled && skillFields && !isComposite;
   const showComboEditFields = editEnabled && isComposite && comboSkills && comboSkills.length > 0;
@@ -123,34 +119,22 @@ function SkillDetailPanelInner({
       )}
 
       <div className="flex flex-col gap-4 md:flex-row md:gap-8">
-        {/* Left: Formula breakdown (non-composite only) */}
+        {/* Left: Formula breakdown */}
         {!isComposite && (
           <div className="flex-1 min-w-0">
-            <div className="grid grid-cols-2 gap-x-6 gap-y-1.5 text-sm">
-              <StatRow label="Damage Range" value={`${formatDps(dps.damageRange.min)} \u2013 ${formatDps(dps.damageRange.max)}`} />
-              <StatRow label="Attack Time" value={`${dps.attackTime.toFixed(2)}s`} />
-              <StatRow label="Skill Damage" value={`${Math.round(dps.skillDamagePercent)}%`} />
-              <StatRow label="Crit Damage" value={`${Math.round(dps.critDamagePercent)}%`} dim={dps.totalCritRate === 0} />
-              <StatRow label="Crit Rate" value={`${Math.round(dps.totalCritRate * 100)}%`} dim={dps.totalCritRate === 0} />
-              <StatRow label="Crit Contribution" value={`${Math.round(critContribution * 100)}%`} dim={critContribution === 0} />
-              <StatRow label="Avg Damage" value={formatDps(dps.averageDamage)} />
-              <StatRow label="Hit Count" value={String(dps.hitCount)} />
-              {capEnabled && (
-                <StatRow
-                  label="Cap Loss"
-                  value={dps.capLossPercent < 0.05 ? '-' : `${dps.capLossPercent.toFixed(1)}%`}
-                  highlight={dps.capLossPercent >= 5}
-                />
-              )}
-              {dps.hasShadowPartner && (
-                <StatRow label="Shadow Partner" value="Active" />
-              )}
-            </div>
+            <SkillBreakdown dps={dps} critContribution={critContribution} capEnabled={capEnabled} />
+          </div>
+        )}
+        {isComposite && comboSubResults && comboSubResults.length > 0 && (
+          <div className="flex-1 min-w-0 flex flex-col gap-3">
+            {comboSubResults.map((sub) => (
+              <SubSkillBreakdown key={sub.skillName} sub={sub} capEnabled={capEnabled} />
+            ))}
           </div>
         )}
 
         {/* Right: Tier comparison */}
-        <div className={isComposite ? 'w-full' : 'flex-1 min-w-0'}>
+        <div className={isComposite && !comboSubResults?.length ? 'w-full' : 'flex-1 min-w-0'}>
           <div className="text-[11px] font-medium uppercase tracking-wide text-text-dim mb-2">
             DPS by Tier
           </div>
@@ -187,6 +171,69 @@ function SkillDetailPanelInner({
 }
 
 export const SkillDetailPanel = memo(SkillDetailPanelInner);
+
+function computeCritContribution(d: DpsResult): number {
+  if (d.totalCritRate > 0 && d.critDamagePercent > 0) {
+    return (
+      (d.critDamagePercent * d.totalCritRate) /
+      (d.skillDamagePercent * (1 - d.totalCritRate) +
+        d.critDamagePercent * d.totalCritRate)
+    );
+  }
+  return 0;
+}
+
+function SkillBreakdown({
+  dps,
+  critContribution,
+  capEnabled,
+}: {
+  dps: DpsResult;
+  critContribution: number;
+  capEnabled: boolean;
+}) {
+  return (
+    <div className="grid grid-cols-2 gap-x-6 gap-y-1.5 text-sm">
+      <StatRow label="Damage Range" value={`${formatDps(dps.damageRange.min)} \u2013 ${formatDps(dps.damageRange.max)}`} />
+      <StatRow label="Attack Time" value={`${dps.attackTime.toFixed(2)}s`} />
+      <StatRow label="Skill Damage" value={`${Math.round(dps.skillDamagePercent)}%`} />
+      <StatRow label="Crit Damage" value={`${Math.round(dps.critDamagePercent)}%`} dim={dps.totalCritRate === 0} />
+      <StatRow label="Crit Rate" value={`${Math.round(dps.totalCritRate * 100)}%`} dim={dps.totalCritRate === 0} />
+      <StatRow label="Crit Contribution" value={`${Math.round(critContribution * 100)}%`} dim={critContribution === 0} />
+      <StatRow label="Avg Damage" value={formatDps(dps.averageDamage)} />
+      <StatRow label="Hit Count" value={String(dps.hitCount)} />
+      {capEnabled && (
+        <StatRow
+          label="Cap Loss"
+          value={dps.capLossPercent < 0.05 ? '-' : `${dps.capLossPercent.toFixed(1)}%`}
+          highlight={dps.capLossPercent >= 5}
+        />
+      )}
+      {dps.hasShadowPartner && (
+        <StatRow label="Shadow Partner" value="Active" />
+      )}
+    </div>
+  );
+}
+
+function SubSkillBreakdown({
+  sub,
+  capEnabled,
+}: {
+  sub: ComboSubResult;
+  capEnabled: boolean;
+}) {
+  const cc = computeCritContribution(sub.dps);
+  const weightLabel = sub.weight != null ? ` (${Math.round(sub.weight * 100)}%)` : '';
+  return (
+    <div>
+      <div className="text-[11px] font-medium uppercase tracking-wide text-text-dim mb-1.5">
+        {sub.skillName}{weightLabel}
+      </div>
+      <SkillBreakdown dps={sub.dps} critContribution={cc} capEnabled={capEnabled} />
+    </div>
+  );
+}
 
 function StatRow({
   label,
