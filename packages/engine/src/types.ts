@@ -111,6 +111,8 @@ export interface SkillEntry {
   nameTemplate?: string;
   /** KB recovery time override (seconds). 0 for i-frame skills (Demolition, Barrage). Omit for auto-detect. */
   knockbackRecovery?: number;
+  /** If true, this skill benefits from Bullseye's 1.2× single-target damage amplification. */
+  bullseye?: boolean;
 }
 
 /** A component of a mixed rotation: a skill and what fraction of time is spent on it. */
@@ -215,4 +217,6 @@ export interface CharacterBuild {
   shadowPartner?: boolean;
   /** Character avoidability stat. Default 0 (negligible at boss level). */
   avoidability?: number;
+  /** Whether Bullseye is active (1.2× damage for marked skills). Default: true when undefined. */
+  bullseye?: boolean;
 }
