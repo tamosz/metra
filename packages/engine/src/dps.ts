@@ -58,6 +58,18 @@ export interface DpsResult {
   hasShadowPartner: boolean;
 }
 
+/** Bullseye multiplier constant. */
+const BULLSEYE_MULTIPLIER = 1.2;
+
+/**
+ * Compute the effective skill multiplier, applying Bullseye if the skill
+ * is flagged and the build has it enabled (default: on).
+ */
+function getEffectiveMultiplier(skill: SkillEntry, build: CharacterBuild): number {
+  return skill.multiplier *
+    (skill.bullseye && build.bullseye !== false ? BULLSEYE_MULTIPLIER : 1);
+}
+
 /**
  * Calculate crit damage% and crit rate, merging built-in bonuses with Sharp Eyes.
  *
@@ -70,7 +82,8 @@ export interface DpsResult {
 function calculateCritDamage(
   skill: SkillEntry,
   classData: ClassSkillData,
-  sharpEyes: boolean
+  sharpEyes: boolean,
+  build: CharacterBuild
 ): { critDamagePercent: number; totalCritRate: number } {
   const builtInCritRate = skill.builtInCritRate ?? 0;
   const seCritRate = sharpEyes ? classData.sharpEyesCritRate : 0;
@@ -80,14 +93,15 @@ function calculateCritDamage(
   const seCritBonus = sharpEyes ? classData.sharpEyesCritDamageBonus : 0;
   const totalCritBonus = builtInCritBonus + seCritBonus;
 
+  const effectiveMultiplier = getEffectiveMultiplier(skill, build);
   const seCritFormula = skill.seCritFormula ?? classData.seCritFormula ?? 'addBeforeMultiply';
   let critDamagePercent: number;
   if (seCritFormula === 'multiplicative') {
-    critDamagePercent = skill.basePower * skill.multiplier * totalCritBonus / 100;
+    critDamagePercent = skill.basePower * effectiveMultiplier * totalCritBonus / 100;
   } else if (seCritFormula === 'scaleOnBase') {
-    critDamagePercent = skill.basePower * skill.multiplier * (1 + totalCritBonus / 100);
+    critDamagePercent = skill.basePower * effectiveMultiplier * (1 + totalCritBonus / 100);
   } else {
-    critDamagePercent = (skill.basePower + totalCritBonus) * skill.multiplier;
+    critDamagePercent = (skill.basePower + totalCritBonus) * effectiveMultiplier;
   }
 
   return { critDamagePercent, totalCritRate };
@@ -246,8 +260,9 @@ export function calculateSkillDps(
     };
   }
 
-  const skillDamagePercent = skill.basePower * skill.multiplier;
-  const { critDamagePercent, totalCritRate } = calculateCritDamage(skill, classData, build.sharpEyes);
+  const effectiveMultiplier = getEffectiveMultiplier(skill, build);
+  const skillDamagePercent = skill.basePower * effectiveMultiplier;
+  const { critDamagePercent, totalCritRate } = calculateCritDamage(skill, classData, build.sharpEyes, build);
   const damageRange = calculateBaseDamageRange(build, classData, skill, weaponData, mwData);
   const isMagic = (classData.damageFormula ?? 'standard') === 'magic';
   const { adjustedRangeNormal, adjustedRangeCrit, averageDamage, uncappedAverageDamage } = calculateAverageDamage(
