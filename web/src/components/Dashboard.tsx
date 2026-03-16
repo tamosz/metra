@@ -31,11 +31,6 @@ export function Dashboard({ simulation, buildsState }: DashboardProps) {
   const { selectedTier, targetCount, capEnabled, cgsValues, setCgsValues, editEnabled, setEditEnabled, editChanges, breakdownEnabled, setBreakdownEnabled, activeGroups, toggleGroup } = controls;
   const { results, tiers } = simulation;
 
-  const visibleClassNames = useMemo(
-    () => new Set(results.map((r) => r.className)),
-    [results],
-  );
-
   const cgsOverride = useMemo(() => ({ tier: selectedTier, values: cgsValues }), [selectedTier, cgsValues]);
   const simOptions = useMemo(() => ({
     targetCount: targetCount > 1 ? targetCount : undefined,
@@ -61,6 +56,11 @@ export function Dashboard({ simulation, buildsState }: DashboardProps) {
       })
       .sort((a, b) => capEnabled ? b.dps.dps - a.dps.dps : b.dps.uncappedDps - a.dps.uncappedDps);
   }, [results, selectedTier, targetCount, capEnabled, activeGroups]);
+
+  const visibleClassNames = useMemo(
+    () => new Set(filtered.map((r) => r.className)),
+    [filtered],
+  );
 
   return (
     <div>
