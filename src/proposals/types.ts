@@ -28,7 +28,7 @@ export interface ScenarioConfig {
   name: string;
   overrides?: Partial<Pick<CharacterBuild,
     'sharpEyes' | 'echoActive' | 'speedInfusion' |
-    'mwLevel' | 'attackPotion' | 'shadowPartner'>>;
+    'mwLevel' | 'attackPotion' | 'shadowPartner' | 'bullseye'>>;
   /** Physical Damage Reduction (0–1). Applied as a multiplier: effectiveDps = dps * (1 - pdr). */
   pdr?: number;
   /** Element → damage multiplier map. Skills with a matching element get multiplied (default 1.0). */

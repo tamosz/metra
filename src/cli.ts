@@ -57,6 +57,7 @@ export function parseKbFlags(): { bossAttackInterval: number; bossAccuracy: numb
 function main() {
   const auditFlag = process.argv.includes('--audit');
   const uncapped = process.argv.includes('--uncapped');
+  const bullseyeOff = process.argv.includes('--no-bullseye');
   const targetCount = parseTargetsFlag();
   const kbConfig = parseKbFlags();
 
@@ -88,12 +89,19 @@ function main() {
     baseline.bossAttackInterval = kbConfig.bossAttackInterval;
     baseline.bossAccuracy = kbConfig.bossAccuracy;
   }
+  if (bullseyeOff) {
+    baseline.overrides = { ...baseline.overrides, bullseye: false };
+  }
   const scenarios: ScenarioConfig[] = [baseline];
   if (targetCount != null && targetCount > 1) {
-    scenarios.push({
+    const training: ScenarioConfig = {
       name: `Training (${targetCount} mobs)`,
       targetCount,
-    });
+    };
+    if (bullseyeOff) {
+      training.overrides = { bullseye: false };
+    }
+    scenarios.push(training);
   }
 
   const config: SimulationConfig = {
