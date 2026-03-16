@@ -298,6 +298,10 @@ function aggregateComboGroups(
       ...(isHeadline ? {} : { headline: false }),
       ...(comboMaxTargets > 1 ? { maxTargets: comboMaxTargets } : {}),
       isComposite: true,
+      comboSubResults: groupResults.map((r) => ({
+        skillName: r.skillName,
+        dps: r.dps,
+      })),
       dps: {
         ...first.dps,
         skillName: groupName,
@@ -376,6 +380,11 @@ function processMixedRotations(
       ...(isHeadline ? {} : { headline: false }),
       ...(rotationMaxTargets > 1 ? { maxTargets: rotationMaxTargets } : {}),
       isComposite: true,
+      comboSubResults: componentResults.map(({ result, weight }) => ({
+        skillName: result.skillName,
+        dps: result.dps,
+        weight,
+      })),
       dps: {
         ...first.dps,
         skillName: rotation.name,

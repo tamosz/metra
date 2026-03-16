@@ -61,6 +61,9 @@ export interface ScenarioResult {
   comparisonKey?: string;
   /** True for combo group aggregates and mixed rotations (formula breakdown is not meaningful). */
   isComposite?: boolean;
+  /** Per-sub-skill DPS breakdowns for combo groups and mixed rotations. */
+  comboSubResults?: Array<{ skillName: string; dps: DpsResult; weight?: number }>;
+
 }
 
 /** Delta between before and after for a single scenario. */

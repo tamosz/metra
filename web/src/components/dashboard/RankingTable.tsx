@@ -60,7 +60,7 @@ export function RankingTable({
   capEnabled,
   editComparison,
 }: {
-  data: { className: string; skillName: string; tier: string; scenario: string; dps: DpsResult; description?: string; isComposite?: boolean }[];
+  data: { className: string; skillName: string; tier: string; scenario: string; dps: DpsResult; description?: string; isComposite?: boolean; comboSubResults?: Array<{ skillName: string; dps: DpsResult; weight?: number }> }[];
   allResults: ScenarioResult[];
   capEnabled: boolean;
   editComparison?: ComparisonResult | null;
@@ -367,7 +367,7 @@ function ExpandedRow({
   handleFieldChange,
   applyFieldChange,
 }: {
-  row: { className: string; skillName: string; tier: string; dps: DpsResult; isComposite?: boolean };
+  row: { className: string; skillName: string; tier: string; dps: DpsResult; isComposite?: boolean; comboSubResults?: Array<{ skillName: string; dps: DpsResult; weight?: number }> };
   columnCount: number;
   allResults: ScenarioResult[];
   capEnabled: boolean;
@@ -388,6 +388,7 @@ function ExpandedRow({
           tierData={buildTierData(row, allResults, capEnabled)}
           classColor={getClassColor(row.className)}
           isComposite={!!row.isComposite}
+          comboSubResults={row.comboSubResults}
           capEnabled={capEnabled}
           currentTier={row.tier}
           editEnabled={editEnabled}
