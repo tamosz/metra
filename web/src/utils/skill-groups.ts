@@ -24,6 +24,7 @@ export const DEFAULT_SKILL_GROUPS: readonly SkillGroupId[] = ['main'] as const;
 const CLASS_TO_GROUP: Record<string, SkillGroupId> = {
   'Hero': 'warriors',
   'Hero (Axe)': 'warriors',
+  'Hero (ST)': 'warriors',
   'Dark Knight': 'warriors',
   'Paladin': 'warriors',
   'Paladin (BW)': 'warriors',
