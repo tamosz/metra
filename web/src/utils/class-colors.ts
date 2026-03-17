@@ -5,6 +5,7 @@
 const CLASS_COLORS: Record<string, string> = {
   Hero: '#e05555',
   'Hero (Axe)': '#c04030',
+  'Hero (ST)': '#cc4545',
   'Dark Knight': '#7855e0',
   Paladin: '#e0b855',
   'Paladin (BW)': '#c8a040',
@@ -25,7 +26,7 @@ export function getClassColor(className: string): string {
   return CLASS_COLORS[className] ?? DEFAULT_COLOR;
 }
 
-export const VARIANT_CLASSES = new Set(['Hero (Axe)', 'Paladin (BW)']);
+export const VARIANT_CLASSES = new Set(['Hero (Axe)', 'Hero (ST)', 'Paladin (BW)']);
 
 export function getClassColorWithOpacity(className: string, opacity: number): string {
   const hex = getClassColor(className);
