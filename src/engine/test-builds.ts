@@ -295,7 +295,7 @@ export const TEST_BUILDS: Record<string, CharacterBuild> = {
       "mwLevel": 20,
       "speedInfusion": true,
       "sharpEyes": true,
-      "shadowPartner": true
+      "shadowPartner": false
   },
   'shadower-low': {
       "className": "Shadower",
@@ -320,7 +320,7 @@ export const TEST_BUILDS: Record<string, CharacterBuild> = {
       "mwLevel": 20,
       "speedInfusion": true,
       "sharpEyes": true,
-      "shadowPartner": true
+      "shadowPartner": false
   },
   'marksman-high': {
       "className": "Marksman",

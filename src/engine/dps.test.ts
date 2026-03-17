@@ -737,17 +737,12 @@ describe('Shadower DPS', () => {
     expect(result.totalCritRate).toBeCloseTo(0.15, 2);
   });
 
-  it('Shadow Partner multiplies DPS by 1.5', () => {
+  it('Shadower does not have Shadow Partner', () => {
     const bstep = shadData.skills.find((s) => s.name === 'Boomerang Step')!;
-    const withSp = calculateSkillDps(
+    const result = calculateSkillDps(
       shadHigh, shadData, bstep, weaponData, attackSpeedData, mwData
     );
-    const noSpBuild = { ...shadHigh, shadowPartner: false };
-    const withoutSp = calculateSkillDps(
-      noSpBuild, shadData, bstep, weaponData, attackSpeedData, mwData
-    );
-
-    expect(withSp.dps / withoutSp.dps).toBeCloseTo(1.5);
+    expect(result.hasShadowPartner).toBe(false);
   });
 
   it('High tier BStep + Assn30 combo DPS', () => {
