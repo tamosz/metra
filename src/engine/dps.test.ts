@@ -737,17 +737,12 @@ describe('Shadower DPS', () => {
     expect(result.totalCritRate).toBeCloseTo(0.15, 2);
   });
 
-  it('Shadow Partner multiplies DPS by 1.5', () => {
+  it('Shadower does not have Shadow Partner', () => {
     const bstep = shadData.skills.find((s) => s.name === 'Boomerang Step')!;
-    const withSp = calculateSkillDps(
+    const result = calculateSkillDps(
       shadHigh, shadData, bstep, weaponData, attackSpeedData, mwData
     );
-    const noSpBuild = { ...shadHigh, shadowPartner: false };
-    const withoutSp = calculateSkillDps(
-      noSpBuild, shadData, bstep, weaponData, attackSpeedData, mwData
-    );
-
-    expect(withSp.dps / withoutSp.dps).toBeCloseTo(1.5);
+    expect(result.hasShadowPartner).toBe(false);
   });
 
   it('High tier BStep + Assn30 combo DPS', () => {
@@ -762,7 +757,7 @@ describe('Shadower DPS', () => {
 
     // Combo DPS = sum of individual DPS (both share 2.31s cycle)
     const comboDps = bstepDps + assnDps;
-    expect(comboDps).toBeCloseTo(327854, -1);
+    expect(comboDps).toBeCloseTo(218569, -1);
   });
 
   it('High tier Savage Blow DPS', () => {
@@ -771,7 +766,7 @@ describe('Shadower DPS', () => {
       shadHigh, shadData, sb, weaponData, attackSpeedData, mwData
     );
 
-    expect(result.dps).toBeCloseTo(184095, -1);
+    expect(result.dps).toBeCloseTo(122730, -1);
   });
 
   it('Low tier BStep + Assn30 combo DPS', () => {
@@ -785,7 +780,7 @@ describe('Shadower DPS', () => {
     ).dps;
 
     const comboDps = bstepDps + assnDps;
-    expect(comboDps).toBeCloseTo(195272, -1);
+    expect(comboDps).toBeCloseTo(130181, -1);
   });
 
   it('Low tier Savage Blow DPS', () => {
@@ -794,7 +789,7 @@ describe('Shadower DPS', () => {
       shadLow, shadData, sb, weaponData, attackSpeedData, mwData
     );
 
-    expect(result.dps).toBeCloseTo(109648, -1);
+    expect(result.dps).toBeCloseTo(73099, -1);
   });
 
   it('High tier DPS is greater than Low tier for all skills', () => {
