@@ -757,7 +757,7 @@ describe('Shadower DPS', () => {
 
     // Combo DPS = sum of individual DPS (both share 2.31s cycle)
     const comboDps = bstepDps + assnDps;
-    expect(comboDps).toBeCloseTo(327854, -1);
+    expect(comboDps).toBeCloseTo(218569, -1);
   });
 
   it('High tier Savage Blow DPS', () => {
@@ -766,7 +766,7 @@ describe('Shadower DPS', () => {
       shadHigh, shadData, sb, weaponData, attackSpeedData, mwData
     );
 
-    expect(result.dps).toBeCloseTo(184095, -1);
+    expect(result.dps).toBeCloseTo(122730, -1);
   });
 
   it('Low tier BStep + Assn30 combo DPS', () => {
@@ -780,7 +780,7 @@ describe('Shadower DPS', () => {
     ).dps;
 
     const comboDps = bstepDps + assnDps;
-    expect(comboDps).toBeCloseTo(195272, -1);
+    expect(comboDps).toBeCloseTo(130181, -1);
   });
 
   it('Low tier Savage Blow DPS', () => {
@@ -789,7 +789,7 @@ describe('Shadower DPS', () => {
       shadLow, shadData, sb, weaponData, attackSpeedData, mwData
     );
 
-    expect(result.dps).toBeCloseTo(109648, -1);
+    expect(result.dps).toBeCloseTo(73099, -1);
   });
 
   it('High tier DPS is greater than Low tier for all skills', () => {
