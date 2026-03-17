@@ -1,17 +1,15 @@
 name: Deploy Metra
 
 on:
-  push:
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
     branches: [main]
-    paths:
-      - 'web/**'
-      - 'src/**'
-      - 'data/**'
-      - 'packages/**'
 
 jobs:
   deploy:
     runs-on: arc-k3s
+    if: github.event.workflow_run.conclusion == 'success'
     environment: production
     permissions:
       contents: read
