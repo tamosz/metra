@@ -54,6 +54,7 @@ export function resolvePartyBuffs(members: PartyMember[]): PartyBuffState {
 const DEFAULT_TIER = 'perfect';
 
 function getTopSkill(aggregated: SkillDpsRow[], classData: ClassSkillData): SkillDpsRow | null {
+  if (aggregated.length === 0) return null;
   const hidden = new Set<string>();
   for (const skill of classData.skills) {
     if (skill.hidden) {
@@ -62,8 +63,10 @@ function getTopSkill(aggregated: SkillDpsRow[], classData: ClassSkillData): Skil
     }
   }
   const visible = aggregated.filter((row) => !hidden.has(row.skillName));
-  if (visible.length === 0) return null;
-  return visible.reduce((best, row) => (row.dps > best.dps ? row : best));
+  // Fall back to hidden skills if all skills are hidden (e.g., Dark Knight's
+  // Crusher variants are hidden because the dashboard shows them as a mixed rotation)
+  const candidates = visible.length > 0 ? visible : aggregated;
+  return candidates.reduce((best, row) => (row.dps > best.dps ? row : best));
 }
 
 function applyPartyBuffs(build: CharacterBuild, buffs: PartyBuffState): CharacterBuild {
