@@ -75,6 +75,10 @@ export function findOptimalParty(
     results.push(simulateParty(party, classDataMap, gearTemplates, weaponData, attackSpeedData, mwData));
   }
 
+  if (results.length === 0) {
+    throw new Error('No valid party compositions found with the given constraints');
+  }
+
   results.sort((a, b) => b.totalDps - a.totalDps);
 
   return { optimal: results[0], topParties: results.slice(0, topN) };
