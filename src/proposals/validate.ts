@@ -51,7 +51,7 @@ export function validateProposal(data: unknown): Proposal {
   };
 }
 
-const TARGET_RE = /^[a-z][a-z0-9-]*\.[a-z][a-z0-9-]*$/;
+const TARGET_RE = /^[a-z]([a-z0-9-]*[a-z0-9])?\.[a-z]([a-z0-9-]*[a-z0-9])?$/;
 
 function validateChange(data: unknown, index: number): ProposalChange {
   const prefix = `changes[${index}]`;

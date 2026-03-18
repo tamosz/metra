@@ -61,8 +61,9 @@ function applyPdr(dps: DpsResult, pdr: number): DpsResult {
  */
 function applyTargetCount(dps: DpsResult, effectiveTargets: number, bounceDecay?: number): DpsResult {
   let multiplier: number;
-  if (bounceDecay != null && bounceDecay > 0 && bounceDecay < 1) {
-    multiplier = (1 - bounceDecay ** effectiveTargets) / (1 - bounceDecay);
+  if (bounceDecay != null && bounceDecay !== 0) {
+    const clamped = Math.max(0.01, Math.min(bounceDecay, 0.99));
+    multiplier = (1 - clamped ** effectiveTargets) / (1 - clamped);
   } else {
     multiplier = effectiveTargets;
   }

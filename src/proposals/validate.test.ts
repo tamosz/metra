@@ -133,4 +133,26 @@ describe('validateProposal', () => {
       ],
     })).toThrow('changes[1]');
   });
+
+  it('rejects trailing hyphen in class part of target', () => {
+    expect(() => validateProposal({
+      ...valid,
+      changes: [{ target: 'hero-.brandish', field: 'basePower', to: 280 }],
+    })).toThrow('className.skill-slug');
+  });
+
+  it('rejects trailing hyphen in skill part of target', () => {
+    expect(() => validateProposal({
+      ...valid,
+      changes: [{ target: 'hero.brandish-', field: 'basePower', to: 280 }],
+    })).toThrow('className.skill-slug');
+  });
+
+  it('accepts single-character class and skill parts', () => {
+    const result = validateProposal({
+      ...valid,
+      changes: [{ target: 'h.b', field: 'basePower', to: 280 }],
+    });
+    expect(result.changes[0].target).toBe('h.b');
+  });
 });

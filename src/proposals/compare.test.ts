@@ -647,8 +647,59 @@ describe('computeDeltas with comparisonKey', () => {
     ];
 
     const deltas = computeDeltas(before, after);
-    expect(deltas).toHaveLength(1);
-    // No match found — after falls back to before DPS (zero change)
-    expect(deltas[0].change).toBe(0);
+    // Before entry has no match → zero change; after entry has no before → new entry
+    expect(deltas).toHaveLength(2);
+    const swordDelta = deltas.find(d => d.skillName === 'Blast (Holy, Sword)')!;
+    const bwDelta = deltas.find(d => d.skillName === 'Blast (Holy, BW)')!;
+    expect(swordDelta.change).toBe(0);
+    expect(bwDelta.before).toBe(0);
+    expect(bwDelta.after).toBe(180000);
+    expect(bwDelta.change).toBe(180000);
+  });
+
+  it('includes after-only results when a skill only appears after a proposal', () => {
+    const before: ScenarioResult[] = [
+      {
+        className: 'Hero',
+        skillName: 'Brandish (Sword)',
+        tier: 'high',
+        scenario: 'Buffed',
+        dps: makeDpsResult(240000),
+      },
+    ];
+
+    const after: ScenarioResult[] = [
+      {
+        className: 'Hero',
+        skillName: 'Brandish (Sword)',
+        tier: 'high',
+        scenario: 'Buffed',
+        dps: makeDpsResult(260000),
+      },
+      {
+        className: 'Hero',
+        skillName: 'New Skill',
+        tier: 'high',
+        scenario: 'Buffed',
+        dps: makeDpsResult(150000),
+      },
+    ];
+
+    const deltas = computeDeltas(before, after);
+    expect(deltas).toHaveLength(2);
+
+    const brandishDelta = deltas.find(d => d.skillName === 'Brandish (Sword)')!;
+    expect(brandishDelta.before).toBe(240000);
+    expect(brandishDelta.after).toBe(260000);
+
+    const newSkillDelta = deltas.find(d => d.skillName === 'New Skill')!;
+    expect(newSkillDelta.before).toBe(0);
+    expect(newSkillDelta.after).toBe(150000);
+    expect(newSkillDelta.change).toBe(150000);
+    expect(newSkillDelta.changePercent).toBe(0);
+    expect(newSkillDelta.rankBefore).toBeUndefined();
+    expect(newSkillDelta.rankAfter).toBeDefined();
+    expect(newSkillDelta.uncappedBefore).toBe(0);
+    expect(newSkillDelta.uncappedAfter).toBe(150000);
   });
 });

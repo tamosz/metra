@@ -819,6 +819,130 @@ describe('targetCount (multi-target scaling)', () => {
   });
 });
 
+describe('bounceDecay edge cases', () => {
+  function makeBounceClassData(bounceDecay: number): ClassSkillData {
+    return {
+      className: 'TestBounce',
+      mastery: 0.6,
+      primaryStat: 'INT',
+      secondaryStat: 'LUK',
+      sharpEyesCritRate: 0.15,
+      sharpEyesCritDamageBonus: 140,
+      damageFormula: 'magic',
+      seCritFormula: 'multiplicative',
+      spellAmplification: 1.4,
+      weaponAmplification: 1.25,
+      skills: [
+        {
+          name: 'Bounce Skill',
+          basePower: 210,
+          multiplier: 1,
+          hitCount: 1,
+          speedCategory: 'Chain Lightning',
+          weaponType: 'Staff',
+          maxTargets: 6,
+          bounceDecay,
+        },
+      ],
+    };
+  }
+
+  const bounceBuild: CharacterBuild = {
+    className: 'TestBounce',
+    baseStats: { STR: 4, DEX: 4, INT: 700, LUK: 120 },
+    gearStats: { STR: 0, DEX: 0, INT: 200, LUK: 40 },
+    totalWeaponAttack: 140,
+    weaponType: 'Staff',
+    weaponSpeed: 6,
+    attackPotion: 60,
+    projectile: 0,
+    echoActive: true,
+    mwLevel: 20,
+    speedInfusion: false,
+    sharpEyes: true,
+  };
+
+  it('clamps bounceDecay >= 1 to 0.99', () => {
+    const classData = makeBounceClassData(1.0);
+    const localClassDataMap = new Map([['testbounce', classData]]);
+    const localGearTemplates: GearTemplateMap = new Map([['testbounce-high', bounceBuild]]);
+
+    const config: SimulationConfig = {
+      classes: ['testbounce'],
+      tiers: ['high'],
+      scenarios: [
+        { name: 'Buffed' },
+        { name: 'Training 6', targetCount: 6 },
+      ],
+    };
+
+    const results = runSimulation(
+      config, localClassDataMap, localGearTemplates,
+      weaponData, attackSpeedData, mwData
+    );
+
+    const buffed = results.find(r => r.scenario === 'Buffed')!;
+    const training = results.find(r => r.scenario === 'Training 6')!;
+
+    const expectedMultiplier = (1 - 0.99 ** 6) / (1 - 0.99);
+    expect(training.dps.dps).toBeCloseTo(buffed.dps.dps * expectedMultiplier, 0);
+    expect(training.dps.dps).toBeGreaterThan(0);
+    expect(isFinite(training.dps.dps)).toBe(true);
+  });
+
+  it('clamps negative bounceDecay to 0.01', () => {
+    const classData = makeBounceClassData(-0.5);
+    const localClassDataMap = new Map([['testbounce', classData]]);
+    const localGearTemplates: GearTemplateMap = new Map([['testbounce-high', bounceBuild]]);
+
+    const config: SimulationConfig = {
+      classes: ['testbounce'],
+      tiers: ['high'],
+      scenarios: [
+        { name: 'Buffed' },
+        { name: 'Training 6', targetCount: 6 },
+      ],
+    };
+
+    const results = runSimulation(
+      config, localClassDataMap, localGearTemplates,
+      weaponData, attackSpeedData, mwData
+    );
+
+    const buffed = results.find(r => r.scenario === 'Buffed')!;
+    const training = results.find(r => r.scenario === 'Training 6')!;
+
+    const expectedMultiplier = (1 - 0.01 ** 6) / (1 - 0.01);
+    expect(training.dps.dps).toBeCloseTo(buffed.dps.dps * expectedMultiplier, 0);
+    expect(isFinite(training.dps.dps)).toBe(true);
+  });
+
+  it('uses flat multiplication when bounceDecay is 0', () => {
+    const classData = makeBounceClassData(0);
+    const localClassDataMap = new Map([['testbounce', classData]]);
+    const localGearTemplates: GearTemplateMap = new Map([['testbounce-high', bounceBuild]]);
+
+    const config: SimulationConfig = {
+      classes: ['testbounce'],
+      tiers: ['high'],
+      scenarios: [
+        { name: 'Buffed' },
+        { name: 'Training 6', targetCount: 6 },
+      ],
+    };
+
+    const results = runSimulation(
+      config, localClassDataMap, localGearTemplates,
+      weaponData, attackSpeedData, mwData
+    );
+
+    const buffed = results.find(r => r.scenario === 'Buffed')!;
+    const training = results.find(r => r.scenario === 'Training 6')!;
+
+    expect(training.dps.dps).toBeCloseTo(buffed.dps.dps * 6, 0);
+  });
+});
+
 describe('elementOptions (adaptive element selection)', () => {
   it('picks the best element when charge variant wins', () => {
     const config: SimulationConfig = {

@@ -64,12 +64,20 @@ export function computeDeltas(
     afterMap.set(scenarioKey(r), r);
   }
 
+  const beforeMap = new Map<string, ScenarioResult>();
+  for (const r of before) {
+    beforeMap.set(scenarioKey(r), r);
+  }
+
   // Compute ranks per (scenario, tier) group
   const beforeRanks = computeRanks(before);
   const afterRanks = computeRanks(after);
 
-  return before.map((b) => {
-    const a = afterMap.get(scenarioKey(b));
+  const deltas: DeltaEntry[] = [];
+
+  for (const b of before) {
+    const key = scenarioKey(b);
+    const a = afterMap.get(key);
     const beforeDps = b.dps.dps;
     const afterDps = a ? a.dps.dps : beforeDps;
     const change = afterDps - beforeDps;
@@ -78,9 +86,8 @@ export function computeDeltas(
     const uncappedAfter = a ? a.dps.uncappedDps : uncappedBefore;
     const uncappedChange = uncappedAfter - uncappedBefore;
     const uncappedChangePercent = uncappedBefore === 0 ? 0 : (uncappedChange / uncappedBefore) * 100;
-    const key = scenarioKey(b);
 
-    return {
+    deltas.push({
       className: b.className,
       skillName: b.skillName,
       tier: b.tier,
@@ -95,8 +102,35 @@ export function computeDeltas(
       uncappedChangePercent,
       rankBefore: beforeRanks.get(key),
       rankAfter: afterRanks.get(key),
-    };
-  });
+    });
+  }
+
+  for (const a of after) {
+    const key = scenarioKey(a);
+    if (beforeMap.has(key)) continue;
+
+    const afterDps = a.dps.dps;
+    const uncappedAfter = a.dps.uncappedDps;
+
+    deltas.push({
+      className: a.className,
+      skillName: a.skillName,
+      tier: a.tier,
+      scenario: a.scenario,
+      before: 0,
+      after: afterDps,
+      change: afterDps,
+      changePercent: 0,
+      uncappedBefore: 0,
+      uncappedAfter,
+      uncappedChange: uncappedAfter,
+      uncappedChangePercent: 0,
+      rankBefore: undefined,
+      rankAfter: afterRanks.get(key),
+    });
+  }
+
+  return deltas;
 }
 
 /**

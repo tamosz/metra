@@ -1,11 +1,12 @@
 import type { ClassSkillData } from '@metra/engine';
 import type { Proposal } from './types.js';
 
-/** Valid numeric/string fields that a proposal can modify on a SkillEntry. */
+/** Valid numeric/string/boolean fields that a proposal can modify on a SkillEntry. */
 const VALID_SKILL_FIELDS: ReadonlySet<string> = new Set([
   'basePower', 'multiplier', 'hitCount', 'speedCategory', 'weaponType', 'name',
   'attackType', 'builtInCritRate', 'builtInCritDamageBonus', 'element', 'maxTargets',
-  'fixedDamage', 'comboGroup', 'attackRatio',
+  'fixedDamage', 'comboGroup', 'attackRatio', 'knockbackRecovery', 'bounceDecay',
+  'hidden', 'headline', 'bullseye', 'seCritFormula',
 ]);
 
 /**
