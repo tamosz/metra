@@ -3,19 +3,20 @@ import { Dashboard } from './components/Dashboard.js';
 import { BuildExplorer } from './components/BuildExplorer.js';
 import { BuildComparison } from './components/BuildComparison.js';
 import { FormulasPage } from './components/FormulasPage.js';
+import { PartyBuilder } from './components/PartyBuilder.js';
 import { useSimulation } from './hooks/useSimulation.js';
 import { useBuildExplorer } from './hooks/useBuildExplorer.js';
 import { useBuildComparison } from './hooks/useBuildComparison.js';
 import { useBuilds } from './hooks/useBuilds.js';
 import { useSavedBuilds } from './hooks/useSavedBuilds.js';
-import { getProposalFromUrl, getBuildFromUrl, getComparisonFromUrl } from './utils/url-encoding.js';
+import { getProposalFromUrl, getBuildFromUrl, getComparisonFromUrl, getPartyFromUrl } from './utils/url-encoding.js';
 import { getFilterFromUrl } from './utils/filter-url.js';
 import { SimulationControlsProvider, useSimulationControls } from './context/SimulationControlsContext.js';
 import { useFilterPermalink } from './hooks/useFilterPermalink.js';
 import { ErrorBoundary } from './components/ErrorBoundary.js';
 import type { SkillGroupId } from './utils/skill-groups.js';
 
-type Page = 'dashboard' | 'build' | 'compare' | 'formulas';
+type Page = 'dashboard' | 'build' | 'compare' | 'formulas' | 'party';
 
 export function App() {
   return (
@@ -54,6 +55,11 @@ function AppContent() {
     if (loadedFromUrl.current) return;
     loadedFromUrl.current = true;
 
+    const urlParty = getPartyFromUrl();
+    if (urlParty) {
+      setPage('party');
+      return;
+    }
     const urlComparison = getComparisonFromUrl();
     if (urlComparison) {
       comparisonState.loadFromUrl(urlComparison.a, urlComparison.b);
@@ -133,6 +139,9 @@ function AppContent() {
             <NavButton active={page === 'formulas'} onClick={() => navigate('formulas')}>
               formulas
             </NavButton>
+            <NavButton active={page === 'party'} onClick={() => navigate('party')}>
+              party
+            </NavButton>
           </nav>
 
           {/* Hamburger button */}
@@ -173,6 +182,9 @@ function AppContent() {
             <NavButton active={page === 'formulas'} onClick={() => navigate('formulas')}>
               formulas
             </NavButton>
+            <NavButton active={page === 'party'} onClick={() => navigate('party')}>
+              party
+            </NavButton>
           </nav>
         )}
       </header>
@@ -189,6 +201,7 @@ function AppContent() {
         {page === 'build' && <ErrorBoundary><BuildExplorer state={buildState} savedBuilds={savedBuildsState} /></ErrorBoundary>}
         {page === 'compare' && <ErrorBoundary><BuildComparison state={comparisonState} /></ErrorBoundary>}
         {page === 'formulas' && <ErrorBoundary><FormulasPage /></ErrorBoundary>}
+        {page === 'party' && <ErrorBoundary><PartyBuilder /></ErrorBoundary>}
       </main>
     </div>
   );
