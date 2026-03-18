@@ -3,6 +3,9 @@ import type { CharacterBuild, ClassSkillData, MWData } from './types.js';
 /** Echo of Hero bonus multiplier (4%). Source: range calculator E10. */
 const ECHO_MULTIPLIER = 0.04;
 
+/** Rage (Hero party buff) flat WATK bonus. Source: MapleRoyals Skill Library, Rage level 20. */
+const RAGE_WATK = 12;
+
 /**
  * Apply MW to base stats, returning the MW-boosted stat value.
  * MW is applied to base stats only, then floored.
@@ -57,7 +60,8 @@ export function calculateTotalAttack(build: CharacterBuild): number {
         build.projectile
       )
     : 0;
-  return build.totalWeaponAttack + build.attackPotion + build.projectile + echo;
+  const rage = build.rage === true ? RAGE_WATK : 0;
+  return build.totalWeaponAttack + build.attackPotion + build.projectile + echo + rage;
 }
 
 /**

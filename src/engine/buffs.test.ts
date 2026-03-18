@@ -129,6 +129,25 @@ describe('calculateMageEcho', () => {
   });
 });
 
+describe('calculateTotalAttack with rage', () => {
+  it('adds +12 WATK when rage is active', () => {
+    const build = makeBuild({ totalWeaponAttack: 214, attackPotion: 100, rage: true });
+    // 214 + 100 + 0 + echo(12) + rage(12) = 338
+    expect(calculateTotalAttack(build)).toBe(338);
+  });
+
+  it('does not add rage WATK when rage is false', () => {
+    const build = makeBuild({ totalWeaponAttack: 214, attackPotion: 100, rage: false });
+    // 214 + 100 + 0 + echo(12) = 326
+    expect(calculateTotalAttack(build)).toBe(326);
+  });
+
+  it('does not add rage WATK when rage is undefined', () => {
+    const build = makeBuild({ totalWeaponAttack: 214, attackPotion: 100 });
+    expect(calculateTotalAttack(build)).toBe(326);
+  });
+});
+
 function makeBuild(overrides: Partial<CharacterBuild> = {}): CharacterBuild {
   return {
     className: 'Hero',
