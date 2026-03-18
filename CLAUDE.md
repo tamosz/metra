@@ -177,7 +177,7 @@ This is a v62-based Royals private server. Key differences from official GMS:
 - Weapon Attack (WATK) and primary stat scaling differ by class
 
 ### Sources of Truth
-1. **[MapleRoyals Skill Library](https://royals.ms/forum/threads/mapleroyals-skill-library.209540/)** — primary source for skill data (damage%, hit count, MP cost, etc.). Data extracted directly from game files by community member nut. Treat as authoritative for raw skill values.
+1. **[MapleRoyals Skill Library](https://royals.ms/forum/threads/mapleroyals-skill-library.209540/)** — primary source for skill data (damage%, hit count, MP cost, etc.). Data extracted directly from game files by community member nut. Treat as authoritative for raw skill values. Local extracted copy at `data/references/skill-library.md` — check this first before web-searching.
 2. **royals.ms forum** — primary source for Royals-specific mechanics, balance changes, and community-verified formulas. Treat forum-confirmed values as authoritative when they differ from generic v62 references.
 3. **Source spreadsheet** (`data/source-sheet.xlsx`) — reference implementation being translated. Cross-check against forum when values seem uncertain.
 4. **In-game verification** — ultimate authority when other sources disagree.
