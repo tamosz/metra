@@ -1,6 +1,9 @@
 import { useState, useCallback } from 'react';
 import { usePartySimulation } from '../hooks/usePartySimulation.js';
 import { getPartyFromUrl, setPartyInUrl } from '../utils/url-encoding.js';
+import { PartyRoster } from './PartyRoster.js';
+import { PartyGrid } from './PartyGrid.js';
+import { PartyBuffBar } from './PartyBuffBar.js';
 
 export function PartyBuilder() {
   const [members, setMembers] = useState<string[]>(() => getPartyFromUrl() ?? []);
@@ -24,28 +27,28 @@ export function PartyBuilder() {
     setPartyInUrl(next);
   }, []);
 
-  const loadPreset = useCallback((presetMembers: { className: string }[]) => {
-    const next = presetMembers.map(m => m.className);
-    setMembers(next);
-    setPartyInUrl(next);
-  }, []);
-
   // Suppress unused variable warnings — these will be used in future tasks
-  void addMember;
-  void removeMember;
-  void setPartyMembers;
   void presets;
   void slotSwapOptions;
-  void loadPreset;
+  void setPartyMembers;
 
   return (
     <div>
       <h2 className="mb-4 text-lg font-semibold text-text-bright">Party Builder</h2>
-      <p className="text-sm text-text-muted">
+      <p className="mb-4 text-sm text-text-muted">
         Drag classes into your party to see total DPS, buff attribution, and slot swap analysis.
       </p>
-      <div className="mt-4 text-text-dim">
-        Party: {members.join(', ') || '(empty)'} — Total DPS: {result?.totalDps?.toLocaleString() ?? '—'}
+      <div className="flex gap-4">
+        <PartyRoster onAddMember={addMember} />
+        <div className="flex-1">
+          <PartyGrid
+            members={members}
+            memberResults={result?.members ?? []}
+            onDrop={addMember}
+            onRemove={removeMember}
+          />
+          {result && <PartyBuffBar buffs={result.activeBuffs} totalDps={result.totalDps} />}
+        </div>
       </div>
     </div>
   );
