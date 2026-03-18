@@ -78,3 +78,13 @@ export {
   type PartyMemberResult,
   type PartySimulationResult,
 } from './party.js';
+
+// Party optimization
+export {
+  findOptimalParty,
+  type OptimizationConstraints,
+  type OptimizationResult,
+} from './party-optimization.js';
+
+// Party presets
+export { PARTY_PRESETS, type PresetParty } from './party-presets.js';
