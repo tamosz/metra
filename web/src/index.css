@@ -48,3 +48,18 @@
     -moz-appearance: textfield;
   }
 }
+
+@keyframes row-emphasis {
+  0% { background-color: var(--emphasis-color, rgba(59, 130, 246, 0.15)); }
+  100% { background-color: transparent; }
+}
+
+.animate-row-emphasis {
+  animation: row-emphasis 1s ease-out forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-row-emphasis {
+    animation: none;
+  }
+}
