@@ -7,11 +7,12 @@ import { PartyBuffBar } from './PartyBuffBar.js';
 import { PartyAttribution } from './PartyAttribution.js';
 import { SlotSwapPanel } from './SlotSwapPanel.js';
 import { PresetSelector } from './PresetSelector.js';
+import { PartyTierList } from './PartyTierList.js';
 
 export function PartyBuilder() {
   const [members, setMembers] = useState<string[]>(() => getPartyFromUrl() ?? []);
   const [selectedMemberIndex, setSelectedMemberIndex] = useState<number | null>(null);
-  const { result, presets, slotSwapOptions } = usePartySimulation(members);
+  const { result, presets, slotSwapOptions, topParties } = usePartySimulation(members);
 
   const addMember = useCallback((className: string) => {
     if (members.length >= 6) return;
@@ -77,6 +78,13 @@ export function PartyBuilder() {
             />
           )}
         </div>
+      </div>
+      <div className="mt-8 border-t border-border-default pt-6">
+        <h3 className="mb-4 text-base font-semibold text-text-bright">Top Parties</h3>
+        <p className="mb-4 text-sm text-text-muted">
+          Best party compositions ranked by total DPS. Click a bar to see the breakdown.
+        </p>
+        <PartyTierList topParties={topParties} onLoadParty={setPartyMembers} />
       </div>
     </div>
   );

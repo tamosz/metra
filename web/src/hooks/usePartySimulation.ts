@@ -20,6 +20,7 @@ export interface UsePartySimulationResult {
   result: PartySimulationResult | null;
   presets: PresetParty[];
   slotSwapOptions: (memberIndex: number) => SlotSwapOption[];
+  topParties: PartySimulationResult[];
 }
 
 export function usePartySimulation(members: string[]): UsePartySimulationResult {
@@ -30,6 +31,11 @@ export function usePartySimulation(members: string[]): UsePartySimulationResult 
     const party: Party = { name: 'Custom', members: members.map(className => ({ className })) };
     return computeBuffAttribution(party, classDataMap, gearTemplates, weaponData, attackSpeedData, mwData);
   }, [members, classDataMap, gearTemplates]);
+
+  const topParties = useMemo(() => {
+    const opt = findOptimalParty(classDataMap, gearTemplates, weaponData, attackSpeedData, mwData, 6, undefined, 25);
+    return opt.topParties;
+  }, [classDataMap, gearTemplates]);
 
   const presets = useMemo(() => {
     return PARTY_PRESETS.map(preset => {
@@ -63,5 +69,5 @@ export function usePartySimulation(members: string[]): UsePartySimulationResult 
     };
   }, [result, members, classDataMap, gearTemplates]);
 
-  return { result, presets, slotSwapOptions };
+  return { result, presets, slotSwapOptions, topParties };
 }
