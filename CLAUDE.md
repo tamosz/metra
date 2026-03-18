@@ -6,6 +6,8 @@ Always work on a branch and raise a PR — never push directly to main.
 
 Before merging a PR, run the full test suite locally (`npx vitest run` at root and in `web/`) and confirm it passes. Don't rely on CI catching things after merge.
 
+Design specs and implementation plans (`docs/superpowers/specs/`, `docs/superpowers/plans/`) are working documents — delete them before merging a PR. They shouldn't accumulate on main.
+
 ## Project Purpose
 
 This project makes Royals class balance *legible*. It translates a sprawling Google Sheet calculator into a structured, testable codebase so that proposed balance changes can be expressed as diffs, simulated, and shared as reproducible reports. The audience is Royals staff, contributors, and community members debating balance.

@@ -27,6 +27,7 @@ export function getClassColor(className: string): string {
 }
 
 export const VARIANT_CLASSES = new Set(['Hero (Axe)', 'Hero (ST)', 'Paladin (BW)']);
+export const VARIANT_CLASS_SLUGS = new Set(['hero-axe', 'hero-st', 'paladin-bw']);
 
 export function getClassColorWithOpacity(className: string, opacity: number): string {
   const hex = getClassColor(className);

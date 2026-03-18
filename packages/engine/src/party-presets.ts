@@ -23,7 +23,7 @@ export const PARTY_PRESETS: PresetParty[] = [
     description: 'Full warrior lineup with Buccaneer for Speed Infusion',
     members: [
       { className: 'hero' },
-      { className: 'hero-axe' },
+      { className: 'hero' },
       { className: 'dark-knight' },
       { className: 'dark-knight' },
       { className: 'paladin' },
@@ -120,7 +120,7 @@ export const PARTY_PRESETS: PresetParty[] = [
     members: [
       { className: 'paladin' },
       { className: 'paladin' },
-      { className: 'paladin-bw' },
+      { className: 'paladin' },
       { className: 'bowmaster' },
       { className: 'bucc' },
       { className: 'hero' },
