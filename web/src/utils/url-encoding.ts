@@ -118,3 +118,34 @@ export function setComparisonInUrl(payload: ComparisonUrlPayload): void {
   const encoded = encodeComparison(payload);
   window.history.replaceState(null, '', `#c=${encoded}`);
 }
+
+// --- Party URL encoding ---
+
+const EMPTY_PARTY_SENTINEL = '_';
+
+export function encodeParty(members: string[]): string {
+  if (members.length === 0) return EMPTY_PARTY_SENTINEL;
+  return members.join(',');
+}
+
+export function decodeParty(encoded: string): string[] | null {
+  try {
+    if (!encoded) return null;
+    if (encoded === EMPTY_PARTY_SENTINEL) return [];
+    return encoded.split(',').filter(Boolean);
+  } catch {
+    return null;
+  }
+}
+
+export function getPartyFromUrl(): string[] | null {
+  const hash = window.location.hash;
+  if (!hash.startsWith('#party=')) return null;
+  const encoded = hash.slice(7);
+  return decodeParty(encoded);
+}
+
+export function setPartyInUrl(members: string[]): void {
+  const encoded = encodeParty(members);
+  window.history.replaceState(null, '', `#party=${encoded}`);
+}
