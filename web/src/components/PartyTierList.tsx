@@ -1,7 +1,9 @@
 import { useState, useMemo } from 'react';
 import {
   findOptimalParty,
+  computeBuffAttribution,
   type PartySimulationResult,
+  type Party,
 } from '@metra/engine';
 import { discoveredData, weaponData, attackSpeedData, mwData } from '../data/bundle.js';
 import { getClassColor, getClassColorWithOpacity } from '../utils/class-colors.js';
@@ -13,13 +15,6 @@ interface PartyTierListProps {
 
 function getDisplayName(slug: string): string {
   return discoveredData.classDataMap.get(slug)?.className ?? slug;
-}
-
-/** Color bar by the highest-DPS member's class. */
-function getPartyColor(party: PartySimulationResult): string {
-  if (party.members.length === 0) return colors.textDim;
-  const top = party.members.reduce((best, m) => (m.dps > best.dps ? m : best));
-  return getClassColor(getDisplayName(top.className));
 }
 
 /** Compact party summary: class names with counts for duplicates. */
@@ -41,9 +36,56 @@ const DIVERSITY_OPTIONS = [
   { label: 'All unique', value: 1 },
 ] as const;
 
+/** Stacked segments for a single party bar. Sorted by DPS descending. */
+function StackedBar({
+  party,
+  maxDps,
+  compact,
+  isExpanded,
+}: {
+  party: PartySimulationResult;
+  maxDps: number;
+  compact: boolean;
+  isExpanded: boolean;
+}) {
+  const widthPercent = maxDps > 0 ? (party.totalDps / maxDps) * 100 : 0;
+  const sorted = [...party.members].sort((a, b) => b.dps - a.dps);
+
+  return (
+    <div
+      className="relative overflow-hidden rounded"
+      style={{
+        width: `${widthPercent}%`,
+        height: compact ? 6 : 28,
+        minWidth: 4,
+        display: 'flex',
+      }}
+    >
+      {sorted.map((member, i) => {
+        const displayName = getDisplayName(member.className);
+        const color = getClassColor(displayName);
+        const segmentPercent = party.totalDps > 0 ? (member.dps / party.totalDps) * 100 : 0;
+        return (
+          <div
+            key={i}
+            style={{
+              width: `${segmentPercent}%`,
+              backgroundColor: color,
+              opacity: isExpanded ? 0.9 : 0.65,
+              minWidth: segmentPercent > 0 ? 1 : 0,
+            }}
+            title={compact ? undefined : `${displayName}: ${Math.round(member.dps).toLocaleString()} DPS`}
+          />
+        );
+      })}
+    </div>
+  );
+}
+
 export function PartyTierList({ onLoadParty }: PartyTierListProps) {
   const [expandedRank, setExpandedRank] = useState<number | null>(null);
   const [maxDuplicates, setMaxDuplicates] = useState<number | undefined>(2);
+  const [showAll, setShowAll] = useState(false);
 
   const { classDataMap, gearTemplates } = discoveredData;
 
@@ -53,7 +95,7 @@ export function PartyTierList({ onLoadParty }: PartyTierListProps) {
         classDataMap, gearTemplates, weaponData, attackSpeedData, mwData,
         6,
         maxDuplicates !== undefined ? { maxDuplicates } : undefined,
-        25,
+        100_000,
       );
       return opt.topParties;
     } catch {
@@ -61,16 +103,25 @@ export function PartyTierList({ onLoadParty }: PartyTierListProps) {
     }
   }, [classDataMap, gearTemplates, maxDuplicates]);
 
+  // Compute attribution only for the expanded party (on demand)
+  const expandedAttribution = useMemo(() => {
+    if (expandedRank === null || expandedRank > topParties.length) return null;
+    const party = topParties[expandedRank - 1];
+    const p: Party = { name: '', members: party.members.map((m) => ({ className: m.className })) };
+    return computeBuffAttribution(p, classDataMap, gearTemplates, weaponData, attackSpeedData, mwData);
+  }, [expandedRank, topParties, classDataMap, gearTemplates]);
+
   if (topParties.length === 0) {
     return <div className="py-6 text-center text-sm text-text-dim">No party compositions found</div>;
   }
 
   const maxDps = topParties[0].totalDps;
+  const displayedParties = showAll ? topParties : topParties.slice(0, 25);
 
   return (
     <div>
-      {/* Diversity filter */}
-      <div className="mb-4 flex items-center gap-2">
+      {/* Controls */}
+      <div className="mb-4 flex flex-wrap items-center gap-2">
         <span className="text-[11px] uppercase tracking-widest text-text-dim">Diversity</span>
         <div className="flex gap-1">
           {DIVERSITY_OPTIONS.map((opt) => {
@@ -81,6 +132,7 @@ export function PartyTierList({ onLoadParty }: PartyTierListProps) {
                 onClick={() => {
                   setMaxDuplicates(opt.value);
                   setExpandedRank(null);
+                  setShowAll(false);
                 }}
                 className={`rounded-md border px-2.5 py-1 text-[11px] font-medium transition-colors cursor-pointer ${
                   isActive
@@ -93,111 +145,205 @@ export function PartyTierList({ onLoadParty }: PartyTierListProps) {
             );
           })}
         </div>
+
+        <div className="ml-auto flex items-center gap-2">
+          <span className="text-[11px] tabular-nums text-text-dim">
+            {topParties.length.toLocaleString()} compositions
+          </span>
+          <button
+            onClick={() => {
+              setShowAll(!showAll);
+              setExpandedRank(null);
+            }}
+            className={`rounded-md border px-2.5 py-1 text-[11px] font-medium transition-colors cursor-pointer ${
+              showAll
+                ? 'border-border-button bg-bg-active text-text-bright'
+                : 'border-border-default bg-transparent text-text-muted hover:text-text-primary'
+            }`}
+          >
+            {showAll ? 'Top 25' : 'Show all'}
+          </button>
+        </div>
       </div>
 
       {/* Bar chart */}
-      <div className="flex flex-col gap-1">
-        {topParties.map((party, index) => {
-          const rank = index + 1;
-          const isExpanded = expandedRank === rank;
-          const barColor = getPartyColor(party);
-          const widthPercent = maxDps > 0 ? (party.totalDps / maxDps) * 100 : 0;
-          const summary = getPartySummary(party);
+      <div
+        className={showAll ? 'overflow-y-auto rounded-md border border-border-default' : ''}
+        style={showAll ? { maxHeight: '70vh' } : undefined}
+      >
+        <div className={`flex flex-col ${showAll ? 'gap-0 p-1' : 'gap-1'}`}>
+          {displayedParties.map((party, index) => {
+            const rank = index + 1;
+            const isExpanded = expandedRank === rank;
+            const summary = getPartySummary(party);
 
-          return (
-            <div key={rank}>
-              {/* Bar row */}
-              <button
-                onClick={() => setExpandedRank(isExpanded ? null : rank)}
-                className="group flex w-full items-center gap-2 rounded border-none bg-transparent p-0 text-left cursor-pointer"
-              >
-                <span className="w-7 flex-shrink-0 text-right text-[11px] tabular-nums text-text-dim">
-                  #{rank}
-                </span>
-
-                <div className="relative flex-1 h-7 rounded overflow-hidden" style={{ backgroundColor: `${barColor}10` }}>
-                  <div
-                    className="h-full rounded transition-all duration-200"
-                    style={{
-                      width: `${widthPercent}%`,
-                      backgroundColor: barColor,
-                      opacity: isExpanded ? 0.9 : 0.6,
-                      minWidth: 4,
-                    }}
-                  />
-                  <div className="absolute inset-0 flex items-center px-2.5 pointer-events-none">
-                    <span className="truncate text-[11px] font-medium text-text-bright drop-shadow-sm">
-                      {summary}
-                    </span>
-                  </div>
-                </div>
-
-                <span className="w-16 flex-shrink-0 text-right text-[11px] tabular-nums text-text-secondary group-hover:text-text-bright transition-colors">
-                  {(Math.round(party.totalDps) / 1000).toFixed(0)}k
-                </span>
-              </button>
-
-              {/* Expanded detail */}
-              {isExpanded && (
-                <div
-                  className="ml-9 mt-1 mb-2 rounded-md border p-3"
-                  style={{
-                    borderColor: `${barColor}40`,
-                    backgroundColor: getClassColorWithOpacity(getDisplayName(party.members.reduce((best, m) => m.dps > best.dps ? m : best).className), 0.04),
-                  }}
-                >
-                  {(party.activeBuffs.sharpEyes || party.activeBuffs.speedInfusion) && (
-                    <div className="mb-2.5 flex gap-1">
-                      {party.activeBuffs.sharpEyes && (
-                        <span className="rounded px-1.5 py-0.5 text-[10px] font-medium" style={{ backgroundColor: colors.buffSe + '33', color: colors.buffSe }}>
-                          SE
-                        </span>
-                      )}
-                      {party.activeBuffs.speedInfusion && (
-                        <span className="rounded px-1.5 py-0.5 text-[10px] font-medium" style={{ backgroundColor: colors.buffSi + '33', color: colors.buffSi }}>
-                          SI
-                        </span>
-                      )}
+            if (showAll) {
+              // Compact mode: thin stacked bars, no labels, click to expand
+              return (
+                <div key={rank}>
+                  <button
+                    onClick={() => setExpandedRank(isExpanded ? null : rank)}
+                    className="group flex w-full items-center gap-0 border-none bg-transparent p-0 cursor-pointer"
+                    title={`#${rank} — ${summary} — ${Math.round(party.totalDps).toLocaleString()} DPS`}
+                  >
+                    <div className="flex-1">
+                      <StackedBar party={party} maxDps={maxDps} compact isExpanded={isExpanded} />
                     </div>
+                  </button>
+
+                  {isExpanded && expandedAttribution && (
+                    <ExpandedDetail
+                      rank={rank}
+                      party={expandedAttribution}
+                      onLoadParty={onLoadParty}
+                      onClose={() => setExpandedRank(null)}
+                    />
                   )}
-
-                  <div className="flex flex-col gap-0.5">
-                    {[...party.members]
-                      .sort((a, b) => b.dps - a.dps)
-                      .map((member, i) => {
-                        const displayName = getDisplayName(member.className);
-                        const color = getClassColor(displayName);
-                        const share = party.totalDps > 0 ? ((member.dps / party.totalDps) * 100).toFixed(1) : '0.0';
-                        return (
-                          <div key={i} className="flex items-center gap-2 text-xs py-0.5">
-                            <span className="inline-block h-2 w-2 rounded-sm flex-shrink-0" style={{ backgroundColor: color }} />
-                            <span className="flex-1 text-text-primary">{displayName}</span>
-                            <span className="tabular-nums text-text-secondary">{Math.round(member.dps).toLocaleString()}</span>
-                            <span className="w-10 text-right tabular-nums text-text-dim">{share}%</span>
-                          </div>
-                        );
-                      })}
-                  </div>
-
-                  <div className="mt-2.5 flex items-center justify-between border-t pt-2" style={{ borderColor: `${barColor}20` }}>
-                    <span className="text-xs font-semibold text-text-bright tabular-nums">
-                      {Math.round(party.totalDps).toLocaleString()} total DPS
-                    </span>
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        onLoadParty(party.members.map((m) => ({ className: m.className })));
-                      }}
-                      className="rounded border border-border-active bg-bg-active px-2.5 py-1 text-[11px] font-medium text-text-primary hover:border-border-button hover:text-text-bright transition-colors cursor-pointer"
-                    >
-                      Load this party
-                    </button>
-                  </div>
                 </div>
+              );
+            }
+
+            // Normal mode: full bars with labels
+            return (
+              <div key={rank}>
+                <button
+                  onClick={() => setExpandedRank(isExpanded ? null : rank)}
+                  className="group flex w-full items-center gap-2 rounded border-none bg-transparent p-0 text-left cursor-pointer"
+                >
+                  <span className="w-7 flex-shrink-0 text-right text-[11px] tabular-nums text-text-dim">
+                    #{rank}
+                  </span>
+
+                  <div className="relative flex-1 h-7 rounded overflow-hidden" style={{ backgroundColor: 'rgba(255,255,255,0.03)' }}>
+                    <StackedBar party={party} maxDps={maxDps} compact={false} isExpanded={isExpanded} />
+                    <div className="absolute inset-0 flex items-center px-2.5 pointer-events-none">
+                      <span className="truncate text-[11px] font-medium text-text-bright drop-shadow-sm">
+                        {summary}
+                      </span>
+                    </div>
+                  </div>
+
+                  <span className="w-16 flex-shrink-0 text-right text-[11px] tabular-nums text-text-secondary group-hover:text-text-bright transition-colors">
+                    {(Math.round(party.totalDps) / 1000).toFixed(0)}k
+                  </span>
+                </button>
+
+                {isExpanded && expandedAttribution && (
+                  <ExpandedDetail
+                    rank={rank}
+                    party={expandedAttribution}
+                    onLoadParty={onLoadParty}
+                    onClose={() => setExpandedRank(null)}
+                  />
+                )}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ExpandedDetail({
+  rank,
+  party,
+  onLoadParty,
+  onClose,
+}: {
+  rank: number;
+  party: PartySimulationResult;
+  onLoadParty: (members: { className: string }[]) => void;
+  onClose: () => void;
+}) {
+  const sorted = [...party.members].sort(
+    (a, b) => (b.dps + b.buffContribution) - (a.dps + a.buffContribution),
+  );
+  const topMember = party.members.reduce((best, m) => (m.dps > best.dps ? m : best));
+  const barColor = getClassColor(getDisplayName(topMember.className));
+
+  return (
+    <div
+      className="ml-9 mt-1 mb-2 rounded-md border p-3"
+      style={{
+        borderColor: `${barColor}40`,
+        backgroundColor: getClassColorWithOpacity(getDisplayName(topMember.className), 0.04),
+      }}
+    >
+      <div className="mb-3 flex items-center justify-between">
+        <div className="text-sm font-semibold text-text-bright">
+          #{rank} — {Math.round(party.totalDps).toLocaleString()} DPS
+        </div>
+        <div className="flex items-center gap-2">
+          {(party.activeBuffs.sharpEyes || party.activeBuffs.speedInfusion) && (
+            <div className="flex gap-1">
+              {party.activeBuffs.sharpEyes && (
+                <span className="rounded px-1.5 py-0.5 text-[10px] font-medium" style={{ backgroundColor: colors.buffSe + '33', color: colors.buffSe }}>
+                  SE
+                </span>
+              )}
+              {party.activeBuffs.speedInfusion && (
+                <span className="rounded px-1.5 py-0.5 text-[10px] font-medium" style={{ backgroundColor: colors.buffSi + '33', color: colors.buffSi }}>
+                  SI
+                </span>
               )}
             </div>
-          );
-        })}
+          )}
+          <button
+            onClick={onClose}
+            className="text-xs text-text-dim hover:text-text-muted cursor-pointer border-none bg-transparent"
+            aria-label="Close"
+          >
+            ✕
+          </button>
+        </div>
+      </div>
+
+      <table className="w-full text-xs">
+        <thead>
+          <tr className="border-b border-border-default text-[10px] uppercase tracking-widest text-text-dim">
+            <th className="pb-1.5 text-left font-medium">Class</th>
+            <th className="pb-1.5 text-right font-medium">Own DPS</th>
+            <th className="pb-1.5 text-right font-medium">Buff Value</th>
+            <th className="pb-1.5 text-right font-medium">Slot Value</th>
+          </tr>
+        </thead>
+        <tbody>
+          {sorted.map((member, i) => {
+            const displayName = getDisplayName(member.className);
+            const color = getClassColor(displayName);
+            const slotValue = member.dps + member.buffContribution;
+            return (
+              <tr key={i} className="border-b border-border-default last:border-0">
+                <td className="py-1.5">
+                  <span className="mr-1.5 inline-block h-2 w-2 rounded-sm" style={{ backgroundColor: color }} />
+                  <span className="text-text-primary">{displayName}</span>
+                </td>
+                <td className="py-1.5 text-right tabular-nums text-text-secondary">
+                  {Math.round(member.dps).toLocaleString()}
+                </td>
+                <td className="py-1.5 text-right tabular-nums" style={{ color: member.buffContribution > 0 ? 'rgb(34, 197, 94)' : colors.textDim }}>
+                  {member.buffContribution > 0 ? `+${Math.round(member.buffContribution).toLocaleString()}` : '—'}
+                </td>
+                <td className="py-1.5 text-right tabular-nums font-semibold text-text-primary">
+                  {Math.round(slotValue).toLocaleString()}
+                </td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+
+      <div className="mt-2.5">
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            onLoadParty(party.members.map((m) => ({ className: m.className })));
+          }}
+          className="rounded border border-border-active bg-bg-active px-2.5 py-1 text-[11px] font-medium text-text-primary hover:border-border-button hover:text-text-bright transition-colors cursor-pointer"
+        >
+          Load this party
+        </button>
       </div>
     </div>
   );
