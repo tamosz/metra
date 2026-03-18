@@ -6,6 +6,8 @@ import {
   decodeBuild,
   encodeComparison,
   decodeComparison,
+  encodeParty,
+  decodeParty,
 } from './url-encoding.js';
 import type { BuildUrlPayload, ComparisonUrlPayload } from './url-encoding.js';
 import type { Proposal } from '@engine/proposals/types.js';
@@ -126,5 +128,24 @@ describe('comparison url encoding', () => {
     expect(decoded).toEqual(payload);
     expect(decoded!.a.overrides).toEqual({ gearSTR: 300, totalWeaponAttack: 250 });
     expect(decoded!.b.overrides).toEqual({ gearLUK: 400 });
+  });
+});
+
+describe('party URL encoding', () => {
+  it('roundtrips a party composition', () => {
+    const members = ['night-lord', 'night-lord', 'bowmaster', 'hero', 'dark-knight', 'bishop'];
+    const encoded = encodeParty(members);
+    const decoded = decodeParty(encoded);
+    expect(decoded).toEqual(members);
+  });
+
+  it('handles empty party', () => {
+    const encoded = encodeParty([]);
+    const decoded = decodeParty(encoded);
+    expect(decoded).toEqual([]);
+  });
+
+  it('returns null for empty string', () => {
+    expect(decodeParty('')).toBeNull();
   });
 });

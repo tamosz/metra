@@ -66,3 +66,25 @@ export { calculateMarginalGains, type MarginalGain } from './marginal.js';
 
 // Build-level DPS
 export { calculateBuildDps, type SkillDpsRow, type BuildDpsResult } from './build-dps.js';
+
+// Party simulation
+export {
+  resolvePartyBuffs,
+  simulateParty,
+  computeBuffAttribution,
+  type PartyMember,
+  type Party,
+  type PartyBuffState,
+  type PartyMemberResult,
+  type PartySimulationResult,
+} from './party.js';
+
+// Party optimization
+export {
+  findOptimalParty,
+  type OptimizationConstraints,
+  type OptimizationResult,
+} from './party-optimization.js';
+
+// Party presets
+export { PARTY_PRESETS, type PresetParty } from './party-presets.js';

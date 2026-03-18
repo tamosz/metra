@@ -129,6 +129,7 @@ describe('calculateMageEcho', () => {
   });
 });
 
+
 function makeBuild(overrides: Partial<CharacterBuild> = {}): CharacterBuild {
   return {
     className: 'Hero',
