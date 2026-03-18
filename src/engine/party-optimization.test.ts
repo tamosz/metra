@@ -25,7 +25,6 @@ function makeBuild(className: string, overrides: Partial<CharacterBuild> = {}): 
     mwLevel: 20,
     speedInfusion: true,
     sharpEyes: true,
-    rage: false,
     ...overrides,
   };
 }

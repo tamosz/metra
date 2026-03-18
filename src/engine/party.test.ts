@@ -27,7 +27,6 @@ function makeBuild(overrides: Partial<CharacterBuild> = {}): CharacterBuild {
     mwLevel: 20,
     speedInfusion: true,
     sharpEyes: true,
-    rage: false,
     ...overrides,
   };
 }
@@ -114,7 +113,6 @@ describe('resolvePartyBuffs', () => {
     const buffs = resolvePartyBuffs(members);
     expect(buffs.sharpEyes).toBe(false);
     expect(buffs.speedInfusion).toBe(false);
-    expect(buffs.rage).toBe(false);
   });
 
   it('enables SE when Bowmaster is present', () => {
@@ -132,36 +130,22 @@ describe('resolvePartyBuffs', () => {
     expect(resolvePartyBuffs(members).speedInfusion).toBe(true);
   });
 
-  it('enables Rage when Hero is present', () => {
-    const members = [{ className: 'hero' }, { className: 'night-lord' }];
-    expect(resolvePartyBuffs(members).rage).toBe(true);
-  });
-
-  it('enables Rage when Hero (Axe) is present', () => {
-    const members = [{ className: 'hero-axe' }, { className: 'night-lord' }];
-    expect(resolvePartyBuffs(members).rage).toBe(true);
-  });
-
   it('does not double-apply buffs with duplicate buff providers', () => {
     const members = [
       { className: 'bowmaster' },
       { className: 'marksman' },
       { className: 'bucc' },
-      { className: 'hero' },
-      { className: 'hero-axe' },
       { className: 'night-lord' },
     ];
     const buffs = resolvePartyBuffs(members);
     expect(buffs.sharpEyes).toBe(true);
     expect(buffs.speedInfusion).toBe(true);
-    expect(buffs.rage).toBe(true);
   });
 
   it('handles empty party', () => {
     const buffs = resolvePartyBuffs([]);
     expect(buffs.sharpEyes).toBe(false);
     expect(buffs.speedInfusion).toBe(false);
-    expect(buffs.rage).toBe(false);
   });
 });
 
@@ -233,38 +217,6 @@ describe('simulateParty', () => {
     expect(heroDpsWithSE).toBeGreaterThan(heroDpsWithoutSE);
   });
 
-  it('applies Rage +12 WATK when Hero is present in party', () => {
-    // Night-lord is not a rage provider; put it in a party with a hero and without.
-    // The night-lord build starts with rage=false so the difference shows party buff impact.
-    const nlData = makeClassData({ className: 'night-lord' });
-    const nlBuildNoRage = makeBuild({ className: 'night-lord', rage: false });
-    const heroData = makeClassData();
-    const heroBuild = makeBuild({ rage: false });
-
-    const partyWithHero: Party = {
-      name: 'with hero',
-      members: [{ className: 'night-lord' }, { className: 'hero' }],
-    };
-    const partyNoHero: Party = {
-      name: 'no hero',
-      members: [{ className: 'night-lord' }],
-    };
-
-    const classDataMapFull = new Map([['hero', heroData], ['night-lord', nlData]]);
-    const gearTemplatesFull = new Map([['hero-perfect', heroBuild], ['night-lord-perfect', nlBuildNoRage]]);
-
-    const classDataMapSolo = new Map([['night-lord', nlData]]);
-    const gearTemplatesSolo = new Map([['night-lord-perfect', nlBuildNoRage]]);
-
-    const withHero = simulateParty(partyWithHero, classDataMapFull, gearTemplatesFull, weaponData, attackSpeedData, mwData);
-    const withoutHero = simulateParty(partyNoHero, classDataMapSolo, gearTemplatesSolo, weaponData, attackSpeedData, mwData);
-
-    const nlDpsWithRage = withHero.members.find((m) => m.className === 'night-lord')!.dps;
-    const nlDpsNoRage = withoutHero.members[0].dps;
-
-    expect(nlDpsWithRage).toBeGreaterThan(nlDpsNoRage);
-  });
-
   it('returns zero DPS for unknown class (no data available)', () => {
     const party: Party = {
       name: 'test',
@@ -317,10 +269,8 @@ describe('simulateParty', () => {
 // ── computeBuffAttribution ────────────────────────────────────────────────────
 
 describe('computeBuffAttribution', () => {
-  it('non-buff class (two heroes) has zero buffContribution', () => {
-    // Heroes provide Rage to each other, but no member is a pure "buffer"
-    // Without one hero, the other still has Rage from themselves (hero-axe situation)
-    // Test two same-class non-buff members: two night-lords (no buff providers)
+  it('non-buff class (two night-lords) has zero buffContribution', () => {
+    // Two night-lords provide no party buffs, so buffContribution should be zero
     const nightLordData = makeClassData({ className: 'night-lord' });
     const nightLordBuild = makeBuild({ className: 'night-lord' });
 
@@ -393,7 +343,7 @@ describe('computeBuffAttribution', () => {
   it('soloBaseline equals party DPS when no buffs are provided', () => {
     // Two night-lords: no party buffs, so solo baseline = party DPS
     const nightLordData = makeClassData({ className: 'night-lord' });
-    const nightLordBuild = makeBuild({ className: 'night-lord', sharpEyes: false, speedInfusion: false, rage: false });
+    const nightLordBuild = makeBuild({ className: 'night-lord', sharpEyes: false, speedInfusion: false });
 
     const party: Party = {
       name: 'test',

@@ -19,7 +19,6 @@ export interface Party {
 export interface PartyBuffState {
   sharpEyes: boolean;
   speedInfusion: boolean;
-  rage: boolean;
 }
 
 export interface PartyMemberResult {
@@ -39,20 +38,17 @@ export interface PartySimulationResult {
 
 const SE_PROVIDERS = new Set(['bowmaster', 'marksman']);
 const SI_PROVIDERS = new Set(['bucc']);
-const RAGE_PROVIDERS = new Set(['hero', 'hero-axe']);
 
 export function resolvePartyBuffs(members: PartyMember[]): PartyBuffState {
   let sharpEyes = false;
   let speedInfusion = false;
-  let rage = false;
 
   for (const member of members) {
     if (SE_PROVIDERS.has(member.className)) sharpEyes = true;
     if (SI_PROVIDERS.has(member.className)) speedInfusion = true;
-    if (RAGE_PROVIDERS.has(member.className)) rage = true;
   }
 
-  return { sharpEyes, speedInfusion, rage };
+  return { sharpEyes, speedInfusion };
 }
 
 const DEFAULT_TIER = 'perfect';
@@ -71,7 +67,7 @@ function getTopSkill(aggregated: SkillDpsRow[], classData: ClassSkillData): Skil
 }
 
 function applyPartyBuffs(build: CharacterBuild, buffs: PartyBuffState): CharacterBuild {
-  return { ...build, sharpEyes: buffs.sharpEyes, speedInfusion: buffs.speedInfusion, rage: buffs.rage };
+  return { ...build, sharpEyes: buffs.sharpEyes, speedInfusion: buffs.speedInfusion };
 }
 
 function simulateMember(
@@ -127,7 +123,7 @@ export function simulateParty(
   return { party, totalDps, members, activeBuffs };
 }
 
-const NO_BUFFS: PartyBuffState = { sharpEyes: false, speedInfusion: false, rage: false };
+const NO_BUFFS: PartyBuffState = { sharpEyes: false, speedInfusion: false };
 
 export function computeBuffAttribution(
   party: Party,

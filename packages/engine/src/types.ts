@@ -219,6 +219,4 @@ export interface CharacterBuild {
   avoidability?: number;
   /** Whether Bullseye is active (1.2× damage for marked skills). Default: true when undefined. */
   bullseye?: boolean;
-  /** Whether Rage is active (Hero party buff, +12 flat WATK). */
-  rage?: boolean;
 }

@@ -7,7 +7,6 @@ interface PartyBuffBarProps {
 
 const BUFF_LABELS: { key: keyof PartyBuffState; label: string }[] = [
   { key: 'sharpEyes', label: 'SE' },
-  { key: 'rage', label: 'Rage +12' },
   { key: 'speedInfusion', label: 'SI' },
 ];
 
