@@ -130,7 +130,7 @@ export function TierScalingChart({ data, capEnabled, activeGroups, targetCount, 
     setEmphasizedKeys(highImpact);
     const timer = setTimeout(() => setEmphasizedKeys(new Set()), EMPHASIS_DURATION_MS);
     return () => clearTimeout(timer);
-  }, [animation?.transitionId]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [animation?.transitionId, animation?.prefersReducedMotion, lines, selectedTier]);
 
   const chartHeight = isMobile ? 400 : 600;
   const rightMargin = isMobile ? 100 : 140;

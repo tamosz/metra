@@ -57,8 +57,8 @@ export function buildTierData(
     }));
 }
 
-function AnimatedDpsCell({ value, prefersReducedMotion }: { value: number; prefersReducedMotion: boolean }) {
-  const animated = useAnimatedNumber(value, prefersReducedMotion ? 0 : TRANSITION_DURATION_MS);
+function AnimatedDpsCell({ value }: { value: number }) {
+  const animated = useAnimatedNumber(value, TRANSITION_DURATION_MS);
   return <>{formatDps(animated)}</>;
 }
 
@@ -109,7 +109,7 @@ export function RankingTable({
   const rowRefs = useRef<Map<string, HTMLTableRowElement>>(new Map());
   const prevPositions = useRef<Map<string, number>>(new Map());
 
-  const [emphasisTransitionId, setEmphasisTransitionId] = useState(-1);
+  const lastEmphasisIdRef = useRef(-1);
   const [emphasisFading, setEmphasisFading] = useState(false);
 
   const getSkillEditInfo = useCallback((className: string, skillName: string) => {
@@ -286,8 +286,8 @@ export function RankingTable({
   }, [sorted, animation?.transitionId, expandedRows]);
 
   useEffect(() => {
-    if (!animation || animation.transitionId === emphasisTransitionId) return;
-    setEmphasisTransitionId(animation.transitionId);
+    if (!animation || animation.transitionId === lastEmphasisIdRef.current) return;
+    lastEmphasisIdRef.current = animation.transitionId;
     setEmphasisFading(false);
     const timer = setTimeout(() => setEmphasisFading(true), EMPHASIS_DURATION_MS);
     return () => clearTimeout(timer);
@@ -386,7 +386,7 @@ export function RankingTable({
                     <td className="px-3 py-2 text-right tabular-nums">
                       <div className="flex items-center justify-end gap-2">
                         {animation && !animation.prefersReducedMotion
-                          ? <AnimatedDpsCell value={displayDps} prefersReducedMotion={animation.prefersReducedMotion} />
+                          ? <AnimatedDpsCell value={displayDps} />
                           : formatDps(displayDps)}
                         {change !== 0 && (
                           <span className={`inline-flex items-center rounded-full px-1.5 py-0.5 text-[10px] font-medium leading-none ${

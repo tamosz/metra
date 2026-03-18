@@ -102,7 +102,7 @@ export function DpsChart({ data, editComparison, breakdownMap, animation }: DpsC
   const rafsRef = useRef<Map<string, number>>(new Map());
   const [, forceRender] = useState(0);
 
-  const chartData = useMemo(() => data.map((r) => {
+  const baseChartData = useMemo(() => data.map((r) => {
     const rawDps = Math.round(capEnabled ? r.dps.dps : r.dps.uncappedDps);
     let dps = rawDps;
     let baselineDps: number | undefined;
@@ -146,19 +146,24 @@ export function DpsChart({ data, editComparison, breakdownMap, animation }: DpsC
       seDps,
       siDps,
       echoDps,
-      interpolatedDps: interpolatedRef.current.get(uid) ?? dps,
       isHighImpact: animEntry?.isHighImpact ?? false,
       transitionId: animation?.transitionId ?? 0,
     };
-  }).sort((a, b) => b.dps - a.dps), [data, capEnabled, deltaMap, breakdownMap, animation, interpolatedRef]);
+  }).sort((a, b) => b.dps - a.dps), [data, capEnabled, deltaMap, breakdownMap, animation]);
+
+  // Compute interpolatedDps outside useMemo so forceRender triggers recalculation
+  const chartData = baseChartData.map((d) => ({
+    ...d,
+    interpolatedDps: interpolatedRef.current.get(d.uid) ?? d.dps,
+  }));
 
   useEffect(() => {
     if (!animation || animation.prefersReducedMotion || editComparison || showStacked) {
-      interpolatedRef.current = new Map(chartData.map((d) => [d.uid, d.dps]));
+      interpolatedRef.current = new Map(baseChartData.map((d) => [d.uid, d.dps]));
       return;
     }
 
-    for (const d of chartData) {
+    for (const d of baseChartData) {
       const animKey = `${d.className}|${d.skillLabel}|${d.sublabel.toLowerCase()}`;
       const animEntry = animation.entries.get(animKey);
       const from = animEntry?.previousDps ?? d.dps;
@@ -190,7 +195,7 @@ export function DpsChart({ data, editComparison, breakdownMap, animation }: DpsC
       for (const id of rafsRef.current.values()) cancelAnimationFrame(id);
       rafsRef.current.clear();
     };
-  }, [chartData, animation, editComparison, showStacked]);
+  }, [baseChartData, animation, editComparison, showStacked]);
 
   if (chartData.length === 0) {
     return <div className="py-10 text-center text-text-dim">No data</div>;
