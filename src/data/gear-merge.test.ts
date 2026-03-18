@@ -95,4 +95,17 @@ describe('mergeGearTemplate', () => {
     const result = mergeGearTemplate(classBase, mageOverride, tierDefaults['high']);
     expect(result.attackPotion).toBe(220);
   });
+
+  it('respects explicitly empty CGS slot (does not inject defaults)', () => {
+    const withEmptyCape: TierOverride = {
+      ...tierOverride,
+      gearBreakdown: {
+        ...tierOverride.gearBreakdown,
+        cape: {},
+      },
+    };
+    const result = mergeGearTemplate(classBase, withEmptyCape, tierDefaults['high']);
+    // cape is {} so no WATK from cape. Only weapon (140) + glove (20) + shoe (16) = 176
+    expect(result.totalWeaponAttack).toBe(176);
+  });
 });

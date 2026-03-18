@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { renderComparisonBBCode, renderBaselineBBCode } from './bbcode.js';
+import { renderComparisonBBCode, renderBaselineBBCode, escapeBBCode } from './bbcode.js';
 import type { ComparisonResult, DeltaEntry, ScenarioResult } from '../proposals/types.js';
 
 function delta(d: Omit<DeltaEntry, 'uncappedBefore' | 'uncappedAfter' | 'uncappedChange' | 'uncappedChangePercent'> & Partial<Pick<DeltaEntry, 'uncappedBefore' | 'uncappedAfter' | 'uncappedChange' | 'uncappedChangePercent'>>): DeltaEntry {
@@ -231,5 +231,51 @@ describe('renderBaselineBBCode', () => {
     expect(bbcode).toContain('[b]Buffed[/b]');
     expect(bbcode).toContain('[b]Bossing (50% PDR)[/b]');
     expect(bbcode).toContain('[b]Bossing (KB)[/b]');
+  });
+});
+
+describe('escapeBBCode', () => {
+  it('replaces square brackets with fullwidth equivalents', () => {
+    expect(escapeBBCode('[url]test[/url]')).toBe('\uFF3Burl\uFF3Dtest\uFF3B/url\uFF3D');
+  });
+
+  it('returns string unchanged when no brackets', () => {
+    expect(escapeBBCode('Hero')).toBe('Hero');
+  });
+
+  it('handles mixed bracket content', () => {
+    expect(escapeBBCode('Buff [+20]')).toBe('Buff \uFF3B+20\uFF3D');
+  });
+});
+
+describe('renderComparisonBBCode bracket escaping', () => {
+  it('escapes brackets in proposal name outside code blocks', () => {
+    const result: ComparisonResult = {
+      proposal: {
+        name: 'Buff [Brandish]',
+        author: 'Test[er]',
+        description: 'A [test] description',
+        changes: [],
+      },
+      before: [],
+      after: [],
+      deltas: [
+        delta({
+          className: 'Hero',
+          skillName: 'Brandish',
+          tier: 'high',
+          scenario: 'Buffed',
+          before: 100000,
+          after: 110000,
+          change: 10000,
+          changePercent: 10,
+        }),
+      ],
+    };
+
+    const bbcode = renderComparisonBBCode(result);
+    expect(bbcode).toContain('Buff \uFF3BBrandish\uFF3D');
+    expect(bbcode).toContain('Test\uFF3Ber\uFF3D');
+    expect(bbcode).toContain('A \uFF3Btest\uFF3D description');
   });
 });
