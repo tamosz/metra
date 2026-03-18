@@ -652,3 +652,189 @@ describe('computeDeltas with comparisonKey', () => {
     expect(deltas[0].change).toBe(0);
   });
 });
+
+describe('rank computation', () => {
+  function makeDpsResult(dps: number) {
+    return {
+      skillName: '',
+      attackTime: 0.6,
+      damageRange: { min: 1000, max: 2000, average: 1500 },
+      skillDamagePercent: 260,
+      critDamagePercent: 390,
+      adjustedRangeNormal: 1000,
+      adjustedRangeCrit: 1500,
+      averageDamage: dps * 0.6,
+      dps,
+      uncappedDps: dps,
+      capLossPercent: 0,
+      totalCritRate: 0.15,
+      hitCount: 2,
+      hasShadowPartner: false,
+    };
+  }
+
+  it('single result gets rank 1', () => {
+    const results: ScenarioResult[] = [
+      {
+        className: 'Hero',
+        skillName: 'Brandish',
+        tier: 'high',
+        scenario: 'Buffed',
+        dps: makeDpsResult(200000),
+      },
+    ];
+
+    const deltas = computeDeltas(results, results);
+    expect(deltas).toHaveLength(1);
+    expect(deltas[0].rankBefore).toBe(1);
+    expect(deltas[0].rankAfter).toBe(1);
+  });
+
+  it('ranks are ordered by DPS (highest = rank 1)', () => {
+    const results: ScenarioResult[] = [
+      {
+        className: 'Hero',
+        skillName: 'Brandish',
+        tier: 'high',
+        scenario: 'Buffed',
+        dps: makeDpsResult(200000),
+      },
+      {
+        className: 'Dark Knight',
+        skillName: 'Crusher',
+        tier: 'high',
+        scenario: 'Buffed',
+        dps: makeDpsResult(300000),
+      },
+      {
+        className: 'Night Lord',
+        skillName: 'Triple Throw',
+        tier: 'high',
+        scenario: 'Buffed',
+        dps: makeDpsResult(250000),
+      },
+    ];
+
+    const deltas = computeDeltas(results, results);
+    const dk = deltas.find(d => d.className === 'Dark Knight')!;
+    const nl = deltas.find(d => d.className === 'Night Lord')!;
+    const hero = deltas.find(d => d.className === 'Hero')!;
+
+    expect(dk.rankBefore).toBe(1);
+    expect(nl.rankBefore).toBe(2);
+    expect(hero.rankBefore).toBe(3);
+  });
+
+  it('two skills with identical DPS get sequential ranks (no ties)', () => {
+    const results: ScenarioResult[] = [
+      {
+        className: 'Hero',
+        skillName: 'Brandish',
+        tier: 'high',
+        scenario: 'Buffed',
+        dps: makeDpsResult(200000),
+      },
+      {
+        className: 'Dark Knight',
+        skillName: 'Crusher',
+        tier: 'high',
+        scenario: 'Buffed',
+        dps: makeDpsResult(200000),
+      },
+    ];
+
+    const deltas = computeDeltas(results, results);
+    const ranks = deltas.map(d => d.rankBefore!).sort();
+    expect(ranks).toEqual([1, 2]);
+  });
+
+  it('ranks are computed per (scenario, tier) group independently', () => {
+    const results: ScenarioResult[] = [
+      {
+        className: 'Hero',
+        skillName: 'Brandish',
+        tier: 'high',
+        scenario: 'Buffed',
+        dps: makeDpsResult(300000),
+      },
+      {
+        className: 'Dark Knight',
+        skillName: 'Crusher',
+        tier: 'high',
+        scenario: 'Buffed',
+        dps: makeDpsResult(250000),
+      },
+      {
+        className: 'Hero',
+        skillName: 'Brandish',
+        tier: 'low',
+        scenario: 'Buffed',
+        dps: makeDpsResult(100000),
+      },
+      {
+        className: 'Dark Knight',
+        skillName: 'Crusher',
+        tier: 'low',
+        scenario: 'Buffed',
+        dps: makeDpsResult(120000),
+      },
+    ];
+
+    const deltas = computeDeltas(results, results);
+
+    const heroHigh = deltas.find(d => d.className === 'Hero' && d.tier === 'high')!;
+    const dkHigh = deltas.find(d => d.className === 'Dark Knight' && d.tier === 'high')!;
+    const heroLow = deltas.find(d => d.className === 'Hero' && d.tier === 'low')!;
+    const dkLow = deltas.find(d => d.className === 'Dark Knight' && d.tier === 'low')!;
+
+    expect(heroHigh.rankBefore).toBe(1);
+    expect(dkHigh.rankBefore).toBe(2);
+    expect(dkLow.rankBefore).toBe(1);
+    expect(heroLow.rankBefore).toBe(2);
+  });
+
+  it('rank changes when after DPS differs from before', () => {
+    const before: ScenarioResult[] = [
+      {
+        className: 'Hero',
+        skillName: 'Brandish',
+        tier: 'high',
+        scenario: 'Buffed',
+        dps: makeDpsResult(200000),
+      },
+      {
+        className: 'Dark Knight',
+        skillName: 'Crusher',
+        tier: 'high',
+        scenario: 'Buffed',
+        dps: makeDpsResult(300000),
+      },
+    ];
+
+    const after: ScenarioResult[] = [
+      {
+        className: 'Hero',
+        skillName: 'Brandish',
+        tier: 'high',
+        scenario: 'Buffed',
+        dps: makeDpsResult(350000),
+      },
+      {
+        className: 'Dark Knight',
+        skillName: 'Crusher',
+        tier: 'high',
+        scenario: 'Buffed',
+        dps: makeDpsResult(300000),
+      },
+    ];
+
+    const deltas = computeDeltas(before, after);
+    const hero = deltas.find(d => d.className === 'Hero')!;
+    const dk = deltas.find(d => d.className === 'Dark Knight')!;
+
+    expect(hero.rankBefore).toBe(2);
+    expect(hero.rankAfter).toBe(1);
+    expect(dk.rankBefore).toBe(1);
+    expect(dk.rankAfter).toBe(2);
+  });
+});
