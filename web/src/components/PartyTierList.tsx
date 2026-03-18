@@ -171,19 +171,28 @@ export function PartyTierList({ onLoadParty }: PartyTierListProps) {
         className={showAll ? 'overflow-y-auto rounded-md border border-border-default' : ''}
         style={showAll ? { maxHeight: '70vh' } : undefined}
       >
-        <div className={`flex flex-col ${showAll ? 'gap-0 p-1' : 'gap-1'}`}>
+        <div className={`flex flex-col ${showAll ? 'gap-px p-1' : 'gap-1'}`}>
           {displayedParties.map((party, index) => {
             const rank = index + 1;
             const isExpanded = expandedRank === rank;
             const summary = getPartySummary(party);
 
             if (showAll) {
-              // Compact mode: thin stacked bars, no labels, click to expand
+              // Compact mode: thin stacked bars, alternating backgrounds
+              const isEven = rank % 2 === 0;
               return (
                 <div key={rank}>
                   <button
                     onClick={() => setExpandedRank(isExpanded ? null : rank)}
-                    className="group flex w-full items-center gap-0 border-none bg-transparent p-0 cursor-pointer"
+                    className="group flex w-full items-center gap-0 border-none p-0 cursor-pointer"
+                    style={{
+                      backgroundColor: isExpanded
+                        ? 'rgba(255,255,255,0.06)'
+                        : isEven
+                          ? 'rgba(255,255,255,0.02)'
+                          : 'transparent',
+                      padding: '1px 0',
+                    }}
                     title={`#${rank} — ${summary} — ${Math.round(party.totalDps).toLocaleString()} DPS`}
                   >
                     <div className="flex-1">
