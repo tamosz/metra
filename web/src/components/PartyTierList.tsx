@@ -7,7 +7,7 @@ import {
   type Party,
 } from '@metra/engine';
 import { discoveredData, weaponData, attackSpeedData, mwData } from '../data/bundle.js';
-import { getClassColor, getClassColorWithOpacity } from '../utils/class-colors.js';
+import { getClassColor, getClassColorWithOpacity, VARIANT_CLASS_SLUGS } from '../utils/class-colors.js';
 import { colors } from '../theme.js';
 
 interface PartyTierListProps {
@@ -188,10 +188,11 @@ export function PartyTierList({ onLoadParty }: PartyTierListProps) {
 
   const topParties = useMemo(() => {
     try {
+      const excluded = [...VARIANT_CLASS_SLUGS];
       const opt = findOptimalParty(
         classDataMap, gearTemplates, weaponData, attackSpeedData, mwData,
         6,
-        maxDuplicates !== undefined ? { maxDuplicates } : undefined,
+        { excluded, ...(maxDuplicates !== undefined ? { maxDuplicates } : {}) },
         100_000,
       );
       return opt.topParties;

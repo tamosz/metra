@@ -1,5 +1,5 @@
 import { discoveredData } from '../data/bundle.js';
-import { getClassColor } from '../utils/class-colors.js';
+import { getClassColor, VARIANT_CLASSES } from '../utils/class-colors.js';
 
 interface PartyRosterProps {
   onAddMember: (className: string) => void;
@@ -14,7 +14,10 @@ export function PartyRoster({ onAddMember }: PartyRosterProps) {
         Class Roster
       </div>
       <div className="flex flex-col gap-1.5">
-        {classNames.map((slug) => {
+        {classNames.filter((slug) => {
+          const name = classDataMap.get(slug)?.className ?? slug;
+          return !VARIANT_CLASSES.has(name);
+        }).map((slug) => {
           const displayName = classDataMap.get(slug)?.className ?? slug;
           const color = getClassColor(displayName);
           return (
