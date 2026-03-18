@@ -72,6 +72,16 @@ export function stripCgs(state: FilterState): PresetFilterState {
   return rest;
 }
 
+function shallowObjectEqual(a: Record<string, unknown>, b: Record<string, unknown>): boolean {
+  const keysA = Object.keys(a);
+  const keysB = Object.keys(b);
+  if (keysA.length !== keysB.length) return false;
+  for (const k of keysA) {
+    if (a[k] !== b[k]) return false;
+  }
+  return true;
+}
+
 export function filterStatesEqual(a: PresetFilterState, b: PresetFilterState): boolean {
   const keysA = Object.keys(a) as (keyof PresetFilterState)[];
   const keysB = Object.keys(b) as (keyof PresetFilterState)[];
@@ -87,9 +97,9 @@ export function filterStatesEqual(a: PresetFilterState, b: PresetFilterState): b
     if (key === 'groups') {
       const ga = [...(va as string[])].sort();
       const gb = [...(vb as string[])].sort();
-      if (JSON.stringify(ga) !== JSON.stringify(gb)) return false;
+      if (ga.length !== gb.length || ga.some((v, i) => v !== gb[i])) return false;
     } else if (typeof va === 'object' && va !== null) {
-      if (JSON.stringify(va) !== JSON.stringify(vb)) return false;
+      if (!shallowObjectEqual(va as Record<string, unknown>, vb as Record<string, unknown>)) return false;
     } else {
       if (va !== vb) return false;
     }

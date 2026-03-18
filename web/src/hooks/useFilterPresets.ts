@@ -61,13 +61,13 @@ export function useFilterPresets(): FilterPresetsState {
       controls.setSelectedTier(FILTER_DEFAULTS.tier);
       controls.setBuffOverrides(defaultBuffOverrides());
       controls.setElementModifiers(defaultElementModifiers());
-      controls.setKbEnabled(false);
+      controls.setKbEnabled(FILTER_DEFAULTS.kbEnabled);
       controls.setBossAttackInterval(FILTER_DEFAULTS.bossAttackInterval);
       controls.setBossAccuracy(FILTER_DEFAULTS.bossAccuracy);
-      controls.setTargetCount(1);
-      controls.setCapEnabled(true);
+      controls.setTargetCount(FILTER_DEFAULTS.targetCount);
+      controls.setCapEnabled(FILTER_DEFAULTS.capEnabled);
       controls.setActiveGroups(defaultActiveGroups());
-      controls.setBreakdownEnabled(false);
+      controls.setBreakdownEnabled(FILTER_DEFAULTS.breakdownEnabled);
 
       // Overlay preset values
       if (state.tier !== undefined) controls.setSelectedTier(state.tier);
@@ -112,31 +112,30 @@ export function useFilterPresets(): FilterPresetsState {
       const state = stripCgs(buildFilterState(controls));
       const id = 'preset-' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
       const preset: FilterPreset = { id, name, state, builtIn: false };
-      const next = [...userPresets, preset];
+      const current = loadUserPresets();
+      const next = [...current, preset];
       setUserPresets(next);
       saveUserPresets(next);
       setActivePresetId(id);
     },
-    [controls, userPresets],
+    [controls],
   );
 
   const remove = useCallback(
     (id: string) => {
       if (id.startsWith('builtin-')) {
-        const next = new Set(dismissedIds);
-        next.add(id);
-        setDismissedIds(next);
-        saveDismissedIds(next);
+        const current = loadDismissedIds();
+        current.add(id);
+        setDismissedIds(current);
+        saveDismissedIds(current);
       } else {
-        const next = userPresets.filter((p) => p.id !== id);
+        const next = loadUserPresets().filter((p) => p.id !== id);
         setUserPresets(next);
         saveUserPresets(next);
       }
-      if (activePresetId === id) {
-        setActivePresetId(null);
-      }
+      setActivePresetId((prev) => (prev === id ? null : prev));
     },
-    [userPresets, dismissedIds, activePresetId],
+    [],
   );
 
   return { presets, activePresetId, isDirty, save, remove, apply, revert, deselect };
