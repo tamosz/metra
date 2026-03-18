@@ -10,6 +10,7 @@ import { useSimulationControls } from '../../context/SimulationControlsContext.j
 import { discoveredData } from '../../data/bundle.js';
 import { skillSlug } from '@engine/proposals/apply.js';
 import { buildDeltaMap, deltaMapKey } from '../../utils/delta-map.js';
+import type { AnimatedDpsResult } from '../../hooks/useAnimatedDps.js';
 
 type SortColumn = 'class' | 'skill' | 'tier' | 'dps' | 'capLoss';
 type SortDirection = 'asc' | 'desc';
@@ -59,11 +60,13 @@ export function RankingTable({
   allResults,
   capEnabled,
   editComparison,
+  animation,
 }: {
   data: { className: string; skillName: string; tier: string; scenario: string; dps: DpsResult; description?: string; isComposite?: boolean; comboSubResults?: ComboSubResult[] }[];
   allResults: ScenarioResult[];
   capEnabled: boolean;
   editComparison?: ComparisonResult | null;
+  animation?: AnimatedDpsResult;
 }) {
   const { editEnabled, editChanges, addEditChange, updateEditChange, removeEditChange } = useSimulationControls();
 

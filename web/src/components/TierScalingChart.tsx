@@ -15,6 +15,7 @@ import { useIsMobile } from '../hooks/useIsMobile.js';
 import { colors } from '../theme.js';
 import { resolveActiveScenario } from '../utils/scenario.js';
 import { buildDeltaMap, deltaMapKey } from '../utils/delta-map.js';
+import type { AnimatedDpsResult } from '../hooks/useAnimatedDps.js';
 
 interface TierScalingChartProps {
   data: ScenarioResult[];
@@ -23,6 +24,7 @@ interface TierScalingChartProps {
   targetCount: number;
   selectedTier: string;
   editComparison?: ComparisonResult | null;
+  animation?: AnimatedDpsResult;
 }
 
 const TIER_ORDER = ['low', 'mid', 'high', 'perfect'];
@@ -33,7 +35,7 @@ const TIER_LABELS: Record<string, string> = {
   perfect: 'Perfect',
 };
 
-export function TierScalingChart({ data, capEnabled, activeGroups, targetCount, selectedTier, editComparison }: TierScalingChartProps) {
+export function TierScalingChart({ data, capEnabled, activeGroups, targetCount, selectedTier, editComparison, animation }: TierScalingChartProps) {
   const isMobile = useIsMobile();
   const [hoveredKey, setHoveredKey] = useState<string | null>(null);
 

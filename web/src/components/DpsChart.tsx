@@ -16,6 +16,7 @@ import { colors } from '../theme.js';
 import { useSimulationControls } from '../context/SimulationControlsContext.js';
 import { buildDeltaMap, deltaMapKey } from '../utils/delta-map.js';
 import { type BuffBreakdownMap, breakdownKey } from '../hooks/useBuffBreakdown.js';
+import type { AnimatedDpsResult } from '../hooks/useAnimatedDps.js';
 
 // Custom bar shape that overlays a ghost bar showing the baseline DPS when an edit change is active.
 // Recharts renders multiple <Bar> components side-by-side (grouped), so we use a single Bar with a
@@ -49,9 +50,10 @@ interface DpsChartProps {
   data: ScenarioResult[];
   editComparison?: ComparisonResult | null;
   breakdownMap?: BuffBreakdownMap;
+  animation?: AnimatedDpsResult;
 }
 
-export function DpsChart({ data, editComparison, breakdownMap }: DpsChartProps) {
+export function DpsChart({ data, editComparison, breakdownMap, animation }: DpsChartProps) {
   const { capEnabled } = useSimulationControls();
   const isMobile = useIsMobile();
 
