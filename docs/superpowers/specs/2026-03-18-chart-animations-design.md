@@ -33,9 +33,11 @@ A custom hook (`web/src/hooks/useAnimatedDps.ts`) that tracks previous DPS value
 - `enabled` is false (edit mode active — edit mode has its own ghost bar visual language)
 - `editComparison` is non-null (filter changes during active edits should not trigger animation to avoid conflict with ghost bars)
 
-Both `DpsChart` and `RankingTable` consume this hook.
+**Called once in Dashboard**, results passed down to `DpsChart`, `RankingTable`, and `TierScalingChart` as props. This ensures a single `transitionId`, a single previous-value snapshot, and consistent `isHighImpact` flags across all views.
 
-**Testing:** Co-located `useAnimatedDps.test.ts` covering: first-render suppression, high-impact detection, uniform-shift suppression, disabled flag behavior.
+**Division by zero:** When `meanAbsoluteChange` is 0 (no entries changed), all `changeRatio` values are 0 and no emphasis fires.
+
+**Testing:** Co-located `useAnimatedDps.test.ts` covering: first-render suppression, high-impact detection, uniform-shift suppression, disabled flag behavior, zero-change edge case. Tests will need to mock `window.matchMedia` for the reduced-motion path.
 
 ## DPS Bar Chart (`DpsChart.tsx`)
 
@@ -43,17 +45,18 @@ Two animation layers. Recharts recreates SVG `<rect>` elements on data changes (
 
 ### Bar Width Animation via rAF Interpolation
 
-The custom bar shape component (`AnimatedBarShape`, replacing `GhostBarShape` for non-edit mode) reads `previousDps` from the animation hook and uses an internal `requestAnimationFrame` loop to interpolate width from old to new over 400ms. This works because:
-- The shape receives `previousDps` and `dps` as props via the chart data
-- On mount, it starts at `previousWidth` and animates to `targetWidth`
-- Uses a local `useState` + `useEffect` with rAF to drive the interpolation
-- When `prefersReducedMotion` is true, renders at final width immediately
+Recharts may unmount/remount shape components on data changes, so the shape component itself must be stateless (no `useState`/`useEffect`). Instead, the rAF interpolation state lives in the parent `DpsChart` component:
+
+- `DpsChart` maintains a `useRef<Map<string, number>>` of interpolated DPS values, keyed by entry uid
+- A `useEffect` in `DpsChart` starts rAF loops when data changes: for each entry, interpolate from `previousDps` to current `dps` over 400ms, updating the ref map and forcing re-render via a counter state
+- The custom bar shape (`AnimatedBarShape`) is stateless — it reads `interpolatedDps` from its chart data props and renders a `<rect>` at the interpolated width
+- When `prefersReducedMotion` is true, skip interpolation and render at final width immediately
 
 When edit mode is active, fall back to the existing `GhostBarShape` — these two modes are mutually exclusive.
 
 ### Stacked Bar Mode (Buff Breakdown)
 
-When `breakdownEnabled` is true (4 stacked `<Bar>` segments), animate the total bar width using the same rAF approach on the outermost segment. Inner segment proportions update instantly — animating each independently would be distracting and the total width transition already communicates the change.
+When `breakdownEnabled` is true (4 stacked `<Bar>` segments), skip width animation — stacked segments are independent Recharts `<Bar>` components with no single element controlling total width. Stacked bars update instantly and rely on emphasis pulses + ranking table animations for visual feedback. This avoids complexity for a mode that's less commonly used.
 
 ### Bar Chart Reorder
 
@@ -62,8 +65,9 @@ Bar chart does NOT animate vertical reorder. Recharts does not provide stable DO
 ### High-Impact Emphasis
 
 For entries where `isHighImpact` is true:
-- The animated bar shape applies a brief SVG `<animate>` on `fillOpacity`: pulse from 0.8 → 1.0 → 0.5 → 0.8 over ~1s
-- Plus a `filter: drop-shadow(0 0 6px classColor)` that fades via a second `<animate>` on `filter` opacity
+- The animated bar shape includes SVG `<animate>` elements:
+  - `<animate attributeName="fill-opacity" values="0.8;1;0.5;0.8" keyTimes="0;0.3;0.7;1" dur="1s" fill="remove" />`
+  - A drop-shadow filter with animated opacity for the glow effect
 - Emphasis is keyed to `transitionId` — the shape component checks if its `transitionId` prop matches the current one to decide whether to include the `<animate>` elements. On subsequent renders with the same id, animation has already completed and the static state shows.
 
 ## Ranking Table (`RankingTable.tsx`)
@@ -72,12 +76,15 @@ Three animation layers. Unlike Recharts SVG, React preserves `<tr>` DOM elements
 
 ### Row Reorder (FLIP)
 
-1. Before render: snapshot each row's `getBoundingClientRect().top` in a ref, keyed by `rowKey`
-2. After render in `useLayoutEffect`: read new Y positions for each row
-3. For rows that moved: apply `transform: translateY(oldY - newY)` immediately (row appears at old position)
-4. Next frame (`requestAnimationFrame`): remove the transform with `transition: transform 400ms ease-out` (row slides to new position)
+The existing code wraps each row in `<Fragment key={rowKey}>` containing the main `<tr>` and optional expanded `<tr>`. FLIP targets the main `<tr>` elements via ref callbacks (not the Fragment key), since we need direct DOM references for position measurement.
 
-Rows need `position: relative` in their styles. The ref map is cleared after each animation cycle.
+1. Each main `<tr>` registers itself in a ref map via a callback ref: `ref={(el) => rowRefs.current.set(rowKey, el)}`
+2. Before render: snapshot each row's `getBoundingClientRect().top` from the ref map, keyed by `rowKey`
+3. After render in `useLayoutEffect`: read new Y positions from the same ref map
+4. For rows that moved: apply `transform: translateY(oldY - newY)` immediately (row appears at old position)
+5. Next frame (`requestAnimationFrame`): remove the transform with `transition: transform 400ms ease-out` (row slides to new position)
+
+Rows need `position: relative` in their styles. The position snapshot is cleared after each animation cycle.
 
 **Expanded rows:** If a row is expanded (detail panel visible), skip its FLIP animation — the variable height makes position tracking unreliable. Collapse expanded rows on filter change, or simply let them jump to their new position.
 
@@ -99,7 +106,7 @@ The DPS number in each row smoothly counts up/down using `useAnimatedNumber`:
 
 No shared rAF loop — each cell runs independently. 30-50 independent rAF callbacks is negligible overhead and simpler to implement correctly than a shared scheduler.
 
-**Testing:** Co-located `useAnimatedNumber.test.ts` covering: interpolation, cleanup on unmount, reduced motion bypass.
+**Testing:** Co-located `useAnimatedNumber.test.ts` covering: interpolation, cleanup on unmount, reduced motion bypass. Tests need to mock `requestAnimationFrame` (e.g., `vi.useFakeTimers()`) since jsdom does not polyfill it by default.
 
 ## Tier Scaling Line Chart (`TierScalingChart.tsx`)
 
@@ -107,12 +114,12 @@ No shared rAF loop — each cell runs independently. 30-50 independent rAF callb
 
 Do NOT use Recharts' `isAnimationActive` — it re-triggers on any prop change including hover state (`strokeWidth`, `strokeOpacity`), causing lines to re-animate their paths on every hover enter/leave.
 
-Instead, apply CSS transitions directly to the SVG `<path>` elements post-render:
-- After each render, use a `useLayoutEffect` + `ref` on the chart container to query all `path.recharts-line-curve` elements
-- Apply `transition: d 400ms ease-out` (CSS `d` property transition, supported in modern browsers)
-- This lets lines smoothly morph between path shapes without Recharts' animation system
+Use Recharts' `isAnimationActive` but gate it behind a `dataVersion` ref that only increments on actual data changes (not hover state). This prevents re-triggering animation on hover enter/leave:
+- Maintain a `dataVersionRef` counter in the component that increments when `chartData` changes (via `useEffect` on `chartData`)
+- Pass `isAnimationActive={true}`, `animationDuration={400}`, `animationEasing="ease-out"`, and `animationId={dataVersion}` to each `<Line>`
+- Recharts only re-triggers animation when `animationId` changes, so hover-driven re-renders (which don't change `dataVersion`) won't cause path re-animation
 
-Fallback: if `d` property transition proves unreliable across browsers, use Recharts' `isAnimationActive` but gate it behind a `dataVersion` ref that only changes on actual data updates (not hover state changes). Pass `animationId={dataVersion}` to prevent re-triggering on hover.
+Note: the exact Recharts CSS class names for line `<path>` elements should be verified via DOM inspection during implementation, in case a CSS-`d`-transition approach is needed as a fallback. CSS `d` property transition is supported in Chrome 89+, Firefox 97+, Safari 16.4+.
 
 ### High-Impact Emphasis
 
@@ -176,7 +183,8 @@ Respect `prefers-reduced-motion` media query:
 
 ## Modified Files
 
-- `web/src/components/DpsChart.tsx` — `AnimatedBarShape` with rAF width interpolation + emphasis, stacked mode handling
-- `web/src/components/dashboard/RankingTable.tsx` — FLIP rows, emphasis class, animated DPS numbers
-- `web/src/components/TierScalingChart.tsx` — CSS path transitions, emphasis on high-impact lines
+- `web/src/components/dashboard/Dashboard.tsx` — call `useAnimatedDps` once, pass animation metadata to child components
+- `web/src/components/DpsChart.tsx` — stateless `AnimatedBarShape` with parent-driven rAF width interpolation + emphasis
+- `web/src/components/dashboard/RankingTable.tsx` — FLIP rows via ref callbacks, emphasis class, animated DPS numbers
+- `web/src/components/TierScalingChart.tsx` — `dataVersion`-gated line animation, emphasis on high-impact lines
 - `web/src/index.css` — `@keyframes` for row emphasis pulse, `prefers-reduced-motion` overrides
