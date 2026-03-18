@@ -221,6 +221,26 @@ describe('Baseline mode', () => {
     expect(snapshot).toMatchSnapshot();
   });
 
+  it('mid-tier DPS matches reference values', () => {
+    const find = (className: string, skillName: string) =>
+      baselineResults.find(
+        (r) => r.className === className && r.skillName === skillName && r.tier === 'mid'
+      )!;
+
+    expect(find('Hero', 'Brandish (Sword)').dps.dps).toBeCloseTo(171636, -2);
+    expect(find('Hero (Axe)', 'Brandish').dps.dps).toBeCloseTo(153221, -2);
+    expect(find('Dark Knight', 'Spear Crusher').dps.dps).toBeCloseTo(166761, -2);
+    expect(find('Paladin', 'Blast (Holy, Sword)').dps.dps).toBeCloseTo(135245, -2);
+    expect(find('Night Lord', 'Triple Throw').dps.dps).toBeCloseTo(207789, -2);
+    expect(find('Bowmaster', 'Hurricane').dps.dps).toBeCloseTo(174010, -2);
+    expect(find('Marksman', 'Strafe (MM)').dps.dps).toBeCloseTo(174118, -2);
+    expect(find('Marksman', 'Snipe + Strafe').dps.dps).toBeCloseTo(185317, -2);
+    expect(find('Corsair', 'Battleship Cannon').dps.dps).toBeCloseTo(247577, -2);
+    expect(find('Corsair', 'Rapid Fire').dps.dps).toBeCloseTo(170557, -2);
+    expect(find('Buccaneer', 'Barrage + Demolition').dps.dps).toBeCloseTo(178870, -2);
+    expect(find('Shadower', 'Boomerang Step + Assassinate').dps.dps).toBeCloseTo(161703, -2);
+  });
+
   it('low-tier DPS matches reference values', () => {
     const lowResults = baselineResults.filter(r => r.tier === 'low');
     const snapshot = Object.fromEntries(

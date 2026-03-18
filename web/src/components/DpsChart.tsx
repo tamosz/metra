@@ -9,13 +9,15 @@ import {
 } from 'recharts';
 import type { ScenarioResult, ComparisonResult } from '@engine/proposals/types.js';
 import type React from 'react';
-import { useMemo } from 'react';
+import { useMemo, useRef, useState, useEffect } from 'react';
 import { getClassColor } from '../utils/class-colors.js';
 import { useIsMobile } from '../hooks/useIsMobile.js';
 import { colors } from '../theme.js';
 import { useSimulationControls } from '../context/SimulationControlsContext.js';
 import { buildDeltaMap, deltaMapKey } from '../utils/delta-map.js';
 import { type BuffBreakdownMap, breakdownKey } from '../hooks/useBuffBreakdown.js';
+import type { AnimatedDpsResult } from '../hooks/useAnimatedDps.js';
+import { TRANSITION_DURATION_MS } from '../utils/animation-config.js';
 
 // Custom bar shape that overlays a ghost bar showing the baseline DPS when an edit change is active.
 // Recharts renders multiple <Bar> components side-by-side (grouped), so we use a single Bar with a
@@ -39,6 +41,43 @@ function GhostBarShape(props: unknown) {
   );
 }
 
+function AnimatedBarShape(props: unknown) {
+  const { x, y, width, height, fill, fillOpacity, isHighImpact, transitionId } = props as {
+    x: number; y: number; width: number; height: number;
+    fill: string; fillOpacity: number;
+    isHighImpact?: boolean; transitionId?: number;
+  };
+
+  return (
+    <g>
+      <rect x={x} y={y} width={width} height={height} rx={3} fill={fill} fillOpacity={fillOpacity}>
+        {isHighImpact && (
+          <animate
+            key={transitionId}
+            attributeName="fill-opacity"
+            values="0.8;1;0.5;0.8"
+            keyTimes="0;0.3;0.7;1"
+            dur="1s"
+            fill="remove"
+          />
+        )}
+      </rect>
+      {isHighImpact && (
+        <rect x={x} y={y} width={width} height={height} rx={3} fill={fill} fillOpacity={0} filter={`drop-shadow(0 0 6px ${fill})`}>
+          <animate
+            key={transitionId}
+            attributeName="fill-opacity"
+            values="0;0.4;0"
+            keyTimes="0;0.3;1"
+            dur="1s"
+            fill="remove"
+          />
+        </rect>
+      )}
+    </g>
+  );
+}
+
 const BUFF_SEGMENTS = [
   { key: 'seDps', label: 'SE', color: colors.buffSe },
   { key: 'siDps', label: 'SI', color: colors.buffSi },
@@ -49,15 +88,21 @@ interface DpsChartProps {
   data: ScenarioResult[];
   editComparison?: ComparisonResult | null;
   breakdownMap?: BuffBreakdownMap;
+  animation?: AnimatedDpsResult;
 }
 
-export function DpsChart({ data, editComparison, breakdownMap }: DpsChartProps) {
+export function DpsChart({ data, editComparison, breakdownMap, animation }: DpsChartProps) {
   const { capEnabled } = useSimulationControls();
   const isMobile = useIsMobile();
+  const showStacked = !!breakdownMap;
 
   const deltaMap = useMemo(() => buildDeltaMap(editComparison), [editComparison]);
 
-  const chartData = data.map((r) => {
+  const interpolatedRef = useRef<Map<string, number>>(new Map());
+  const rafsRef = useRef<Map<string, number>>(new Map());
+  const [, forceRender] = useState(0);
+
+  const baseChartData = useMemo(() => data.map((r) => {
     const rawDps = Math.round(capEnabled ? r.dps.dps : r.dps.uncappedDps);
     let dps = rawDps;
     let baselineDps: number | undefined;
@@ -84,11 +129,15 @@ export function DpsChart({ data, editComparison, breakdownMap }: DpsChartProps) 
       }
     }
 
+    const animKey = `${r.className}|${r.skillName}|${r.tier}`;
+    const animEntry = animation?.entries.get(animKey);
+    const uid = `${r.className} — ${r.skillName} [${r.tier}]`;
+
     return {
       label: r.className,
       skillLabel: r.skillName,
       sublabel: r.tier.charAt(0).toUpperCase() + r.tier.slice(1),
-      uid: `${r.className} — ${r.skillName} [${r.tier}]`,
+      uid,
       dps,
       className: r.className,
       description: r.description,
@@ -97,8 +146,56 @@ export function DpsChart({ data, editComparison, breakdownMap }: DpsChartProps) 
       seDps,
       siDps,
       echoDps,
+      isHighImpact: animEntry?.isHighImpact ?? false,
+      transitionId: animation?.transitionId ?? 0,
     };
-  }).sort((a, b) => b.dps - a.dps);
+  }).sort((a, b) => b.dps - a.dps), [data, capEnabled, deltaMap, breakdownMap, animation]);
+
+  // Compute interpolatedDps outside useMemo so forceRender triggers recalculation
+  const chartData = baseChartData.map((d) => ({
+    ...d,
+    interpolatedDps: interpolatedRef.current.get(d.uid) ?? d.dps,
+  }));
+
+  useEffect(() => {
+    if (!animation || animation.prefersReducedMotion || editComparison || showStacked) {
+      interpolatedRef.current = new Map(baseChartData.map((d) => [d.uid, d.dps]));
+      return;
+    }
+
+    for (const d of baseChartData) {
+      const animKey = `${d.className}|${d.skillLabel}|${d.sublabel.toLowerCase()}`;
+      const animEntry = animation.entries.get(animKey);
+      const from = animEntry?.previousDps ?? d.dps;
+      const to = d.dps;
+
+      if (from === to) {
+        interpolatedRef.current.set(d.uid, to);
+        continue;
+      }
+
+      let startTime = -1;
+      const step = (time: number) => {
+        if (startTime < 0) startTime = time;
+        const elapsed = time - startTime;
+        const progress = Math.min(elapsed / TRANSITION_DURATION_MS, 1);
+        interpolatedRef.current.set(d.uid, Math.round(from + (to - from) * progress));
+        forceRender((n) => n + 1);
+        if (progress < 1) {
+          rafsRef.current.set(d.uid, requestAnimationFrame(step));
+        }
+      };
+
+      const existingRaf = rafsRef.current.get(d.uid);
+      if (existingRaf) cancelAnimationFrame(existingRaf);
+      rafsRef.current.set(d.uid, requestAnimationFrame(step));
+    }
+
+    return () => {
+      for (const id of rafsRef.current.values()) cancelAnimationFrame(id);
+      rafsRef.current.clear();
+    };
+  }, [baseChartData, animation, editComparison, showStacked]);
 
   if (chartData.length === 0) {
     return <div className="py-10 text-center text-text-dim">No data</div>;
@@ -109,7 +206,6 @@ export function DpsChart({ data, editComparison, breakdownMap }: DpsChartProps) 
   const yAxisWidth = isMobile ? 130 : 200;
   const labelFontSize = isMobile ? 10 : 12;
   const sublabelFontSize = isMobile ? 8 : 9;
-  const showStacked = !!breakdownMap;
 
   return (
     <div data-testid="dps-chart" style={{ width: '100%', height: chartHeight + (showStacked ? 28 : 0) }}>
@@ -206,7 +302,7 @@ export function DpsChart({ data, editComparison, breakdownMap }: DpsChartProps) 
             }}
             cursor={{ fill: 'rgba(255,255,255,0.03)' }}
           />
-          {renderBars(showStacked, chartData, editComparison)}
+          {renderBars(showStacked, chartData, editComparison, animation)}
         </BarChart>
       </ResponsiveContainer>
     </div>
@@ -221,6 +317,9 @@ type ChartEntry = {
   siDps: number;
   echoDps: number;
   baselineDps?: number;
+  interpolatedDps: number;
+  isHighImpact: boolean;
+  transitionId: number;
   [key: string]: unknown;
 };
 
@@ -228,6 +327,7 @@ function renderBars(
   showStacked: boolean,
   chartData: ChartEntry[],
   editComparison: ComparisonResult | null | undefined,
+  animation: AnimatedDpsResult | undefined,
 ): React.ReactElement[] {
   if (showStacked) {
     return [
@@ -241,16 +341,22 @@ function renderBars(
       <Bar key="echo" dataKey="echoDps" stackId="dps" fill={colors.buffEcho} fillOpacity={0.85} barSize={18} radius={[0, 3, 3, 0]} />,
     ];
   }
+  const useAnimated = !editComparison && animation && !animation.prefersReducedMotion;
   return [
     <Bar
       key="dps"
-      dataKey="dps"
+      dataKey={useAnimated ? 'interpolatedDps' : 'dps'}
       radius={[0, 3, 3, 0]}
       barSize={18}
-      shape={editComparison ? GhostBarShape : undefined}
+      shape={editComparison ? GhostBarShape : (useAnimated ? AnimatedBarShape : undefined)}
     >
       {chartData.map((entry, index) => (
-        <Cell key={index} fill={getClassColor(entry.className)} fillOpacity={0.8} />
+        <Cell
+          key={index}
+          fill={getClassColor(entry.className)}
+          fillOpacity={0.8}
+          {...(useAnimated ? { isHighImpact: entry.isHighImpact, transitionId: entry.transitionId } : {})}
+        />
       ))}
     </Bar>,
   ];

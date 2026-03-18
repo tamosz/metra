@@ -22,6 +22,7 @@ import { EditPopover } from './dashboard/EditPopover.js';
 import { EfficiencyPanel } from './EfficiencyPanel.js';
 import { resolveActiveScenario } from '../utils/scenario.js';
 import { SKILL_GROUPS, isResultVisible, type SkillGroupId } from '../utils/skill-groups.js';
+import { useAnimatedDps } from '../hooks/useAnimatedDps.js';
 
 interface DashboardProps {
   simulation: SimulationData;
@@ -60,6 +61,9 @@ export function Dashboard({ simulation, buildsState }: DashboardProps) {
       .sort((a, b) => capEnabled ? b.dps.dps - a.dps.dps : b.dps.uncappedDps - a.dps.uncappedDps);
   }, [results, selectedTier, targetCount, capEnabled, activeGroups]);
 
+  const animationEnabled = !editEnabled && !comparison.result;
+  const animation = useAnimatedDps(filtered, capEnabled, animationEnabled);
+
   const visibleClassNames = useMemo(
     () => new Set(filtered.map((r) => r.className)),
     [filtered],
@@ -78,7 +82,7 @@ export function Dashboard({ simulation, buildsState }: DashboardProps) {
 
       <AssassinateBugNote classNames={[...new Set(filtered.map((r) => r.className))]} />
 
-      <TierScalingChart data={results} capEnabled={capEnabled} activeGroups={activeGroups} targetCount={targetCount} selectedTier={selectedTier} editComparison={editEnabled ? comparison.result : null} />
+      <TierScalingChart data={results} capEnabled={capEnabled} activeGroups={activeGroups} targetCount={targetCount} selectedTier={selectedTier} editComparison={editEnabled ? comparison.result : null} animation={animation} />
 
       <div className="mt-8">
         <FilterPresets presetsState={presetsState} />
@@ -127,11 +131,11 @@ export function Dashboard({ simulation, buildsState }: DashboardProps) {
       </div>
 
       <div className="mt-6">
-        <DpsChart data={filtered} editComparison={editEnabled ? comparison.result : null} breakdownMap={showBreakdown ? breakdownMap : undefined} />
+        <DpsChart data={filtered} editComparison={editEnabled ? comparison.result : null} breakdownMap={showBreakdown ? breakdownMap : undefined} animation={animation} />
       </div>
 
       <div className="mt-6">
-        <RankingTable data={filtered} allResults={results} capEnabled={capEnabled} editComparison={editEnabled ? comparison.result : null} />
+        <RankingTable data={filtered} allResults={results} capEnabled={capEnabled} editComparison={editEnabled ? comparison.result : null} animation={animation} />
       </div>
     </div>
   );
