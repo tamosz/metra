@@ -70,6 +70,8 @@ export { calculateBuildDps, type SkillDpsRow, type BuildDpsResult } from './buil
 // Party simulation
 export {
   resolvePartyBuffs,
+  simulateParty,
+  computeBuffAttribution,
   type PartyMember,
   type Party,
   type PartyBuffState,
