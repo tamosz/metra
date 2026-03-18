@@ -55,7 +55,7 @@ function applyPdr(dps: DpsResult, pdr: number): DpsResult {
 /**
  * Apply multi-target scaling to a DPS result.
  * effectiveTargets = min(skill.maxTargets, scenario.targetCount).
- * When bounceDecay is set (0 < d < 1), uses a geometric series:
+ * When bounceDecay is set, it is clamped to [0.01, 0.99] and uses a geometric series:
  *   multiplier = (1 - d^n) / (1 - d)
  * Otherwise, flat linear scaling by effectiveTargets.
  */

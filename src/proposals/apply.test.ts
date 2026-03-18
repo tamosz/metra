@@ -212,7 +212,7 @@ describe('applyProposal', () => {
       name: 'Unhide skill',
       author: 'test',
       changes: [
-        { target: 'hero.brandish-sword', field: 'hidden', to: false as unknown as number },
+        { target: 'hero.brandish-sword', field: 'hidden', to: false },
       ],
     };
 
