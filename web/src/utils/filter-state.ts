@@ -1,0 +1,99 @@
+import type { SimulationControlsContextType } from '../context/SimulationControlsContext.js';
+import { FILTER_DEFAULTS } from './filter-defaults.js';
+import { CGS_DEFAULTS } from './cgs.js';
+import { DEFAULT_SKILL_GROUPS } from './skill-groups.js';
+import type { FilterState } from './filter-url.js';
+
+export type PresetFilterState = Omit<FilterState, 'cgs'>;
+
+function setsEqual(a: Set<string>, b: Set<string>): boolean {
+  if (a.size !== b.size) return false;
+  for (const v of a) if (!b.has(v)) return false;
+  return true;
+}
+
+export function buildFilterState(controls: SimulationControlsContextType): FilterState {
+  const state: FilterState = {};
+
+  if (controls.selectedTier !== FILTER_DEFAULTS.tier) {
+    state.tier = controls.selectedTier;
+  }
+
+  if (Object.keys(controls.buffOverrides).length > 0) {
+    state.buffs = controls.buffOverrides;
+  }
+
+  if (Object.keys(controls.elementModifiers).length > 0) {
+    state.elements = controls.elementModifiers;
+  }
+
+  if (controls.kbEnabled) {
+    const kb: FilterState['kb'] = {};
+    if (controls.bossAttackInterval !== FILTER_DEFAULTS.bossAttackInterval) {
+      kb.interval = controls.bossAttackInterval;
+    }
+    if (controls.bossAccuracy !== FILTER_DEFAULTS.bossAccuracy) {
+      kb.accuracy = controls.bossAccuracy;
+    }
+    state.kb = kb;
+  }
+
+  if (controls.targetCount !== FILTER_DEFAULTS.targetCount) {
+    state.targets = controls.targetCount;
+  }
+
+  if (controls.capEnabled !== FILTER_DEFAULTS.capEnabled) {
+    state.cap = controls.capEnabled;
+  }
+
+  const tierDefaults = CGS_DEFAULTS[controls.selectedTier] ?? CGS_DEFAULTS.perfect;
+  if (
+    controls.cgsValues.cape !== tierDefaults.cape ||
+    controls.cgsValues.glove !== tierDefaults.glove ||
+    controls.cgsValues.shoe !== tierDefaults.shoe
+  ) {
+    state.cgs = controls.cgsValues;
+  }
+
+  const defaultGroups = new Set<string>(DEFAULT_SKILL_GROUPS);
+  if (!setsEqual(controls.activeGroups as Set<string>, defaultGroups)) {
+    state.groups = [...controls.activeGroups].sort();
+  }
+
+  if (controls.breakdownEnabled !== FILTER_DEFAULTS.breakdownEnabled) {
+    state.breakdown = controls.breakdownEnabled;
+  }
+
+  return state;
+}
+
+export function stripCgs(state: FilterState): PresetFilterState {
+  const { cgs: _, ...rest } = state;
+  return rest;
+}
+
+export function filterStatesEqual(a: PresetFilterState, b: PresetFilterState): boolean {
+  const keysA = Object.keys(a) as (keyof PresetFilterState)[];
+  const keysB = Object.keys(b) as (keyof PresetFilterState)[];
+
+  if (keysA.length !== keysB.length) return false;
+
+  for (const key of keysA) {
+    if (!(key in b)) return false;
+
+    const va = a[key];
+    const vb = b[key];
+
+    if (key === 'groups') {
+      const ga = [...(va as string[])].sort();
+      const gb = [...(vb as string[])].sort();
+      if (JSON.stringify(ga) !== JSON.stringify(gb)) return false;
+    } else if (typeof va === 'object' && va !== null) {
+      if (JSON.stringify(va) !== JSON.stringify(vb)) return false;
+    } else {
+      if (va !== vb) return false;
+    }
+  }
+
+  return true;
+}
