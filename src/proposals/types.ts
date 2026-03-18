@@ -7,9 +7,9 @@ export interface ProposalChange {
   /** Field to change on the SkillEntry, e.g. "basePower". */
   field: string;
   /** Optional: expected current value (throws on mismatch to catch stale proposals). */
-  from?: number | string;
+  from?: number | string | boolean;
   /** New value to set. */
-  to: number | string;
+  to: number | string | boolean;
 }
 
 /** A balance change proposal. */

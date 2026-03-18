@@ -179,6 +179,62 @@ describe('applyProposal', () => {
     expect(brandish.maxTargets).toBe(6);
   });
 
+  it('accepts knockbackRecovery field', () => {
+    const proposal: Proposal = {
+      name: 'Set KB recovery',
+      author: 'test',
+      changes: [
+        { target: 'hero.brandish-sword', field: 'knockbackRecovery', to: 0 },
+      ],
+    };
+
+    const modified = applyProposal(classDataMap, proposal);
+    const brandish = modified.get('hero')!.skills.find((s) => s.name === 'Brandish (Sword)')!;
+    expect(brandish.knockbackRecovery).toBe(0);
+  });
+
+  it('accepts bounceDecay field', () => {
+    const proposal: Proposal = {
+      name: 'Add bounce decay',
+      author: 'test',
+      changes: [
+        { target: 'hero.brandish-sword', field: 'bounceDecay', to: 0.7 },
+      ],
+    };
+
+    const modified = applyProposal(classDataMap, proposal);
+    const brandish = modified.get('hero')!.skills.find((s) => s.name === 'Brandish (Sword)')!;
+    expect(brandish.bounceDecay).toBe(0.7);
+  });
+
+  it('accepts hidden field', () => {
+    const proposal: Proposal = {
+      name: 'Unhide skill',
+      author: 'test',
+      changes: [
+        { target: 'hero.brandish-sword', field: 'hidden', to: false },
+      ],
+    };
+
+    const modified = applyProposal(classDataMap, proposal);
+    const brandish = modified.get('hero')!.skills.find((s) => s.name === 'Brandish (Sword)')!;
+    expect(brandish.hidden).toBe(false);
+  });
+
+  it('accepts seCritFormula field', () => {
+    const proposal: Proposal = {
+      name: 'Change crit formula',
+      author: 'test',
+      changes: [
+        { target: 'hero.brandish-sword', field: 'seCritFormula', to: 'multiplicative' },
+      ],
+    };
+
+    const modified = applyProposal(classDataMap, proposal);
+    const brandish = modified.get('hero')!.skills.find((s) => s.name === 'Brandish (Sword)')!;
+    expect(brandish.seCritFormula).toBe('multiplicative');
+  });
+
   it('applies multiple changes across classes', () => {
     const proposal: Proposal = {
       name: 'Multi-class rebalance',

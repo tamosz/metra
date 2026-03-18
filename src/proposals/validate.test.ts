@@ -103,11 +103,11 @@ describe('validateProposal', () => {
     expect(result.changes[0].to).toBe('2H Axe');
   });
 
-  it('rejects non-number non-string to', () => {
+  it('rejects non-number non-string non-boolean to', () => {
     expect(() => validateProposal({
       ...valid,
-      changes: [{ target: 'hero.brandish-sword', field: 'basePower', to: true }],
-    })).toThrow('to must be a finite number or string');
+      changes: [{ target: 'hero.brandish-sword', field: 'basePower', to: [1, 2] }],
+    })).toThrow('to must be a finite number, string, or boolean');
   });
 
   it('rejects change with NaN to', () => {
@@ -117,11 +117,11 @@ describe('validateProposal', () => {
     })).toThrow('to must be a finite number');
   });
 
-  it('rejects non-number non-string from', () => {
+  it('rejects non-number non-string non-boolean from', () => {
     expect(() => validateProposal({
       ...valid,
-      changes: [{ target: 'hero.brandish-sword', field: 'basePower', from: true, to: 280 }],
-    })).toThrow('from must be a finite number or string');
+      changes: [{ target: 'hero.brandish-sword', field: 'basePower', from: [1, 2], to: 280 }],
+    })).toThrow('from must be a finite number, string, or boolean');
   });
 
   it('reports the change index in error messages', () => {
@@ -132,5 +132,27 @@ describe('validateProposal', () => {
         { target: 'bad', field: 'x', to: 1 },
       ],
     })).toThrow('changes[1]');
+  });
+
+  it('rejects trailing hyphen in class part of target', () => {
+    expect(() => validateProposal({
+      ...valid,
+      changes: [{ target: 'hero-.brandish', field: 'basePower', to: 280 }],
+    })).toThrow('className.skill-slug');
+  });
+
+  it('rejects trailing hyphen in skill part of target', () => {
+    expect(() => validateProposal({
+      ...valid,
+      changes: [{ target: 'hero.brandish-', field: 'basePower', to: 280 }],
+    })).toThrow('className.skill-slug');
+  });
+
+  it('accepts single-character class and skill parts', () => {
+    const result = validateProposal({
+      ...valid,
+      changes: [{ target: 'h.b', field: 'basePower', to: 280 }],
+    });
+    expect(result.changes[0].target).toBe('h.b');
   });
 });

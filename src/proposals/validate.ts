@@ -51,7 +51,7 @@ export function validateProposal(data: unknown): Proposal {
   };
 }
 
-const TARGET_RE = /^[a-z][a-z0-9-]*\.[a-z][a-z0-9-]*$/;
+const TARGET_RE = /^[a-z]([a-z0-9-]*[a-z0-9])?\.[a-z]([a-z0-9-]*[a-z0-9])?$/;
 
 function validateChange(data: unknown, index: number): ProposalChange {
   const prefix = `changes[${index}]`;
@@ -76,8 +76,8 @@ function validateChange(data: unknown, index: number): ProposalChange {
     if (!isFinite(obj.to)) {
       throw new ProposalValidationError(`${prefix}.to must be a finite number`);
     }
-  } else if (typeof obj.to !== 'string') {
-    throw new ProposalValidationError(`${prefix}.to must be a finite number or string`);
+  } else if (typeof obj.to !== 'string' && typeof obj.to !== 'boolean') {
+    throw new ProposalValidationError(`${prefix}.to must be a finite number, string, or boolean`);
   }
 
   if (obj.from !== undefined) {
@@ -85,15 +85,15 @@ function validateChange(data: unknown, index: number): ProposalChange {
       if (!isFinite(obj.from)) {
         throw new ProposalValidationError(`${prefix}.from must be a finite number if provided`);
       }
-    } else if (typeof obj.from !== 'string') {
-      throw new ProposalValidationError(`${prefix}.from must be a finite number or string if provided`);
+    } else if (typeof obj.from !== 'string' && typeof obj.from !== 'boolean') {
+      throw new ProposalValidationError(`${prefix}.from must be a finite number, string, or boolean if provided`);
     }
   }
 
   return {
     target: obj.target,
     field: obj.field,
-    to: obj.to as number | string,
-    from: obj.from as number | string | undefined,
+    to: obj.to as number | string | boolean,
+    from: obj.from as number | string | boolean | undefined,
   };
 }
