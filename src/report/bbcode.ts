@@ -36,7 +36,7 @@ export function renderComparisonBBCode(result: ComparisonResult): string {
   lines.push('[b]Changes:[/b]');
   for (const change of result.proposal.changes) {
     const fromStr = change.from !== undefined ? ` (was ${change.from})` : '';
-    lines.push(`  ${change.target}.${change.field}: [b]${change.to}[/b]${fromStr}`);
+    lines.push(`  ${escapeBBCode(change.target)}.${change.field}: [b]${change.to}[/b]${fromStr}`);
   }
   lines.push('');
 
