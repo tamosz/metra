@@ -14,6 +14,8 @@ import { TOGGLE_ON, TOGGLE_OFF } from '../utils/styles.js';
 import { useSimulationControls } from '../context/SimulationControlsContext.js';
 import { useEditComparison } from '../hooks/useEditComparison.js';
 import { useBuffBreakdown } from '../hooks/useBuffBreakdown.js';
+import { FilterPresets } from './FilterPresets.js';
+import { useFilterPresets } from '../hooks/useFilterPresets.js';
 import { RankingTable } from './dashboard/RankingTable.js';
 import { TargetSpinner } from './dashboard/TargetSpinner.js';
 import { EditPopover } from './dashboard/EditPopover.js';
@@ -28,6 +30,7 @@ interface DashboardProps {
 
 export function Dashboard({ simulation, buildsState }: DashboardProps) {
   const controls = useSimulationControls();
+  const presetsState = useFilterPresets();
   const { selectedTier, targetCount, capEnabled, cgsValues, setCgsValues, editEnabled, setEditEnabled, editChanges, breakdownEnabled, setBreakdownEnabled, activeGroups, toggleGroup } = controls;
   const { results, tiers } = simulation;
 
@@ -77,7 +80,11 @@ export function Dashboard({ simulation, buildsState }: DashboardProps) {
 
       <TierScalingChart data={results} capEnabled={capEnabled} activeGroups={activeGroups} targetCount={targetCount} selectedTier={selectedTier} editComparison={editEnabled ? comparison.result : null} />
 
-      <div className="mt-8 rounded-lg border border-border-subtle bg-bg-raised/50 px-5 py-4">
+      <div className="mt-8">
+        <FilterPresets presetsState={presetsState} />
+      </div>
+
+      <div className="mt-3 rounded-lg border border-border-subtle bg-bg-raised/50 px-5 py-4">
         <div className="flex flex-wrap items-end gap-x-4 gap-y-3">
           <BuffToggles visibleClassNames={visibleClassNames} />
           <ElementToggles />
