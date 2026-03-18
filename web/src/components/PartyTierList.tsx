@@ -1,4 +1,5 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useRef } from 'react';
+import { useVirtualizer } from '@tanstack/react-virtual';
 import {
   findOptimalParty,
   computeBuffAttribution,
@@ -17,7 +18,6 @@ function getDisplayName(slug: string): string {
   return discoveredData.classDataMap.get(slug)?.className ?? slug;
 }
 
-/** Compact party summary: class names with counts for duplicates. */
 function getPartySummary(party: PartySimulationResult): string {
   const counts = new Map<string, number>();
   for (const m of party.members) {
@@ -36,7 +36,6 @@ const DIVERSITY_OPTIONS = [
   { label: 'All unique', value: 1 },
 ] as const;
 
-/** Stacked segments for a single party bar. Sorted by DPS descending. */
 function StackedBar({
   party,
   maxDps,
@@ -82,6 +81,104 @@ function StackedBar({
   );
 }
 
+/** Virtualized list of compact bars for "show all" mode. */
+function VirtualizedBars({
+  parties,
+  maxDps,
+  expandedRank,
+  expandedAttribution,
+  onToggleExpand,
+  onLoadParty,
+}: {
+  parties: PartySimulationResult[];
+  maxDps: number;
+  expandedRank: number | null;
+  expandedAttribution: PartySimulationResult | null;
+  onToggleExpand: (rank: number) => void;
+  onLoadParty: (members: { className: string }[]) => void;
+}) {
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const ROW_HEIGHT = 8;
+
+  const virtualizer = useVirtualizer({
+    count: parties.length,
+    getScrollElement: () => scrollRef.current,
+    estimateSize: (index) => {
+      const rank = index + 1;
+      return rank === expandedRank ? ROW_HEIGHT + 220 : ROW_HEIGHT;
+    },
+    overscan: 50,
+  });
+
+  return (
+    <div
+      ref={scrollRef}
+      className="overflow-y-auto rounded-md border border-border-default"
+      style={{ maxHeight: '70vh' }}
+    >
+      <div
+        style={{
+          height: virtualizer.getTotalSize(),
+          width: '100%',
+          position: 'relative',
+        }}
+      >
+        {virtualizer.getVirtualItems().map((virtualRow) => {
+          const index = virtualRow.index;
+          const party = parties[index];
+          const rank = index + 1;
+          const isExpanded = expandedRank === rank;
+          const isEven = rank % 2 === 0;
+          const summary = getPartySummary(party);
+
+          return (
+            <div
+              key={virtualRow.key}
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                width: '100%',
+                height: virtualRow.size,
+                transform: `translateY(${virtualRow.start}px)`,
+              }}
+            >
+              <button
+                onClick={() => onToggleExpand(rank)}
+                className="flex w-full items-center gap-0 border-none p-0 cursor-pointer"
+                style={{
+                  backgroundColor: isExpanded
+                    ? 'rgba(255,255,255,0.06)'
+                    : isEven
+                      ? 'rgba(255,255,255,0.02)'
+                      : 'transparent',
+                  height: ROW_HEIGHT,
+                }}
+                title={`#${rank} — ${summary} — ${Math.round(party.totalDps).toLocaleString()} DPS`}
+              >
+                <div className="flex-1" style={{ padding: '1px 4px' }}>
+                  <StackedBar party={party} maxDps={maxDps} compact isExpanded={isExpanded} />
+                </div>
+              </button>
+
+              {isExpanded && expandedAttribution && (
+                <div style={{ padding: '0 4px' }}>
+                  <ExpandedDetail
+                    rank={rank}
+                    party={expandedAttribution}
+                    onLoadParty={onLoadParty}
+                    onClose={() => onToggleExpand(rank)}
+                  />
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 export function PartyTierList({ onLoadParty }: PartyTierListProps) {
   const [expandedRank, setExpandedRank] = useState<number | null>(null);
   const [maxDuplicates, setMaxDuplicates] = useState<number | undefined>(2);
@@ -103,7 +200,6 @@ export function PartyTierList({ onLoadParty }: PartyTierListProps) {
     }
   }, [classDataMap, gearTemplates, maxDuplicates]);
 
-  // Compute attribution only for the expanded party (on demand)
   const expandedAttribution = useMemo(() => {
     if (expandedRank === null || expandedRank > topParties.length) return null;
     const party = topParties[expandedRank - 1];
@@ -116,7 +212,10 @@ export function PartyTierList({ onLoadParty }: PartyTierListProps) {
   }
 
   const maxDps = topParties[0].totalDps;
-  const displayedParties = showAll ? topParties : topParties.slice(0, 25);
+
+  const handleToggleExpand = (rank: number) => {
+    setExpandedRank((prev) => (prev === rank ? null : rank));
+  };
 
   return (
     <div>
@@ -167,56 +266,26 @@ export function PartyTierList({ onLoadParty }: PartyTierListProps) {
       </div>
 
       {/* Bar chart */}
-      <div
-        className={showAll ? 'overflow-y-auto rounded-md border border-border-default' : ''}
-        style={showAll ? { maxHeight: '70vh' } : undefined}
-      >
-        <div className={`flex flex-col ${showAll ? 'gap-px p-1' : 'gap-1'}`}>
-          {displayedParties.map((party, index) => {
+      {showAll ? (
+        <VirtualizedBars
+          parties={topParties}
+          maxDps={maxDps}
+          expandedRank={expandedRank}
+          expandedAttribution={expandedAttribution}
+          onToggleExpand={handleToggleExpand}
+          onLoadParty={onLoadParty}
+        />
+      ) : (
+        <div className="flex flex-col gap-1">
+          {topParties.slice(0, 25).map((party, index) => {
             const rank = index + 1;
             const isExpanded = expandedRank === rank;
             const summary = getPartySummary(party);
 
-            if (showAll) {
-              // Compact mode: thin stacked bars, alternating backgrounds
-              const isEven = rank % 2 === 0;
-              return (
-                <div key={rank}>
-                  <button
-                    onClick={() => setExpandedRank(isExpanded ? null : rank)}
-                    className="group flex w-full items-center gap-0 border-none p-0 cursor-pointer"
-                    style={{
-                      backgroundColor: isExpanded
-                        ? 'rgba(255,255,255,0.06)'
-                        : isEven
-                          ? 'rgba(255,255,255,0.02)'
-                          : 'transparent',
-                      padding: '1px 0',
-                    }}
-                    title={`#${rank} — ${summary} — ${Math.round(party.totalDps).toLocaleString()} DPS`}
-                  >
-                    <div className="flex-1">
-                      <StackedBar party={party} maxDps={maxDps} compact isExpanded={isExpanded} />
-                    </div>
-                  </button>
-
-                  {isExpanded && expandedAttribution && (
-                    <ExpandedDetail
-                      rank={rank}
-                      party={expandedAttribution}
-                      onLoadParty={onLoadParty}
-                      onClose={() => setExpandedRank(null)}
-                    />
-                  )}
-                </div>
-              );
-            }
-
-            // Normal mode: full bars with labels
             return (
               <div key={rank}>
                 <button
-                  onClick={() => setExpandedRank(isExpanded ? null : rank)}
+                  onClick={() => handleToggleExpand(rank)}
                   className="group flex w-full items-center gap-2 rounded border-none bg-transparent p-0 text-left cursor-pointer"
                 >
                   <span className="w-7 flex-shrink-0 text-right text-[11px] tabular-nums text-text-dim">
@@ -249,7 +318,7 @@ export function PartyTierList({ onLoadParty }: PartyTierListProps) {
             );
           })}
         </div>
-      </div>
+      )}
     </div>
   );
 }
@@ -273,7 +342,7 @@ function ExpandedDetail({
 
   return (
     <div
-      className="ml-9 mt-1 mb-2 rounded-md border p-3"
+      className="mt-1 mb-2 rounded-md border p-3"
       style={{
         borderColor: `${barColor}40`,
         backgroundColor: getClassColorWithOpacity(getDisplayName(topMember.className), 0.04),
