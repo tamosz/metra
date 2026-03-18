@@ -126,8 +126,6 @@ export function simulateParty(
   return { party, totalDps, members, activeBuffs };
 }
 
-const NO_BUFFS: PartyBuffState = { sharpEyes: false, speedInfusion: false };
-
 export function computeBuffAttribution(
   party: Party,
   classDataMap: Map<string, ClassSkillData>,
@@ -137,20 +135,6 @@ export function computeBuffAttribution(
   mwData: MWData,
 ): PartySimulationResult {
   const fullResult = simulateParty(party, classDataMap, gearTemplates, weaponData, attackSpeedData, mwData);
-
-  // Solo baseline: DPS with no party-derived buffs
-  for (let i = 0; i < party.members.length; i++) {
-    const sim = simulateMember(
-      party.members[i].className,
-      classDataMap,
-      gearTemplates,
-      weaponData,
-      attackSpeedData,
-      mwData,
-      NO_BUFFS,
-    );
-    fullResult.members[i].soloBaseline = sim?.dps ?? 0;
-  }
 
   // Buff attribution: for each member, simulate without them and measure total DPS loss
   for (let i = 0; i < party.members.length; i++) {

@@ -314,48 +314,4 @@ describe('computeBuffAttribution', () => {
     expect(archer.buffContribution).toBeGreaterThan(0);
   });
 
-  it('soloBaseline is DPS without any party buffs', () => {
-    const party: Party = {
-      name: 'test',
-      members: [{ className: 'hero' }, { className: 'bowmaster' }],
-    };
-    // Build with SE=false so difference is meaningful
-    const heroBuildNoSE = makeBuild({ sharpEyes: false });
-    const archerBuild = makeArcherBuild();
-    const classDataMap = new Map([
-      ['hero', makeClassData()],
-      ['bowmaster', makeArcherClassData()],
-    ]);
-    const gearTemplates = new Map([
-      ['hero-perfect', heroBuildNoSE],
-      ['bowmaster-perfect', archerBuild],
-    ]);
-
-    const result = computeBuffAttribution(party, classDataMap, gearTemplates, weaponData, attackSpeedData, mwData);
-
-    for (const member of result.members) {
-      // Solo baseline (no party buffs) should be <= party DPS
-      expect(member.soloBaseline).toBeGreaterThan(0);
-      expect(member.soloBaseline).toBeLessThanOrEqual(member.dps);
-    }
-  });
-
-  it('soloBaseline equals party DPS when no buffs are provided', () => {
-    // Two night-lords: no party buffs, so solo baseline = party DPS
-    const nightLordData = makeClassData({ className: 'night-lord' });
-    const nightLordBuild = makeBuild({ className: 'night-lord', sharpEyes: false, speedInfusion: false });
-
-    const party: Party = {
-      name: 'test',
-      members: [{ className: 'night-lord' }, { className: 'night-lord' }],
-    };
-    const classDataMap = new Map([['night-lord', nightLordData]]);
-    const gearTemplates = new Map([['night-lord-perfect', nightLordBuild]]);
-
-    const result = computeBuffAttribution(party, classDataMap, gearTemplates, weaponData, attackSpeedData, mwData);
-
-    for (const member of result.members) {
-      expect(member.soloBaseline).toBeCloseTo(member.dps, 5);
-    }
-  });
 });

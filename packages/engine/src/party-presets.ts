@@ -14,7 +14,7 @@ export const PARTY_PRESETS: PresetParty[] = [
   },
   {
     name: 'No Support',
-    description: 'Pure DPS — no SE, SI, or Rage',
+    description: 'Pure DPS — no SE or SI',
     members: [],
     autoComputed: true,
   },
@@ -56,7 +56,7 @@ export const PARTY_PRESETS: PresetParty[] = [
   },
   {
     name: 'Pirate Crew',
-    description: 'Buccaneers and Corsairs with SE and Rage',
+    description: 'Buccaneers and Corsairs with SE',
     members: [
       { className: 'bucc' },
       { className: 'bucc' },
@@ -68,7 +68,7 @@ export const PARTY_PRESETS: PresetParty[] = [
   },
   {
     name: 'Mage Council',
-    description: 'All three mage classes with SE and Rage',
+    description: 'All three mage classes with SE',
     members: [
       { className: 'archmage-il' },
       { className: 'archmage-fp' },
@@ -80,7 +80,7 @@ export const PARTY_PRESETS: PresetParty[] = [
   },
   {
     name: 'Archer Stack',
-    description: 'Maximum ranged DPS with SI and Rage',
+    description: 'Maximum ranged DPS with SI',
     members: [
       { className: 'bowmaster' },
       { className: 'bowmaster' },

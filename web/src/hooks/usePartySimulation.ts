@@ -34,14 +34,18 @@ export function usePartySimulation(members: string[]): UsePartySimulationResult 
   const presets = useMemo(() => {
     return PARTY_PRESETS.map(preset => {
       if (!preset.autoComputed) return preset;
-      if (preset.name === 'Meta') {
-        const opt = findOptimalParty(classDataMap, gearTemplates, weaponData, attackSpeedData, mwData);
-        return { ...preset, members: opt.optimal.members.map(m => ({ className: m.className })) };
-      }
-      if (preset.name === 'No Support') {
-        const opt = findOptimalParty(classDataMap, gearTemplates, weaponData, attackSpeedData, mwData, 6,
-          { excluded: ['bowmaster', 'marksman', 'bucc', 'hero', 'hero-axe'] });
-        return { ...preset, members: opt.optimal.members.map(m => ({ className: m.className })) };
+      try {
+        if (preset.name === 'Meta') {
+          const opt = findOptimalParty(classDataMap, gearTemplates, weaponData, attackSpeedData, mwData);
+          return { ...preset, members: opt.optimal.members.map(m => ({ className: m.className })) };
+        }
+        if (preset.name === 'No Support') {
+          const opt = findOptimalParty(classDataMap, gearTemplates, weaponData, attackSpeedData, mwData, 6,
+            { excluded: ['bowmaster', 'marksman', 'bucc'] });
+          return { ...preset, members: opt.optimal.members.map(m => ({ className: m.className })) };
+        }
+      } catch {
+        // optimization failed — return preset with empty members (will be disabled in UI)
       }
       return preset;
     });

@@ -15,23 +15,27 @@ export function PartyBuilder() {
   const { result, presets, slotSwapOptions } = usePartySimulation(members);
 
   const addMember = useCallback((className: string) => {
-    if (members.length >= 6) return;
-    const next = [...members, className];
-    setMembers(next);
-    setPartyInUrl(next);
-  }, [members]);
+    setMembers(prev => {
+      if (prev.length >= 6) return prev;
+      const next = [...prev, className];
+      setPartyInUrl(next);
+      return next;
+    });
+  }, []);
 
   const removeMember = useCallback((index: number) => {
-    const next = members.filter((_, i) => i !== index);
-    setMembers(next);
-    setPartyInUrl(next);
-    setSelectedMemberIndex((prev) => {
+    setMembers(prev => {
+      const next = prev.filter((_, i) => i !== index);
+      setPartyInUrl(next);
+      return next;
+    });
+    setSelectedMemberIndex(prev => {
       if (prev === null) return null;
       if (prev === index) return null;
       if (prev > index) return prev - 1;
       return prev;
     });
-  }, [members]);
+  }, []);
 
   const setPartyMembers = useCallback((next: { className: string }[]) => {
     const classNames = next.map((m) => m.className);

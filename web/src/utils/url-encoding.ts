@@ -132,7 +132,10 @@ export function decodeParty(encoded: string): string[] | null {
   try {
     if (!encoded) return null;
     if (encoded === EMPTY_PARTY_SENTINEL) return [];
-    return encoded.split(',').filter(Boolean).slice(0, 6);
+    return encoded.split(',')
+      .filter(Boolean)
+      .filter(s => /^[a-z][a-z0-9-]*$/.test(s))
+      .slice(0, 6);
   } catch {
     return null;
   }
