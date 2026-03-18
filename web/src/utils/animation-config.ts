@@ -3,4 +3,3 @@ export const EMPHASIS_DURATION_MS = 1000;
 export const HIGH_IMPACT_THRESHOLD = 1.5;
 export const UNIFORM_SHIFT_STDDEV_THRESHOLD = 0.05;
 export const EMPHASIS_DEBOUNCE_MS = 100;
-export const EASING = 'ease-out';

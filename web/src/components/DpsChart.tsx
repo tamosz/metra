@@ -102,7 +102,7 @@ export function DpsChart({ data, editComparison, breakdownMap, animation }: DpsC
   const rafsRef = useRef<Map<string, number>>(new Map());
   const [, forceRender] = useState(0);
 
-  const chartData = data.map((r) => {
+  const chartData = useMemo(() => data.map((r) => {
     const rawDps = Math.round(capEnabled ? r.dps.dps : r.dps.uncappedDps);
     let dps = rawDps;
     let baselineDps: number | undefined;
@@ -150,7 +150,7 @@ export function DpsChart({ data, editComparison, breakdownMap, animation }: DpsC
       isHighImpact: animEntry?.isHighImpact ?? false,
       transitionId: animation?.transitionId ?? 0,
     };
-  }).sort((a, b) => b.dps - a.dps);
+  }).sort((a, b) => b.dps - a.dps), [data, capEnabled, deltaMap, breakdownMap, animation, interpolatedRef]);
 
   useEffect(() => {
     if (!animation || animation.prefersReducedMotion || editComparison || showStacked) {

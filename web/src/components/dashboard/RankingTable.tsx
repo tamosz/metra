@@ -283,7 +283,7 @@ export function RankingTable({
       positions.set(key, el.getBoundingClientRect().top);
     }
     prevPositions.current = positions;
-  }, [sorted, animation?.transitionId]);
+  }, [sorted, animation?.transitionId, expandedRows]);
 
   useEffect(() => {
     if (!animation || animation.transitionId === emphasisTransitionId) return;
