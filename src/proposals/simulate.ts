@@ -46,7 +46,7 @@ function applyScenarioOverrides(
  * Apply Physical Damage Reduction to a DPS result.
  * Returns a new result with DPS and averageDamage scaled by (1 - pdr).
  */
-function applyPdr(dps: DpsResult, pdr: number): DpsResult {
+export function applyPdr(dps: DpsResult, pdr: number): DpsResult {
   const factor = 1 - pdr;
   return { ...dps, dps: dps.dps * factor, averageDamage: dps.averageDamage * factor, uncappedDps: dps.uncappedDps * factor };
 }
@@ -59,7 +59,7 @@ function applyPdr(dps: DpsResult, pdr: number): DpsResult {
  *   multiplier = (1 - d^n) / (1 - d)
  * Otherwise, flat linear scaling by effectiveTargets.
  */
-function applyTargetCount(dps: DpsResult, effectiveTargets: number, bounceDecay?: number): DpsResult {
+export function applyTargetCount(dps: DpsResult, effectiveTargets: number, bounceDecay?: number): DpsResult {
   let multiplier: number;
   if (bounceDecay != null && bounceDecay > 0 && bounceDecay < 1) {
     multiplier = (1 - bounceDecay ** effectiveTargets) / (1 - bounceDecay);
@@ -73,7 +73,7 @@ function applyTargetCount(dps: DpsResult, effectiveTargets: number, bounceDecay?
  * Apply knockback uptime multiplier to a DPS result.
  * Returns a new result with DPS and averageDamage scaled by the uptime factor.
  */
-function applyKnockbackUptime(dps: DpsResult, uptimeMultiplier: number): DpsResult {
+export function applyKnockbackUptime(dps: DpsResult, uptimeMultiplier: number): DpsResult {
   return { ...dps, dps: dps.dps * uptimeMultiplier, averageDamage: dps.averageDamage * uptimeMultiplier, uncappedDps: dps.uncappedDps * uptimeMultiplier };
 }
 

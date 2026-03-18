@@ -12,8 +12,9 @@ import type {
   MWData,
   ClassSkillData,
   CharacterBuild,
+  DpsResult,
 } from '@metra/engine';
-import { runSimulation } from './simulate.js';
+import { runSimulation, applyPdr, applyTargetCount, applyKnockbackUptime } from './simulate.js';
 import type { SimulationConfig, GearTemplateMap } from './simulate.js';
 import type { ScenarioConfig } from './types.js';
 
@@ -1244,5 +1245,249 @@ describe('modifier composition (PDR + KB + element + targets)', () => {
     // Paladin Blast has no maxTargets field (single target), so targets shouldn't scale it
     // combined ≈ elemOnly × 0.7
     expect(combined.dps.dps).toBeCloseTo(elemOnly.dps.dps * 0.7, 0);
+  });
+});
+
+function makeDpsResult(dps: number): DpsResult {
+  return {
+    skillName: 'TestSkill',
+    attackTime: 0.6,
+    damageRange: { min: 1000, max: 2000, average: 1500 },
+    skillDamagePercent: 260,
+    critDamagePercent: 390,
+    adjustedRangeNormal: 1000,
+    adjustedRangeCrit: 1500,
+    averageDamage: dps * 0.6,
+    dps,
+    uncappedDps: dps,
+    capLossPercent: 0,
+    totalCritRate: 0.15,
+    hitCount: 2,
+    hasShadowPartner: false,
+  };
+}
+
+describe('applyPdr (isolated)', () => {
+  it('PDR = 0 leaves DPS unchanged', () => {
+    const input = makeDpsResult(100000);
+    const result = applyPdr(input, 0);
+    expect(result.dps).toBe(100000);
+    expect(result.averageDamage).toBe(input.averageDamage);
+    expect(result.uncappedDps).toBe(100000);
+  });
+
+  it('PDR = 0.5 halves DPS, averageDamage, and uncappedDps', () => {
+    const input = makeDpsResult(200000);
+    const result = applyPdr(input, 0.5);
+    expect(result.dps).toBe(100000);
+    expect(result.averageDamage).toBe(input.averageDamage * 0.5);
+    expect(result.uncappedDps).toBe(100000);
+  });
+
+  it('PDR = 1 zeroes DPS, averageDamage, and uncappedDps', () => {
+    const input = makeDpsResult(150000);
+    const result = applyPdr(input, 1);
+    expect(result.dps).toBe(0);
+    expect(result.averageDamage).toBe(0);
+    expect(result.uncappedDps).toBe(0);
+  });
+
+  it('does not mutate the input DpsResult', () => {
+    const input = makeDpsResult(100000);
+    const originalDps = input.dps;
+    applyPdr(input, 0.5);
+    expect(input.dps).toBe(originalDps);
+  });
+
+  it('preserves non-scaled fields', () => {
+    const input = makeDpsResult(100000);
+    const result = applyPdr(input, 0.3);
+    expect(result.attackTime).toBe(input.attackTime);
+    expect(result.skillDamagePercent).toBe(input.skillDamagePercent);
+    expect(result.critDamagePercent).toBe(input.critDamagePercent);
+    expect(result.hitCount).toBe(input.hitCount);
+    expect(result.totalCritRate).toBe(input.totalCritRate);
+  });
+});
+
+describe('applyTargetCount (isolated)', () => {
+  it('effectiveTargets = 1 leaves DPS unchanged', () => {
+    const input = makeDpsResult(100000);
+    const result = applyTargetCount(input, 1);
+    expect(result.dps).toBe(100000);
+    expect(result.averageDamage).toBe(input.averageDamage);
+    expect(result.uncappedDps).toBe(100000);
+  });
+
+  it('effectiveTargets = 6, no bounceDecay → flat 6x scaling', () => {
+    const input = makeDpsResult(100000);
+    const result = applyTargetCount(input, 6);
+    expect(result.dps).toBe(600000);
+    expect(result.averageDamage).toBe(input.averageDamage * 6);
+    expect(result.uncappedDps).toBe(600000);
+  });
+
+  it('effectiveTargets = 6, bounceDecay = 0.7 → geometric series', () => {
+    const input = makeDpsResult(100000);
+    const result = applyTargetCount(input, 6, 0.7);
+    const expected = (1 - 0.7 ** 6) / (1 - 0.7);
+    expect(result.dps).toBeCloseTo(100000 * expected, 2);
+    expect(result.averageDamage).toBeCloseTo(input.averageDamage * expected, 2);
+    expect(result.uncappedDps).toBeCloseTo(100000 * expected, 2);
+  });
+
+  it('bounceDecay = 0 falls back to flat scaling', () => {
+    const input = makeDpsResult(100000);
+    const result = applyTargetCount(input, 4, 0);
+    expect(result.dps).toBe(400000);
+  });
+
+  it('bounceDecay = 1 falls back to flat scaling', () => {
+    const input = makeDpsResult(100000);
+    const result = applyTargetCount(input, 3, 1);
+    expect(result.dps).toBe(300000);
+  });
+
+  it('bounceDecay undefined falls back to flat scaling', () => {
+    const input = makeDpsResult(100000);
+    const result = applyTargetCount(input, 5, undefined);
+    expect(result.dps).toBe(500000);
+  });
+
+  it('does not mutate the input DpsResult', () => {
+    const input = makeDpsResult(100000);
+    const originalDps = input.dps;
+    applyTargetCount(input, 6, 0.7);
+    expect(input.dps).toBe(originalDps);
+  });
+
+  it('preserves non-scaled fields', () => {
+    const input = makeDpsResult(100000);
+    const result = applyTargetCount(input, 3);
+    expect(result.attackTime).toBe(input.attackTime);
+    expect(result.hitCount).toBe(input.hitCount);
+    expect(result.totalCritRate).toBe(input.totalCritRate);
+  });
+});
+
+describe('applyKnockbackUptime (isolated)', () => {
+  it('uptime = 1.0 leaves DPS unchanged', () => {
+    const input = makeDpsResult(100000);
+    const result = applyKnockbackUptime(input, 1.0);
+    expect(result.dps).toBe(100000);
+    expect(result.averageDamage).toBe(input.averageDamage);
+    expect(result.uncappedDps).toBe(100000);
+  });
+
+  it('uptime = 0.5 halves DPS, averageDamage, and uncappedDps', () => {
+    const input = makeDpsResult(200000);
+    const result = applyKnockbackUptime(input, 0.5);
+    expect(result.dps).toBe(100000);
+    expect(result.averageDamage).toBe(input.averageDamage * 0.5);
+    expect(result.uncappedDps).toBe(100000);
+  });
+
+  it('uptime = 0 zeroes DPS', () => {
+    const input = makeDpsResult(150000);
+    const result = applyKnockbackUptime(input, 0);
+    expect(result.dps).toBe(0);
+    expect(result.averageDamage).toBe(0);
+    expect(result.uncappedDps).toBe(0);
+  });
+
+  it('does not mutate the input DpsResult', () => {
+    const input = makeDpsResult(100000);
+    const originalDps = input.dps;
+    applyKnockbackUptime(input, 0.5);
+    expect(input.dps).toBe(originalDps);
+  });
+
+  it('preserves non-scaled fields', () => {
+    const input = makeDpsResult(100000);
+    const result = applyKnockbackUptime(input, 0.8);
+    expect(result.attackTime).toBe(input.attackTime);
+    expect(result.skillDamagePercent).toBe(input.skillDamagePercent);
+    expect(result.hitCount).toBe(input.hitCount);
+  });
+});
+
+describe('mixed rotation with missing skill reference', () => {
+  it('silently skips rotation when a referenced skill does not exist', () => {
+    const classData: ClassSkillData = {
+      className: 'TestClass',
+      mastery: 0.6,
+      primaryStat: 'DEX',
+      secondaryStat: 'STR',
+      sharpEyesCritRate: 0.15,
+      sharpEyesCritDamageBonus: 140,
+      seCritFormula: 'addBeforeMultiply',
+      damageFormula: 'standard',
+      skills: [
+        {
+          name: 'Skill A',
+          basePower: 380,
+          multiplier: 1.2,
+          hitCount: 4,
+          speedCategory: 'Battleship Cannon',
+          weaponType: 'Gun',
+        },
+      ],
+      mixedRotations: [
+        {
+          name: 'Mixed A+Missing',
+          description: 'References a skill that does not exist',
+          components: [
+            { skill: 'Skill A', weight: 0.8 },
+            { skill: 'Nonexistent Skill', weight: 0.2 },
+          ],
+        },
+      ],
+    };
+
+    const build: CharacterBuild = {
+      className: 'TestClass',
+      baseStats: { STR: 4, DEX: 700, INT: 4, LUK: 4 },
+      gearStats: { STR: 40, DEX: 200, INT: 0, LUK: 0 },
+      totalWeaponAttack: 100,
+      weaponType: 'Gun',
+      weaponSpeed: 5,
+      attackPotion: 60,
+      projectile: 0,
+      echoActive: true,
+      mwLevel: 20,
+      speedInfusion: true,
+      sharpEyes: true,
+    };
+
+    const localWeaponData: WeaponData = {
+      types: [{ name: 'Gun', slashMultiplier: 3.6, stabMultiplier: 3.6 }],
+    };
+
+    const localAttackSpeedData: AttackSpeedData = {
+      categories: ['Battleship Cannon'],
+      entries: [{ speed: 2, times: { 'Battleship Cannon': 0.6 } }],
+    };
+
+    const localMwData: MWData = [{ level: 20, multiplier: 1.1 }];
+
+    const localClassDataMap = new Map([['testclass', classData]]);
+    const localGearTemplates: GearTemplateMap = new Map([['testclass-high', build]]);
+
+    const config: SimulationConfig = {
+      classes: ['testclass'],
+      tiers: ['high'],
+    };
+
+    const results = runSimulation(
+      config, localClassDataMap, localGearTemplates,
+      localWeaponData, localAttackSpeedData, localMwData
+    );
+
+    const mixed = results.find(r => r.skillName === 'Mixed A+Missing');
+    expect(mixed).toBeUndefined();
+
+    const skillA = results.find(r => r.skillName === 'Skill A');
+    expect(skillA).toBeDefined();
+    expect(results).toHaveLength(1);
   });
 });
