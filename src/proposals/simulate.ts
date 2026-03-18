@@ -55,14 +55,14 @@ export function applyPdr(dps: DpsResult, pdr: number): DpsResult {
 /**
  * Apply multi-target scaling to a DPS result.
  * effectiveTargets = min(skill.maxTargets, scenario.targetCount).
- * When bounceDecay is set, it is clamped to [0.01, 0.99] and uses a geometric series:
+ * When bounceDecay is in (0, 1), uses a geometric series:
  *   multiplier = (1 - d^n) / (1 - d)
  * Otherwise, flat linear scaling by effectiveTargets.
  */
 export function applyTargetCount(dps: DpsResult, effectiveTargets: number, bounceDecay?: number): DpsResult {
   let multiplier: number;
-  if (bounceDecay != null && bounceDecay !== 0) {
-    const clamped = Math.max(0.01, Math.min(bounceDecay, 0.99));
+  if (bounceDecay != null && bounceDecay > 0 && bounceDecay < 1) {
+    const clamped = Math.max(0.01, bounceDecay);
     multiplier = (1 - clamped ** effectiveTargets) / (1 - clamped);
   } else {
     multiplier = effectiveTargets;

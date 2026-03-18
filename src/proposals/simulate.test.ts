@@ -863,7 +863,7 @@ describe('bounceDecay edge cases', () => {
     sharpEyes: true,
   };
 
-  it('clamps bounceDecay >= 1 to 0.99', () => {
+  it('bounceDecay >= 1 falls back to flat scaling', () => {
     const classData = makeBounceClassData(1.0);
     const localClassDataMap = new Map([['testbounce', classData]]);
     const localGearTemplates: GearTemplateMap = new Map([['testbounce-high', bounceBuild]]);
@@ -885,13 +885,12 @@ describe('bounceDecay edge cases', () => {
     const buffed = results.find(r => r.scenario === 'Buffed')!;
     const training = results.find(r => r.scenario === 'Training 6')!;
 
-    const expectedMultiplier = (1 - 0.99 ** 6) / (1 - 0.99);
-    expect(training.dps.dps).toBeCloseTo(buffed.dps.dps * expectedMultiplier, 0);
+    expect(training.dps.dps).toBeCloseTo(buffed.dps.dps * 6, 0);
     expect(training.dps.dps).toBeGreaterThan(0);
     expect(isFinite(training.dps.dps)).toBe(true);
   });
 
-  it('clamps negative bounceDecay to 0.01', () => {
+  it('negative bounceDecay falls back to flat scaling', () => {
     const classData = makeBounceClassData(-0.5);
     const localClassDataMap = new Map([['testbounce', classData]]);
     const localGearTemplates: GearTemplateMap = new Map([['testbounce-high', bounceBuild]]);
@@ -913,8 +912,7 @@ describe('bounceDecay edge cases', () => {
     const buffed = results.find(r => r.scenario === 'Buffed')!;
     const training = results.find(r => r.scenario === 'Training 6')!;
 
-    const expectedMultiplier = (1 - 0.01 ** 6) / (1 - 0.01);
-    expect(training.dps.dps).toBeCloseTo(buffed.dps.dps * expectedMultiplier, 0);
+    expect(training.dps.dps).toBeCloseTo(buffed.dps.dps * 6, 0);
     expect(isFinite(training.dps.dps)).toBe(true);
   });
 
