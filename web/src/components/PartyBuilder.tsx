@@ -12,7 +12,7 @@ import { PartyTierList } from './PartyTierList.js';
 export function PartyBuilder() {
   const [members, setMembers] = useState<string[]>(() => getPartyFromUrl() ?? []);
   const [selectedMemberIndex, setSelectedMemberIndex] = useState<number | null>(null);
-  const { result, presets, slotSwapOptions, topParties } = usePartySimulation(members);
+  const { result, presets, slotSwapOptions } = usePartySimulation(members);
 
   const addMember = useCallback((className: string) => {
     if (members.length >= 6) return;
@@ -84,7 +84,7 @@ export function PartyBuilder() {
         <p className="mb-4 text-sm text-text-muted">
           Best party compositions ranked by total DPS. Click a bar to see the breakdown.
         </p>
-        <PartyTierList topParties={topParties} onLoadParty={setPartyMembers} />
+        <PartyTierList onLoadParty={setPartyMembers} />
       </div>
     </div>
   );
