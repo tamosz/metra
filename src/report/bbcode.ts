@@ -12,6 +12,10 @@ import {
 } from './utils.js';
 import type { BaselineReportOptions } from './markdown.js';
 
+export function escapeBBCode(value: string): string {
+  return value.replace(/\[/g, '\uFF3B').replace(/\]/g, '\uFF3D');
+}
+
 /**
  * Render a ComparisonResult as BBCode for royals.ms forums (Xenforo).
  * Uses monospaced [code] blocks with aligned columns for broad compatibility.
@@ -19,12 +23,12 @@ import type { BaselineReportOptions } from './markdown.js';
 export function renderComparisonBBCode(result: ComparisonResult): string {
   const lines: string[] = [];
 
-  lines.push(`[b]Proposal: ${result.proposal.name}[/b]`);
+  lines.push(`[b]Proposal: ${escapeBBCode(result.proposal.name)}[/b]`);
   if (result.proposal.author) {
-    lines.push(`[i]Author: ${result.proposal.author}[/i]`);
+    lines.push(`[i]Author: ${escapeBBCode(result.proposal.author)}[/i]`);
   }
   if (result.proposal.description) {
-    lines.push(`[i]${result.proposal.description}[/i]`);
+    lines.push(`[i]${escapeBBCode(result.proposal.description)}[/i]`);
   }
   lines.push('');
 
@@ -32,7 +36,7 @@ export function renderComparisonBBCode(result: ComparisonResult): string {
   lines.push('[b]Changes:[/b]');
   for (const change of result.proposal.changes) {
     const fromStr = change.from !== undefined ? ` (was ${change.from})` : '';
-    lines.push(`  ${change.target}.${change.field}: [b]${change.to}[/b]${fromStr}`);
+    lines.push(`  ${escapeBBCode(change.target)}.${change.field}: [b]${change.to}[/b]${fromStr}`);
   }
   lines.push('');
 
@@ -40,7 +44,7 @@ export function renderComparisonBBCode(result: ComparisonResult): string {
   const groups = groupDeltasByScenario(result.deltas);
 
   for (const group of groups) {
-    lines.push(`[b]${group.scenario}[/b]`);
+    lines.push(`[b]${escapeBBCode(group.scenario)}[/b]`);
     lines.push('[code]');
     renderCodeTable(lines, group.deltas);
     lines.push('[/code]');
@@ -66,7 +70,7 @@ export function renderBaselineBBCode(
   const groups = groupResultsByScenario(results);
 
   for (const group of groups) {
-    lines.push(`[b]${group.scenario}[/b]`);
+    lines.push(`[b]${escapeBBCode(group.scenario)}[/b]`);
     lines.push('[code]');
     renderBaselineCodeTable(lines, group.results, showCapLoss);
     lines.push('[/code]');

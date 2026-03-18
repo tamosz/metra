@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { renderComparisonReport, renderBaselineReport } from './markdown.js';
+import { renderComparisonReport, renderBaselineReport, escapePipe } from './markdown.js';
 import type { ComparisonResult, DeltaEntry, ScenarioResult } from '../proposals/types.js';
 import type { DpsResult } from '@metra/engine';
 
@@ -506,5 +506,66 @@ describe('renderComparisonReport with rank columns', () => {
 
     const report = renderComparisonReport(result);
     expect(report).not.toContain('| Rank |');
+  });
+});
+
+describe('escapePipe', () => {
+  it('escapes pipe characters', () => {
+    expect(escapePipe('Archmage I/L')).toBe('Archmage I/L');
+    expect(escapePipe('Archmage I|L')).toBe('Archmage I\\|L');
+  });
+
+  it('returns string unchanged when no pipes', () => {
+    expect(escapePipe('Hero')).toBe('Hero');
+  });
+
+  it('escapes multiple pipes', () => {
+    expect(escapePipe('a|b|c')).toBe('a\\|b\\|c');
+  });
+});
+
+describe('renderBaselineReport pipe escaping', () => {
+  it('escapes pipe characters in class names', () => {
+    const results: ScenarioResult[] = [
+      { className: 'Archmage I|L', skillName: 'Chain Lightning', tier: 'high', scenario: 'Buffed', dps: mockDpsResult(200000) },
+    ];
+
+    const report = renderBaselineReport(results);
+    expect(report).toContain('Archmage I\\|L');
+  });
+
+  it('escapes pipe characters in skill names', () => {
+    const results: ScenarioResult[] = [
+      { className: 'Hero', skillName: 'Slash|Bash', tier: 'high', scenario: 'Buffed', dps: mockDpsResult(200000) },
+    ];
+
+    const report = renderBaselineReport(results);
+    expect(report).toContain('Slash\\|Bash');
+  });
+});
+
+describe('renderComparisonReport pipe escaping', () => {
+  it('escapes pipe characters in delta class and skill names', () => {
+    const result: ComparisonResult = {
+      proposal: { name: 'Test', author: 'test', changes: [] },
+      before: [],
+      after: [],
+      deltas: [
+        delta({
+          className: 'Archmage I|L',
+          skillName: 'Chain|Lightning',
+          tier: 'high',
+          scenario: 'Buffed',
+          before: 200000,
+          after: 210000,
+          change: 10000,
+          changePercent: 5,
+        }),
+      ],
+    };
+
+    const report = renderComparisonReport(result);
+    expect(report).toContain('Archmage I\\|L');
+    expect(report).toContain('Chain\\|Lightning');
   });
 });

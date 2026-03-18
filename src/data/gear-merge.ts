@@ -43,7 +43,7 @@ export function mergeGearTemplate(
 
   const breakdown = { ...tier.gearBreakdown };
   for (const slot of CGS_SLOTS) {
-    if (breakdown[slot]) continue;
+    if (breakdown[slot] !== undefined) continue;
     breakdown[slot] = { [statName]: defaults.cgs[slot] };
   }
 

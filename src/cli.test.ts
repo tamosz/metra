@@ -2,7 +2,7 @@ import { describe, it, expect, afterEach } from 'vitest';
 import { writeFileSync, mkdtempSync } from 'fs';
 import { join } from 'path';
 import { tmpdir } from 'os';
-import { loadProposal, parseTargetsFlag } from './cli.js';
+import { loadProposal, parseTargetsFlag, main } from './cli.js';
 
 describe('loadProposal', () => {
   function withTempFile(filename: string, content: string): string {
@@ -51,6 +51,21 @@ describe('loadProposal', () => {
       changes: [],
     }));
     expect(() => loadProposal(path)).toThrow(/at least one change/);
+  });
+});
+
+describe('main error handling', () => {
+  const origArgv = process.argv;
+  afterEach(() => { process.argv = origArgv; });
+
+  it('throws when given a nonexistent proposal path', () => {
+    process.argv = ['node', 'cli.ts', '/nonexistent/proposal.json'];
+    expect(() => main()).toThrow(/Failed to parse/);
+  });
+
+  it('throws when --targets has an invalid value', () => {
+    process.argv = ['node', 'cli.ts', '--targets', 'abc'];
+    expect(() => main()).toThrow(/positive integer/);
   });
 });
 

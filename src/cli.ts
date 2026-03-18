@@ -54,7 +54,7 @@ export function parseKbFlags(): { bossAttackInterval: number; bossAccuracy: numb
   return { bossAttackInterval: interval, bossAccuracy: accuracy };
 }
 
-function main() {
+export function main() {
   const auditFlag = process.argv.includes('--audit');
   const uncapped = process.argv.includes('--uncapped');
   const bullseyeOff = process.argv.includes('--no-bullseye');
@@ -167,4 +167,9 @@ function main() {
   console.log(report);
 }
 
-main();
+try {
+  main();
+} catch (err: unknown) {
+  console.error(err instanceof Error ? err.message : String(err));
+  process.exit(1);
+}

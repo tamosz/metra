@@ -11,6 +11,10 @@ import {
   groupResultsByScenario,
 } from './utils.js';
 
+export function escapePipe(value: string): string {
+  return value.replace(/\|/g, '\\|');
+}
+
 export interface BaselineReportOptions {
   showCapLoss?: boolean;
 }
@@ -95,9 +99,9 @@ function renderDeltaTable(lines: string[], deltas: DeltaEntry[]): void {
       row.push(formatRank(d.rankBefore, d.rankAfter));
     }
     row.push(
-      d.className,
-      d.skillName,
-      capitalize(d.tier),
+      escapePipe(d.className),
+      escapePipe(d.skillName),
+      escapePipe(capitalize(d.tier)),
       formatNumber(d.before),
       formatNumber(d.after),
       formatChange(d.change),
@@ -151,9 +155,9 @@ function renderBaselineTable(
     const r = sorted[i];
     const row = [
       String(i + 1),
-      r.className,
-      r.skillName,
-      capitalize(r.tier),
+      escapePipe(r.className),
+      escapePipe(r.skillName),
+      escapePipe(capitalize(r.tier)),
       formatNumber(r.dps.dps),
     ];
     if (showCapLoss) {
