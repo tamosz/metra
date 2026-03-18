@@ -41,6 +41,13 @@ A balance simulator for Royals staff and community. Every number traces back to 
 - Paladin BW: Crushed Skull (perfect tier) uses 1H BW multiplier via per-tier `weaponType` override
 - Pre-commit hooks, comprehensive test coverage
 - Filter state permalinks: encode dashboard filter state in URL (`#f=`), shareable configuration links, logo reset to defaults
+- Saved filter presets: name and save toggle combinations, one-click context switching
+- Chart animations: animated bar changes on filter toggle for instant visual feedback
+- Bullseye toggleable buff: moved from baked-in skill multiplier to post-calculation toggle
+- Hero weapon split: separate Claymore and Stonetooth classes with own skill files and templates
+- Combo sub-skill DPS breakdowns: expandable breakdown for composite skills (Bucc, Shadower, etc.)
+- Party DPS modeling: party builder with shared buff contributions (SE, SI), total party DPS, class swap analysis
+- Variant class cleanup: weapon variants hidden from party roster, only shown in rankings
 - Deployed at: https://tomeblog.com/metra
 
 ## Phase 2: Interactive UX
@@ -49,17 +56,14 @@ Make the dashboard the primary exploration tool. Reduce the distance between "I 
 
 **~~Inline "what if" editing~~** → shipped as Edit Mode (see Done)
 
-**Saved filter presets**
-- Name and save toggle combinations: "Bossing", "Training 6 mobs", "Unbuffed solo"
-- One click to switch context
+**~~Saved filter presets~~** → shipped (see Done)
+
+**~~Chart animations~~** → shipped (see Done)
 
 **Mobile filter UX**
 - Collapsible "Simulation Settings" panel, closed by default
 - Summary chip showing active state: "High tier · SE off · Holy weak"
 - Desktop keeps the current inline layout
-
-**Chart animations**
-- Animate bar changes when filters toggle — a bar growing/shrinking when you flip SE off gives instant feedback about what matters
 
 **CSV export**
 - Export simulation results for people who want to do their own analysis in sheets
@@ -73,8 +77,7 @@ Make the dashboard the primary exploration tool. Reduce the distance between "I 
 
 Items sourced from forum feedback that aren't covered elsewhere in this roadmap.
 
-**Bullseye as a toggleable buff (Corsair)**
-Bullseye's 1.2× modifier is currently baked into the `multiplier` field on Battleship Cannon and Rapid Fire. This means it can't be toggled off independently and it scales with crit in a way that may be incorrect — Sylafia argues Bullseye should apply as a post-calculation multiplier (like Berserk or element damage), not as a skill% modifier that feeds into crit. Scope: add a `bullseye` toggle to `ScenarioConfig` and `SimulationControlsContext`, move the 1.2× out of skill data and into the DPS pipeline as a late-stage multiplier (after crit). Update web UI to include the toggle. Verify against in-game behavior if possible.
+**~~Bullseye as a toggleable buff (Corsair)~~** → shipped (see Done)
 
 **Funding-based tier labels**
 Multiple users (PinaColadaPirate, Kamuna, ssmage) want tiers expressed as approximate meso costs (e.g., 10b/30b/60b/100b) rather than abstract names (low/mid/high/perfect). The concern is that "perfect" means 35b for some classes and 140b for others, making cross-class comparisons misleading. Scope: add a `fundingEstimate` field to gear templates (or to `tier-defaults.json`) with a per-class meso value. Display this in the web UI alongside or instead of the tier name (e.g., "Perfect (~80b)" in dropdowns and chart labels). This is a data + UI task, no engine changes.
@@ -83,7 +86,7 @@ Multiple users (PinaColadaPirate, Kamuna, ssmage) want tiers expressed as approx
 ~~Crushed Skull should use the 1H BW formula~~ → fixed in #128 via per-tier `weaponType` override on gear templates. Purple Surfboard is categorized as 2H BW but should use the spear damage formula — still needs investigation and a fix. May require adding a weapon-specific override if Purple Surfboard is the only weapon with this mismatch.
 
 **Per-weapon-type display in rankings**
-Currently, weapon variants within a class (e.g., Hero Sword vs Hero Axe) are separate "classes" with their own skill files. But within a single class, different weapons (e.g., Paladin BW with Purple Surfboard vs Crushed Skull) aren't shown separately. PinaColadaPirate wants every weapon type displayed in its own row. Scope: investigate whether this is already handled by the existing weapon-variant architecture (separate skill files per weapon type). If not, determine whether the right approach is adding more skill file variants or adding weapon-type grouping in the output layer. This may overlap with the Paladin weapon formula task above.
+Hero is now split into Claymore and Stonetooth variants. Other weapon splits (e.g., Paladin BW with Purple Surfboard vs Crushed Skull) still show as one class. PinaColadaPirate wants every weapon type in its own row. May overlap with the Paladin weapon formula task above.
 
 ## Phase 4: Advanced Analysis
 
@@ -95,7 +98,7 @@ Currently, weapon variants within a class (e.g., Hero Sword vs Hero Axe) are sep
 - Piercing Arrow (Bowmaster), Boomerang Step + Band of Thieves (Shadower), Barrage + Dragon Strike (Buccaneer), Torpedo (Corsair, no transformation), Flamethrower + Ice Splitter (mages, with EB30 + capsules)
 
 **Hard problems:**
-- Party DPS modeling — biggest analytical blind spot. Solo DPS doesn't capture buff contribution (SE, SI). A party builder would let you pick classes + tiers for a 6-man party and show per-member DPS with/without shared buffs, total party DPS gain from SE/SI, and the real cost of swapping an archer for another attacker. Would help archers make the case for balance adjustments.
+- ~~Party DPS modeling~~ → shipped (see Done)
 - Training efficiency (kills/hr, EXP/hr on reference mobs — AoE modeling done via `maxTargets`, still needs mob data)
 - Boss encounter simulation — Patchwerk-style sustained DPS with real-world interruptions:
   - Knockback tuning: per-skill `knockbackRecovery` is implemented, but channeled skills (Hurricane, Rapid Fire) may still need more nuance.
