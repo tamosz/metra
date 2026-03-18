@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useRef, useEffect } from 'react';
 import {
   LineChart,
   Line,
@@ -16,6 +16,7 @@ import { colors } from '../theme.js';
 import { resolveActiveScenario } from '../utils/scenario.js';
 import { buildDeltaMap, deltaMapKey } from '../utils/delta-map.js';
 import type { AnimatedDpsResult } from '../hooks/useAnimatedDps.js';
+import { TRANSITION_DURATION_MS, EMPHASIS_DURATION_MS } from '../utils/animation-config.js';
 
 interface TierScalingChartProps {
   data: ScenarioResult[];
@@ -107,6 +108,29 @@ export function TierScalingChart({ data, capEnabled, activeGroups, targetCount, 
 
     return { chartData, lines, yDomain };
   }, [data, capEnabled, activeGroups, targetCount, deltaMap]);
+
+  const dataVersion = useRef(0);
+  const prevChartDataRef = useRef(chartData);
+  if (prevChartDataRef.current !== chartData) {
+    dataVersion.current += 1;
+    prevChartDataRef.current = chartData;
+  }
+
+  const [emphasizedKeys, setEmphasizedKeys] = useState<Set<string>>(new Set());
+
+  useEffect(() => {
+    if (!animation || animation.prefersReducedMotion) return;
+    const highImpact = new Set<string>();
+    for (const line of lines) {
+      const key = `${line.className}|${line.skillName}|${selectedTier}`;
+      const entry = animation.entries.get(key);
+      if (entry?.isHighImpact) highImpact.add(line.key);
+    }
+    if (highImpact.size === 0) return;
+    setEmphasizedKeys(highImpact);
+    const timer = setTimeout(() => setEmphasizedKeys(new Set()), EMPHASIS_DURATION_MS);
+    return () => clearTimeout(timer);
+  }, [animation?.transitionId]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const chartHeight = isMobile ? 400 : 600;
   const rightMargin = isMobile ? 100 : 140;
@@ -225,17 +249,20 @@ export function TierScalingChart({ data, capEnabled, activeGroups, targetCount, 
           {lines.map((line) => {
             const isHovered = hoveredKey === line.key;
             const isDimmed = hoveredKey != null && !isHovered;
+            const isEmphasized = emphasizedKeys.has(line.key);
+            const effectiveStrokeWidth = isEmphasized ? 4 : (isHovered ? 3 : 2);
+            const effectiveStrokeOpacity = isEmphasized ? 1 : (isDimmed ? 0.12 : 0.85);
             return (
               <Line
-                key={line.key}
+                key={`${line.key}-v${dataVersion.current}`}
                 type="monotone"
                 dataKey={line.key}
                 stroke={getClassColor(line.className)}
-                strokeWidth={isHovered ? 3 : 2}
-                strokeOpacity={isDimmed ? 0.12 : 0.85}
+                strokeWidth={effectiveStrokeWidth}
+                strokeOpacity={effectiveStrokeOpacity}
                 dot={{
                   fill: getClassColor(line.className),
-                  r: isHovered ? 5 : 3,
+                  r: isHovered ? 5 : (isEmphasized ? 4 : 3),
                   fillOpacity: isDimmed ? 0.12 : 1,
                   strokeWidth: 0,
                 }}
@@ -245,7 +272,9 @@ export function TierScalingChart({ data, capEnabled, activeGroups, targetCount, 
                   strokeWidth: 0,
                   onMouseEnter: () => setHoveredKey(line.key),
                 }}
-                isAnimationActive={false}
+                isAnimationActive={!animation?.prefersReducedMotion}
+                animationDuration={TRANSITION_DURATION_MS}
+                animationEasing="ease-out"
                 connectNulls
                 label={(props: { x?: string | number; y?: string | number; index?: number }) => {
                   const { x, y, index } = props;
