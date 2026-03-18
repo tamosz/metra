@@ -160,6 +160,9 @@ React + Vite single-page app with its own `package.json`. Consumes the engine vi
 - BBCode export for royals.ms forum posts (`src/report/bbcode.ts`)
 - CGS editor — per-tier Cape/Glove/Shoe WATK overrides with saved presets via localStorage
 - Per-class saved builds — store and recall custom character configurations via localStorage
+- Saved filter presets — name and save toggle combinations, one-click context switching
+- Chart animations — animated bar transitions on filter toggle
+- Party DPS page — 6-man party builder with shared buff contributions (SE, SI), total party DPS, class swap analysis
 - Support class disclaimer — contextual note for Bishop/Archmage I/L in rankings
 - Self-explanatory tier assumptions — collapsible breakdown of what each tier includes
 - Game terminology tooltips via `utils/game-terms.ts`
