@@ -1,4 +1,4 @@
-import { Fragment, useState, useMemo, useCallback, useRef } from 'react';
+import { Fragment, useState, useMemo, useCallback, useRef, useLayoutEffect, useEffect } from 'react';
 import { SkillDetailPanel } from '../SkillDetailPanel.js';
 import { ClassIcon } from '../icons/index.js';
 import { Tooltip } from '../Tooltip.js';
@@ -11,6 +11,8 @@ import { discoveredData } from '../../data/bundle.js';
 import { skillSlug } from '@engine/proposals/apply.js';
 import { buildDeltaMap, deltaMapKey } from '../../utils/delta-map.js';
 import type { AnimatedDpsResult } from '../../hooks/useAnimatedDps.js';
+import { TRANSITION_DURATION_MS, EMPHASIS_DURATION_MS } from '../../utils/animation-config.js';
+import { useAnimatedNumber } from '../../hooks/useAnimatedNumber.js';
 
 type SortColumn = 'class' | 'skill' | 'tier' | 'dps' | 'capLoss';
 type SortDirection = 'asc' | 'desc';
@@ -53,6 +55,11 @@ export function buildTierData(
       tier: r.tier,
       dps: capEnabled ? r.dps.dps : r.dps.uncappedDps,
     }));
+}
+
+function AnimatedDpsCell({ value, prefersReducedMotion }: { value: number; prefersReducedMotion: boolean }) {
+  const animated = useAnimatedNumber(value, prefersReducedMotion ? 0 : TRANSITION_DURATION_MS);
+  return <>{formatDps(animated)}</>;
 }
 
 export function RankingTable({
@@ -98,6 +105,12 @@ export function RankingTable({
 
   const editChangesRef = useRef(editChanges);
   editChangesRef.current = editChanges;
+
+  const rowRefs = useRef<Map<string, HTMLTableRowElement>>(new Map());
+  const prevPositions = useRef<Map<string, number>>(new Map());
+
+  const [emphasisTransitionId, setEmphasisTransitionId] = useState(-1);
+  const [emphasisFading, setEmphasisFading] = useState(false);
 
   const getSkillEditInfo = useCallback((className: string, skillName: string) => {
     let classKey: string | null = null;
@@ -234,6 +247,52 @@ export function RankingTable({
     return diffs;
   }, [data, deltaMap, sortColumn, getEffectiveDps]);
 
+  useLayoutEffect(() => {
+    if (!animation || animation.prefersReducedMotion) {
+      const positions = new Map<string, number>();
+      for (const [key, el] of rowRefs.current) {
+        positions.set(key, el.getBoundingClientRect().top);
+      }
+      prevPositions.current = positions;
+      return;
+    }
+
+    const prev = prevPositions.current;
+
+    if (prev.size > 0) {
+      for (const [key, el] of rowRefs.current) {
+        const oldTop = prev.get(key);
+        if (oldTop === undefined) continue;
+        const newTop = el.getBoundingClientRect().top;
+        const delta = oldTop - newTop;
+        if (Math.abs(delta) < 1) continue;
+        if (expandedRows.has(key)) continue;
+
+        el.style.transform = `translateY(${delta}px)`;
+        el.style.transition = 'none';
+
+        requestAnimationFrame(() => {
+          el.style.transition = `transform ${TRANSITION_DURATION_MS}ms ease-out`;
+          el.style.transform = '';
+        });
+      }
+    }
+
+    const positions = new Map<string, number>();
+    for (const [key, el] of rowRefs.current) {
+      positions.set(key, el.getBoundingClientRect().top);
+    }
+    prevPositions.current = positions;
+  }, [sorted, animation?.transitionId]);
+
+  useEffect(() => {
+    if (!animation || animation.transitionId === emphasisTransitionId) return;
+    setEmphasisTransitionId(animation.transitionId);
+    setEmphasisFading(false);
+    const timer = setTimeout(() => setEmphasisFading(true), EMPHASIS_DURATION_MS);
+    return () => clearTimeout(timer);
+  }, [animation?.transitionId]);
+
   const thBase = 'px-3 py-2 text-[11px] uppercase tracking-wide text-text-dim font-medium';
   const thSortable = `${thBase} cursor-pointer select-none`;
   const columnCount = capEnabled ? 6 : 5;
@@ -282,9 +341,21 @@ export function RankingTable({
                 ? (capEnabled ? delta.after : delta.uncappedAfter)
                 : getDps(r);
               const rankDiff = visibleRankDiffs?.get(`${r.className}\0${r.skillName}\0${r.tier}`) ?? 0;
+              const animKey = `${r.className}|${r.skillName}|${r.tier}`;
+              const animEntry = animation?.entries.get(animKey);
+              const isHighImpact = (animEntry?.isHighImpact ?? false) && !emphasisFading;
               return (
                 <Fragment key={rowKey}>
                   <tr
+                    ref={(el) => {
+                      if (el) rowRefs.current.set(rowKey, el);
+                      else rowRefs.current.delete(rowKey);
+                    }}
+                    style={{
+                      position: 'relative',
+                      backgroundColor: isHighImpact ? `${getClassColor(r.className)}26` : undefined,
+                      transition: 'background-color 1s ease-out',
+                    }}
                     className={`border-b border-border-subtle hover:bg-white/[0.03] cursor-pointer ${
                       change ? 'border-l-2 border-l-accent' : ''
                     }`}
@@ -314,7 +385,9 @@ export function RankingTable({
                     <td className="px-3 py-2 text-text-muted">{tierDisplayName(r.tier)}</td>
                     <td className="px-3 py-2 text-right tabular-nums">
                       <div className="flex items-center justify-end gap-2">
-                        {formatDps(displayDps)}
+                        {animation && !animation.prefersReducedMotion
+                          ? <AnimatedDpsCell value={displayDps} prefersReducedMotion={animation.prefersReducedMotion} />
+                          : formatDps(displayDps)}
                         {change !== 0 && (
                           <span className={`inline-flex items-center rounded-full px-1.5 py-0.5 text-[10px] font-medium leading-none ${
                             change > 0 ? 'bg-emerald-500/15 text-emerald-400' : 'bg-red-500/15 text-red-400'
