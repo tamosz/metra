@@ -4,12 +4,14 @@ import { describe, it, expect, beforeAll } from 'vitest';
 import {
   loadWeapons,
   loadAttackSpeed,
+  loadMW,
   discoverClassesAndTiers,
 } from './loader.js';
 import { computeGearTotals } from './gear-utils.js';
 import type {
   WeaponData,
   AttackSpeedData,
+  MWData,
   ClassSkillData,
   CharacterBuild,
   StatName,
@@ -17,6 +19,7 @@ import type {
 
 let weaponData: WeaponData;
 let attackSpeedData: AttackSpeedData;
+let mwData: MWData;
 let classNames: string[];
 let tiers: string[];
 let classDataMap: Map<string, ClassSkillData>;
@@ -25,6 +28,7 @@ let gearTemplates: Map<string, CharacterBuild>;
 beforeAll(() => {
   weaponData = loadWeapons();
   attackSpeedData = loadAttackSpeed();
+  mwData = loadMW();
   const discovery = discoverClassesAndTiers();
   classNames = discovery.classNames;
   tiers = discovery.tiers;
@@ -277,6 +281,101 @@ describe('gear breakdown consistency', () => {
         raw.totalWeaponAttack,
         `${file}: totalWeaponAttack is ${raw.totalWeaponAttack} but breakdown sums to ${computed.totalWeaponAttack}`
       ).toBe(computed.totalWeaponAttack);
+    }
+  });
+});
+
+describe('mixed rotation skill references', () => {
+  it('every mixedRotation component references an actual skill in the class', () => {
+    for (const [, classData] of classDataMap) {
+      if (!classData.mixedRotations) continue;
+      const skillNames = new Set(classData.skills.map((s) => s.name));
+
+      for (const rotation of classData.mixedRotations) {
+        for (const component of rotation.components) {
+          expect(
+            skillNames.has(component.skill),
+            `${classData.className} mixedRotation "${rotation.name}" references skill "${component.skill}" which does not exist. Available skills: ${[...skillNames].join(', ')}`
+          ).toBe(true);
+        }
+      }
+    }
+  });
+});
+
+describe('combo group speedCategory consistency', () => {
+  // Marksman Snipe + Strafe uses distinct per-skill speed categories within the
+  // rotation (Snipe Rotation vs Strafe in Snipe Rotation) because each sub-skill
+  // has a different effective cast time. This is intentional.
+  const comboGroupSpeedExceptions = new Set(['Snipe + Strafe']);
+
+  it('all skills in a comboGroup share the same speedCategory (unless exempted)', () => {
+    for (const [, classData] of classDataMap) {
+      const comboGroups = new Map<string, { skill: string; speedCategory: string }[]>();
+
+      for (const skill of classData.skills) {
+        if (!skill.comboGroup) continue;
+        if (!comboGroups.has(skill.comboGroup)) {
+          comboGroups.set(skill.comboGroup, []);
+        }
+        comboGroups.get(skill.comboGroup)!.push({
+          skill: skill.name,
+          speedCategory: skill.speedCategory,
+        });
+      }
+
+      for (const [groupName, members] of comboGroups) {
+        if (comboGroupSpeedExceptions.has(groupName)) continue;
+        const categories = new Set(members.map((m) => m.speedCategory));
+        expect(
+          categories.size,
+          `${classData.className} comboGroup "${groupName}" has mismatched speedCategories: ${members.map((m) => `${m.skill} → ${m.speedCategory}`).join(', ')}`
+        ).toBe(1);
+      }
+    }
+  });
+});
+
+describe('element variant group compatibility', () => {
+  it('all skills in an elementVariantGroup share the same speedCategory', () => {
+    for (const [, classData] of classDataMap) {
+      const variantGroups = new Map<string, { skill: string; speedCategory: string }[]>();
+
+      for (const skill of classData.skills) {
+        if (!skill.elementVariantGroup) continue;
+        if (!variantGroups.has(skill.elementVariantGroup)) {
+          variantGroups.set(skill.elementVariantGroup, []);
+        }
+        variantGroups.get(skill.elementVariantGroup)!.push({
+          skill: skill.name,
+          speedCategory: skill.speedCategory,
+        });
+      }
+
+      for (const [groupName, members] of variantGroups) {
+        const categories = new Set(members.map((m) => m.speedCategory));
+        expect(
+          categories.size,
+          `${classData.className} elementVariantGroup "${groupName}" has mismatched speedCategories: ${members.map((m) => `${m.skill} → ${m.speedCategory}`).join(', ')}`
+        ).toBe(1);
+      }
+    }
+  });
+});
+
+describe('MW data integrity', () => {
+  it('MW entries cover levels 0 through 20', () => {
+    const levels = mwData.map((e) => e.level).sort((a, b) => a - b);
+    const expected = Array.from({ length: 21 }, (_, i) => i);
+    expect(levels).toEqual(expected);
+  });
+
+  it('every MW multiplier is >= 1.0', () => {
+    for (const entry of mwData) {
+      expect(
+        entry.multiplier,
+        `MW level ${entry.level} has multiplier ${entry.multiplier} which is < 1.0`
+      ).toBeGreaterThanOrEqual(1.0);
     }
   });
 });
