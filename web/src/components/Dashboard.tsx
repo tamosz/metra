@@ -1,6 +1,6 @@
 import { useState, useMemo, useRef, useEffect } from 'react';
 import { DpsChart } from './DpsChart.js';
-import { AssassinateBugNote } from './AssassinateBugNote.js';
+import { SimulationDisclaimer } from './SimulationDisclaimer.js';
 import type { SimulationData } from '../hooks/useSimulation.js';
 import { ElementToggles } from './ElementToggles.js';
 import { BuffToggles } from './BuffToggles.js';
@@ -75,7 +75,7 @@ export function Dashboard({ simulation }: DashboardProps) {
         </div>
       )}
 
-      <AssassinateBugNote classNames={[...new Set(filtered.map((r) => r.className))]} />
+      <SimulationDisclaimer />
 
       <div className="mt-8">
         <FilterPresets presetsState={presetsState} />
