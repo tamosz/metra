@@ -1,5 +1,5 @@
 {
-  "source": "dmg sheet rows 15-18 (Brandish), range calculator D7 (mastery). Combo multiplier 1.9x confirmed via in-game testing (https://royals.ms/forum/threads/combo-attack-damage-boost-seems-wrong.93972/) — tooltip says 220%+30%=250% but actual behavior is ~190%.",
+  "source": "dmg sheet rows 15-18 (Brandish), range calculator D7 (mastery). Combo multiplier 1.9x confirmed via in-game testing (https://royals.ms/forum/threads/combo-attack-damage-boost-seems-wrong.93972/) — tooltip says 2.5x but actual is ~1.9x.",
   "className": "Hero",
   "mastery": 0.6,
   "primaryStat": "STR",

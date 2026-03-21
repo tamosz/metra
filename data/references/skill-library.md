@@ -19,8 +19,8 @@ may override some of these (check `data/references/balance-changes.md`).
 | Holy Charge: Sword | Paladin (4th) | 140% multiplier | — | — | 300s duration |
 | Divine Charge: BW | Paladin (4th) | 140% multiplier | — | — | 300s duration |
 | Fire/Ice/Lightning Charge | WK (3rd) | 130% multiplier | — | — | 200s duration |
-| Combo Attack | Fighter (3rd) | 220% tooltip | — | — | Tooltip misleading; see discrepancy below |
-| Advanced Combo Attack | Hero (4th) | +30% tooltip | — | — | Tooltip misleading; see discrepancy below |
+| Combo Attack | Fighter (3rd) | 220% (tooltip) | — | — | Tooltip value from skill library thread; actual ~190%. See discrepancy below |
+| Advanced Combo Attack | Hero (4th) | +30% (tooltip) | — | — | Tooltip value from skill library thread; actual multiplier is lower. See discrepancy below |
 | Berserk | Dark Knight (4th) | 210% multiplier | — | — | Below 50% HP |
 
 ## Thieves
