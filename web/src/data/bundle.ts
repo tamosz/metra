@@ -91,8 +91,8 @@ export function scaleBudget(fraction: number): GearBudget {
     gearSecondary: Math.round(budget.gearSecondary * fraction),
     nonWeaponWATK: Math.round(budget.nonWeaponWATK * fraction),
     scrollBonus: Math.round(budget.scrollBonus * fraction),
-    basePrimary: Math.round(budget.basePrimary * fraction),
-    baseSecondary: Math.round(budget.baseSecondary * fraction),
+    basePrimary: budget.basePrimary,
+    baseSecondary: budget.baseSecondary,
     attackPotion: budget.attackPotion,
   };
 }
