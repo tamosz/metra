@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import type { CharacterBuild } from '@metra/engine';
-import { useSimulationControls } from '../context/SimulationControlsContext.js';
+import { useSimulationFilters } from '../context/SimulationFiltersContext.js';
 import { TOGGLE_ON, TOGGLE_OFF_RED } from '../utils/styles.js';
 
 type BuffOverrides = Partial<Pick<CharacterBuild, 'sharpEyes' | 'echoActive' | 'speedInfusion' | 'mwLevel' | 'attackPotion' | 'bullseye'>>;
@@ -29,7 +29,7 @@ interface BuffTogglesProps {
 }
 
 export function BuffToggles({ visibleClassNames }: BuffTogglesProps) {
-  const { buffOverrides: overrides, setBuffOverrides: onChange } = useSimulationControls();
+  const { buffOverrides: overrides, setBuffOverrides: onChange } = useSimulationFilters();
 
   const handleClick = (key: keyof BuffOverrides, offValue: boolean | number) => {
     const isOff = key in overrides;

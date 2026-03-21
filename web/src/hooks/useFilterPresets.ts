@@ -1,5 +1,5 @@
 import { useState, useMemo, useCallback } from 'react';
-import { useSimulationControls } from '../context/SimulationControlsContext.js';
+import { useSimulationFilters } from '../context/SimulationFiltersContext.js';
 import { buildFilterState, stripCgs, filterStatesEqual, type PresetFilterState } from '../utils/filter-state.js';
 import {
   type FilterPreset,
@@ -24,7 +24,7 @@ export interface FilterPresetsState {
 }
 
 export function useFilterPresets(): FilterPresetsState {
-  const controls = useSimulationControls();
+  const controls = useSimulationFilters();
 
   const [userPresets, setUserPresets] = useState<FilterPreset[]>(() => loadUserPresets());
   const [dismissedIds, setDismissedIds] = useState<Set<string>>(() => loadDismissedIds());

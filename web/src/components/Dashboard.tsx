@@ -11,7 +11,8 @@ import { BuffToggles } from './BuffToggles.js';
 import { KbToggle } from './KbToggle.js';
 import { CapToggle } from './CapToggle.js';
 import { TOGGLE_ON, TOGGLE_OFF } from '../utils/styles.js';
-import { useSimulationControls } from '../context/SimulationControlsContext.js';
+import { useSimulationFilters } from '../context/SimulationFiltersContext.js';
+import { useProposalEdit } from '../context/ProposalEditContext.js';
 import { useEditComparison } from '../hooks/useEditComparison.js';
 import { useBuffBreakdown } from '../hooks/useBuffBreakdown.js';
 import { FilterPresets } from './FilterPresets.js';
@@ -30,20 +31,22 @@ interface DashboardProps {
 }
 
 export function Dashboard({ simulation, buildsState }: DashboardProps) {
-  const controls = useSimulationControls();
+  const filters = useSimulationFilters();
+  const edit = useProposalEdit();
   const presetsState = useFilterPresets();
-  const { selectedTier, targetCount, capEnabled, cgsValues, setCgsValues, editEnabled, setEditEnabled, editChanges, breakdownEnabled, setBreakdownEnabled, activeGroups, toggleGroup } = controls;
+  const { selectedTier, targetCount, capEnabled, cgsValues, setCgsValues, breakdownEnabled, setBreakdownEnabled, activeGroups, toggleGroup } = filters;
+  const { editEnabled, setEditEnabled, editChanges } = edit;
   const { results, tiers } = simulation;
 
   const cgsOverride = useMemo(() => ({ tier: selectedTier, values: cgsValues }), [selectedTier, cgsValues]);
   const simOptions = useMemo(() => ({
     targetCount: targetCount > 1 ? targetCount : undefined,
-    elementModifiers: Object.keys(controls.elementModifiers).length > 0 ? controls.elementModifiers : undefined,
-    buffOverrides: Object.keys(controls.buffOverrides).length > 0 ? controls.buffOverrides : undefined,
-    kbConfig: controls.kbConfig,
+    elementModifiers: Object.keys(filters.elementModifiers).length > 0 ? filters.elementModifiers : undefined,
+    buffOverrides: Object.keys(filters.buffOverrides).length > 0 ? filters.buffOverrides : undefined,
+    kbConfig: filters.kbConfig,
     cgsOverride,
-    efficiencyOverrides: Object.keys(controls.efficiencyOverrides).length > 0 ? controls.efficiencyOverrides : undefined,
-  }), [targetCount, controls.elementModifiers, controls.buffOverrides, controls.kbConfig, cgsOverride, controls.efficiencyOverrides]);
+    efficiencyOverrides: Object.keys(filters.efficiencyOverrides).length > 0 ? filters.efficiencyOverrides : undefined,
+  }), [targetCount, filters.elementModifiers, filters.buffOverrides, filters.kbConfig, cgsOverride, filters.efficiencyOverrides]);
   const comparison = useEditComparison({
     changes: editChanges,
     ...simOptions,

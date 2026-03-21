@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { renderHook, act, cleanup } from '@testing-library/react';
 import { createElement, type ReactNode } from 'react';
-import { SimulationControlsProvider, useSimulationControls } from '../context/SimulationControlsContext.js';
+import { SimulationFiltersProvider, useSimulationFilters } from '../context/SimulationFiltersContext.js';
 import { useFilterPresets } from './useFilterPresets.js';
 import { BUILTIN_PRESETS } from '../utils/filter-presets.js';
 
@@ -9,14 +9,14 @@ const USER_KEY = 'royals-sim:filter-presets';
 const DISMISSED_KEY = 'royals-sim:filter-presets:dismissed';
 
 function wrapper({ children }: { children: ReactNode }) {
-  return createElement(SimulationControlsProvider, null, children);
+  return createElement(SimulationFiltersProvider, null, children);
 }
 
 function renderPresets() {
   return renderHook(
     () => ({
       presets: useFilterPresets(),
-      controls: useSimulationControls(),
+      controls: useSimulationFilters(),
     }),
     { wrapper },
   );

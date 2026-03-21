@@ -3,7 +3,8 @@ import { render, screen, cleanup } from '@testing-library/react';
 import { Dashboard } from './Dashboard.js';
 import type { SimulationData } from '../hooks/useSimulation.js';
 import type { BuildsState } from '../hooks/useBuilds.js';
-import { SimulationControlsProvider } from '../context/SimulationControlsContext.js';
+import { SimulationFiltersProvider } from '../context/SimulationFiltersContext.js';
+import { ProposalEditProvider } from '../context/ProposalEditContext.js';
 
 const mockDps = (dps: number) => ({
   skillName: 'Test',
@@ -62,9 +63,11 @@ Object.defineProperty(window, 'matchMedia', {
 
 function renderDashboard() {
   return render(
-    <SimulationControlsProvider>
-      <Dashboard simulation={mockSimulation} buildsState={mockBuilds} />
-    </SimulationControlsProvider>
+    <SimulationFiltersProvider>
+      <ProposalEditProvider>
+        <Dashboard simulation={mockSimulation} buildsState={mockBuilds} />
+      </ProposalEditProvider>
+    </SimulationFiltersProvider>
   );
 }
 

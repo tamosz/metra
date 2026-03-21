@@ -1,8 +1,8 @@
-import { useSimulationControls } from '../context/SimulationControlsContext.js';
+import { useSimulationFilters } from '../context/SimulationFiltersContext.js';
 import { TOGGLE_ON, TOGGLE_OFF } from '../utils/styles.js';
 
 export function CapToggle() {
-  const { capEnabled: enabled, setCapEnabled: onToggle } = useSimulationControls();
+  const { capEnabled: enabled, setCapEnabled: onToggle } = useSimulationFilters();
 
   return (
     <div className="flex flex-col gap-1">

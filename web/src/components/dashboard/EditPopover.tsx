@@ -5,14 +5,14 @@ import { discoveredData } from '../../data/bundle.js';
 import { setProposalInUrl, clearProposalFromUrl } from '../../utils/url-encoding.js';
 import { renderComparisonReport } from '@engine/report/markdown.js';
 import { renderComparisonBBCode } from '@engine/report/bbcode.js';
-import { useSimulationControls } from '../../context/SimulationControlsContext.js';
+import { useProposalEdit } from '../../context/ProposalEditContext.js';
 
 interface EditPopoverProps {
   comparison: { result: ComparisonResult | null; error: Error | null };
 }
 
 export function EditPopover({ comparison }: EditPopoverProps) {
-  const { editChanges, editMeta, setEditMeta, removeEditChange } = useSimulationControls();
+  const { editChanges, editMeta, setEditMeta, removeEditChange } = useProposalEdit();
   const [open, setOpen] = useState(false);
   const [copied, setCopied] = useState<string | null>(null);
   const ref = useRef<HTMLDivElement>(null);

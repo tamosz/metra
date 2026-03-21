@@ -11,7 +11,8 @@ import { useBuilds } from './hooks/useBuilds.js';
 import { useSavedBuilds } from './hooks/useSavedBuilds.js';
 import { getProposalFromUrl, getBuildFromUrl, getComparisonFromUrl, getPartyFromUrl } from './utils/url-encoding.js';
 import { getFilterFromUrl } from './utils/filter-url.js';
-import { SimulationControlsProvider, useSimulationControls } from './context/SimulationControlsContext.js';
+import { SimulationFiltersProvider, useSimulationFilters } from './context/SimulationFiltersContext.js';
+import { ProposalEditProvider, useProposalEdit } from './context/ProposalEditContext.js';
 import { useFilterPermalink } from './hooks/useFilterPermalink.js';
 import { ErrorBoundary } from './components/ErrorBoundary.js';
 import type { SkillGroupId } from './utils/skill-groups.js';
@@ -20,22 +21,25 @@ type Page = 'dashboard' | 'build' | 'compare' | 'formulas' | 'party';
 
 export function App() {
   return (
-    <SimulationControlsProvider>
-      <AppContent />
-    </SimulationControlsProvider>
+    <SimulationFiltersProvider>
+      <ProposalEditProvider>
+        <AppContent />
+      </ProposalEditProvider>
+    </SimulationFiltersProvider>
   );
 }
 
 function AppContent() {
-  const controls = useSimulationControls();
+  const filters = useSimulationFilters();
+  const edit = useProposalEdit();
   const buildsState = useBuilds();
   const simulation = useSimulation({
-    targetCount: controls.targetCount > 1 ? controls.targetCount : undefined,
-    elementModifiers: Object.keys(controls.elementModifiers).length > 0 ? controls.elementModifiers : undefined,
-    buffOverrides: Object.keys(controls.buffOverrides).length > 0 ? controls.buffOverrides : undefined,
-    kbConfig: controls.kbConfig,
-    cgsOverride: { tier: controls.selectedTier, values: controls.cgsValues },
-    efficiencyOverrides: Object.keys(controls.efficiencyOverrides).length > 0 ? controls.efficiencyOverrides : undefined,
+    targetCount: filters.targetCount > 1 ? filters.targetCount : undefined,
+    elementModifiers: Object.keys(filters.elementModifiers).length > 0 ? filters.elementModifiers : undefined,
+    buffOverrides: Object.keys(filters.buffOverrides).length > 0 ? filters.buffOverrides : undefined,
+    kbConfig: filters.kbConfig,
+    cgsOverride: { tier: filters.selectedTier, values: filters.cgsValues },
+    efficiencyOverrides: Object.keys(filters.efficiencyOverrides).length > 0 ? filters.efficiencyOverrides : undefined,
   });
   const savedBuildsState = useSavedBuilds();
   const buildState = useBuildExplorer();
@@ -74,7 +78,7 @@ function AppContent() {
     }
     const urlProposal = getProposalFromUrl();
     if (urlProposal) {
-      controls.loadEditState(
+      edit.loadEditState(
         urlProposal.changes,
         urlProposal.name ? { name: urlProposal.name, author: urlProposal.author || '' } : undefined,
       );
@@ -83,24 +87,24 @@ function AppContent() {
     }
     const urlFilter = getFilterFromUrl();
     if (urlFilter) {
-      if (urlFilter.tier) controls.setSelectedTier(urlFilter.tier);
-      if (urlFilter.buffs) controls.setBuffOverrides(urlFilter.buffs);
-      if (urlFilter.elements) controls.setElementModifiers(urlFilter.elements);
+      if (urlFilter.tier) filters.setSelectedTier(urlFilter.tier);
+      if (urlFilter.buffs) filters.setBuffOverrides(urlFilter.buffs);
+      if (urlFilter.elements) filters.setElementModifiers(urlFilter.elements);
       if (urlFilter.kb) {
-        controls.setKbEnabled(true);
-        if (urlFilter.kb.interval !== undefined) controls.setBossAttackInterval(urlFilter.kb.interval);
-        if (urlFilter.kb.accuracy !== undefined) controls.setBossAccuracy(urlFilter.kb.accuracy);
+        filters.setKbEnabled(true);
+        if (urlFilter.kb.interval !== undefined) filters.setBossAttackInterval(urlFilter.kb.interval);
+        if (urlFilter.kb.accuracy !== undefined) filters.setBossAccuracy(urlFilter.kb.accuracy);
       }
-      if (urlFilter.targets !== undefined) controls.setTargetCount(urlFilter.targets);
-      if (urlFilter.cap !== undefined) controls.setCapEnabled(urlFilter.cap);
-      if (urlFilter.cgs) controls.setCgsValues(urlFilter.cgs);
-      if (urlFilter.groups) controls.setActiveGroups(new Set(urlFilter.groups as SkillGroupId[]));
-      if (urlFilter.breakdown !== undefined) controls.setBreakdownEnabled(urlFilter.breakdown);
+      if (urlFilter.targets !== undefined) filters.setTargetCount(urlFilter.targets);
+      if (urlFilter.cap !== undefined) filters.setCapEnabled(urlFilter.cap);
+      if (urlFilter.cgs) filters.setCgsValues(urlFilter.cgs);
+      if (urlFilter.groups) filters.setActiveGroups(new Set(urlFilter.groups as SkillGroupId[]));
+      if (urlFilter.breakdown !== undefined) filters.setBreakdownEnabled(urlFilter.breakdown);
       setPage('dashboard');
     }
   }, []);
 
-  useFilterPermalink(controls);
+  useFilterPermalink(filters);
 
   return (
     <div className="min-h-screen bg-bg text-text-primary">
@@ -108,7 +112,8 @@ function AppContent() {
         <div className="flex items-center gap-6">
           <button
             onClick={() => {
-              controls.resetControls();
+              filters.resetFilters();
+              edit.resetEdit();
               window.history.replaceState(null, '', window.location.pathname);
               navigate('dashboard');
             }}

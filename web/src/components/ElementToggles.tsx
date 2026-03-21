@@ -1,4 +1,4 @@
-import { useSimulationControls } from '../context/SimulationControlsContext.js';
+import { useSimulationFilters } from '../context/SimulationFiltersContext.js';
 
 const ELEMENTS = ['Holy', 'Fire', 'Ice', 'Lightning', 'Poison'] as const;
 
@@ -44,7 +44,7 @@ function getTooltip(element: string, state: ElementState): string {
 }
 
 export function ElementToggles() {
-  const { elementModifiers: modifiers, setElementModifiers: onChange } = useSimulationControls();
+  const { elementModifiers: modifiers, setElementModifiers: onChange } = useSimulationFilters();
 
   const handleClick = (element: string) => {
     const current = getState(modifiers, element);

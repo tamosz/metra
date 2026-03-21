@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import type { SimulationControlsContextType } from '../context/SimulationControlsContext.js';
+import type { SimulationFiltersContextType } from '../context/SimulationFiltersContext.js';
 import { FILTER_DEFAULTS } from './filter-defaults.js';
 import { CGS_DEFAULTS } from './cgs.js';
 import { DEFAULT_SKILL_GROUPS } from './skill-groups.js';
@@ -7,7 +7,7 @@ import { buildFilterState, stripCgs, filterStatesEqual, type PresetFilterState }
 
 const noop = () => {};
 
-function makeControls(overrides: Partial<SimulationControlsContextType> = {}): SimulationControlsContextType {
+function makeControls(overrides: Partial<SimulationFiltersContextType> = {}): SimulationFiltersContextType {
   const tier = (overrides.selectedTier ?? FILTER_DEFAULTS.tier);
   return {
     selectedTier: tier,
@@ -36,17 +36,7 @@ function makeControls(overrides: Partial<SimulationControlsContextType> = {}): S
     kbConfig: undefined,
     efficiencyOverrides: {},
     setEfficiencyOverrides: noop,
-    editEnabled: false,
-    setEditEnabled: noop,
-    editChanges: [],
-    addEditChange: noop,
-    removeEditChange: noop,
-    updateEditChange: noop,
-    clearEditChanges: noop,
-    editMeta: { name: '', author: '' },
-    setEditMeta: noop,
-    loadEditState: noop,
-    resetControls: noop,
+    resetFilters: noop,
     ...overrides,
   };
 }
