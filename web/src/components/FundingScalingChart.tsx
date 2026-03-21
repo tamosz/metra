@@ -96,7 +96,10 @@ export function FundingScalingChart({ data }: FundingScalingChartProps) {
       <p className="mb-2 px-1 text-xs text-text-muted">
         All build parameters (base stats, weapon attack, gear stats) scaled
         uniformly from 10–100% of their max values. Shows how each class scales
-        with overall character power, not a specific funding scenario.
+        with overall character power, not a specific funding scenario. Weapon
+        attack scales between clean and perfect (fully scrolled) — at low
+        percentages this undershoots a real clean weapon, so treat the low end
+        as relative, not literal.
       </p>
       <div style={{ width: '100%', height: chartHeight }}>
         <ResponsiveContainer>
