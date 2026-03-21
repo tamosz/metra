@@ -39,7 +39,12 @@ export function loadMW(): MWData {
 
 export function loadClassSkills(className: string): ClassSkillData {
   const filename = className.toLowerCase().replace(/\//g, '').replace(/\s+/g, '-') + '.json';
-  return loadJson<ClassSkillData>(`skills/${filename}`);
+  const data = loadJson<ClassSkillData>(`skills/${filename}`);
+  data.sharpEyesCritRate ??= 0.15;
+  data.sharpEyesCritDamageBonus ??= 140;
+  data.seCritFormula ??= 'addBeforeMultiply';
+  data.damageFormula ??= 'standard';
+  return data;
 }
 
 const STAT_NAMES: readonly StatName[] = ['STR', 'DEX', 'INT', 'LUK'];

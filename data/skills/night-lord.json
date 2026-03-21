@@ -4,9 +4,6 @@
   "mastery": 0.6,
   "primaryStat": "LUK",
   "secondaryStat": "STR",
-  "sharpEyesCritRate": 0.15,
-  "sharpEyesCritDamageBonus": 140,
-  "seCritFormula": "addBeforeMultiply",
   "damageFormula": "throwingStar",
   "shadowShifterRate": 0.30,
   "skills": [
