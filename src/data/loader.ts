@@ -83,6 +83,12 @@ export function loadGearTemplate(templateName: string): CharacterBuild {
     if (!breakdown) {
       throw new Error(`Template "${templateName}" extends "${baseName}" but has no gearBreakdown`);
     }
+    if (!raw.baseStats) {
+      throw new Error(`Template "${templateName}" is missing baseStats`);
+    }
+    if (raw.attackPotion == null) {
+      throw new Error(`Template "${templateName}" is missing attackPotion`);
+    }
     const computed = computeGearTotals(breakdown);
 
     return {
