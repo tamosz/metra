@@ -227,11 +227,14 @@ export function discoverClasses(): DiscoveryResult {
     const match = path.match(/\/([^/]+)\.json$/);
     if (!match) continue;
     const name = match[1];
-    data.sharpEyesCritRate ??= 0.15;
-    data.sharpEyesCritDamageBonus ??= 140;
-    data.seCritFormula ??= 'addBeforeMultiply';
-    data.damageFormula ??= 'standard';
-    classDataMap.set(name, data);
+    const classData: ClassSkillData = {
+      ...data,
+      sharpEyesCritRate: data.sharpEyesCritRate ?? 0.15,
+      sharpEyesCritDamageBonus: data.sharpEyesCritDamageBonus ?? 140,
+      seCritFormula: data.seCritFormula ?? 'addBeforeMultiply',
+      damageFormula: data.damageFormula ?? 'standard',
+    };
+    classDataMap.set(name, classData);
 
     const base = findBaseForClass(name);
     if (!base) continue;
@@ -243,16 +246,19 @@ export function discoverClasses(): DiscoveryResult {
       // Mage: parse the perfect-tier template in flat mode
       const raw = findTemplateModule(`${name}-perfect`);
       if (raw) {
-        // Support sharedGear: merge shared breakdown under template's breakdown
+        // Resolve sharedGear: merge shared breakdown under template's breakdown
+        let gearBreakdown = raw.gearBreakdown;
         if (typeof raw.sharedGear === 'string') {
           const sharedModule = findTemplateModule(raw.sharedGear as string);
-          if (sharedModule) {
+          if (!sharedModule) {
+            console.warn(`Shared gear file "${raw.sharedGear}" not found for ${name}`);
+          } else {
             const templateBreakdown = raw.gearBreakdown as Record<string, Record<string, number>> | undefined;
-            raw.gearBreakdown = { ...sharedModule, ...templateBreakdown };
+            gearBreakdown = { ...sharedModule, ...templateBreakdown };
           }
         }
 
-        // Merge base defaults under raw, but always use base for identity/buff fields
+        // Merge base defaults under raw; base identity/buff fields override raw
         const merged: Record<string, unknown> = {
           weaponType: base.weaponType,
           weaponSpeed: base.weaponSpeed,
@@ -262,6 +268,7 @@ export function discoverClasses(): DiscoveryResult {
           speedInfusion: base.speedInfusion ?? true,
           sharpEyes: base.sharpEyes ?? true,
           ...raw,
+          gearBreakdown,
           className: base.className,
         };
 
