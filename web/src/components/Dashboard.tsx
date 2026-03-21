@@ -20,6 +20,8 @@ import { EfficiencyPanel } from './EfficiencyPanel.js';
 import { resolveActiveScenario } from '../utils/scenario.js';
 import { SKILL_GROUPS, isResultVisible, type SkillGroupId } from '../utils/skill-groups.js';
 import { useAnimatedDps } from '../hooks/useAnimatedDps.js';
+import { FundingScalingChart } from './FundingScalingChart.js';
+import { useFundingScaling } from '../hooks/useFundingScaling.js';
 
 interface DashboardProps {
   simulation: SimulationData;
@@ -58,6 +60,7 @@ export function Dashboard({ simulation }: DashboardProps) {
 
   const animationEnabled = !editEnabled && !comparison.result;
   const animation = useAnimatedDps(filtered, capEnabled, animationEnabled);
+  const fundingData = useFundingScaling({ activeGroups, capEnabled });
 
   const visibleClassNames = useMemo(
     () => new Set(filtered.map((r) => r.className)),
@@ -104,6 +107,10 @@ export function Dashboard({ simulation }: DashboardProps) {
 
       <div className="mt-6">
         <DpsChart data={filtered} editComparison={editEnabled ? comparison.result : null} breakdownMap={showBreakdown ? breakdownMap : undefined} animation={animation} />
+      </div>
+
+      <div className="mt-6">
+        <FundingScalingChart data={fundingData} />
       </div>
 
       <div className="mt-6">
