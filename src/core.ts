@@ -5,9 +5,6 @@
 
 export * from '@metra/engine';
 
-// Data utilities (pure functions, no fs)
-export { computeBuild, type ClassBase } from './data/gear-compute.js';
-
 // Proposal system
 export { applyProposal, skillSlug } from './proposals/apply.js';
 export { compareProposal } from './proposals/compare.js';

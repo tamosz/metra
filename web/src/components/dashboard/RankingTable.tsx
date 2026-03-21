@@ -5,7 +5,7 @@ import { Tooltip } from '../Tooltip.js';
 import { formatDps } from '../../utils/format.js';
 import { getClassColor } from '../../utils/class-colors.js';
 import type { DpsResult } from '@metra/engine';
-import type { ScenarioResult, ComparisonResult, ComboSubResult } from '@engine/proposals/types.js';
+import type { ComparisonResult, ComboSubResult } from '@engine/proposals/types.js';
 import { useProposalEdit } from '../../context/ProposalEditContext.js';
 import { discoveredData } from '../../data/bundle.js';
 import { skillSlug } from '@engine/proposals/apply.js';

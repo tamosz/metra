@@ -2,7 +2,6 @@ import { useMemo } from 'react';
 import { runSimulation } from '@engine/proposals/simulate.js';
 import type { SimulationConfig } from '@engine/proposals/simulate.js';
 import type { ScenarioResult } from '@engine/proposals/types.js';
-import type { CharacterBuild } from '@metra/engine';
 import {
   discoveredData,
   weaponData,
@@ -28,7 +27,6 @@ export function breakdownKey(className: string, skillName: string, scenario: str
 function runWithBuffOff(
   options: SimulationOptions,
   buffOff: Record<string, unknown>,
-  finalTemplates: Map<string, CharacterBuild>,
 ): ScenarioResult[] {
   const { classNames, classDataMap, builds } = discoveredData;
 
@@ -51,17 +49,14 @@ export function useBuffBreakdown(
     const map: BuffBreakdownMap = new Map();
     if (!enabled || fullResults.length === 0) return map;
 
-    const { classNames, classDataMap, gearTemplates } = discoveredData;
-    const finalTemplates = prepareTemplates(gearTemplates, classDataMap, classNames, options.cgsOverride);
-
     const { buffOverrides } = options;
     const seAlreadyOff = buffOverrides && 'sharpEyes' in buffOverrides;
     const siAlreadyOff = buffOverrides && 'speedInfusion' in buffOverrides;
     const echoAlreadyOff = buffOverrides && 'echoActive' in buffOverrides;
 
-    const withoutSe = seAlreadyOff ? null : runWithBuffOff(options, { sharpEyes: false }, finalTemplates);
-    const withoutSi = siAlreadyOff ? null : runWithBuffOff(options, { speedInfusion: false }, finalTemplates);
-    const withoutEcho = echoAlreadyOff ? null : runWithBuffOff(options, { echoActive: false }, finalTemplates);
+    const withoutSe = seAlreadyOff ? null : runWithBuffOff(options, { sharpEyes: false });
+    const withoutSi = siAlreadyOff ? null : runWithBuffOff(options, { speedInfusion: false });
+    const withoutEcho = echoAlreadyOff ? null : runWithBuffOff(options, { echoActive: false });
 
     const getDps = (r: ScenarioResult) => capEnabled ? r.dps.dps : r.dps.uncappedDps;
 
