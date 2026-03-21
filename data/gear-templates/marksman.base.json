@@ -1,7 +1,13 @@
 {
   "className": "Marksman",
+  "category": "physical",
+  "primaryStat": "DEX",
+  "secondaryStat": "STR",
   "weaponType": "Crossbow",
   "weaponSpeed": 6,
+  "godlyCleanWATK": 108,
+  "weaponStat": 7,
+  "passiveWATK": 15,
   "projectile": 10,
   "echoActive": true,
   "mwLevel": 20,

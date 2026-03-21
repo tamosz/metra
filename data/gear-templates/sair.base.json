@@ -1,7 +1,12 @@
 {
   "className": "Corsair",
+  "category": "physical",
+  "primaryStat": "DEX",
+  "secondaryStat": "STR",
   "weaponType": "Gun",
   "weaponSpeed": 5,
+  "godlyCleanWATK": 84,
+  "weaponStat": 7,
   "projectile": 20,
   "echoActive": true,
   "mwLevel": 20,

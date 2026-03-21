@@ -1,7 +1,13 @@
 {
   "className": "Bowmaster",
+  "category": "physical",
+  "primaryStat": "DEX",
+  "secondaryStat": "STR",
   "weaponType": "Bow",
   "weaponSpeed": 6,
+  "godlyCleanWATK": 110,
+  "weaponStat": 15,
+  "passiveWATK": 10,
   "projectile": 10,
   "echoActive": true,
   "mwLevel": 20,
