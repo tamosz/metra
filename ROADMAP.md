@@ -13,18 +13,17 @@ A balance simulator for Royals staff and community. Every number traces back to 
 - Web SPA: dashboard, proposal builder, class comparison view, URL sharing, BBCode export
 - Build explorer: gear/stat overrides with sliders/inputs, real-time DPS recalc
 - Shareable builds via URL encoding (`#b=` for builds, `#c=` for comparisons)
-- Skill detail drilldown: click a ranking row to see DPS breakdown by tier, crit contribution, damage range, attack time, cap loss, Shadow Partner status
+- Skill detail drilldown: click a ranking row to see crit contribution, damage range, attack time, cap loss, Shadow Partner status
 - Comparison chart overlay: before/after bars in proposal comparison view
 - Error boundaries: catch engine errors gracefully with recovery button
 - UX: mobile layout, tooltips, class icons, onboarding banner, support class disclaimers
-- 4 funding tiers (low, mid, high, perfect)
+- Computed gear model: shared budget + per-class weapon base, one build per class
 - Composable simulation controls: individual buff toggles (SE, Echo, SI, MW, Attack Potion), element toggles, KB toggle, target count
 - Knockback modeling: dodge, Stance, Shadow Shifter interactions. Per-skill `knockbackRecovery` override for i-frame skills (Demolition, Barrage).
 - Weapon-variant gear templates: Hero Axe and Paladin BW have dedicated templates with accurate base WATK
-- Archer projectile WATK: Bowmaster and Marksman templates include arrow/bolt WATK at each tier (+10 low/mid/high, +12 perfect)
+- Archer projectile WATK: Bowmaster and Marksman base templates include arrow/bolt WATK
 - Multi-target simulation: per-skill `maxTargets` + per-scenario `targetCount` for training/AoE comparisons
-- Balance audit: automated outlier detection across scenarios and tiers
-- Custom funding tiers: delta-based tier editor with localStorage persistence
+- Balance audit: automated outlier detection across scenarios
 - Marginal gain calculator: DPS per WATK, per stat point — "what should I upgrade next?"
 - Formula reference page: full documentation of all engine formulas with LaTeX rendering
 - Damage cap toggle: uncapped DPS mode for theoretical comparisons
@@ -33,12 +32,12 @@ A balance simulator for Royals staff and community. Every number traces back to 
 - Training skills: Arrow Bomb (Bowmaster), Snatch + Dragon Strike (Buccaneer)
 - Chain lightning bounce decay (70% per chain)
 - Skill efficiency sliders for mixed rotations (Corsair Cannon/RF, DRK zerked/unzerked)
-- Tier scaling line chart alongside bar chart
+- DPS bar chart with animated transitions
 - Edit mode: inline skill editing on the dashboard with ghost bars, rank deltas, changes popover, combo sub-skill editing, URL sharing, export
 - Per-slot template editor with GitHub issue integration for proposing template changes
 - Gear template audit: cross-class alignment verified against source spreadsheet, stats aligned across all 14 classes
-- Gear template inheritance: base templates with tier deltas, reducing duplication
-- Paladin BW: Crushed Skull (perfect tier) uses 1H BW multiplier via per-tier `weaponType` override
+- Gear template auto-discovery: add a class by dropping in a skill file + base template
+- Paladin BW: Crushed Skull uses 1H BW multiplier via `weaponType` override on base template
 - Pre-commit hooks, comprehensive test coverage
 - Filter state permalinks: encode dashboard filter state in URL (`#f=`), shareable configuration links, logo reset to defaults
 - Saved filter presets: name and save toggle combinations, one-click context switching
@@ -62,7 +61,7 @@ Make the dashboard the primary exploration tool. Reduce the distance between "I 
 
 **Mobile filter UX**
 - Collapsible "Simulation Settings" panel, closed by default
-- Summary chip showing active state: "High tier · SE off · Holy weak"
+- Summary chip showing active state: "SE off · Holy weak · KB on"
 - Desktop keeps the current inline layout
 
 **CSV export**
@@ -79,11 +78,8 @@ Items sourced from forum feedback that aren't covered elsewhere in this roadmap.
 
 **~~Bullseye as a toggleable buff (Corsair)~~** → shipped (see Done)
 
-**Funding-based tier labels**
-Multiple users (PinaColadaPirate, Kamuna, ssmage) want tiers expressed as approximate meso costs (e.g., 10b/30b/60b/100b) rather than abstract names (low/mid/high/perfect). The concern is that "perfect" means 35b for some classes and 140b for others, making cross-class comparisons misleading. Scope: add a `fundingEstimate` field to gear templates (or to `tier-defaults.json`) with a per-class meso value. Display this in the web UI alongside or instead of the tier name (e.g., "Perfect (~80b)" in dropdowns and chart labels). This is a data + UI task, no engine changes.
-
 **Paladin weapon formula corrections**
-~~Crushed Skull should use the 1H BW formula~~ → fixed in #128 via per-tier `weaponType` override on gear templates. Purple Surfboard is categorized as 2H BW but should use the spear damage formula — still needs investigation and a fix. May require adding a weapon-specific override if Purple Surfboard is the only weapon with this mismatch.
+~~Crushed Skull should use the 1H BW formula~~ → fixed in #128 via `weaponType` override on base template. Purple Surfboard is categorized as 2H BW but should use the spear damage formula — still needs investigation and a fix. May require adding a weapon-specific override if Purple Surfboard is the only weapon with this mismatch.
 
 **Per-weapon-type display in rankings**
 Hero is now split into Claymore and Stonetooth variants. Other weapon splits (e.g., Paladin BW with Purple Surfboard vs Crushed Skull) still show as one class. PinaColadaPirate wants every weapon type in its own row. May overlap with the Paladin weapon formula task above.
