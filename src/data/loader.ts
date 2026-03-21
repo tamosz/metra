@@ -8,7 +8,7 @@ import {
   type CharacterBuild,
 } from '@metra/engine';
 import { computeGearTotals } from './gear-utils.js';
-import { mergeGearTemplate, type TierDefaults, type ClassBase as GearMergeClassBase, type TierOverride } from './gear-merge.js';
+import { mergeGearTemplate, type TierDefaults, type TierOverride } from './gear-merge.js';
 import { computeBuild, type ClassBase } from './gear-compute.js';
 
 /** Canonical tier ordering for display and sorting. Used by discoverClassesAndTiers (legacy). */

@@ -69,7 +69,7 @@ export function computeDeltas(
     beforeMap.set(scenarioKey(r), r);
   }
 
-  // Compute ranks per (scenario, tier) group
+  // Compute ranks per scenario group
   const beforeRanks = computeRanks(before);
   const afterRanks = computeRanks(after);
 
