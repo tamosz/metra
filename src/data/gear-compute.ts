@@ -21,6 +21,7 @@ export interface ClassBase {
   sharpEyes: boolean;
   shadowPartner?: boolean;
   dexRequirement?: number;
+  baseSecondaryOverride?: number;
 }
 
 interface GearBudget {
@@ -77,10 +78,10 @@ export function computeBuild(base: ClassBase): CharacterBuild {
     }
   }
 
-  // base stats: each secondary gets baseSecondary, primary gets basePrimary (assigned last so it wins if overlap)
+  // base stats: each secondary gets baseSecondary (or per-class override), primary gets basePrimary (assigned last so it wins if overlap)
   const baseStats = { STR: 4, DEX: 4, INT: 4, LUK: 4 };
   for (const sec of secondaryArr) {
-    baseStats[sec] = budget.baseSecondary;
+    baseStats[sec] = base.baseSecondaryOverride ?? budget.baseSecondary;
   }
   baseStats[primary] = budget.basePrimary;
 

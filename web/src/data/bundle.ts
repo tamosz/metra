@@ -69,6 +69,7 @@ interface ClassBase {
   speedInfusion: boolean;
   sharpEyes: boolean;
   shadowPartner?: boolean;
+  baseSecondaryOverride?: number;
 }
 
 interface GearBudget {
@@ -116,7 +117,7 @@ function computeBuildBrowser(base: ClassBase): CharacterBuild {
 
   const baseStats = { STR: 4, DEX: 4, INT: 4, LUK: 4 };
   for (const sec of secondaryArr) {
-    baseStats[sec] = budget.baseSecondary;
+    baseStats[sec] = base.baseSecondaryOverride ?? budget.baseSecondary;
   }
   baseStats[primary] = budget.basePrimary;
 
