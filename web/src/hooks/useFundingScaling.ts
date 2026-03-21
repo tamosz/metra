@@ -151,8 +151,6 @@ export function useFundingScaling(options: {
         const variantBest = new Map<string, { key: string; dps: number }>();
 
         for (const skill of classData.skills) {
-          if (skill.hidden) continue;
-
           const dpsResult = calculateSkillDps(
             build, classData, skill, weaponData, attackSpeedData, mwData
           );
