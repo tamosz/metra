@@ -192,7 +192,7 @@ validateAttackSpeed();
 const skillFiles = readdirSync(resolve(DATA_DIR, 'skills')).filter(f => f.endsWith('.json'));
 for (const f of skillFiles) validateSkillFile(f);
 
-const templateFiles = readdirSync(resolve(DATA_DIR, 'gear-templates')).filter(f => f.endsWith('.json') && !f.includes('.base.'));
+const templateFiles = readdirSync(resolve(DATA_DIR, 'gear-templates')).filter(f => f.endsWith('.json') && !f.includes('.base.') && !f.startsWith('mage-shared-'));
 for (const f of templateFiles) validateGearTemplate(f);
 
 if (errors.length > 0) {
