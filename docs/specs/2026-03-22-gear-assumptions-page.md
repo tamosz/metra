@@ -40,10 +40,10 @@ Plus a **WATK from Gear** tile with a stacked bar showing the breakdown:
 
 | Slot | WATK |
 |------|------|
-| Gloves | 25 |
-| Cape | 25 |
-| Shoes | 25 |
-| **Total** | **75** |
+| Gloves | 24 |
+| Cape | 24 |
+| Shoes | 24 |
+| **Total** | **72** |
 
 ### Section 2: Per-Class Weapons & Extras
 
@@ -55,17 +55,17 @@ No variant classes (Hero Axe, Hero ST, Paladin BW excluded).
 
 | Class | Weapon | Speed | Godly Clean | Extras | Total WATK |
 |-------|--------|:-----:|:-----------:|--------|:----------:|
-| Hero | Dragon Claymore | 6 | 115 | — | 225 |
-| Dark Knight | Sky Ski | 6 | 104 | — | 214 |
-| Paladin | Dragon Claymore | 6 | 115 | — | 225 |
-| Night Lord | Dragon Purple Claw | 4 | 60 | Stars: 0–30 (Balanced Fury) | 200 |
-| Shadower | Dragon Kanzir + Shield | 4 | 110 | Shield: 10–33 WATK, +8 LUK, +14 STR | 253 |
-| Bowmaster | Dragon Shiner Bow | 6 | 110 | +10 Bow Expert, Arrows: 0–12 | 242 |
-| Marksman | Dragon Shiner Cross | 6 | 113 | +15 MM Boost, Bolts: 0–10 | 248 |
-| Corsair | Dragonfire Revolver | 5 | 88 | Bullets: 0–24 (Royal Bullet) | 222 |
-| Buccaneer | Dragon Slash Claw | 6 | 88 | — | 198 |
+| Hero | Dragon Claymore | 6 | 115 | — | 222 |
+| Dark Knight | Sky Ski | 6 | 104 | — | 211 |
+| Paladin | Dragon Claymore | 6 | 115 | — | 222 |
+| Night Lord | Dragon Purple Claw | 4 | 60 | Stars: 0–30 (Balanced Fury) | 197 |
+| Shadower | Dragon Kanzir + Shield | 4 | 110 | Shield: 10–33 WATK, +8 LUK, +14 STR | 250 |
+| Bowmaster | Dragon Shiner Bow | 6 | 110 | Bow Expert: 0–10, Arrows: 0–12 | 239 |
+| Marksman | Dragon Shiner Cross | 6 | 113 | MM Boost: 0–15, Bolts: 0–10 | 245 |
+| Corsair | Dragonfire Revolver | 5 | 88 | Bullets: 0–24 (Royal Bullet) | 219 |
+| Buccaneer | Dragon Slash Claw | 6 | 88 | — | 195 |
 
-Total WATK = Godly Clean + Scrolling (35) + C/G/S (75) + Extras at max.
+Total WATK = Godly Clean + Scrolling (35) + C/G/S (72) + Extras at max.
 
 Footer note: Night Lord and Shadower have Shadow Partner active (1.5× damage multiplier, not reflected in WATK totals). Projectiles, bolts, arrows, and shield WATK shown at max; the scaling chart varies these from 0 to max.
 
@@ -77,7 +77,7 @@ Horizontal stacked bar chart, one bar per class, sorted by total WATK descending
 
 - **Godly Clean** (blue) — weapon base attack
 - **Scrolling** (purple) — +35 from dark scrolls
-- **C/G/S** (cyan) — 75 from cape/gloves/shoes
+- **C/G/S** (cyan) — 72 from cape/gloves/shoes
 - **Passive / Shield / Projectile** (amber) — class-specific extras
 
 Total WATK label at right end of each bar.
@@ -92,17 +92,15 @@ Explanatory text: "The scaling chart on the Dashboard shows how DPS changes as a
 
 Two lists:
 
-**Scales with %:**
+**Everything scales with %:**
 - Base stats (from leveling/AP)
 - Primary & secondary stat from gear
 - C/G/S WATK
 - Weapon clean WATK & scrolling bonus
 - Attack potion
+- Passive WATK (Bow Expert, MM Boost)
 - Projectiles (stars, arrows, bolts, bullets)
 - Shadower shield WATK
-
-**Fixed (always 100%):**
-- Passive WATK (Bow Expert, MM Boost)
 
 Summary: "At 50%, a class has half the base stats, half the gear stats, half the weapon attack, and half the projectile WATK of a max build. This is a uniform power curve for comparing class scaling, not a model of any specific funding level."
 
@@ -114,15 +112,15 @@ These weapon/projectile corrections apply to the data layer, not just the page:
 |------|--------|
 | `data/gear-templates/sair.base.json` | Weapon: Concerto → Dragonfire Revolver. `godlyCleanWATK`: 84 → 88. `projectile`: 20 → 24 (Royal Bullet). |
 | `data/gear-templates/marksman.base.json` | Weapon: Dark Neschere → Dragon Shiner Cross. `godlyCleanWATK`: 108 → 113. |
-| `data/gear-budget.json` | `nonWeaponWATK`: 84 → 75 (25/25/25 C/G/S). |
+| `data/gear-budget.json` | `nonWeaponWATK`: 84 → 72 (24/24/24 C/G/S). |
 | `data/gear-assumptions.md` | Update weapon table, C/G/S values, projectile references. |
-| `data/references/gear-and-funding.md` | Update C/G/S table perfect tier to 25/25/25. |
+| `data/references/gear-and-funding.md` | Update C/G/S table perfect tier to 24/24/24. |
 
 ### Scaling Function Changes
 
 `scaleBudget` in `web/src/data/bundle.ts` currently only scales `gearPrimary`, `gearSecondary`, `nonWeaponWATK`, and `scrollBonus`. It must also scale `basePrimary`, `baseSecondary`, and `attackPotion`.
 
-`computeBuildAtFunding` currently does not scale `godlyCleanWATK` or `projectile`. It must scale both by the fraction. It must also interpolate `shieldWATK` for Shadower (see below).
+`computeBuildAtFunding` currently does not scale `godlyCleanWATK`, `projectile`, or `passiveWATK`. It must scale all three by the fraction. It must also interpolate `shieldWATK` for Shadower (see below).
 
 The corresponding Node-side `computeBuild` in `src/data/gear-compute.ts` is unaffected — it always builds at 100%.
 
