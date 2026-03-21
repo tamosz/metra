@@ -20,8 +20,8 @@ import { EfficiencyPanel } from './EfficiencyPanel.js';
 import { resolveActiveScenario } from '../utils/scenario.js';
 import { SKILL_GROUPS, isResultVisible, type SkillGroupId } from '../utils/skill-groups.js';
 import { useAnimatedDps } from '../hooks/useAnimatedDps.js';
-import { FundingScalingChart } from './FundingScalingChart.js';
-import { useFundingScaling } from '../hooks/useFundingScaling.js';
+import { PowerScalingChart } from './PowerScalingChart.js';
+import { usePowerScaling } from '../hooks/usePowerScaling.js';
 
 interface DashboardProps {
   simulation: SimulationData;
@@ -60,7 +60,7 @@ export function Dashboard({ simulation }: DashboardProps) {
 
   const animationEnabled = !editEnabled && !comparison.result;
   const animation = useAnimatedDps(filtered, capEnabled, animationEnabled);
-  const fundingData = useFundingScaling({ activeGroups, capEnabled, simOptions });
+  const scalingData = usePowerScaling({ activeGroups, capEnabled, simOptions });
 
   const visibleClassNames = useMemo(
     () => new Set(filtered.map((r) => r.className)),
@@ -110,7 +110,7 @@ export function Dashboard({ simulation }: DashboardProps) {
       </div>
 
       <div className="mt-6 isolate">
-        <FundingScalingChart data={fundingData} />
+        <PowerScalingChart data={scalingData} />
       </div>
 
       <div className="relative z-10 mt-6">
