@@ -1,4 +1,4 @@
-import type { ClassSkillData, CharacterBuild, WeaponData, AttackSpeedData, MWData } from './types.js';
+import type { ClassSkillData, CharacterBuild, GameData } from './types.js';
 import { simulateParty, type Party, type PartySimulationResult } from './party.js';
 
 export interface OptimizationConstraints {
@@ -32,9 +32,7 @@ function combinationsWithRepetition(items: string[], k: number): string[][] {
 export function findOptimalParty(
   classDataMap: Map<string, ClassSkillData>,
   gearTemplates: Map<string, CharacterBuild>,
-  weaponData: WeaponData,
-  attackSpeedData: AttackSpeedData,
-  mwData: MWData,
+  gameData: GameData,
   partySize: number = 6,
   constraints?: OptimizationConstraints,
   topN: number = 10,
@@ -72,7 +70,7 @@ export function findOptimalParty(
   for (const combo of combos) {
     const members = [...required, ...combo].map((className) => ({ className }));
     const party: Party = { name: '', members };
-    results.push(simulateParty(party, classDataMap, gearTemplates, weaponData, attackSpeedData, mwData));
+    results.push(simulateParty(party, classDataMap, gearTemplates, gameData));
   }
 
   if (results.length === 0) {

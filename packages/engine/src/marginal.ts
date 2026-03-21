@@ -2,9 +2,7 @@ import type {
   CharacterBuild,
   ClassSkillData,
   SkillEntry,
-  WeaponData,
-  AttackSpeedData,
-  MWData,
+  GameData,
   StatName,
 } from './types.js';
 import { calculateSkillDps } from './dps.js';
@@ -34,17 +32,15 @@ export function calculateMarginalGains(
   build: CharacterBuild,
   classData: ClassSkillData,
   skill: SkillEntry,
-  weaponData: WeaponData,
-  attackSpeedData: AttackSpeedData,
-  mwData: MWData
+  gameData: GameData,
 ): MarginalGain[] {
-  const baseDps = calculateSkillDps(build, classData, skill, weaponData, attackSpeedData, mwData).dps;
+  const baseDps = calculateSkillDps(build, classData, skill, gameData).dps;
 
   const gains: MarginalGain[] = [];
 
   // WATK (displayed as "WATK" for all classes — mages store MATK in totalWeaponAttack)
   const watkBuild: CharacterBuild = { ...build, totalWeaponAttack: build.totalWeaponAttack + 1 };
-  const watkDps = calculateSkillDps(watkBuild, classData, skill, weaponData, attackSpeedData, mwData).dps;
+  const watkDps = calculateSkillDps(watkBuild, classData, skill, gameData).dps;
   gains.push({
     stat: 'WATK',
     currentValue: build.totalWeaponAttack,
@@ -63,7 +59,7 @@ export function calculateMarginalGains(
       ...build,
       gearStats: { ...build.gearStats, [statKey]: build.gearStats[statKey] + 1 },
     };
-    const newDps = calculateSkillDps(perturbedBuild, classData, skill, weaponData, attackSpeedData, mwData).dps;
+    const newDps = calculateSkillDps(perturbedBuild, classData, skill, gameData).dps;
     gains.push({
       stat: statKey,
       currentValue: build.gearStats[statKey],

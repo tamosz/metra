@@ -2,9 +2,7 @@ import type {
   CharacterBuild,
   ClassSkillData,
   SkillEntry,
-  WeaponData,
-  AttackSpeedData,
-  MWData,
+  GameData,
 } from './types.js';
 import { calculateTotalAttack, calculateTotalStats, calculateMageEcho } from './buffs.js';
 import {
@@ -115,9 +113,9 @@ function calculateBaseDamageRange(
   build: CharacterBuild,
   classData: ClassSkillData,
   skill: SkillEntry,
-  weaponData: WeaponData,
-  mwData: MWData
+  gameData: GameData,
 ): DamageRange {
+  const { weaponData, mwData } = gameData;
   const { primary, secondary } = calculateTotalStats(build, classData, mwData);
   const damageFormula = classData.damageFormula ?? 'standard';
 
@@ -228,11 +226,10 @@ export function calculateSkillDps(
   build: CharacterBuild,
   classData: ClassSkillData,
   skill: SkillEntry,
-  weaponData: WeaponData,
-  attackSpeedData: AttackSpeedData,
-  mwData: MWData,
+  gameData: GameData,
   elementModifier: number = 1
 ): DpsResult {
+  const { attackSpeedData } = gameData;
   const si = classData.damageFormula === 'magic' ? false : build.speedInfusion;
   const effectiveSpeed = resolveEffectiveWeaponSpeed(build.weaponSpeed, si);
   const attackTime = lookupAttackTime(attackSpeedData, effectiveSpeed, skill.speedCategory);
@@ -263,7 +260,7 @@ export function calculateSkillDps(
   const effectiveMultiplier = getEffectiveMultiplier(skill, build);
   const skillDamagePercent = skill.basePower * effectiveMultiplier;
   const { critDamagePercent, totalCritRate } = calculateCritDamage(skill, classData, build.sharpEyes, build);
-  const damageRange = calculateBaseDamageRange(build, classData, skill, weaponData, mwData);
+  const damageRange = calculateBaseDamageRange(build, classData, skill, gameData);
   const isMagic = (classData.damageFormula ?? 'standard') === 'magic';
   const { adjustedRangeNormal, adjustedRangeCrit, averageDamage, uncappedAverageDamage } = calculateAverageDamage(
     damageRange, skillDamagePercent, critDamagePercent, totalCritRate,

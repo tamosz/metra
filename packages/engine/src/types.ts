@@ -159,6 +159,13 @@ export interface ClassSkillData {
   mixedRotations?: MixedRotation[];
 }
 
+/** Bundle of shared game data tables passed through the simulation pipeline. */
+export interface GameData {
+  weaponData: WeaponData;
+  attackSpeedData: AttackSpeedData;
+  mwData: MWData;
+}
+
 /** A character's gear and stat setup for simulation. */
 export interface CharacterBuild {
   className: string;
