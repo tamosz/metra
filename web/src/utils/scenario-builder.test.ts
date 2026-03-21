@@ -99,19 +99,18 @@ describe('buildScenarios', () => {
 
 describe('prepareTemplates', () => {
   const baseBuild = {
-    primaryStat: 300,
-    secondaryStat: 100,
+    className: 'hero',
+    baseStats: { STR: 4, DEX: 4, INT: 4, LUK: 4 },
+    gearStats: { STR: 296, DEX: 96, INT: 0, LUK: 0 },
     totalWeaponAttack: 150,
-    mastery: 0.6,
-    weaponType: 'Sword' as const,
-    sharpEyes: true,
+    weaponType: 'Sword',
+    weaponSpeed: 6,
+    attackPotion: 0,
+    projectile: 0,
     echoActive: true,
-    speedInfusion: true,
     mwLevel: 20,
-    attackPotion: true,
-    shadowPartner: false,
-    bullseye: false,
-    booster: true,
+    speedInfusion: true,
+    sharpEyes: true,
   } satisfies CharacterBuild;
 
   const templates = new Map<string, CharacterBuild>([
@@ -120,10 +119,13 @@ describe('prepareTemplates', () => {
 
   const classDataMap = new Map<string, ClassSkillData>([
     ['hero', {
+      className: 'Hero',
       damageFormula: 'standard',
       primaryStat: 'STR',
       secondaryStat: 'DEX',
       mastery: 0.6,
+      sharpEyesCritRate: 0.15,
+      sharpEyesCritDamageBonus: 15,
       seCritFormula: 'addBeforeMultiply',
       skills: [],
     }],
