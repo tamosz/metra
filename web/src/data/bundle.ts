@@ -92,9 +92,9 @@ export function scaleBudget(fraction: number): GearBudget {
     gearSecondary: Math.round(budget.gearSecondary * fraction),
     nonWeaponWATK: Math.round(budget.nonWeaponWATK * fraction),
     scrollBonus: Math.round(budget.scrollBonus * fraction),
-    basePrimary: budget.basePrimary,
-    baseSecondary: budget.baseSecondary,
-    attackPotion: budget.attackPotion,
+    basePrimary: Math.round(budget.basePrimary * fraction),
+    baseSecondary: Math.round(budget.baseSecondary * fraction),
+    attackPotion: Math.round(budget.attackPotion * fraction),
   };
 }
 
@@ -155,7 +155,8 @@ function computeBuildBrowser(base: ClassBase): CharacterBuild {
 }
 
 export function computeBuildAtFunding(base: ClassBase, fraction: number): CharacterBuild {
-  return computeBuildFromBudget(base, scaleBudget(fraction));
+  const scaledBase = { ...base, godlyCleanWATK: Math.round(base.godlyCleanWATK * fraction) };
+  return computeBuildFromBudget(scaledBase, scaleBudget(fraction));
 }
 
 /**

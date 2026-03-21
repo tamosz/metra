@@ -107,7 +107,7 @@ export function FundingScalingChart({ data }: FundingScalingChartProps) {
               ticks={[10, 20, 30, 40, 50, 60, 70, 80, 90, 100]}
               tickFormatter={(v: number) => `${v}%`}
               label={{
-                value: 'Funding %',
+                value: 'Gear Stats (% of max)',
                 position: 'insideBottom',
                 offset: -8,
                 fill: colors.textMuted,
@@ -133,7 +133,7 @@ export function FundingScalingChart({ data }: FundingScalingChartProps) {
                 return (
                   <div className="max-h-80 overflow-y-auto rounded-md border border-border-active bg-bg-surface p-3 text-xs">
                     <div className="mb-2 font-semibold text-text-secondary">
-                      {label}% Funding
+                      {label}% of max
                     </div>
                     {sorted.map((entry) => (
                       <div
