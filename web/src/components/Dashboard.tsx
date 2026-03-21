@@ -105,15 +105,15 @@ export function Dashboard({ simulation }: DashboardProps) {
         </div>
       </div>
 
-      <div className="mt-6">
+      <div className="mt-6 isolate">
         <DpsChart data={filtered} editComparison={editEnabled ? comparison.result : null} breakdownMap={showBreakdown ? breakdownMap : undefined} animation={animation} />
       </div>
 
-      <div className="mt-6">
+      <div className="mt-6 isolate">
         <FundingScalingChart data={fundingData} />
       </div>
 
-      <div className="mt-6">
+      <div className="relative z-10 mt-6">
         <RankingTable data={filtered} capEnabled={capEnabled} editComparison={editEnabled ? comparison.result : null} animation={animation} />
       </div>
     </div>
