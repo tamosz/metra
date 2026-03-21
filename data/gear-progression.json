@@ -39,36 +39,36 @@
   },
   "mage": {
     "low": {
-      "gearPrimary": 141,
+      "gearPrimary": 154,
       "gearSecondary": 49,
-      "nonWeaponWATK": 31,
+      "nonWeaponWATK": 44,
       "scrollBonus": 15,
       "basePrimary": 818,
       "baseSecondary": 4,
       "attackPotion": 45
     },
     "mid": {
-      "gearPrimary": 195,
+      "gearPrimary": 210,
       "gearSecondary": 49,
-      "nonWeaponWATK": 46,
+      "nonWeaponWATK": 58,
       "scrollBonus": 25,
       "basePrimary": 893,
       "baseSecondary": 4,
       "attackPotion": 45
     },
     "high": {
-      "gearPrimary": 273,
+      "gearPrimary": 295,
       "gearSecondary": 49,
-      "nonWeaponWATK": 39,
+      "nonWeaponWATK": 59,
       "scrollBonus": 35,
       "basePrimary": 938,
       "baseSecondary": 4,
       "attackPotion": 220
     },
     "perfect": {
-      "gearPrimary": 372,
+      "gearPrimary": 392,
       "gearSecondary": 0,
-      "nonWeaponWATK": 115,
+      "nonWeaponWATK": 145,
       "scrollBonus": 68,
       "basePrimary": 999,
       "baseSecondary": 23,
