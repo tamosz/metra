@@ -134,6 +134,16 @@ describe('computeBuild', () => {
       expect(build.gearStats.STR).toBe(182);
     });
 
+    it('gearStats second secondary gets gearSecondary', () => {
+      // DEX = 168 (gearSecondary from all-stat gear)
+      expect(build.gearStats.DEX).toBe(168);
+    });
+
+    it('baseStats for both secondaries', () => {
+      expect(build.baseStats.STR).toBe(23);
+      expect(build.baseStats.DEX).toBe(23);
+    });
+
     it('shadowPartner is passed through', () => {
       expect(build.shadowPartner).toBe(false);
     });

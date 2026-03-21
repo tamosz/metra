@@ -24,6 +24,6 @@ exports[`Baseline mode > DPS matches reference values 1`] = `
   "Night Lord / Triple Throw": 440204,
   "Paladin (BW) / Blast (Holy, BW)": 230050,
   "Paladin / Blast (Holy, Sword)": 264754,
-  "Shadower / Boomerang Step + Assassinate": 315980,
+  "Shadower / Boomerang Step + Assassinate": 327880,
 }
 `;

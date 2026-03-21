@@ -101,11 +101,12 @@ function computeBuildBrowser(base: ClassBase): CharacterBuild {
   const secondaryArr = Array.isArray(base.secondaryStat)
     ? base.secondaryStat
     : [base.secondaryStat];
-  const firstSecondary = secondaryArr[0];
 
   const gearStats = { STR: 0, DEX: 0, INT: 0, LUK: 0 };
   gearStats[primary] = budget.gearPrimary + base.weaponStat;
-  gearStats[firstSecondary] += budget.gearSecondary;
+  for (const sec of secondaryArr) {
+    gearStats[sec] += budget.gearSecondary;
+  }
 
   if (base.shieldStats) {
     for (const stat of ALL_STATS) {
@@ -115,11 +116,8 @@ function computeBuildBrowser(base: ClassBase): CharacterBuild {
 
   const baseStats = { STR: 4, DEX: 4, INT: 4, LUK: 4 };
   baseStats[primary] = budget.basePrimary;
-  baseStats[firstSecondary] = budget.baseSecondary;
-  for (const stat of ALL_STATS) {
-    if (stat !== primary && stat !== firstSecondary) {
-      baseStats[stat] = 4;
-    }
+  for (const sec of secondaryArr) {
+    baseStats[sec] = budget.baseSecondary;
   }
 
   return {
