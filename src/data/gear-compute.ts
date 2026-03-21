@@ -77,12 +77,12 @@ export function computeBuild(base: ClassBase): CharacterBuild {
     }
   }
 
-  // base stats: primary gets basePrimary, each secondary gets baseSecondary, others 4
+  // base stats: each secondary gets baseSecondary, primary gets basePrimary (assigned last so it wins if overlap)
   const baseStats = { STR: 4, DEX: 4, INT: 4, LUK: 4 };
-  baseStats[primary] = budget.basePrimary;
   for (const sec of secondaryArr) {
     baseStats[sec] = budget.baseSecondary;
   }
+  baseStats[primary] = budget.basePrimary;
 
   return {
     className: base.className,

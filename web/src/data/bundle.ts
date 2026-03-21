@@ -115,10 +115,10 @@ function computeBuildBrowser(base: ClassBase): CharacterBuild {
   }
 
   const baseStats = { STR: 4, DEX: 4, INT: 4, LUK: 4 };
-  baseStats[primary] = budget.basePrimary;
   for (const sec of secondaryArr) {
     baseStats[sec] = budget.baseSecondary;
   }
+  baseStats[primary] = budget.basePrimary;
 
   return {
     className: base.className,

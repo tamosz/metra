@@ -146,6 +146,9 @@ export function discoverClasses(): ClassDiscoveryResult {
   if (skillFiles.length === 0) {
     throw new Error(`No skill files found in data/skills/. Expected .json files defining class skills.`);
   }
+  if (baseFiles.length === 0) {
+    throw new Error(`No base files found in data/gear-templates/. Expected .base.json files defining class weapon data.`);
+  }
 
   const baseSet = new Set(baseFiles);
   const classNames = skillFiles.filter(name => baseSet.has(name));
