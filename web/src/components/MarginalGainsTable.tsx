@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { calculateMarginalGains, calculateSkillDps, type MarginalGain, type CharacterBuild, type ClassSkillData, type SkillEntry } from '@metra/engine';
 import { weaponData, attackSpeedData, mwData } from '../data/bundle.js';
 import { formatDps } from '../utils/format.js';
-import { TH } from '../utils/styles.js';
+import { TH, SECTION_LABEL } from '../utils/styles.js';
 
 interface MarginalGainsTableProps {
   build: CharacterBuild;
@@ -84,7 +84,7 @@ export function MarginalGainsTable({ build, classData }: MarginalGainsTableProps
 
   return (
     <div className="mt-6">
-      <div className="mb-1 text-[11px] font-medium uppercase tracking-wide text-text-dim">
+      <div className={`${SECTION_LABEL} mb-1`}>
         What to upgrade next?
       </div>
       <div className="mb-2 text-[11px] text-text-faint">

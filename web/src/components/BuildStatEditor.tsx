@@ -1,6 +1,7 @@
 import { useCallback } from 'react';
 import type { BuildExplorerState, BuildOverrides } from '../hooks/useBuildExplorer.js';
 import { useSpinner } from '../hooks/useSpinner.js';
+import { SECTION_LABEL } from '../utils/styles.js';
 
 interface BuildStatEditorProps {
   state: BuildExplorerState;
@@ -190,7 +191,7 @@ function StatInput({
 
 function SectionLabel({ children }: { children: React.ReactNode }) {
   return (
-    <div className="mb-2 text-[11px] font-medium uppercase tracking-wide text-text-dim">
+    <div className={`${SECTION_LABEL} mb-2`}>
       {children}
     </div>
   );

@@ -6,7 +6,7 @@ import { BuildDpsResults } from './BuildDpsResults.js';
 import { ComparisonSummary } from './ComparisonSummary.js';
 import { encodeComparison } from '../utils/url-encoding.js';
 import { formatClassName, formatChange, changeColorClass } from '../utils/format.js';
-import { TH } from '../utils/styles.js';
+import { TH, SECTION_LABEL } from '../utils/styles.js';
 
 interface BuildComparisonProps {
   state: BuildComparisonState;
@@ -77,7 +77,7 @@ function BuildPanel({ label, state }: { label: string; state: BuildExplorerState
 
   return (
     <div className="rounded-lg border border-border-subtle bg-bg-raised p-4">
-      <div className="mb-3 text-[11px] font-medium uppercase tracking-wide text-text-dim">
+      <div className={`${SECTION_LABEL} mb-3`}>
         {label}
       </div>
 

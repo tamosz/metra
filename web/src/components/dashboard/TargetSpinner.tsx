@@ -1,6 +1,7 @@
 import { useCallback } from 'react';
 import { useSimulationFilters } from '../../context/SimulationFiltersContext.js';
 import { useSpinner } from '../../hooks/useSpinner.js';
+import { SECTION_LABEL } from '../../utils/styles.js';
 
 export function TargetSpinner() {
   const { targetCount, setTargetCount } = useSimulationFilters();
@@ -19,7 +20,7 @@ export function TargetSpinner() {
 
   return (
     <div className="flex flex-col gap-1">
-      <span className="text-[11px] font-medium uppercase tracking-wide text-text-dim">Targets</span>
+      <span className={SECTION_LABEL}>Targets</span>
       <div className="flex items-stretch overflow-hidden rounded border border-border-default">
         <button
           type="button"

@@ -2,6 +2,7 @@ import { memo, useCallback, type KeyboardEvent } from 'react';
 import type { DpsResult } from '@metra/engine';
 import type { ComboSubResult } from '@engine/proposals/types.js';
 import { formatDps } from '../utils/format.js';
+import { SECTION_LABEL } from '../utils/styles.js';
 
 interface SkillDetailPanelProps {
   dps: DpsResult;
@@ -83,7 +84,7 @@ function SkillDetailPanelInner({
         <div className="border-b border-border-subtle mb-3 pb-3 flex flex-col gap-3">
           {comboSkills.map((sub) => (
             <div key={sub.target}>
-              <div className="text-[11px] font-medium uppercase tracking-wide text-text-dim mb-1.5">
+              <div className={`${SECTION_LABEL} mb-1.5`}>
                 {sub.name}
               </div>
               <div className="flex flex-wrap gap-x-4 gap-y-2">
@@ -184,7 +185,7 @@ function SubSkillBreakdown({
   const weightLabel = sub.weight != null ? ` (${Math.round(sub.weight * 100)}%)` : '';
   return (
     <div>
-      <div className="text-[11px] font-medium uppercase tracking-wide text-text-dim mb-1.5">
+      <div className={`${SECTION_LABEL} mb-1.5`}>
         {sub.skillName}{weightLabel}
       </div>
       <SkillBreakdown dps={sub.dps} critContribution={cc} capEnabled={capEnabled} />

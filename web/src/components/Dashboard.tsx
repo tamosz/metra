@@ -6,7 +6,7 @@ import { ElementToggles } from './ElementToggles.js';
 import { BuffToggles } from './BuffToggles.js';
 import { KbToggle } from './KbToggle.js';
 import { CapToggle } from './CapToggle.js';
-import { TOGGLE_ON, TOGGLE_OFF } from '../utils/styles.js';
+import { TOGGLE_ON, TOGGLE_OFF, SECTION_LABEL } from '../utils/styles.js';
 import { useSimulationFilters } from '../context/SimulationFiltersContext.js';
 import { useProposalEdit } from '../context/ProposalEditContext.js';
 import { useEditComparison } from '../hooks/useEditComparison.js';
@@ -158,7 +158,7 @@ function SkillGroupToggles({ activeGroups, onToggle }: { activeGroups: Set<Skill
 
   return (
     <div className="flex flex-col gap-1" ref={ref}>
-      <span className="text-[11px] font-medium uppercase tracking-wide text-text-dim">Skills</span>
+      <span className={SECTION_LABEL}>Skills</span>
       <div className="relative">
         <button
           type="button"
@@ -194,7 +194,7 @@ function SkillGroupToggles({ activeGroups, onToggle }: { activeGroups: Set<Skill
 function BreakdownToggle({ enabled, onToggle }: { enabled: boolean; onToggle: (v: boolean) => void }) {
   return (
     <div className="flex flex-col gap-1">
-      <span className="text-[11px] font-medium uppercase tracking-wide text-text-dim">Breakdown</span>
+      <span className={SECTION_LABEL}>Breakdown</span>
       <div className="flex items-center gap-1.5">
         <button
           type="button"

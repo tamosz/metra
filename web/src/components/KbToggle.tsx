@@ -1,5 +1,5 @@
 import { useSimulationFilters } from "../context/SimulationFiltersContext.js";
-import { TOGGLE_ON, TOGGLE_OFF } from "../utils/styles.js";
+import { TOGGLE_ON, TOGGLE_OFF, SECTION_LABEL } from "../utils/styles.js";
 
 export function KbToggle() {
   const {
@@ -13,7 +13,7 @@ export function KbToggle() {
 
   return (
     <div className="flex flex-col gap-1">
-      <span className="text-[11px] font-medium uppercase tracking-wide text-text-dim">
+      <span className={SECTION_LABEL}>
         Knockback
         <span className="block text-[9px] normal-case tracking-normal text-text-muted">
           experimental
