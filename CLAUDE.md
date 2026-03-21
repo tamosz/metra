@@ -6,7 +6,7 @@ Always work on a branch and raise a PR — never push directly to main.
 
 Before merging a PR, run the full test suite locally (`npx vitest run` at root and in `web/`) and confirm it passes. Don't rely on CI catching things after merge.
 
-Design specs and implementation plans (`docs/superpowers/specs/`, `docs/superpowers/plans/`) are working documents — delete them before merging a PR. They shouldn't accumulate on main.
+Design specs and implementation plans (`docs/` subdirectories) are working documents — delete them before merging a PR. They shouldn't accumulate on main.
 
 ## Project Purpose
 
@@ -75,11 +75,12 @@ Static game data stored as JSON files, version-controlled, human-readable and hu
 
 Actual files:
 - `skills/` — one file per class (`hero.json`, `hero-axe.json`, `dark-knight.json`, `paladin.json`, `paladin-bw.json`, `night-lord.json`, `bowmaster.json`, `marksman.json`, `sair.json`, `bucc.json`, `shadower.json`, `archmage-il.json`, `archmage-fp.json`, `bishop.json`). Each contains mastery, stat mapping, SE crit config, and a `skills[]` array.
-- `gear-templates/` — character builds at each funding tier (`hero-low.json`, `hero-high.json`, etc.). Include full gear breakdown, stats, buffs, and weapon info.
+- `gear-budget.json` — shared gear budget defining stat/WATK values applied uniformly across all physical classes. One build per class (no funding tiers).
+- `gear-templates/` — per-class base files (`*.base.json`) defining weapon type, speed, godly clean WATK, class-specific stats (shield, passive WATK, projectile), and buff configuration. Mages also have `*-perfect.json` overrides for MATK-specific values. Physical class builds are computed from base + shared budget via `src/data/gear-compute.ts`.
 - `weapons.json` — weapon type slash/stab multipliers for the damage formula.
 - `attack-speed.json` — effective speed tier → attack time lookup, keyed by skill category.
 - `mw.json` — MW level → stat multiplier table.
-- `gear-assumptions.md` — documents all baked-in assumptions in gear templates (buff availability, stat choices, funding philosophy, per-slot WATK breakdowns validated against forum guides).
+- `gear-assumptions.md` — documents gear modeling assumptions (buff availability, stat choices, weapon table, research findings).
 - `source-sheet.xlsx` — original spreadsheet (read-only reference).
 - `references/` — extracted forum knowledge organized by topic. Check these BEFORE web-searching royals.ms. When adding forum-sourced data: add to the relevant file with source URL, access date, and which data files it relates to.
 
@@ -90,7 +91,7 @@ Pure functions. No side effects, no I/O. Takes game data + a character build, ou
 - `damage.ts` — raw damage range (min/max), throwing star range (Night Lord/Shad), range cap from damage cap, adjusted range for capped distributions.
 - `buffs.ts` — MW stat boost, Echo of Hero WATK bonus, total attack/stat aggregation.
 - `attack-speed.ts` — weapon speed resolution (base speed + booster + SI), attack time lookup by skill category.
-- `dps.ts` — full DPS pipeline: attack time → skill damage% → crit damage% → range caps → adjusted ranges → average damage → DPS. Uses `build.weaponType` for weapon multiplier lookup, so gear templates can override the weapon type per tier (e.g., Paladin BW perfect tier uses 1H BW instead of 2H BW). Supports built-in crit (additive with SE), throwing star formula (branches on `weaponType === 'Claw'`), Shadow Partner (1.5× multiplier), `fixedDamage` (bypasses damage formula for skills like Snipe), and `elementModifier` (factored into range cap so the 199,999 per-line cap applies to final damage including element).
+- `dps.ts` — full DPS pipeline: attack time → skill damage% → crit damage% → range caps → adjusted ranges → average damage → DPS. Supports built-in crit (additive with SE), throwing star formula (branches on `weaponType === 'Claw'`), Shadow Partner (1.5× multiplier), `fixedDamage` (bypasses damage formula for skills like Snipe), and `elementModifier` (factored into range cap so the 199,999 per-line cap applies to final damage including element).
 - `build-dps.ts` — build-level DPS calculation (ties together class data, gear template, and engine).
 - `knockback.ts` — KB uptime modeling (Stance, Shadow Shifter, boss attack interval/accuracy).
 - `marginal.ts` — marginal gain analysis (WATK/stat impact on DPS).
@@ -137,16 +138,16 @@ A proposal is a JSON file that describes one or more changes:
 
 **`from` field:** optional but recommended. If present, the system validates that the current value matches, catching stale proposals.
 
-The pipeline: `apply.ts` patches the skill data → `simulate.ts` runs DPS across all classes/tiers/scenarios → `compare.ts` produces before/after deltas with rank tracking → `markdown.ts` or `bbcode.ts` renders a report. When no proposal is given, the CLI runs in **baseline mode**: it simulates all classes and renders a ranked DPS table with an ASCII bar chart.
+The pipeline: `apply.ts` patches the skill data → `simulate.ts` runs DPS across all classes/scenarios → `compare.ts` produces before/after deltas with rank tracking → `markdown.ts` or `bbcode.ts` renders a report. When no proposal is given, the CLI runs in **baseline mode**: it simulates all classes and renders a ranked DPS table with an ASCII bar chart.
 
 **Simulation controls:** `ScenarioConfig` defines evaluation conditions (buff overrides, element modifiers, targetCount, knockback parameters). Conditions are composed from individual toggles rather than predefined scenario presets. `targetCount` enables multi-target training simulation.
 
 ### 4. Balance Audit (`/src/audit`)
 Analyzes simulation results and flags statistical outliers. Pure functions, no I/O.
 
-- `analyze.ts` — `analyzeBalance(results: ScenarioResult[])` → `BalanceAudit`. Groups results by (scenario, tier), computes mean/stdDev/spread, flags skills >1.5σ from group mean as outliers, and detects unusual tier sensitivity (high/low DPS ratio outliers).
-- `format.ts` — `formatAuditReport(audit: BalanceAudit)` → Markdown string with outlier, tier sensitivity, and group summary tables.
-- `types.ts` — `BalanceAudit`, `OutlierEntry`, `TierSensitivity`, `GroupSummary`.
+- `analyze.ts` — `analyzeBalance(results: ScenarioResult[])` → `BalanceAudit`. Groups results by scenario, computes mean/stdDev/spread, flags skills >1.5σ from group mean as outliers.
+- `format.ts` — `formatAuditReport(audit: BalanceAudit)` → Markdown string with outlier and group summary tables.
+- `types.ts` — `BalanceAudit`, `OutlierEntry`, `GroupSummary`.
 
 CLI: `npm run simulate -- --audit` appends the audit report after baseline rankings.
 
@@ -154,19 +155,17 @@ CLI: `npm run simulate -- --audit` appends the audit report after baseline ranki
 React + Vite single-page app with its own `package.json`. Consumes the engine via `src/core.ts` (a browser-safe re-export that excludes fs-based loaders).
 
 - Dashboard with baseline DPS rankings and composable filter controls (buff toggles, element toggles, KB toggle with boss parameters, target count, damage cap toggle)
-- Skill detail drilldown — click a ranking row to see DPS breakdown by tier, crit contribution, damage range, attack time, cap loss, Shadow Partner status
-- Build explorer — gear/stat overrides with sliders/inputs, real-time DPS recalc, marginal gain table ("what to upgrade next?"), per-slot template editor with GitHub issue integration
+- Skill detail drilldown — click a ranking row to see crit contribution, damage range, attack time, cap loss, Shadow Partner status
+- Build explorer — gear/stat overrides with sliders/inputs, real-time DPS recalc, marginal gain table ("what to upgrade next?")
 - Interactive proposal builder (create, edit, simulate) with comparison chart overlay and rank bump chart
 - Formula reference page — full documentation of all engine formulas with LaTeX rendering
 - URL sharing via lz-string compressed proposals (`#p=`), builds (`#b=`), and comparisons (`#c=`)
 - BBCode export for royals.ms forum posts (`src/report/bbcode.ts`)
-- CGS editor — per-tier Cape/Glove/Shoe WATK overrides with saved presets via localStorage
 - Per-class saved builds — store and recall custom character configurations via localStorage
 - Saved filter presets — name and save toggle combinations, one-click context switching
 - Chart animations — animated bar transitions on filter toggle
 - Party DPS page — 6-man party builder with shared buff contributions (SE, SI), total party DPS, class swap analysis
 - Support class disclaimer — contextual note for Bishop/Archmage I/L in rankings
-- Self-explanatory tier assumptions — collapsible breakdown of what each tier includes
 - Game terminology tooltips via `utils/game-terms.ts`
 - Error boundaries with recovery
 - Mobile-responsive layout
@@ -198,11 +197,11 @@ Key design points:
 
 ### Classes
 
-14 classes implemented. Per-class details (weapons, multipliers, skill data, combo rotations) live in `data/skills/*.json` and `data/references/class-guides.md`. Classes with weapon variants (Hero/Axe, Paladin/BW) have separate skill files and gear templates.
+14 classes implemented. Per-class details (weapons, multipliers, skill data, combo rotations) live in `data/skills/*.json` and `data/references/class-guides.md`. Classes with weapon variants (Hero/Axe, Paladin/BW) have separate skill files and base templates.
 
 ### Funding & Gear
 
-Four tiers: low, mid, high, perfect. A change that looks balanced at one tier may be wildly unbalanced at another — always evaluate across tiers. Templates assume full party buffs (MW20, SE, SI, Echo, Booster). See `data/gear-assumptions.md` for the full breakdown.
+One build per class at perfect-tier funding. Gear stats are computed from a shared budget (`data/gear-budget.json`) combined with per-class weapon data (`data/gear-templates/*.base.json`). Mages have separate templates (`*-perfect.json`) since they use different scaling (MATK, INT). All builds assume full party buffs (MW20, SE, SI, Echo, Booster). See `data/gear-assumptions.md` for details.
 
 ### Simulation Controls
 
@@ -232,9 +231,9 @@ All conditions are composed from individual toggles (not predefined scenarios):
 - All game data values must cite their source (spreadsheet cell, royals.ms forum thread, wiki, or in-game verification). Use a `"source"` field in JSON data files.
 - Tests go next to the code they test (`damage.ts` → `damage.test.ts`).
 - Keep functions small. If a function needs a comment explaining what a section does, that section should be its own function.
-- **Gear templates** are named `{class}-{tier}.json` (e.g., `hero-low.json`, `dark-knight-high.json`).
+- **Gear templates** are named `{class}.base.json` for physical classes, `{class}-perfect.json` for mage overrides.
 - **Skill slugs** are derived from skill names: lowercase, spaces/parentheses/commas replaced with hyphens, trailing hyphens stripped.
-- **Auto-discovery**: the CLI auto-discovers classes and tiers by scanning `data/skills/` and `data/gear-templates/`. Adding a new class means adding its skill file + gear templates — no config changes needed.
+- **Auto-discovery**: the CLI auto-discovers classes by scanning `data/skills/` and `data/gear-templates/`. Adding a new class means adding its skill file + base template — no config changes needed.
 - **SE crit formula**: each class's skill data specifies `seCritFormula` to handle the three known SE crit calculation variants (`addBeforeMultiply`, `multiplicative`, `scaleOnBase`). Can also be overridden per-skill.
 
 ## What NOT To Do
@@ -272,17 +271,14 @@ metra/
 │           └── index.ts         # re-exports
 ├── data/
 │   ├── source-sheet.xlsx        # original spreadsheet (read-only reference)
-│   ├── gear-assumptions.md      # gear template assumptions documentation
-│   ├── tier-defaults.json       # standardized potion + CGS values per tier
+│   ├── gear-assumptions.md      # gear modeling assumptions documentation
+│   ├── gear-budget.json         # shared gear budget (stats, WATK, potion)
 │   ├── weapons.json             # weapon type multipliers
 │   ├── attack-speed.json        # speed tier → attack time table
 │   ├── mw.json                  # MW level → stat multiplier
 │   ├── skills/                  # one file per class (14 classes)
-│   ├── gear-templates/          # {class}-{tier}.json — low, mid, high, perfect per class
+│   ├── gear-templates/          # *.base.json (class+weapon), *-perfect.json (mage overrides)
 │   └── references/              # extracted forum knowledge by topic
-├── docs/
-│   ├── audit/                   # gear template comparison reports
-│   └── plans/                   # implementation plans (design + execution)
 ├── proposals/                   # balance change proposals
 ├── scripts/
 │   └── dump-sheet.ts            # spreadsheet extraction utility
@@ -290,16 +286,16 @@ metra/
 │   ├── index.ts                 # library entry point
 │   ├── core.ts                  # browser-safe re-exports (no fs loaders)
 │   ├── cli.ts                   # CLI entry: baseline rankings or proposal comparison
-│   ├── audit/                   # balance audit (outlier detection, tier sensitivity)
+│   ├── audit/                   # balance audit (outlier detection)
 │   ├── data/
 │   │   ├── types.ts             # re-exports from @metra/engine (backward compat)
-│   │   ├── loader.ts            # JSON data loaders + discoverClassesAndTiers()
-│   │   └── gear-merge.ts        # gear template inheritance (base + tier delta)
+│   │   ├── loader.ts            # JSON data loaders + discoverClasses()
+│   │   └── gear-compute.ts      # compute CharacterBuild from class base + shared budget
 │   ├── proposals/
 │   │   ├── types.ts             # Proposal, ScenarioResult, DeltaEntry, ComparisonResult
 │   │   ├── apply.ts             # apply proposal changes to skill data
 │   │   ├── validate.ts          # proposal JSON validation
-│   │   ├── simulate.ts          # run DPS across all classes × tiers × skills
+│   │   ├── simulate.ts          # run DPS across all classes × skills
 │   │   └── compare.ts           # before/after comparison with rank tracking
 │   ├── report/
 │   │   ├── markdown.ts          # Markdown rendering
