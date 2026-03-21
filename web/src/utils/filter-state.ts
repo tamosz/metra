@@ -1,4 +1,4 @@
-import type { SimulationControlsContextType } from '../context/SimulationControlsContext.js';
+import type { SimulationFiltersContextType } from '../context/SimulationFiltersContext.js';
 import { FILTER_DEFAULTS } from './filter-defaults.js';
 import { CGS_DEFAULTS } from './cgs.js';
 import { DEFAULT_SKILL_GROUPS } from './skill-groups.js';
@@ -12,7 +12,7 @@ function setsEqual(a: Set<string>, b: Set<string>): boolean {
   return true;
 }
 
-export function buildFilterState(controls: SimulationControlsContextType): FilterState {
+export function buildFilterState(controls: SimulationFiltersContextType): FilterState {
   const state: FilterState = {};
 
   if (controls.selectedTier !== FILTER_DEFAULTS.tier) {

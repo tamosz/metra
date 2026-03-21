@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { CGS_DEFAULTS, type CgsValues } from '../utils/cgs.js';
 import { useSpinner } from '../hooks/useSpinner.js';
 import type { SavedCgsBuild } from '../types/saved-cgs-build.js';
-import { useSimulationControls } from '../context/SimulationControlsContext.js';
+import { useSimulationFilters } from '../context/SimulationFiltersContext.js';
 
 interface TierPresetsProps {
   tiers: string[];
@@ -29,7 +29,7 @@ export function TierPresets({
   onDeleteBuild,
   onClearBuild,
 }: TierPresetsProps) {
-  const { selectedTier, setSelectedTier: onTierChange, cgsValues, setCgsValues: onCgsChange } = useSimulationControls();
+  const { selectedTier, setSelectedTier: onTierChange, cgsValues, setCgsValues: onCgsChange } = useSimulationFilters();
   const cgsMatchesSelected = matchesTierDefaults(selectedTier, cgsValues);
   const [saving, setSaving] = useState(false);
   const [saveName, setSaveName] = useState('');

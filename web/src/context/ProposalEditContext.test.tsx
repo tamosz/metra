@@ -1,21 +1,21 @@
 import { describe, it, expect, afterEach } from 'vitest';
 import { renderHook, act, cleanup } from '@testing-library/react';
-import { SimulationControlsProvider, useSimulationControls } from './SimulationControlsContext.js';
+import { ProposalEditProvider, useProposalEdit } from './ProposalEditContext.js';
 import type { ReactNode } from 'react';
 
 function wrapper({ children }: { children: ReactNode }) {
-  return <SimulationControlsProvider>{children}</SimulationControlsProvider>;
+  return <ProposalEditProvider>{children}</ProposalEditProvider>;
 }
 
-function renderControls() {
-  return renderHook(() => useSimulationControls(), { wrapper });
+function renderEdit() {
+  return renderHook(() => useProposalEdit(), { wrapper });
 }
 
 describe('edit state', () => {
   afterEach(cleanup);
 
   it('defaults to disabled with empty changes and meta', () => {
-    const { result } = renderControls();
+    const { result } = renderEdit();
 
     expect(result.current.editEnabled).toBe(false);
     expect(result.current.editChanges).toEqual([]);
@@ -23,7 +23,7 @@ describe('edit state', () => {
   });
 
   it('enables edit mode', () => {
-    const { result } = renderControls();
+    const { result } = renderEdit();
 
     act(() => {
       result.current.setEditEnabled(true);
@@ -33,7 +33,7 @@ describe('edit state', () => {
   });
 
   it('clears changes and meta when disabling edit mode', () => {
-    const { result } = renderControls();
+    const { result } = renderEdit();
 
     act(() => {
       result.current.setEditEnabled(true);
@@ -58,7 +58,7 @@ describe('edit state', () => {
   });
 
   it('adds a change', () => {
-    const { result } = renderControls();
+    const { result } = renderEdit();
 
     act(() => {
       result.current.addEditChange({
@@ -74,7 +74,7 @@ describe('edit state', () => {
   });
 
   it('removes a change by index', () => {
-    const { result } = renderControls();
+    const { result } = renderEdit();
 
     act(() => {
       result.current.addEditChange({
@@ -100,7 +100,7 @@ describe('edit state', () => {
   });
 
   it('updates a change at a given index', () => {
-    const { result } = renderControls();
+    const { result } = renderEdit();
 
     act(() => {
       result.current.addEditChange({
@@ -122,7 +122,7 @@ describe('edit state', () => {
   });
 
   it('clears all changes', () => {
-    const { result } = renderControls();
+    const { result } = renderEdit();
 
     act(() => {
       result.current.addEditChange({
@@ -147,7 +147,7 @@ describe('edit state', () => {
   });
 
   it('sets edit meta', () => {
-    const { result } = renderControls();
+    const { result } = renderEdit();
 
     act(() => {
       result.current.setEditMeta({ name: 'Brandish Buff', author: 'Staff' });
@@ -157,7 +157,7 @@ describe('edit state', () => {
   });
 
   it('setters are stable references across renders', () => {
-    const { result, rerender } = renderControls();
+    const { result, rerender } = renderEdit();
 
     const first = {
       setEditEnabled: result.current.setEditEnabled,
@@ -181,7 +181,7 @@ describe('edit state', () => {
   });
 
   it('loadEditState atomically sets enabled, changes, and meta', () => {
-    const { result } = renderControls();
+    const { result } = renderEdit();
 
     const changes = [
       { target: 'hero.brandish-sword', field: 'basePower', to: 280 },
@@ -198,7 +198,7 @@ describe('edit state', () => {
   });
 
   it('loadEditState without meta uses empty defaults', () => {
-    const { result } = renderControls();
+    const { result } = renderEdit();
 
     act(() => {
       result.current.loadEditState([
@@ -211,37 +211,23 @@ describe('edit state', () => {
     expect(result.current.editMeta).toEqual({ name: '', author: '' });
   });
 
-  it('resetControls restores all state to defaults', () => {
-    const { result } = renderControls();
+  it('resetEdit restores edit state to defaults', () => {
+    const { result } = renderEdit();
 
     act(() => {
-      result.current.setSelectedTier('low');
-      result.current.setTargetCount(6);
-      result.current.setCapEnabled(false);
-      result.current.setKbEnabled(true);
-      result.current.setBossAttackInterval(3.0);
-      result.current.setBossAccuracy(300);
-      result.current.setBreakdownEnabled(true);
-      result.current.setBuffOverrides({ sharpEyes: false });
-      result.current.setElementModifiers({ Holy: 1.5 });
-      result.current.setEfficiencyOverrides({ hero: [1, 2] });
       result.current.setEditEnabled(true);
+      result.current.addEditChange({
+        target: 'hero.brandish-sword',
+        field: 'basePower',
+        to: 280,
+      });
+      result.current.setEditMeta({ name: 'Test', author: 'User' });
     });
 
-    act(() => result.current.resetControls());
+    act(() => result.current.resetEdit());
 
-    expect(result.current.selectedTier).toBe('perfect');
-    expect(result.current.targetCount).toBe(1);
-    expect(result.current.capEnabled).toBe(true);
-    expect(result.current.kbEnabled).toBe(false);
-    expect(result.current.bossAttackInterval).toBe(1.5);
-    expect(result.current.bossAccuracy).toBe(250);
-    expect(result.current.breakdownEnabled).toBe(false);
-    expect(result.current.buffOverrides).toEqual({});
-    expect(result.current.elementModifiers).toEqual({});
-    expect(result.current.efficiencyOverrides).toEqual({});
     expect(result.current.editEnabled).toBe(false);
     expect(result.current.editChanges).toEqual([]);
-    expect(result.current.activeGroups).toEqual(new Set(['main']));
+    expect(result.current.editMeta).toEqual({ name: '', author: '' });
   });
 });

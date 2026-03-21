@@ -1,9 +1,9 @@
 import { useEffect, useRef } from 'react';
-import type { SimulationControlsContextType } from '../context/SimulationControlsContext.js';
+import type { SimulationFiltersContextType } from '../context/SimulationFiltersContext.js';
 import { setFilterInUrl, clearFilterFromUrl } from '../utils/filter-url.js';
 import { buildFilterState } from '../utils/filter-state.js';
 
-export function useFilterPermalink(controls: SimulationControlsContextType): void {
+export function useFilterPermalink(controls: SimulationFiltersContextType): void {
   const initialized = useRef(false);
 
   useEffect(() => {

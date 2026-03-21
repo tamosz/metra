@@ -6,7 +6,7 @@ import { formatDps } from '../../utils/format.js';
 import { getClassColor } from '../../utils/class-colors.js';
 import { compareTiers, type DpsResult } from '@metra/engine';
 import type { ScenarioResult, ComparisonResult, ComboSubResult } from '@engine/proposals/types.js';
-import { useSimulationControls } from '../../context/SimulationControlsContext.js';
+import { useProposalEdit } from '../../context/ProposalEditContext.js';
 import { discoveredData } from '../../data/bundle.js';
 import { skillSlug } from '@engine/proposals/apply.js';
 import { buildDeltaMap, deltaMapKey } from '../../utils/delta-map.js';
@@ -75,7 +75,7 @@ export function RankingTable({
   editComparison?: ComparisonResult | null;
   animation?: AnimatedDpsResult;
 }) {
-  const { editEnabled, editChanges, addEditChange, updateEditChange, removeEditChange } = useSimulationControls();
+  const { editEnabled, editChanges, addEditChange, updateEditChange, removeEditChange } = useProposalEdit();
 
   const [sortColumn, setSortColumn] = useState<SortColumn>('dps');
   const [sortDirection, setSortDirection] = useState<SortDirection>('desc');

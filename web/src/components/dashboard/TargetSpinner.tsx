@@ -1,9 +1,9 @@
 import { useCallback } from 'react';
-import { useSimulationControls } from '../../context/SimulationControlsContext.js';
+import { useSimulationFilters } from '../../context/SimulationFiltersContext.js';
 import { useSpinner } from '../../hooks/useSpinner.js';
 
 export function TargetSpinner() {
-  const { targetCount, setTargetCount } = useSimulationControls();
+  const { targetCount, setTargetCount } = useSimulationFilters();
   const clamp = (n: number) => Math.max(1, Math.min(15, n));
 
   const decrement = useCallback(() => {

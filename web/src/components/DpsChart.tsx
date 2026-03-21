@@ -13,7 +13,7 @@ import { useMemo, useRef, useState, useEffect } from 'react';
 import { getClassColor } from '../utils/class-colors.js';
 import { useIsMobile } from '../hooks/useIsMobile.js';
 import { colors } from '../theme.js';
-import { useSimulationControls } from '../context/SimulationControlsContext.js';
+import { useSimulationFilters } from '../context/SimulationFiltersContext.js';
 import { buildDeltaMap, deltaMapKey } from '../utils/delta-map.js';
 import { type BuffBreakdownMap, breakdownKey } from '../hooks/useBuffBreakdown.js';
 import type { AnimatedDpsResult } from '../hooks/useAnimatedDps.js';
@@ -92,7 +92,7 @@ interface DpsChartProps {
 }
 
 export function DpsChart({ data, editComparison, breakdownMap, animation }: DpsChartProps) {
-  const { capEnabled } = useSimulationControls();
+  const { capEnabled } = useSimulationFilters();
   const isMobile = useIsMobile();
   const showStacked = !!breakdownMap;
 

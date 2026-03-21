@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { discoveredData } from '../data/bundle.js';
-import { useSimulationControls } from '../context/SimulationControlsContext.js';
+import { useSimulationFilters } from '../context/SimulationFiltersContext.js';
 
 interface RotationConfig {
   key: string;
@@ -29,7 +29,7 @@ for (const [, classData] of discoveredData.classDataMap) {
 }
 
 export function EfficiencyPanel() {
-  const { efficiencyOverrides, setEfficiencyOverrides } = useSimulationControls();
+  const { efficiencyOverrides, setEfficiencyOverrides } = useSimulationFilters();
   const [expanded, setExpanded] = useState(false);
 
   if (CONFIGURABLE_ROTATIONS.length === 0) return null;

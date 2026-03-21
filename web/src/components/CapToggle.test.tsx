@@ -1,13 +1,13 @@
 import { describe, it, expect, afterEach } from 'vitest';
 import { render, screen, fireEvent, cleanup, act } from '@testing-library/react';
 import { CapToggle } from './CapToggle.js';
-import { SimulationControlsProvider } from '../context/SimulationControlsContext.js';
+import { SimulationFiltersProvider } from '../context/SimulationFiltersContext.js';
 
 function renderWithContext() {
   return render(
-    <SimulationControlsProvider>
+    <SimulationFiltersProvider>
       <CapToggle />
-    </SimulationControlsProvider>
+    </SimulationFiltersProvider>
   );
 }
 

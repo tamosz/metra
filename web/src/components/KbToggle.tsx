@@ -1,4 +1,4 @@
-import { useSimulationControls } from "../context/SimulationControlsContext.js";
+import { useSimulationFilters } from "../context/SimulationFiltersContext.js";
 import { TOGGLE_ON, TOGGLE_OFF } from "../utils/styles.js";
 
 export function KbToggle() {
@@ -9,7 +9,7 @@ export function KbToggle() {
     setBossAttackInterval: onIntervalChange,
     bossAccuracy,
     setBossAccuracy: onAccuracyChange,
-  } = useSimulationControls();
+  } = useSimulationFilters();
 
   return (
     <div className="flex flex-col gap-1">
