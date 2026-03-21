@@ -122,10 +122,15 @@ export function useFundingScaling(options: {
       for (const best of variantBest.values()) {
         lineMap.set(best.key, { key: best.key, className: best.className, skillName: best.skillName });
       }
-    }
 
-    // TODO: mixedRotations (e.g. Corsair's Practical Bossing) are not included.
-    // These would need time-weighted DPS blending at each funding level.
+      // Mixed rotations are always headline
+      if (classData.mixedRotations && (activeGroups.has('main') && !VARIANT_CLASSES.has(className) || CLASS_TO_GROUP[className] && activeGroups.has(CLASS_TO_GROUP[className]!))) {
+        for (const rotation of classData.mixedRotations) {
+          const key = `${className}${SEP}${rotation.name}`;
+          lineMap.set(key, { key, className, skillName: rotation.name });
+        }
+      }
+    }
 
     const lines = Array.from(lineMap.values());
 
@@ -140,16 +145,21 @@ export function useFundingScaling(options: {
 
         const build = computeBuildAtFunding(base, level / 100);
 
+        // Compute DPS for all skills (including non-visible ones needed by mixedRotations)
+        const skillDpsByName = new Map<string, number>();
         const comboDps = new Map<string, number>();
         const variantBest = new Map<string, { key: string; dps: number }>();
 
         for (const skill of classData.skills) {
-          if (!isSkillVisible(skill, className, activeGroups)) continue;
+          if (skill.hidden) continue;
 
           const dpsResult = calculateSkillDps(
             build, classData, skill, weaponData, attackSpeedData, mwData
           );
           const dps = capEnabled ? dpsResult.dps : dpsResult.uncappedDps;
+          skillDpsByName.set(skill.name, dps);
+
+          if (!isSkillVisible(skill, className, activeGroups)) continue;
 
           if (skill.comboGroup) {
             const key = `${className}${SEP}${skill.comboGroup}`;
@@ -181,6 +191,25 @@ export function useFundingScaling(options: {
         for (const best of variantBest.values()) {
           if (lineMap.has(best.key)) {
             point[best.key] = best.dps;
+          }
+        }
+
+        // Mixed rotations: weight-averaged DPS from component skills
+        if (classData.mixedRotations) {
+          for (const rotation of classData.mixedRotations) {
+            const key = `${className}${SEP}${rotation.name}`;
+            if (!lineMap.has(key)) continue;
+
+            let blendedDps = 0;
+            let valid = true;
+            for (const component of rotation.components) {
+              const componentDps = skillDpsByName.get(component.skill);
+              if (componentDps == null) { valid = false; break; }
+              blendedDps += componentDps * component.weight;
+            }
+            if (valid) {
+              point[key] = blendedDps;
+            }
           }
         }
       }
