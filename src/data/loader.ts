@@ -1,7 +1,6 @@
 import { readFileSync, readdirSync } from 'fs';
 import { resolve } from 'path';
 import {
-  compareTiers,
   type WeaponData,
   type AttackSpeedData,
   type MWData,
@@ -9,7 +8,21 @@ import {
   type CharacterBuild,
 } from '@metra/engine';
 import { computeGearTotals } from './gear-utils.js';
-import { mergeGearTemplate, type TierDefaults, type ClassBase, type TierOverride } from './gear-merge.js';
+import { mergeGearTemplate, type TierDefaults, type ClassBase as GearMergeClassBase, type TierOverride } from './gear-merge.js';
+import { computeBuild, type ClassBase } from './gear-compute.js';
+
+/** Canonical tier ordering for display and sorting. Used by discoverClassesAndTiers (legacy). */
+const TIER_ORDER: readonly string[] = ['low', 'mid', 'high', 'perfect'];
+
+function compareTiers(a: string, b: string): number {
+  const ai = TIER_ORDER.indexOf(a);
+  const bi = TIER_ORDER.indexOf(b);
+  const aIdx = ai === -1 ? TIER_ORDER.length : ai;
+  const bIdx = bi === -1 ? TIER_ORDER.length : bi;
+  if (aIdx !== bIdx) return aIdx - bIdx;
+  if (ai === -1 && bi === -1) return a.localeCompare(b);
+  return 0;
+}
 
 const DATA_DIR = resolve(import.meta.dirname, '../../data');
 
@@ -179,4 +192,48 @@ export function discoverClassesAndTiers(): DiscoveryResult {
   }
 
   return { classNames, tiers: tierArray, classDataMap, gearTemplates };
+}
+
+export interface ClassDiscoveryResult {
+  classNames: string[];
+  classDataMap: Map<string, ClassSkillData>;
+  builds: Map<string, CharacterBuild>;
+}
+
+/**
+ * Auto-discover classes by scanning data/skills/ and data/gear-templates/.
+ * A class is included only if it has both a skill file and a .base.json file.
+ * Physical classes use computeBuild(); mage classes load {className}-perfect.json.
+ */
+export function discoverClasses(): ClassDiscoveryResult {
+  const skillFiles = readdirSync(resolve(DATA_DIR, 'skills'))
+    .filter((f: string) => f.endsWith('.json'))
+    .map((f: string) => f.replace('.json', ''));
+
+  const baseFiles = readdirSync(resolve(DATA_DIR, 'gear-templates'))
+    .filter((f: string) => f.endsWith('.base.json'))
+    .map((f: string) => f.replace('.base.json', ''));
+
+  if (skillFiles.length === 0) {
+    throw new Error(`No skill files found in data/skills/. Expected .json files defining class skills.`);
+  }
+
+  const baseSet = new Set(baseFiles);
+  const classNames = skillFiles.filter(name => baseSet.has(name));
+
+  const classDataMap = new Map<string, ClassSkillData>();
+  const builds = new Map<string, CharacterBuild>();
+
+  for (const name of classNames) {
+    classDataMap.set(name, loadClassSkills(name));
+
+    const base = loadJson<ClassBase>(`gear-templates/${name}.base.json`);
+    if (base.category === 'mage') {
+      builds.set(name, loadGearTemplate(`${name}-perfect`));
+    } else {
+      builds.set(name, computeBuild(base));
+    }
+  }
+
+  return { classNames, classDataMap, builds };
 }

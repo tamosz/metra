@@ -5,7 +5,6 @@ import {
   formatPercent,
   formatRank,
   formatCapLoss,
-  capitalize,
   sortDeltas,
   groupDeltasByScenario,
   groupResultsByScenario,
@@ -78,17 +77,17 @@ function renderDeltaTable(lines: string[], deltas: DeltaEntry[]): void {
 
   if (hasRanks) {
     lines.push(
-      '| Rank | Class | Skill | Tier | Before | After | Change | % |'
+      '| Rank | Class | Skill | Before | After | Change | % |'
     );
     lines.push(
-      '|------|-------|-------|------|-------:|------:|-------:|--:|'
+      '|------|-------|-------|-------:|------:|-------:|--:|'
     );
   } else {
     lines.push(
-      '| Class | Skill | Tier | Before | After | Change | % |'
+      '| Class | Skill | Before | After | Change | % |'
     );
     lines.push(
-      '|-------|-------|------|-------:|------:|-------:|--:|'
+      '|-------|-------|-------:|------:|-------:|--:|'
     );
   }
 
@@ -101,7 +100,6 @@ function renderDeltaTable(lines: string[], deltas: DeltaEntry[]): void {
     row.push(
       escapePipe(d.className),
       escapePipe(d.skillName),
-      escapePipe(capitalize(d.tier)),
       formatNumber(d.before),
       formatNumber(d.after),
       formatChange(d.change),
@@ -143,11 +141,11 @@ function renderBaselineTable(
   showCapLoss: boolean,
 ): void {
   if (showCapLoss) {
-    lines.push('| Rank | Class | Skill | Tier | DPS | Cap Loss |');
-    lines.push('|-----:|-------|-------|------|----:|---------:|');
+    lines.push('| Rank | Class | Skill | DPS | Cap Loss |');
+    lines.push('|-----:|-------|-------|----:|---------:|');
   } else {
-    lines.push('| Rank | Class | Skill | Tier | DPS |');
-    lines.push('|-----:|-------|-------|------|----:|');
+    lines.push('| Rank | Class | Skill | DPS |');
+    lines.push('|-----:|-------|-------|----:|');
   }
 
   const sorted = [...results].sort((a, b) => b.dps.dps - a.dps.dps);
@@ -157,7 +155,6 @@ function renderBaselineTable(
       String(i + 1),
       escapePipe(r.className),
       escapePipe(r.skillName),
-      escapePipe(capitalize(r.tier)),
       formatNumber(r.dps.dps),
     ];
     if (showCapLoss) {

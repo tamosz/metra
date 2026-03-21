@@ -43,11 +43,10 @@ export interface ScenarioConfig {
   efficiencyOverrides?: Record<string, number[]>;
 }
 
-/** DPS result for a single class/skill/tier combination. */
+/** DPS result for a single class/skill combination. */
 export interface ScenarioResult {
   className: string;
   skillName: string;
-  tier: string;
   scenario: string;
   dps: DpsResult;
   /** Tooltip description for mixed rotation entries. */
@@ -76,7 +75,6 @@ export interface ComboSubResult {
 export interface DeltaEntry {
   className: string;
   skillName: string;
-  tier: string;
   scenario: string;
   before: number;
   after: number;
@@ -90,9 +88,9 @@ export interface DeltaEntry {
   uncappedChange: number;
   /** Uncapped DPS change percent. */
   uncappedChangePercent: number;
-  /** DPS rank within (scenario, tier) group before the change. */
+  /** DPS rank within scenario group before the change. */
   rankBefore?: number;
-  /** DPS rank within (scenario, tier) group after the change. */
+  /** DPS rank within scenario group after the change. */
   rankAfter?: number;
 }
 

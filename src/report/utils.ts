@@ -1,5 +1,4 @@
 import type { DeltaEntry, ScenarioResult } from '../proposals/types.js';
-import { compareTiers } from '@metra/engine';
 
 /**
  * Format a number with thousands separators (locale-independent).
@@ -50,7 +49,7 @@ export function formatCapLoss(percent: number): string {
 
 /**
  * Sort deltas: changed entries first (by absolute % desc), then unchanged.
- * Within unchanged group, sort by class then tier.
+ * Within unchanged group, sort by class name.
  */
 export function sortDeltas(deltas: DeltaEntry[]): DeltaEntry[] {
   return [...deltas].sort((a, b) => {
@@ -60,9 +59,7 @@ export function sortDeltas(deltas: DeltaEntry[]): DeltaEntry[] {
     if (aChanged === 0) {
       return Math.abs(b.changePercent) - Math.abs(a.changePercent);
     }
-    const classCompare = a.className.localeCompare(b.className);
-    if (classCompare !== 0) return classCompare;
-    return compareTiers(a.tier, b.tier);
+    return a.className.localeCompare(b.className);
   });
 }
 

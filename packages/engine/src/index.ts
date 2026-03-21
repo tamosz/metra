@@ -4,8 +4,6 @@
 
 // Types and constants
 export {
-  TIER_ORDER,
-  compareTiers,
   type StatName,
   type WeaponType,
   type WeaponData,

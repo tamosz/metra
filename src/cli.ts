@@ -4,7 +4,7 @@ import {
   loadWeapons,
   loadAttackSpeed,
   loadMW,
-  discoverClassesAndTiers,
+  discoverClasses,
 } from './data/loader.js';
 import { compareProposal } from './proposals/compare.js';
 import { runSimulation } from './proposals/simulate.js';
@@ -13,7 +13,6 @@ import type { ScenarioConfig } from './proposals/types.js';
 import { validateProposal } from './proposals/validate.js';
 import { renderComparisonReport, renderBaselineReport } from './report/markdown.js';
 import { renderAsciiChart } from './report/ascii-chart.js';
-import { capitalize } from './report/utils.js';
 import { analyzeBalance } from './audit/analyze.js';
 import { formatAuditReport } from './audit/format.js';
 
@@ -80,7 +79,7 @@ export function main() {
   const weaponData = loadWeapons();
   const attackSpeedData = loadAttackSpeed();
   const mwData = loadMW();
-  const { classNames, tiers, classDataMap, gearTemplates } = discoverClassesAndTiers();
+  const { classNames, classDataMap, builds } = discoverClasses();
 
   const baseline: ScenarioConfig = {
     name: uncapped ? 'Baseline (Uncapped)' : (kbConfig ? 'Baseline (KB, experimental)' : 'Baseline'),
@@ -106,7 +105,6 @@ export function main() {
 
   const config: SimulationConfig = {
     classes: classNames,
-    tiers,
     scenarios,
   };
 
@@ -115,7 +113,7 @@ export function main() {
     const results = runSimulation(
       config,
       classDataMap,
-      gearTemplates,
+      builds,
       weaponData,
       attackSpeedData,
       mwData
@@ -137,7 +135,7 @@ export function main() {
     if (firstScenarioResults.length > 0) {
       console.log(renderAsciiChart(
         firstScenarioResults.map((r) => ({
-          label: `${r.className} ${r.skillName} (${capitalize(r.tier)})`,
+          label: `${r.className} ${r.skillName}`,
           value: r.dps.dps,
         }))
       ));
@@ -157,7 +155,7 @@ export function main() {
     proposal,
     config,
     classDataMap,
-    gearTemplates,
+    builds,
     weaponData,
     attackSpeedData,
     mwData
