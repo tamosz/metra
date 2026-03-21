@@ -62,6 +62,7 @@ const nightLord: ClassBase = {
   weaponSpeed: 4,
   godlyCleanWATK: 60,
   weaponStat: 20,
+  baseSecondaryOverride: 25,
   projectile: 30,
   echoActive: true,
   mwLevel: 20,
@@ -180,9 +181,9 @@ describe('computeBuild', () => {
       expect(build.baseStats.LUK).toBe(999);
     });
 
-    it('secondary stat is DEX', () => {
+    it('secondary stat is DEX with override', () => {
       expect(build.gearStats.DEX).toBe(168);
-      expect(build.baseStats.DEX).toBe(23);
+      expect(build.baseStats.DEX).toBe(25);
     });
 
     it('shadowPartner is true', () => {

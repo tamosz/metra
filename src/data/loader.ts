@@ -79,7 +79,10 @@ export function loadGearTemplate(templateName: string): CharacterBuild {
     const baseName = raw.extends as string;
     const base = loadJson<ClassBase>(`gear-templates/${baseName}.base.json`);
 
-    const breakdown = raw.gearBreakdown as Record<string, Record<string, number>>;
+    const breakdown = raw.gearBreakdown as Record<string, Record<string, number>> | undefined;
+    if (!breakdown) {
+      throw new Error(`Template "${templateName}" extends "${baseName}" but has no gearBreakdown`);
+    }
     const computed = computeGearTotals(breakdown);
 
     return {
@@ -143,6 +146,9 @@ export function discoverClasses(): ClassDiscoveryResult {
   if (skillFiles.length === 0) {
     throw new Error(`No skill files found in data/skills/. Expected .json files defining class skills.`);
   }
+  if (baseFiles.length === 0) {
+    throw new Error(`No base files found in data/gear-templates/. Expected .base.json files defining class weapon data.`);
+  }
 
   const baseSet = new Set(baseFiles);
   const classNames = skillFiles.filter(name => baseSet.has(name));
@@ -154,6 +160,9 @@ export function discoverClasses(): ClassDiscoveryResult {
     classDataMap.set(name, loadClassSkills(name));
 
     const base = loadJson<ClassBase>(`gear-templates/${name}.base.json`);
+    if (base.category !== 'physical' && base.category !== 'mage') {
+      throw new Error(`Invalid category "${base.category}" in gear-templates/${name}.base.json (expected "physical" or "mage")`);
+    }
     if (base.category === 'mage') {
       builds.set(name, loadGearTemplate(`${name}-perfect`));
     } else {

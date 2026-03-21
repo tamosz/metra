@@ -69,6 +69,7 @@ export interface ClassBase {
   speedInfusion: boolean;
   sharpEyes: boolean;
   shadowPartner?: boolean;
+  baseSecondaryOverride?: number;
 }
 
 export interface GearBudget {
@@ -123,10 +124,10 @@ function computeBuildFromBudget(base: ClassBase, b: GearBudget): CharacterBuild 
   }
 
   const baseStats = { STR: 4, DEX: 4, INT: 4, LUK: 4 };
-  baseStats[primary] = b.basePrimary;
   for (const sec of secondaryArr) {
-    baseStats[sec] = b.baseSecondary;
+    baseStats[sec] = base.baseSecondaryOverride ?? b.baseSecondary;
   }
+  baseStats[primary] = b.basePrimary;
 
   return {
     className: base.className,
@@ -238,9 +239,8 @@ export function discoverClasses(): DiscoveryResult {
       // Mage: parse the perfect-tier template in flat mode
       const raw = findTemplateModule(`${name}-perfect`);
       if (raw) {
-        // Merge base fields (weaponSpeed, weaponType, etc.) under the template
+        // Merge base defaults under raw, but always use base for identity/buff fields
         const merged = {
-          className: base.className,
           weaponType: base.weaponType,
           weaponSpeed: base.weaponSpeed,
           projectile: base.projectile,
@@ -249,6 +249,7 @@ export function discoverClasses(): DiscoveryResult {
           speedInfusion: base.speedInfusion,
           sharpEyes: base.sharpEyes,
           ...raw,
+          className: base.className,
         };
         builds.set(name, parseMageTemplate(merged));
         classNames.push(name);
