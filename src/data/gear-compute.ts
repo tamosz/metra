@@ -5,14 +5,14 @@ import type { CharacterBuild, StatName } from '@metra/engine';
 export interface ClassBase {
   className: string;
   category: 'physical' | 'mage';
-  primaryStat: string;
-  secondaryStat: string | string[];
+  primaryStat: StatName;
+  secondaryStat: StatName | StatName[];
   weaponType: string;
   weaponSpeed: number;
   godlyCleanWATK: number;
   weaponStat: number;
   shieldWATK?: number;
-  shieldStats?: Record<string, number>;
+  shieldStats?: Partial<Record<StatName, number>>;
   passiveWATK?: number;
   projectile: number;
   echoActive: boolean;
@@ -58,11 +58,11 @@ export function computeBuild(base: ClassBase): CharacterBuild {
     (base.passiveWATK ?? 0) +
     (base.shieldWATK ?? 0);
 
-  const primary = base.primaryStat as StatName;
+  const primary = base.primaryStat;
   const secondaryArr = Array.isArray(base.secondaryStat)
     ? base.secondaryStat
     : [base.secondaryStat];
-  const firstSecondary = secondaryArr[0] as StatName;
+  const firstSecondary = secondaryArr[0];
 
   // gear stats: primary gets gearPrimary + weaponStat, first secondary gets gearSecondary
   const gearStats = { STR: 0, DEX: 0, INT: 0, LUK: 0 };
@@ -71,8 +71,8 @@ export function computeBuild(base: ClassBase): CharacterBuild {
 
   // add shield stats
   if (base.shieldStats) {
-    for (const [stat, value] of Object.entries(base.shieldStats)) {
-      gearStats[stat as StatName] += value;
+    for (const stat of ALL_STATS) {
+      gearStats[stat] += base.shieldStats[stat] ?? 0;
     }
   }
 
