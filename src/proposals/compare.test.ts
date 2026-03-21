@@ -36,19 +36,14 @@ beforeAll(() => {
   ]);
 
   gearTemplates = new Map([
-    ['hero-low', TEST_BUILDS['hero-low']],
-    ['hero-high', TEST_BUILDS['hero-high']],
-    ['dark-knight-low', TEST_BUILDS['dark-knight-low']],
-    ['dark-knight-high', TEST_BUILDS['dark-knight-high']],
-    ['paladin-low', TEST_BUILDS['paladin-low']],
-    ['paladin-high', TEST_BUILDS['paladin-high']],
-    ['night-lord-low', TEST_BUILDS['night-lord-low']],
-    ['night-lord-high', TEST_BUILDS['night-lord-high']],
+    ['hero', TEST_BUILDS['hero-high']],
+    ['dark-knight', TEST_BUILDS['dark-knight-high']],
+    ['paladin', TEST_BUILDS['paladin-high']],
+    ['night-lord', TEST_BUILDS['night-lord-high']],
   ]);
 
   config = {
     classes: ['hero', 'dark-knight', 'paladin', 'night-lord'],
-    tiers: ['low', 'high'],
   };
 });
 
@@ -78,7 +73,7 @@ describe('compareProposal', () => {
       mwData
     );
 
-    // Should have results for all class × tier × skill combos
+    // Should have results for all class × skill combos
     expect(result.before.length).toBeGreaterThan(0);
     expect(result.after.length).toBe(result.before.length);
     expect(result.deltas.length).toBe(result.before.length);
@@ -95,8 +90,7 @@ describe('compareProposal', () => {
     const heroBrandishHigh = result.deltas.find(
       (d) =>
         d.className === 'Hero' &&
-        d.skillName === 'Brandish (Sword)' &&
-        d.tier === 'high'
+        d.skillName === 'Brandish (Sword)'
     )!;
     expect(heroBrandishHigh.change).toBeGreaterThan(0);
     expect(heroBrandishHigh.changePercent).toBeGreaterThan(0);
@@ -108,8 +102,7 @@ describe('compareProposal', () => {
     const darkKnightCrusherHigh = result.deltas.find(
       (d) =>
         d.className === 'Dark Knight' &&
-        d.skillName === 'Spear Crusher' &&
-        d.tier === 'high'
+        d.skillName === 'Spear Crusher'
     )!;
     expect(darkKnightCrusherHigh.change).toBe(0);
     expect(darkKnightCrusherHigh.changePercent).toBe(0);
@@ -118,8 +111,7 @@ describe('compareProposal', () => {
     const paladinBlastHigh = result.deltas.find(
       (d) =>
         d.className === 'Paladin' &&
-        d.skillName === 'Blast (Holy, Sword)' &&
-        d.tier === 'high'
+        d.skillName === 'Blast (Holy, Sword)'
     )!;
     expect(paladinBlastHigh.change).toBe(0);
 
@@ -127,46 +119,10 @@ describe('compareProposal', () => {
     const nightLordTtHigh = result.deltas.find(
       (d) =>
         d.className === 'Night Lord' &&
-        d.skillName === 'Triple Throw' &&
-        d.tier === 'high'
+        d.skillName === 'Triple Throw'
     )!;
     expect(nightLordTtHigh.change).toBe(0);
     expect(nightLordTtHigh.changePercent).toBe(0);
-  });
-
-  it('cross-checks Brandish +20 Low DPS against hero charts scenario 3', () => {
-    const proposal: Proposal = {
-      name: 'Brandish +20',
-      author: 'test',
-      changes: [
-        {
-          target: 'hero.brandish-sword',
-          field: 'basePower',
-          from: 260,
-          to: 280,
-        },
-      ],
-    };
-
-    const result = compareProposal(
-      proposal,
-      config,
-      classDataMap,
-      gearTemplates,
-      weaponData,
-      attackSpeedData,
-      mwData
-    );
-
-    const heroBrandishLow = result.deltas.find(
-      (d) =>
-        d.className === 'Hero' &&
-        d.skillName === 'Brandish (Sword)' &&
-        d.tier === 'low'
-    )!;
-
-    // After CGS update (168→163 WATK): Brandish +20 Low DPS
-    expect(heroBrandishLow.after).toBeCloseTo(132717, -1);
   });
 
   it('computes multi-class changes independently', () => {
@@ -191,26 +147,22 @@ describe('compareProposal', () => {
 
     // Hero goes up
     const heroDelta = result.deltas.find(
-      (d) => d.className === 'Hero' && d.skillName === 'Brandish (Sword)' && d.tier === 'high'
-    )!;
+      (d) => d.className === 'Hero' && d.skillName === 'Brandish (Sword)'    )!;
     expect(heroDelta.change).toBeGreaterThan(0);
 
     // Dark Knight goes down
     const darkKnightDelta = result.deltas.find(
-      (d) => d.className === 'Dark Knight' && d.skillName === 'Spear Crusher' && d.tier === 'high'
-    )!;
+      (d) => d.className === 'Dark Knight' && d.skillName === 'Spear Crusher'    )!;
     expect(darkKnightDelta.change).toBeLessThan(0);
 
     // Paladin unaffected
     const pallyDelta = result.deltas.find(
-      (d) => d.className === 'Paladin' && d.skillName === 'Blast (Holy, Sword)' && d.tier === 'high'
-    )!;
+      (d) => d.className === 'Paladin' && d.skillName === 'Blast (Holy, Sword)'    )!;
     expect(pallyDelta.change).toBe(0);
 
     // Night Lord unaffected
     const nightLordDelta = result.deltas.find(
-      (d) => d.className === 'Night Lord' && d.skillName === 'Triple Throw' && d.tier === 'high'
-    )!;
+      (d) => d.className === 'Night Lord' && d.skillName === 'Triple Throw'    )!;
     expect(nightLordDelta.change).toBe(0);
   });
 });
@@ -233,7 +185,6 @@ describe('compareProposal with multiple scenarios', () => {
 
     const multiConfig: SimulationConfig = {
       classes: ['hero'],
-      tiers: ['high'],
       scenarios,
     };
 
@@ -296,7 +247,6 @@ describe('compareProposal with multiple scenarios', () => {
 
     const multiConfig: SimulationConfig = {
       classes: ['hero'],
-      tiers: ['high'],
       scenarios,
     };
 
@@ -342,7 +292,6 @@ describe('compareProposal with multiple scenarios', () => {
 
     const multiConfig: SimulationConfig = {
       classes: ['hero'],
-      tiers: ['high'],
       scenarios,
     };
 
@@ -383,7 +332,6 @@ describe('compareProposal with multiple scenarios', () => {
 
     const multiConfig: SimulationConfig = {
       classes: ['hero'],
-      tiers: ['high'],
       scenarios,
     };
 
@@ -423,12 +371,11 @@ describe('compareProposal with multiple scenarios', () => {
     expect(bossingDelta.changePercent).toBeCloseTo(buffedDelta.changePercent, 2);
   });
 
-  it('computes rank before and after within (scenario, tier) groups', () => {
+  it('computes rank before and after within scenario groups', () => {
     const scenarios: ScenarioConfig[] = [{ name: 'Buffed' }];
 
     const multiConfig: SimulationConfig = {
       classes: ['hero', 'dark-knight'],
-      tiers: ['high'],
       scenarios,
     };
 
@@ -459,10 +406,9 @@ describe('compareProposal with multiple scenarios', () => {
       expect(d.rankAfter).toBeGreaterThan(0);
     }
 
-    // Find Brandish (Sword) high tier delta
+    // Find Brandish (Sword) delta
     const heroBrandish = result.deltas.find(
-      (d) => d.className === 'Hero' && d.skillName === 'Brandish (Sword)' && d.tier === 'high'
-    )!;
+      (d) => d.className === 'Hero' && d.skillName === 'Brandish (Sword)'    )!;
     expect(heroBrandish).toBeDefined();
     // Rank should have potentially changed
     expect(typeof heroBrandish.rankBefore).toBe('number');
@@ -477,7 +423,6 @@ describe('compareProposal with multiple scenarios', () => {
 
     const multiConfig: SimulationConfig = {
       classes: ['hero'],
-      tiers: ['high'],
       scenarios,
     };
 
@@ -538,7 +483,7 @@ describe('computeDeltas with comparisonKey', () => {
       {
         className: 'Paladin',
         skillName: 'Blast (Holy, Sword)',
-        tier: 'high',
+
         scenario: 'Buffed',
         dps: makeDpsResult(190000),
         comparisonKey: 'Blast (Sword)',
@@ -549,7 +494,7 @@ describe('computeDeltas with comparisonKey', () => {
       {
         className: 'Paladin',
         skillName: 'Blast (F/I/L Charge, Sword)',
-        tier: 'high',
+
         scenario: 'Buffed',
         dps: makeDpsResult(210000),
         comparisonKey: 'Blast (Sword)',
@@ -569,7 +514,7 @@ describe('computeDeltas with comparisonKey', () => {
       {
         className: 'Paladin',
         skillName: 'Blast (Holy, Sword)',
-        tier: 'high',
+
         scenario: 'Buffed',
         dps: { ...makeDpsResult(180000), uncappedDps: 200000 },
         comparisonKey: 'Blast (Sword)',
@@ -580,7 +525,7 @@ describe('computeDeltas with comparisonKey', () => {
       {
         className: 'Paladin',
         skillName: 'Blast (Holy, Sword)',
-        tier: 'high',
+
         scenario: 'Buffed',
         dps: { ...makeDpsResult(190000), uncappedDps: 220000 },
         comparisonKey: 'Blast (Sword)',
@@ -601,7 +546,7 @@ describe('computeDeltas with comparisonKey', () => {
       {
         className: 'Hero',
         skillName: 'Brandish (Sword)',
-        tier: 'high',
+
         scenario: 'Buffed',
         dps: makeDpsResult(240000),
       },
@@ -611,7 +556,7 @@ describe('computeDeltas with comparisonKey', () => {
       {
         className: 'Hero',
         skillName: 'Brandish (Sword)',
-        tier: 'high',
+
         scenario: 'Buffed',
         dps: makeDpsResult(260000),
       },
@@ -628,7 +573,7 @@ describe('computeDeltas with comparisonKey', () => {
       {
         className: 'Paladin',
         skillName: 'Blast (Holy, Sword)',
-        tier: 'high',
+
         scenario: 'Buffed',
         dps: makeDpsResult(190000),
         comparisonKey: 'Blast (Sword)',
@@ -639,7 +584,7 @@ describe('computeDeltas with comparisonKey', () => {
       {
         className: 'Paladin',
         skillName: 'Blast (Holy, BW)',
-        tier: 'high',
+
         scenario: 'Buffed',
         dps: makeDpsResult(180000),
         comparisonKey: 'Blast (BW)',
@@ -662,7 +607,7 @@ describe('computeDeltas with comparisonKey', () => {
       {
         className: 'Hero',
         skillName: 'Brandish (Sword)',
-        tier: 'high',
+
         scenario: 'Buffed',
         dps: makeDpsResult(240000),
       },
@@ -672,14 +617,14 @@ describe('computeDeltas with comparisonKey', () => {
       {
         className: 'Hero',
         skillName: 'Brandish (Sword)',
-        tier: 'high',
+
         scenario: 'Buffed',
         dps: makeDpsResult(260000),
       },
       {
         className: 'Hero',
         skillName: 'New Skill',
-        tier: 'high',
+
         scenario: 'Buffed',
         dps: makeDpsResult(150000),
       },
@@ -729,7 +674,7 @@ describe('rank computation', () => {
       {
         className: 'Hero',
         skillName: 'Brandish',
-        tier: 'high',
+
         scenario: 'Buffed',
         dps: makeDpsResult(200000),
       },
@@ -746,21 +691,21 @@ describe('rank computation', () => {
       {
         className: 'Hero',
         skillName: 'Brandish',
-        tier: 'high',
+
         scenario: 'Buffed',
         dps: makeDpsResult(200000),
       },
       {
         className: 'Dark Knight',
         skillName: 'Crusher',
-        tier: 'high',
+
         scenario: 'Buffed',
         dps: makeDpsResult(300000),
       },
       {
         className: 'Night Lord',
         skillName: 'Triple Throw',
-        tier: 'high',
+
         scenario: 'Buffed',
         dps: makeDpsResult(250000),
       },
@@ -781,14 +726,14 @@ describe('rank computation', () => {
       {
         className: 'Hero',
         skillName: 'Brandish',
-        tier: 'high',
+
         scenario: 'Buffed',
         dps: makeDpsResult(200000),
       },
       {
         className: 'Dark Knight',
         skillName: 'Crusher',
-        tier: 'high',
+
         scenario: 'Buffed',
         dps: makeDpsResult(200000),
       },
@@ -799,49 +744,45 @@ describe('rank computation', () => {
     expect(ranks).toEqual([1, 2]);
   });
 
-  it('ranks are computed per (scenario, tier) group independently', () => {
+  it('ranks are computed per scenario group independently', () => {
     const results: ScenarioResult[] = [
       {
         className: 'Hero',
         skillName: 'Brandish',
-        tier: 'high',
         scenario: 'Buffed',
         dps: makeDpsResult(300000),
       },
       {
         className: 'Dark Knight',
         skillName: 'Crusher',
-        tier: 'high',
         scenario: 'Buffed',
         dps: makeDpsResult(250000),
       },
       {
         className: 'Hero',
         skillName: 'Brandish',
-        tier: 'low',
-        scenario: 'Buffed',
+        scenario: 'No Buffs',
         dps: makeDpsResult(100000),
       },
       {
         className: 'Dark Knight',
         skillName: 'Crusher',
-        tier: 'low',
-        scenario: 'Buffed',
+        scenario: 'No Buffs',
         dps: makeDpsResult(120000),
       },
     ];
 
     const deltas = computeDeltas(results, results);
 
-    const heroHigh = deltas.find(d => d.className === 'Hero' && d.tier === 'high')!;
-    const dkHigh = deltas.find(d => d.className === 'Dark Knight' && d.tier === 'high')!;
-    const heroLow = deltas.find(d => d.className === 'Hero' && d.tier === 'low')!;
-    const dkLow = deltas.find(d => d.className === 'Dark Knight' && d.tier === 'low')!;
+    const heroBuffed = deltas.find(d => d.className === 'Hero' && d.scenario === 'Buffed')!;
+    const dkBuffed = deltas.find(d => d.className === 'Dark Knight' && d.scenario === 'Buffed')!;
+    const heroNoBuffs = deltas.find(d => d.className === 'Hero' && d.scenario === 'No Buffs')!;
+    const dkNoBuffs = deltas.find(d => d.className === 'Dark Knight' && d.scenario === 'No Buffs')!;
 
-    expect(heroHigh.rankBefore).toBe(1);
-    expect(dkHigh.rankBefore).toBe(2);
-    expect(dkLow.rankBefore).toBe(1);
-    expect(heroLow.rankBefore).toBe(2);
+    expect(heroBuffed.rankBefore).toBe(1);
+    expect(dkBuffed.rankBefore).toBe(2);
+    expect(dkNoBuffs.rankBefore).toBe(1);
+    expect(heroNoBuffs.rankBefore).toBe(2);
   });
 
   it('rank changes when after DPS differs from before', () => {
@@ -849,14 +790,14 @@ describe('rank computation', () => {
       {
         className: 'Hero',
         skillName: 'Brandish',
-        tier: 'high',
+
         scenario: 'Buffed',
         dps: makeDpsResult(200000),
       },
       {
         className: 'Dark Knight',
         skillName: 'Crusher',
-        tier: 'high',
+
         scenario: 'Buffed',
         dps: makeDpsResult(300000),
       },
@@ -866,14 +807,14 @@ describe('rank computation', () => {
       {
         className: 'Hero',
         skillName: 'Brandish',
-        tier: 'high',
+
         scenario: 'Buffed',
         dps: makeDpsResult(350000),
       },
       {
         className: 'Dark Knight',
         skillName: 'Crusher',
-        tier: 'high',
+
         scenario: 'Buffed',
         dps: makeDpsResult(300000),
       },

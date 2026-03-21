@@ -6,8 +6,6 @@
 export * from '@metra/engine';
 
 // Data utilities (pure functions, no fs)
-export { computeGearTotals, type GearTotals } from './data/gear-utils.js';
-export { mergeGearTemplate, type TierDefaults, type TierOverride } from './data/gear-merge.js';
 export { computeBuild, type ClassBase } from './data/gear-compute.js';
 
 // Proposal system

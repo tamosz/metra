@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { calculateMarginalGains } from '@metra/engine';
-import { loadWeapons, loadAttackSpeed, loadMW, loadClassSkills, loadGearTemplate } from '../data/loader.js';
+import { loadWeapons, loadAttackSpeed, loadMW, loadClassSkills } from '../data/loader.js';
+import { TEST_BUILDS } from './test-builds.js';
 
 const weaponData = loadWeapons();
 const attackSpeedData = loadAttackSpeed();
@@ -9,7 +10,7 @@ const mwData = loadMW();
 describe('calculateMarginalGains', () => {
   it('returns gains for WATK, primary, and secondary stats', () => {
     const classData = loadClassSkills('hero');
-    const build = loadGearTemplate('hero-high');
+    const build = TEST_BUILDS['hero-high'];
     const skill = classData.skills.find(s => s.name === 'Brandish (Sword)')!;
 
     const gains = calculateMarginalGains(build, classData, skill, weaponData, attackSpeedData, mwData);
@@ -33,7 +34,7 @@ describe('calculateMarginalGains', () => {
 
   it('shows WATK for mages (maps to MATK internally)', () => {
     const classData = loadClassSkills('archmage-il');
-    const build = loadGearTemplate('archmage-il-high');
+    const build = TEST_BUILDS['archmage-il-high'];
     const skill = classData.skills.find(s => s.name === 'Chain Lightning')!;
 
     const gains = calculateMarginalGains(build, classData, skill, weaponData, attackSpeedData, mwData);
@@ -43,7 +44,7 @@ describe('calculateMarginalGains', () => {
 
   it('lists each secondary stat separately for multi-secondary classes', () => {
     const classData = loadClassSkills('shadower');
-    const build = loadGearTemplate('shadower-high');
+    const build = TEST_BUILDS['shadower-high'];
     const skill = classData.skills.find(s => s.name === 'Savage Blow')!;
 
     const gains = calculateMarginalGains(build, classData, skill, weaponData, attackSpeedData, mwData);
@@ -55,7 +56,7 @@ describe('calculateMarginalGains', () => {
 
   it('returns zero gain for fixedDamage skills', () => {
     const classData = loadClassSkills('marksman');
-    const build = loadGearTemplate('marksman-high');
+    const build = TEST_BUILDS['marksman-high'];
     const snipe = classData.skills.find(s => s.name === 'Snipe')!;
 
     const gains = calculateMarginalGains(build, classData, snipe, weaponData, attackSpeedData, mwData);

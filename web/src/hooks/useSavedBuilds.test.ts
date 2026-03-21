@@ -20,7 +20,6 @@ describe('useSavedBuilds', () => {
       id: 'sb-existing',
       name: 'My Build',
       className: 'hero',
-      tier: 'high',
       overrides: { totalWeaponAttack: 200 },
       savedAt: 1000,
     };
@@ -30,19 +29,18 @@ describe('useSavedBuilds', () => {
     expect(result.current.builds).toEqual([existing]);
   });
 
-  it('save() creates a build with id, name, className, tier, overrides, and savedAt', () => {
+  it('save() creates a build with id, name, className, overrides, and savedAt', () => {
     const { result } = renderHook(() => useSavedBuilds());
 
     const beforeSave = Date.now();
     let saved: SavedBuild;
     act(() => {
-      saved = result.current.save('Test Build', 'night-lord', 'high', { totalWeaponAttack: 150 });
+      saved = result.current.save('Test Build', 'night-lord', { totalWeaponAttack: 150 });
     });
 
     expect(saved!.id).toMatch(/^sb-/);
     expect(saved!.name).toBe('Test Build');
     expect(saved!.className).toBe('night-lord');
-    expect(saved!.tier).toBe('high');
     expect(saved!.overrides).toEqual({ totalWeaponAttack: 150 });
     expect(saved!.savedAt).toBeGreaterThanOrEqual(beforeSave);
 
@@ -59,8 +57,8 @@ describe('useSavedBuilds', () => {
     let first: SavedBuild;
     let second: SavedBuild;
     act(() => {
-      first = result.current.save('First', 'hero', 'low', {});
-      second = result.current.save('Second', 'dark-knight', 'high', {});
+      first = result.current.save('First', 'hero', {});
+      second = result.current.save('Second', 'dark-knight', {});
     });
 
     act(() => {

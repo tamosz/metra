@@ -143,18 +143,6 @@ describe('useFilterPresets', () => {
     expect(result.current.presets.activePresetId).toBeNull();
   });
 
-  it('CGS changes do not affect dirty state', () => {
-    const { result } = renderPresets();
-    act(() => {
-      result.current.presets.apply('builtin-bossing');
-    });
-    expect(result.current.presets.isDirty).toBe(false);
-    act(() => {
-      result.current.controls.setCgsValues({ cape: 99, glove: 99, shoe: 99 });
-    });
-    expect(result.current.presets.isDirty).toBe(false);
-  });
-
   it('deselect clears active preset', () => {
     const { result } = renderPresets();
     act(() => {

@@ -6,13 +6,6 @@ describe('filter-url', () => {
     expect(encodeFilterState({})).toBe('');
   });
 
-  it('roundtrips tier change', () => {
-    const state: FilterState = { tier: 'low' };
-    const encoded = encodeFilterState(state);
-    expect(encoded).not.toBe('');
-    expect(decodeFilterState(encoded)).toEqual(state);
-  });
-
   it('roundtrips buff overrides', () => {
     const state: FilterState = { buffs: { sharpEyes: false } };
     const encoded = encodeFilterState(state);
@@ -49,12 +42,6 @@ describe('filter-url', () => {
     expect(decodeFilterState(encoded)).toEqual(state);
   });
 
-  it('roundtrips CGS overrides', () => {
-    const state: FilterState = { cgs: { cape: 20, glove: 20, shoe: 20 } };
-    const encoded = encodeFilterState(state);
-    expect(decodeFilterState(encoded)).toEqual(state);
-  });
-
   it('roundtrips skill groups', () => {
     const state: FilterState = { groups: ['warriors', 'mages'] };
     const encoded = encodeFilterState(state);
@@ -69,7 +56,6 @@ describe('filter-url', () => {
 
   it('roundtrips complex multi-field state', () => {
     const state: FilterState = {
-      tier: 'high',
       buffs: { sharpEyes: false, speedInfusion: false },
       kb: { interval: 2.0 },
       targets: 3,
@@ -100,11 +86,6 @@ describe('filter-url', () => {
 
   it('rejects elements with wrong inner types', () => {
     const encoded = encodeFilterState({ elements: { Holy: 'not-a-number' } } as unknown as FilterState);
-    expect(decodeFilterState(encoded)).toBeNull();
-  });
-
-  it('rejects cgs with wrong inner types', () => {
-    const encoded = encodeFilterState({ cgs: { cape: 'x', glove: 20, shoe: 20 } } as unknown as FilterState);
     expect(decodeFilterState(encoded)).toBeNull();
   });
 

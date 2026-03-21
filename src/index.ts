@@ -10,15 +10,11 @@ export {
   loadMW,
   loadClassSkills,
   loadGearTemplate,
-  discoverClassesAndTiers,
   discoverClasses,
-  type DiscoveryResult,
   type ClassDiscoveryResult,
 } from './data/loader.js';
 
 // Data utilities
-export { computeGearTotals, type GearTotals } from './data/gear-utils.js';
-export { mergeGearTemplate, type TierDefaults, type TierOverride } from './data/gear-merge.js';
 export { computeBuild, type ClassBase } from './data/gear-compute.js';
 
 // Proposal system

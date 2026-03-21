@@ -3,7 +3,7 @@ import {
   loadWeapons,
   loadAttackSpeed,
   loadMW,
-  discoverClassesAndTiers,
+  discoverClasses,
 } from './data/loader.js';
 import type { ClassSkillData } from '@metra/engine';
 import { compareProposal } from './proposals/compare.js';
@@ -46,10 +46,10 @@ beforeAll(() => {
   attackSpeedData = loadAttackSpeed();
   mwData = loadMW();
 
-  const discovery = discoverClassesAndTiers();
+  const discovery = discoverClasses();
   classDataMap = discovery.classDataMap;
-  gearTemplates = discovery.gearTemplates;
-  config = { classes: discovery.classNames, tiers: discovery.tiers };
+  gearTemplates = discovery.builds;
+  config = { classes: discovery.classNames };
 });
 
 describe('End-to-end: brandish-buff-20 proposal', () => {
@@ -73,29 +73,25 @@ describe('End-to-end: brandish-buff-20 proposal', () => {
 
     // Hero Brandish (Sword) should be buffed with positive change
     const heroDelta = result.deltas.find(
-      (d) => d.className === 'Hero' && d.skillName === 'Brandish (Sword)' && d.tier === 'high'
-    )!;
+      (d) => d.className === 'Hero' && d.skillName === 'Brandish (Sword)'    )!;
     expect(heroDelta.change).toBeGreaterThan(0);
     expect(heroDelta.changePercent).toBeCloseTo(7.1, 0);
 
     // Dark Knight unchanged
     const darkKnightDelta = result.deltas.find(
-      (d) => d.className === 'Dark Knight' && d.tier === 'high'
-    )!;
+      (d) => d.className === 'Dark Knight'    )!;
     expect(darkKnightDelta.change).toBe(0);
 
     // Night Lord unchanged (not a warrior skill)
     const nightLordDelta = result.deltas.find(
-      (d) => d.className === 'Night Lord' && d.tier === 'high'
-    )!;
+      (d) => d.className === 'Night Lord'    )!;
     expect(nightLordDelta).toBeDefined();
     expect(nightLordDelta.change).toBe(0);
 
     // All 5 new classes appear with zero change
     for (const className of ['Bowmaster', 'Marksman', 'Corsair', 'Buccaneer', 'Shadower']) {
       const delta = result.deltas.find(
-        (d) => d.className === className && d.tier === 'high'
-      );
+        (d) => d.className === className      );
       expect(delta, `${className} should appear in deltas`).toBeDefined();
       expect(delta!.change).toBe(0);
     }
@@ -117,34 +113,29 @@ describe('End-to-end: warrior-rebalance proposal', () => {
 
     // Hero goes up (Brandish buffed 260→280)
     const heroDelta = result.deltas.find(
-      (d) => d.className === 'Hero' && d.skillName === 'Brandish (Sword)' && d.tier === 'high'
-    )!;
+      (d) => d.className === 'Hero' && d.skillName === 'Brandish (Sword)'    )!;
     expect(heroDelta.change).toBeGreaterThan(0);
 
     // Dark Knight goes down (Crusher nerfed 170→150)
     const darkKnightDelta = result.deltas.find(
-      (d) => d.className === 'Dark Knight' && d.tier === 'high'
-    )!;
+      (d) => d.className === 'Dark Knight'    )!;
     expect(darkKnightDelta.change).toBeLessThan(0);
 
     // Paladin Blast (Holy) goes up (580→600)
     const paladinHolyDelta = result.deltas.find(
-      (d) => d.className === 'Paladin' && d.skillName === 'Blast (Holy, Sword)' && d.tier === 'high'
-    )!;
+      (d) => d.className === 'Paladin' && d.skillName === 'Blast (Holy, Sword)'    )!;
     expect(paladinHolyDelta.change).toBeGreaterThan(0);
 
     // With elementVariantGroup merging, only the winning variant (Holy) appears
     // F/I/L Charge is merged away since Holy wins at neutral elements
     const paladinDeltas = result.deltas.filter(
-      (d) => d.className === 'Paladin' && d.tier === 'high'
-    );
+      (d) => d.className === 'Paladin'    );
     expect(paladinDeltas).toHaveLength(1);
     expect(paladinDeltas[0].skillName).toBe('Blast (Holy, Sword)');
 
     // Night Lord unchanged (warrior-only proposal)
     const nightLordDelta = result.deltas.find(
-      (d) => d.className === 'Night Lord' && d.tier === 'high'
-    )!;
+      (d) => d.className === 'Night Lord'    )!;
     expect(nightLordDelta).toBeDefined();
     expect(nightLordDelta.change).toBe(0);
   });
@@ -203,48 +194,9 @@ describe('Baseline mode', () => {
     }
   });
 
-  it('high-tier DPS matches reference values', () => {
-    const highResults = baselineResults.filter(r => r.tier === 'high');
+  it('DPS matches reference values', () => {
     const snapshot = Object.fromEntries(
-      highResults.sort((a, b) => b.dps.dps - a.dps.dps)
-        .map(r => [`${r.className} / ${r.skillName}`, Math.round(r.dps.dps)])
-    );
-    expect(snapshot).toMatchSnapshot();
-  });
-
-  it('mid-tier DPS matches reference values', () => {
-    const midResults = baselineResults.filter(r => r.tier === 'mid');
-    const snapshot = Object.fromEntries(
-      midResults.sort((a, b) => b.dps.dps - a.dps.dps)
-        .map(r => [`${r.className} / ${r.skillName}`, Math.round(r.dps.dps)])
-    );
-    expect(snapshot).toMatchSnapshot();
-  });
-
-  it('mid-tier DPS matches reference values', () => {
-    const find = (className: string, skillName: string) =>
-      baselineResults.find(
-        (r) => r.className === className && r.skillName === skillName && r.tier === 'mid'
-      )!;
-
-    expect(find('Hero', 'Brandish (Sword)').dps.dps).toBeCloseTo(171636, -2);
-    expect(find('Hero (Axe)', 'Brandish').dps.dps).toBeCloseTo(153221, -2);
-    expect(find('Dark Knight', 'Spear Crusher').dps.dps).toBeCloseTo(166761, -2);
-    expect(find('Paladin', 'Blast (Holy, Sword)').dps.dps).toBeCloseTo(135245, -2);
-    expect(find('Night Lord', 'Triple Throw').dps.dps).toBeCloseTo(207789, -2);
-    expect(find('Bowmaster', 'Hurricane').dps.dps).toBeCloseTo(174010, -2);
-    expect(find('Marksman', 'Strafe (MM)').dps.dps).toBeCloseTo(174118, -2);
-    expect(find('Marksman', 'Snipe + Strafe').dps.dps).toBeCloseTo(185317, -2);
-    expect(find('Corsair', 'Battleship Cannon').dps.dps).toBeCloseTo(247577, -2);
-    expect(find('Corsair', 'Rapid Fire').dps.dps).toBeCloseTo(170557, -2);
-    expect(find('Buccaneer', 'Barrage + Demolition').dps.dps).toBeCloseTo(178870, -2);
-    expect(find('Shadower', 'Boomerang Step + Assassinate').dps.dps).toBeCloseTo(161703, -2);
-  });
-
-  it('low-tier DPS matches reference values', () => {
-    const lowResults = baselineResults.filter(r => r.tier === 'low');
-    const snapshot = Object.fromEntries(
-      lowResults.sort((a, b) => b.dps.dps - a.dps.dps)
+      baselineResults.sort((a, b) => b.dps.dps - a.dps.dps)
         .map(r => [`${r.className} / ${r.skillName}`, Math.round(r.dps.dps)])
     );
     expect(snapshot).toMatchSnapshot();
@@ -269,35 +221,26 @@ describe('Special mechanics', () => {
     );
   });
 
-  it('comboGroup aggregates Marksman Snipe + Strafe to 2 results per tier', () => {
+  it('comboGroup aggregates Marksman Snipe + Strafe to 2 results', () => {
     const mmResults = buffedResults.filter((r) => r.className === 'Marksman');
-    const mmHigh = mmResults.filter((r) => r.tier === 'high');
-    const mmLow = mmResults.filter((r) => r.tier === 'low');
-    expect(mmHigh).toHaveLength(2);
-    expect(mmLow).toHaveLength(2);
-    expect(mmHigh.map((r) => r.skillName).sort()).toEqual(
+    expect(mmResults).toHaveLength(2);
+    expect(mmResults.map((r) => r.skillName).sort()).toEqual(
       ['Snipe + Strafe', 'Strafe (MM)']
     );
   });
 
-  it('comboGroup aggregates Buccaneer to 1 result per tier (standalone Demolition hidden)', () => {
+  it('comboGroup aggregates Buccaneer to 2 results (standalone Demolition hidden)', () => {
     const buccResults = buffedResults.filter((r) => r.className === 'Buccaneer');
-    const buccHigh = buccResults.filter((r) => r.tier === 'high');
-    const buccLow = buccResults.filter((r) => r.tier === 'low');
-    expect(buccHigh).toHaveLength(2);
-    expect(buccLow).toHaveLength(2);
-    expect(buccHigh.map((r) => r.skillName).sort()).toEqual(
+    expect(buccResults).toHaveLength(2);
+    expect(buccResults.map((r) => r.skillName).sort()).toEqual(
       ['Barrage + Demolition', 'Snatch + Dragon Strike']
     );
   });
 
-  it('comboGroup aggregates Shadower to 1 result per tier (Savage Blow hidden)', () => {
+  it('comboGroup aggregates Shadower to 1 result (Savage Blow hidden)', () => {
     const shadResults = buffedResults.filter((r) => r.className === 'Shadower');
-    const shadHigh = shadResults.filter((r) => r.tier === 'high');
-    const shadLow = shadResults.filter((r) => r.tier === 'low');
-    expect(shadHigh).toHaveLength(1);
-    expect(shadLow).toHaveLength(1);
-    expect(shadHigh.map((r) => r.skillName)).toEqual(
+    expect(shadResults).toHaveLength(1);
+    expect(shadResults.map((r) => r.skillName)).toEqual(
       ['Boomerang Step + Assassinate']
     );
   });
@@ -335,8 +278,7 @@ describe('Special mechanics', () => {
 
   it('comboGroup aggregation sums uncappedDps and computes capLossPercent', () => {
     const buccCombo = buffedResults.find(
-      (r) => r.className === 'Buccaneer' && r.skillName === 'Barrage + Demolition' && r.tier === 'high'
-    )!;
+      (r) => r.className === 'Buccaneer' && r.skillName === 'Barrage + Demolition'    )!;
     expect(buccCombo.dps.uncappedDps).toBeGreaterThan(0);
     expect(buccCombo.dps.capLossPercent).toBeGreaterThanOrEqual(0);
     // uncappedDps should be >= dps (cap can only reduce damage)
@@ -356,11 +298,9 @@ describe('Special mechanics', () => {
       pdrConfig, classDataMap, gearTemplates, weaponData, attackSpeedData, mwData
     );
     const heroBuffed = pdrResults.find(
-      (r) => r.className === 'Hero' && r.skillName === 'Brandish (Sword)' && r.scenario === 'Buffed' && r.tier === 'high'
-    )!;
+      (r) => r.className === 'Hero' && r.skillName === 'Brandish (Sword)' && r.scenario === 'Buffed'    )!;
     const heroPdr = pdrResults.find(
-      (r) => r.className === 'Hero' && r.skillName === 'Brandish (Sword)' && r.scenario === 'PDR 50%' && r.tier === 'high'
-    )!;
+      (r) => r.className === 'Hero' && r.skillName === 'Brandish (Sword)' && r.scenario === 'PDR 50%'    )!;
     // uncappedDps should be halved by PDR just like dps
     expect(heroPdr.dps.uncappedDps).toBeCloseTo(heroBuffed.dps.uncappedDps * 0.5, 0);
     // capLossPercent should remain the same (linear scaling preserves ratio)
@@ -413,21 +353,19 @@ describe('Multi-scenario baseline', () => {
 
     // Snipe + Strafe combo: PDR should halve DPS
     const comboBuffed = results.find(
-      (r) => r.className === 'Marksman' && r.skillName === 'Snipe + Strafe' && r.scenario === 'Buffed' && r.tier === 'high'
-    )!;
+      (r) => r.className === 'Marksman' && r.skillName === 'Snipe + Strafe' && r.scenario === 'Buffed'    )!;
     const comboPdr = results.find(
       (r) =>
         r.className === 'Marksman' &&
         r.skillName === 'Snipe + Strafe' &&
-        r.scenario === 'Bossing (50% PDR)' &&
-        r.tier === 'high'
+        r.scenario === 'Bossing (50% PDR)'
     )!;
     expect(comboPdr.dps.dps).toBeCloseTo(comboBuffed.dps.dps * 0.5, 0);
   });
 });
 
 describe('Ranking integrity', () => {
-  it('ranks are contiguous and unique within each (scenario, tier) group', () => {
+  it('ranks are contiguous and unique within each scenario group', () => {
     const scenarios: ScenarioConfig[] = [{ name: 'Buffed' }];
     const rankConfig: SimulationConfig = { ...config, scenarios };
 
@@ -442,10 +380,10 @@ describe('Ranking integrity', () => {
       mwData
     );
 
-    // Group deltas by (scenario, tier)
+    // Group deltas by scenario
     const groups = new Map<string, typeof result.deltas>();
     for (const d of result.deltas) {
-      const key = `${d.scenario}|${d.tier}`;
+      const key = d.scenario;
       if (!groups.has(key)) groups.set(key, []);
       groups.get(key)!.push(d);
     }

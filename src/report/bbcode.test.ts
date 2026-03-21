@@ -42,7 +42,7 @@ describe('renderComparisonBBCode', () => {
         delta({
           className: 'Hero',
           skillName: 'Brandish (Sword)',
-          tier: 'high',
+
           scenario: 'Buffed',
           before: 255950,
           after: 274167,
@@ -52,7 +52,7 @@ describe('renderComparisonBBCode', () => {
         delta({
           className: 'Dark Knight',
           skillName: 'Spear Crusher',
-          tier: 'high',
+
           scenario: 'Buffed',
           before: 249418,
           after: 249418,
@@ -83,7 +83,7 @@ describe('renderComparisonBBCode', () => {
         delta({
           className: 'Hero',
           skillName: 'Brandish',
-          tier: 'high',
+
           scenario: 'Buffed',
           before: 250000,
           after: 270000,
@@ -109,7 +109,7 @@ describe('renderComparisonBBCode', () => {
         delta({
           className: 'Hero',
           skillName: 'Brandish',
-          tier: 'high',
+
           scenario: 'Buffed',
           before: 300000,
           after: 270000,
@@ -133,7 +133,7 @@ describe('renderComparisonBBCode', () => {
         delta({
           className: 'Hero',
           skillName: 'Brandish',
-          tier: 'high',
+
           scenario: 'Buffed',
           before: 100000,
           after: 110000,
@@ -143,7 +143,7 @@ describe('renderComparisonBBCode', () => {
         delta({
           className: 'Hero',
           skillName: 'Brandish',
-          tier: 'high',
+
           scenario: 'Bossing (50% PDR)',
           before: 50000,
           after: 55000,
@@ -164,7 +164,7 @@ describe('renderComparisonBBCode', () => {
 describe('renderBaselineBBCode cap loss column', () => {
   it('includes Cap Loss column header by default', () => {
     const results: ScenarioResult[] = [
-      { className: 'Hero', skillName: 'Brandish', tier: 'high', scenario: 'Buffed', dps: mockDpsResult(300000) },
+      { className: 'Hero', skillName: 'Brandish', scenario: 'Buffed', dps: mockDpsResult(300000) },
     ];
 
     const bbcode = renderBaselineBBCode(results);
@@ -175,7 +175,7 @@ describe('renderBaselineBBCode cap loss column', () => {
     const dps = mockDpsResult(300000);
     dps.capLossPercent = 8.5;
     const results: ScenarioResult[] = [
-      { className: 'Hero', skillName: 'Brandish', tier: 'high', scenario: 'Buffed', dps },
+      { className: 'Hero', skillName: 'Brandish', scenario: 'Buffed', dps },
     ];
 
     const bbcode = renderBaselineBBCode(results);
@@ -184,7 +184,7 @@ describe('renderBaselineBBCode cap loss column', () => {
 
   it('shows dash for negligible cap loss', () => {
     const results: ScenarioResult[] = [
-      { className: 'Hero', skillName: 'Brandish', tier: 'high', scenario: 'Buffed', dps: mockDpsResult(100000) },
+      { className: 'Hero', skillName: 'Brandish', scenario: 'Buffed', dps: mockDpsResult(100000) },
     ];
 
     const bbcode = renderBaselineBBCode(results);
@@ -194,7 +194,7 @@ describe('renderBaselineBBCode cap loss column', () => {
 
   it('omits Cap Loss column when showCapLoss is false', () => {
     const results: ScenarioResult[] = [
-      { className: 'Hero', skillName: 'Brandish', tier: 'high', scenario: 'Buffed', dps: mockDpsResult(300000) },
+      { className: 'Hero', skillName: 'Brandish', scenario: 'Buffed', dps: mockDpsResult(300000) },
     ];
 
     const bbcode = renderBaselineBBCode(results, { showCapLoss: false });
@@ -205,8 +205,8 @@ describe('renderBaselineBBCode cap loss column', () => {
 describe('renderBaselineBBCode', () => {
   it('renders ranked DPS table in [code] blocks', () => {
     const results: ScenarioResult[] = [
-      { className: 'Hero', skillName: 'Brandish', tier: 'high', scenario: 'Buffed', dps: mockDpsResult(300000) },
-      { className: 'Dark Knight', skillName: 'Crusher', tier: 'high', scenario: 'Buffed', dps: mockDpsResult(250000) },
+      { className: 'Hero', skillName: 'Brandish', scenario: 'Buffed', dps: mockDpsResult(300000) },
+      { className: 'Dark Knight', skillName: 'Crusher', scenario: 'Buffed', dps: mockDpsResult(250000) },
     ];
 
     const bbcode = renderBaselineBBCode(results);
@@ -222,9 +222,9 @@ describe('renderBaselineBBCode', () => {
 
   it('contains all scenario names from input', () => {
     const results: ScenarioResult[] = [
-      { className: 'Hero', skillName: 'Brandish', tier: 'high', scenario: 'Buffed', dps: mockDpsResult(300000) },
-      { className: 'Hero', skillName: 'Brandish', tier: 'high', scenario: 'Bossing (50% PDR)', dps: mockDpsResult(150000) },
-      { className: 'Hero', skillName: 'Brandish', tier: 'high', scenario: 'Bossing (KB)', dps: mockDpsResult(150000) },
+      { className: 'Hero', skillName: 'Brandish', scenario: 'Buffed', dps: mockDpsResult(300000) },
+      { className: 'Hero', skillName: 'Brandish', scenario: 'Bossing (50% PDR)', dps: mockDpsResult(150000) },
+      { className: 'Hero', skillName: 'Brandish', scenario: 'Bossing (KB)', dps: mockDpsResult(150000) },
     ];
 
     const bbcode = renderBaselineBBCode(results);
@@ -263,7 +263,7 @@ describe('renderComparisonBBCode bracket escaping', () => {
         delta({
           className: 'Hero',
           skillName: 'Brandish',
-          tier: 'high',
+
           scenario: 'Buffed',
           before: 100000,
           after: 110000,

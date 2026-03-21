@@ -4,8 +4,8 @@ import {
   loadAttackSpeed,
   loadMW,
   loadClassSkills,
-  loadGearTemplate,
 } from '../data/loader.js';
+import { TEST_BUILDS } from './test-builds.js';
 import {
   calculateBuildDps,
   calculateSkillDps,
@@ -29,9 +29,9 @@ beforeAll(() => {
   attackSpeedData = loadAttackSpeed();
   mwData = loadMW();
   heroData = loadClassSkills('hero');
-  heroHigh = loadGearTemplate('hero-high');
+  heroHigh = TEST_BUILDS['hero-high'];
   buccData = loadClassSkills('bucc');
-  buccHigh = loadGearTemplate('bucc-high');
+  buccHigh = TEST_BUILDS['bucc-high'];
 });
 
 describe('calculateBuildDps', () => {

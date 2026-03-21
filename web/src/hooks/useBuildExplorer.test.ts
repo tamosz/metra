@@ -7,7 +7,6 @@ describe('useBuildExplorer', () => {
     const { result } = renderHook(() => useBuildExplorer());
 
     expect(result.current.classNames.length).toBeGreaterThan(0);
-    expect(result.current.tiers.length).toBeGreaterThan(0);
     expect(result.current.template).not.toBeNull();
     expect(result.current.effectiveBuild).not.toBeNull();
     expect(result.current.results.length).toBeGreaterThan(0);
@@ -42,22 +41,6 @@ describe('useBuildExplorer', () => {
 
     expect(result.current.overrides).toEqual({});
     expect(result.current.selectedClass).toBe(otherClass);
-  });
-
-  it('setTier clears overrides', () => {
-    const { result } = renderHook(() => useBuildExplorer());
-
-    act(() => {
-      result.current.setOverride('baseSTR', 500);
-    });
-    expect(result.current.overrides).toHaveProperty('baseSTR', 500);
-
-    act(() => {
-      result.current.setTier('low');
-    });
-
-    expect(result.current.overrides).toEqual({});
-    expect(result.current.selectedTier).toBe('low');
   });
 
   it('setOverride merges multiple keys', () => {
@@ -125,15 +108,14 @@ describe('useBuildExplorer', () => {
     expect(result.current.results[0].changePercent).not.toBe(0);
   });
 
-  it('loadFromUrl sets class, tier, and overrides', () => {
+  it('loadFromUrl sets class and overrides', () => {
     const { result } = renderHook(() => useBuildExplorer());
 
     act(() => {
-      result.current.loadFromUrl('hero', 'low', { baseSTR: 800 });
+      result.current.loadFromUrl('hero', { baseSTR: 800 });
     });
 
     expect(result.current.selectedClass).toBe('hero');
-    expect(result.current.selectedTier).toBe('low');
     expect(result.current.overrides).toEqual({ baseSTR: 800 });
   });
 
@@ -143,7 +125,6 @@ describe('useBuildExplorer', () => {
     // Select hero so we know the primary stat is STR
     act(() => {
       result.current.setClass('hero');
-      result.current.setTier('high');
     });
 
     act(() => {

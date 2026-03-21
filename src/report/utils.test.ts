@@ -99,23 +99,23 @@ describe('sortDeltas', () => {
     expect(sorted[1].className).toBe('Hero');
   });
 
-  it('sorts unchanged entries alphabetically by className then tier', () => {
-    const palLow = makeDelta({ className: 'Paladin', tier: 'low', change: 0, changePercent: 0 });
-    const darkKnightHigh = makeDelta({ className: 'Dark Knight', tier: 'high', change: 0, changePercent: 0 });
-    const darkKnightLow = makeDelta({ className: 'Dark Knight', tier: 'low', change: 0, changePercent: 0 });
+  it('sorts unchanged entries alphabetically by className', () => {
+    const pal = makeDelta({ className: 'Paladin', change: 0, changePercent: 0 });
+    const darkKnight = makeDelta({ className: 'Dark Knight', change: 0, changePercent: 0 });
+    const nightLord = makeDelta({ className: 'Night Lord', change: 0, changePercent: 0 });
 
-    const sorted = sortDeltas([palLow, darkKnightLow, darkKnightHigh]);
+    const sorted = sortDeltas([pal, nightLord, darkKnight]);
 
-    expect(sorted[0]).toEqual(darkKnightLow);
-    expect(sorted[1]).toEqual(darkKnightHigh);
-    expect(sorted[2]).toEqual(palLow);
+    expect(sorted[0]).toEqual(darkKnight);
+    expect(sorted[1]).toEqual(nightLord);
+    expect(sorted[2]).toEqual(pal);
   });
 
   it('sorts a mixed set correctly: changed by |%| desc, then unchanged alphabetically', () => {
     const heroChanged = makeDelta({ className: 'Hero', change: 5000, changePercent: 5 });
     const nightLordChanged = makeDelta({ className: 'Night Lord', change: -8000, changePercent: -8 });
-    const darkKnightUnchanged = makeDelta({ className: 'Dark Knight', tier: 'high', change: 0, changePercent: 0 });
-    const palUnchanged = makeDelta({ className: 'Paladin', tier: 'low', change: 0, changePercent: 0 });
+    const darkKnightUnchanged = makeDelta({ className: 'Dark Knight', change: 0, changePercent: 0 });
+    const palUnchanged = makeDelta({ className: 'Paladin', change: 0, changePercent: 0 });
 
     const sorted = sortDeltas([darkKnightUnchanged, heroChanged, palUnchanged, nightLordChanged]);
 
@@ -184,7 +184,6 @@ function makeDelta(overrides: Partial<DeltaEntry> = {}): DeltaEntry {
   return {
     className: 'Hero',
     skillName: 'Brandish',
-    tier: 'high',
     scenario: 'Buffed',
     before: 100000,
     after: 100000,
@@ -221,7 +220,6 @@ function makeResult(overrides: Partial<ScenarioResult> = {}): ScenarioResult {
   return {
     className: 'Hero',
     skillName: 'Brandish',
-    tier: 'high',
     scenario: 'Buffed',
     dps: makeDpsResult(100000),
     ...overrides,

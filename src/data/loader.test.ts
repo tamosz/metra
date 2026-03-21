@@ -5,9 +5,8 @@ import {
   loadMW,
   loadClassSkills,
   loadGearTemplate,
-  discoverClassesAndTiers,
+  discoverClasses,
 } from './loader.js';
-import { compareTiers } from '@metra/engine';
 
 describe('loadWeapons', () => {
   it('loads weapon types with correct multipliers', () => {
@@ -74,46 +73,19 @@ describe('loadClassSkills', () => {
 });
 
 describe('loadGearTemplate', () => {
-  it('loads hero-high gear template', () => {
-    const build = loadGearTemplate('hero-high');
-    expect(build.className).toBe('Hero');
-    expect(build.baseStats.STR).toBe(943);
-    expect(build.totalWeaponAttack).toBe(209);
-    expect(build.attackPotion).toBe(100);
-    expect(build.mwLevel).toBe(20);
-  });
-
-  it('loads hero-low gear template', () => {
-    const build = loadGearTemplate('hero-low');
-    expect(build.className).toBe('Hero');
-    expect(build.baseStats.STR).toBe(818);
-    expect(build.totalWeaponAttack).toBe(166);
-    expect(build.attackPotion).toBe(60);
+  it('loads a mage perfect gear template', () => {
+    const build = loadGearTemplate('archmage-il-perfect');
+    expect(build.className).toBe('Archmage I/L');
+    expect(build.totalWeaponAttack).toBeGreaterThan(0);
+    expect(build.gearStats).toBeDefined();
   });
 });
 
-describe('compareTiers', () => {
-  it('sorts known tiers in canonical order', () => {
-    const tiers = ['high', 'low', 'mid'];
-    expect(tiers.sort(compareTiers)).toEqual(['low', 'mid', 'high']);
-  });
+describe('discoverClasses', () => {
+  it('discovers all classes with skill files and base files', () => {
+    const { classNames, classDataMap, builds } = discoverClasses();
 
-  it('sorts unknown tiers after known tiers', () => {
-    const tiers = ['ultra', 'low', 'high', 'mid'];
-    expect(tiers.sort(compareTiers)).toEqual(['low', 'mid', 'high', 'ultra']);
-  });
-
-  it('sorts multiple unknown tiers alphabetically', () => {
-    const tiers = ['zen', 'high', 'alpha', 'low'];
-    expect(tiers.sort(compareTiers)).toEqual(['low', 'high', 'alpha', 'zen']);
-  });
-});
-
-describe('discoverClassesAndTiers', () => {
-  it('discovers all classes with skill files and gear templates', () => {
-    const { classNames, tiers, classDataMap, gearTemplates } = discoverClassesAndTiers();
-
-    // Should find at least the 9 implemented classes (hero-axe split from hero)
+    // Should find at least the 14 implemented classes
     expect(classNames.length).toBeGreaterThanOrEqual(9);
     expect(classNames).toContain('hero');
     expect(classNames).toContain('hero-axe');
@@ -124,23 +96,31 @@ describe('discoverClassesAndTiers', () => {
     expect(classNames).toContain('sair');
     expect(classNames).toContain('bucc');
 
-    // Should find low and high tiers
-    expect(tiers).toContain('low');
-    expect(tiers).toContain('high');
-
     // classDataMap should have entries for each class
     for (const name of classNames) {
       expect(classDataMap.has(name)).toBe(true);
     }
 
-    // gearTemplates should have entries for each class-tier combo
-    expect(gearTemplates.size).toBeGreaterThanOrEqual(classNames.length * tiers.length);
+    // builds should have one entry per class
+    for (const name of classNames) {
+      expect(builds.has(name), `Missing build for ${name}`).toBe(true);
+    }
   });
 
   it('loads correct class data', () => {
-    const { classDataMap } = discoverClassesAndTiers();
+    const { classDataMap } = discoverClasses();
     const hero = classDataMap.get('hero')!;
     expect(hero.className).toBe('Hero');
     expect(hero.mastery).toBe(0.6);
+  });
+
+  it('mage classes use perfect template fallback', () => {
+    const { builds } = discoverClasses();
+
+    // Mage classes should have builds loaded from perfect templates
+    const archmageFP = builds.get('archmage-fp');
+    expect(archmageFP).toBeDefined();
+    expect(archmageFP!.className).toBe('Archmage F/P');
+    expect(archmageFP!.totalWeaponAttack).toBeGreaterThan(0);
   });
 });

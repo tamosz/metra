@@ -71,7 +71,6 @@ describe('build url encoding', () => {
   it('roundtrips a build with overrides', () => {
     const payload: BuildUrlPayload = {
       class: 'hero',
-      tier: 'high',
       overrides: { gearSTR: 200 },
     };
 
@@ -84,7 +83,6 @@ describe('build url encoding', () => {
   it('roundtrips a build with empty overrides', () => {
     const payload: BuildUrlPayload = {
       class: 'night-lord',
-      tier: 'low',
       overrides: {},
     };
 
@@ -102,8 +100,8 @@ describe('build url encoding', () => {
 describe('comparison url encoding', () => {
   it('roundtrips two builds with different classes', () => {
     const payload: ComparisonUrlPayload = {
-      a: { class: 'hero', tier: 'high', overrides: {} },
-      b: { class: 'dark-knight', tier: 'high', overrides: {} },
+      a: { class: 'hero', overrides: {} },
+      b: { class: 'dark-knight', overrides: {} },
     };
 
     const encoded = encodeComparison(payload);
@@ -118,8 +116,8 @@ describe('comparison url encoding', () => {
 
   it('preserves nested overrides on both builds', () => {
     const payload: ComparisonUrlPayload = {
-      a: { class: 'hero', tier: 'high', overrides: { gearSTR: 300, totalWeaponAttack: 250 } },
-      b: { class: 'night-lord', tier: 'low', overrides: { gearLUK: 400 } },
+      a: { class: 'hero', overrides: { gearSTR: 300, totalWeaponAttack: 250 } },
+      b: { class: 'night-lord', overrides: { gearLUK: 400 } },
     };
 
     const encoded = encodeComparison(payload);
