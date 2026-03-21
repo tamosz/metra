@@ -29,9 +29,9 @@
     },
     "perfect": {
       "gearPrimary": 295,
-      "gearSecondary": 167,
+      "gearSecondary": 168,
       "nonWeaponWATK": 84,
-      "scrollBonus": 36,
+      "scrollBonus": 35,
       "basePrimary": 999,
       "baseSecondary": 23,
       "attackPotion": 140
