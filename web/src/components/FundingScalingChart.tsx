@@ -48,7 +48,8 @@ export function FundingScalingChart({ data }: FundingScalingChartProps) {
       }))
       .sort((a, b) => b.dps - a.dps);
 
-    const usableHeight = chartHeight - 32;
+    const marginVertical = 16 + 16; // top + bottom from LineChart margin
+    const usableHeight = chartHeight - marginVertical;
     const dpsRange = yDomain[1] - yDomain[0];
     if (dpsRange === 0) return new Map<string, number>();
     const dpsPerPixel = dpsRange / usableHeight;
@@ -144,7 +145,7 @@ export function FundingScalingChart({ data }: FundingScalingChartProps) {
                           style={{ backgroundColor: entry.color }}
                         />
                         <span className="text-text-secondary">
-                          {entry.dataKey as string}
+                          {entry.name}
                         </span>
                         <span className="ml-auto tabular-nums">
                           {(entry.value as number).toLocaleString()}
@@ -163,6 +164,7 @@ export function FundingScalingChart({ data }: FundingScalingChartProps) {
                   key={line.key}
                   type="monotone"
                   dataKey={line.key}
+                  name={line.key}
                   stroke={getClassColor(line.className)}
                   strokeWidth={isHovered ? 3 : 2}
                   strokeOpacity={isDimmed ? 0.12 : 0.85}
