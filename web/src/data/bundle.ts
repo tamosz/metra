@@ -156,6 +156,7 @@ function computeBuildBrowser(base: ClassBase): CharacterBuild {
   return computeBuildFromBudget(base, budget);
 }
 
+// Shadower shield godly clean WATK before scrolling. Scrolling adds up to +23.
 export const SHIELD_BASE_WATK = 10;
 
 export function computeBuildAtFunding(base: ClassBase, fraction: number): CharacterBuild {
