@@ -7,7 +7,7 @@
   "weaponSpeed": 4,
   "godlyCleanWATK": 110,
   "weaponStat": 21,
-  "shieldWATK": 43,
+  "shieldWATK": 33,
   "shieldStats": { "LUK": 8, "STR": 14 },
   "projectile": 0,
   "echoActive": true,
