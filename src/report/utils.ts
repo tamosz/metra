@@ -101,3 +101,10 @@ export function groupResultsByScenario(
   return groupByScenario(results, (r) => r.scenario)
     .map((g) => ({ scenario: g.scenario, results: g.items }));
 }
+
+/**
+ * Sort scenario results by DPS descending.
+ */
+export function sortByDps(results: ScenarioResult[]): ScenarioResult[] {
+  return [...results].sort((a, b) => b.dps.dps - a.dps.dps);
+}

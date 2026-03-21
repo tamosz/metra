@@ -6,6 +6,7 @@ import {
   formatRank,
   formatCapLoss,
   sortDeltas,
+  sortByDps,
   groupDeltasByScenario,
   groupResultsByScenario,
 } from './utils.js';
@@ -148,7 +149,7 @@ function renderBaselineTable(
     lines.push('|-----:|-------|-------|----:|');
   }
 
-  const sorted = [...results].sort((a, b) => b.dps.dps - a.dps.dps);
+  const sorted = sortByDps(results);
   for (let i = 0; i < sorted.length; i++) {
     const r = sorted[i];
     const row = [

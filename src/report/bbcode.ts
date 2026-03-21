@@ -6,6 +6,7 @@ import {
   formatRank,
   formatCapLoss,
   sortDeltas,
+  sortByDps,
   groupDeltasByScenario,
   groupResultsByScenario,
 } from './utils.js';
@@ -152,7 +153,7 @@ function renderBaselineCodeTable(
   results: ScenarioResult[],
   showCapLoss: boolean,
 ): void {
-  const sorted = [...results].sort((a, b) => b.dps.dps - a.dps.dps);
+  const sorted = sortByDps(results);
 
   const rows = sorted.map((r, i) => [
     String(i + 1),
