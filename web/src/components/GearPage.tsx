@@ -11,7 +11,12 @@ const CGS_SEGMENTS = [
   { label: 'Gloves', value: 24, color: '#3b82f6' },
   { label: 'Cape', value: 24, color: '#8b5cf6' },
   { label: 'Shoes', value: 24, color: '#06b6d4' },
-];
+] as const;
+
+const CGS_TOTAL = CGS_SEGMENTS.reduce((sum, s) => sum + s.value, 0);
+if (CGS_TOTAL !== budget.nonWeaponWATK) {
+  throw new Error(`CGS segments (${CGS_TOTAL}) don't match nonWeaponWATK (${budget.nonWeaponWATK})`);
+}
 
 const CHART_SEGMENTS = [
   { key: 'godlyClean', label: 'Godly Clean', color: colors.accent },
@@ -89,8 +94,6 @@ function CommonGearSection() {
     { label: 'Godly Bonus', value: '+5', subtitle: 'Royals godly system: +5 over MS max clean on weapon' },
   ];
 
-  const cgsTotal = CGS_SEGMENTS.reduce((sum, s) => sum + s.value, 0);
-
   return (
     <section>
       <h3 className="text-base font-semibold text-text-bright mb-1">Common Gear</h3>
@@ -106,12 +109,12 @@ function CommonGearSection() {
           ))}
           <div className="rounded-lg bg-bg-surface px-4 py-3">
             <div className="text-xs text-text-muted mb-1">WATK from Gear</div>
-            <div className="text-xl font-bold text-text-bright mb-2">{cgsTotal}</div>
+            <div className="text-xl font-bold text-text-bright mb-2">{CGS_TOTAL}</div>
             <div className="h-3 rounded-full overflow-hidden flex">
               {CGS_SEGMENTS.map((seg) => (
                 <div
                   key={seg.label}
-                  style={{ width: `${(seg.value / cgsTotal * 100).toFixed(1)}%`, backgroundColor: seg.color }}
+                  style={{ width: `${(seg.value / CGS_TOTAL * 100).toFixed(1)}%`, backgroundColor: seg.color }}
                 />
               ))}
             </div>
