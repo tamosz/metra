@@ -1,7 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { buildScenarios, prepareTemplates } from './scenario-builder.js';
+import { buildScenarios } from './scenario-builder.js';
 import type { SimulationOptions } from '../hooks/useSimulation.js';
-import type { CharacterBuild, ClassSkillData } from '@metra/engine';
 
 describe('buildScenarios', () => {
   it('returns a single Baseline scenario with no options', () => {
@@ -94,55 +93,5 @@ describe('buildScenarios', () => {
   it('applies extraOverrides even with no buffOverrides', () => {
     const scenarios = buildScenarios({}, { speedInfusion: false });
     expect(scenarios[0].overrides).toEqual({ speedInfusion: false });
-  });
-});
-
-describe('prepareTemplates', () => {
-  const baseBuild = {
-    className: 'hero',
-    baseStats: { STR: 4, DEX: 4, INT: 4, LUK: 4 },
-    gearStats: { STR: 296, DEX: 96, INT: 0, LUK: 0 },
-    totalWeaponAttack: 150,
-    weaponType: 'Sword',
-    weaponSpeed: 6,
-    attackPotion: 0,
-    projectile: 0,
-    echoActive: true,
-    mwLevel: 20,
-    speedInfusion: true,
-    sharpEyes: true,
-  } satisfies CharacterBuild;
-
-  const templates = new Map<string, CharacterBuild>([
-    ['hero-low', { ...baseBuild }],
-  ]);
-
-  const classDataMap = new Map<string, ClassSkillData>([
-    ['hero', {
-      className: 'Hero',
-      damageFormula: 'standard',
-      primaryStat: 'STR',
-      secondaryStat: 'DEX',
-      mastery: 0.6,
-      sharpEyesCritRate: 0.15,
-      sharpEyesCritDamageBonus: 15,
-      seCritFormula: 'addBeforeMultiply',
-      skills: [],
-    }],
-  ]);
-
-  it('returns original templates with no CGS override', () => {
-    const result = prepareTemplates(templates, classDataMap, ['hero']);
-    expect(result).toBe(templates);
-  });
-
-  it('returns modified templates with CGS override', () => {
-    const result = prepareTemplates(templates, classDataMap, ['hero'], {
-      tier: 'low',
-      values: { cape: 14, glove: 12, shoe: 12 },
-    });
-    expect(result).not.toBe(templates);
-    // Default low: 12+10+10 = 32, override: 14+12+12 = 38, delta = +6
-    expect(result.get('hero-low')!.totalWeaponAttack).toBe(156);
   });
 });

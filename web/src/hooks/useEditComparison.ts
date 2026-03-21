@@ -10,8 +10,7 @@ import {
   mwData,
 } from '../data/bundle.js';
 import type { BuffOverrides } from '../components/BuffToggles.js';
-import type { CgsValues } from '../utils/cgs.js';
-import { buildScenarios, prepareTemplates } from '../utils/scenario-builder.js';
+import { buildScenarios } from '../utils/scenario-builder.js';
 import type { KbConfig } from './useSimulation.js';
 
 export interface EditComparisonOptions {
@@ -20,7 +19,6 @@ export interface EditComparisonOptions {
   elementModifiers?: Record<string, number>;
   buffOverrides?: BuffOverrides;
   kbConfig?: KbConfig;
-  cgsOverride?: { tier: string; values: CgsValues };
   efficiencyOverrides?: Record<string, number[]>;
 }
 
@@ -39,19 +37,18 @@ function runComparison(
     return { result: null, error: null };
   }
 
-  const { classNames, tiers, classDataMap, gearTemplates } = discoveredData;
+  const { classNames, classDataMap, builds } = discoveredData;
 
   try {
-    const finalTemplates = prepareTemplates(gearTemplates, classDataMap, classNames, options.cgsOverride);
     const scenarios = buildScenarios(options);
-    const config: SimulationConfig = { classes: classNames, tiers, scenarios };
+    const config: SimulationConfig = { classes: classNames, scenarios };
     const proposal = { name: '', author: '', changes };
 
     const result = compareProposal(
       proposal,
       config,
       classDataMap,
-      finalTemplates,
+      builds,
       weaponData,
       attackSpeedData,
       mwData,
@@ -64,7 +61,7 @@ function runComparison(
 }
 
 export function useEditComparison(options: EditComparisonOptions): EditComparisonData {
-  const { changes, targetCount, elementModifiers, buffOverrides, kbConfig, cgsOverride, efficiencyOverrides } = options;
+  const { changes, targetCount, elementModifiers, buffOverrides, kbConfig, efficiencyOverrides } = options;
 
   // Run synchronously on first call with changes (no flash of empty state),
   // then debounce subsequent updates to avoid jank from rapid edits.
@@ -72,7 +69,7 @@ export function useEditComparison(options: EditComparisonOptions): EditCompariso
   const [state, setState] = useState<EditComparisonData>(() => {
     if (changes.length > 0) {
       hasRun.current = true;
-      return runComparison(changes, { targetCount, elementModifiers, buffOverrides, kbConfig, cgsOverride, efficiencyOverrides });
+      return runComparison(changes, { targetCount, elementModifiers, buffOverrides, kbConfig, efficiencyOverrides });
     }
     return { result: null, error: null };
   });
@@ -91,10 +88,10 @@ export function useEditComparison(options: EditComparisonOptions): EditCompariso
     }
 
     const timer = setTimeout(() => {
-      setState(runComparison(changes, { targetCount, elementModifiers, buffOverrides, kbConfig, cgsOverride, efficiencyOverrides }));
+      setState(runComparison(changes, { targetCount, elementModifiers, buffOverrides, kbConfig, efficiencyOverrides }));
     }, DEBOUNCE_MS);
     return () => clearTimeout(timer);
-  }, [changes, targetCount, elementModifiers, buffOverrides, kbConfig, cgsOverride, efficiencyOverrides]);
+  }, [changes, targetCount, elementModifiers, buffOverrides, kbConfig, efficiencyOverrides]);
 
   return state;
 }

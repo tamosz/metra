@@ -3,11 +3,10 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { useAnimatedDps } from './useAnimatedDps.js';
 import type { ScenarioResult } from '@engine/proposals/types.js';
 
-function makeResult(className: string, skillName: string, tier: string, dpsValue: number): ScenarioResult {
+function makeResult(className: string, skillName: string, dpsValue: number): ScenarioResult {
   return {
     className,
     skillName,
-    tier,
     scenario: 'Baseline',
     dps: {
       skillName,
@@ -45,11 +44,11 @@ describe('useAnimatedDps', () => {
   });
 
   it('returns zero changeRatio on first render', () => {
-    const results = [makeResult('Hero', 'Brandish', 'high', 50000)];
+    const results = [makeResult('Hero', 'Brandish', 50000)];
     const { result } = renderHook(() => useAnimatedDps(results, true, true));
 
     expect(result.current.entries.size).toBe(1);
-    const entry = result.current.entries.get('Hero|Brandish|high')!;
+    const entry = result.current.entries.get('Hero|Brandish')!;
     expect(entry.changeRatio).toBe(0);
     expect(entry.isHighImpact).toBe(false);
     expect(entry.previousDps).toBe(50000);
@@ -57,9 +56,9 @@ describe('useAnimatedDps', () => {
 
   it('detects high-impact entries after data change', () => {
     const initial = [
-      makeResult('Hero', 'Brandish', 'high', 50000),
-      makeResult('Night Lord', 'Triple Throw', 'high', 60000),
-      makeResult('Paladin', 'Blast', 'high', 40000),
+      makeResult('Hero', 'Brandish', 50000),
+      makeResult('Night Lord', 'Triple Throw', 60000),
+      makeResult('Paladin', 'Blast', 40000),
     ];
 
     const { result, rerender } = renderHook(
@@ -68,13 +67,13 @@ describe('useAnimatedDps', () => {
     );
 
     const updated = [
-      makeResult('Hero', 'Brandish', 'high', 48000),
-      makeResult('Night Lord', 'Triple Throw', 'high', 40000),
-      makeResult('Paladin', 'Blast', 'high', 39000),
+      makeResult('Hero', 'Brandish', 48000),
+      makeResult('Night Lord', 'Triple Throw', 40000),
+      makeResult('Paladin', 'Blast', 39000),
     ];
     rerender({ data: updated });
 
-    const nlEntry = result.current.entries.get('Night Lord|Triple Throw|high')!;
+    const nlEntry = result.current.entries.get('Night Lord|Triple Throw')!;
     expect(nlEntry.isHighImpact).toBe(true);
     expect(nlEntry.previousDps).toBe(60000);
     expect(nlEntry.changeRatio).toBeGreaterThan(1.5);
@@ -82,8 +81,8 @@ describe('useAnimatedDps', () => {
 
   it('suppresses emphasis when all entries shift uniformly', () => {
     const initial = [
-      makeResult('Hero', 'Brandish', 'high', 50000),
-      makeResult('Night Lord', 'Triple Throw', 'high', 60000),
+      makeResult('Hero', 'Brandish', 50000),
+      makeResult('Night Lord', 'Triple Throw', 60000),
     ];
 
     const { result, rerender } = renderHook(
@@ -92,8 +91,8 @@ describe('useAnimatedDps', () => {
     );
 
     const updated = [
-      makeResult('Hero', 'Brandish', 'high', 45000),
-      makeResult('Night Lord', 'Triple Throw', 'high', 54000),
+      makeResult('Hero', 'Brandish', 45000),
+      makeResult('Night Lord', 'Triple Throw', 54000),
     ];
     rerender({ data: updated });
 
@@ -103,29 +102,29 @@ describe('useAnimatedDps', () => {
   });
 
   it('returns no animation data when disabled', () => {
-    const results = [makeResult('Hero', 'Brandish', 'high', 50000)];
+    const results = [makeResult('Hero', 'Brandish', 50000)];
     const { result, rerender } = renderHook(
       ({ data, enabled }) => useAnimatedDps(data, true, enabled),
       { initialProps: { data: results, enabled: false } },
     );
 
-    const updated = [makeResult('Hero', 'Brandish', 'high', 40000)];
+    const updated = [makeResult('Hero', 'Brandish', 40000)];
     rerender({ data: updated, enabled: false });
 
-    const entry = result.current.entries.get('Hero|Brandish|high')!;
+    const entry = result.current.entries.get('Hero|Brandish')!;
     expect(entry.changeRatio).toBe(0);
     expect(entry.isHighImpact).toBe(false);
   });
 
   it('handles zero change (no division by zero)', () => {
-    const results = [makeResult('Hero', 'Brandish', 'high', 50000)];
+    const results = [makeResult('Hero', 'Brandish', 50000)];
     const { result, rerender } = renderHook(
       ({ data }) => useAnimatedDps(data, true, true),
       { initialProps: { data: results } },
     );
 
     rerender({ data: [...results] });
-    const entry = result.current.entries.get('Hero|Brandish|high')!;
+    const entry = result.current.entries.get('Hero|Brandish')!;
     expect(entry.changeRatio).toBe(0);
     expect(entry.isHighImpact).toBe(false);
   });

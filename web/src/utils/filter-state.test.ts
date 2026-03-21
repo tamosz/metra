@@ -1,17 +1,13 @@
 import { describe, it, expect } from 'vitest';
 import type { SimulationFiltersContextType } from '../context/SimulationFiltersContext.js';
 import { FILTER_DEFAULTS } from './filter-defaults.js';
-import { CGS_DEFAULTS } from './cgs.js';
 import { DEFAULT_SKILL_GROUPS } from './skill-groups.js';
-import { buildFilterState, stripCgs, filterStatesEqual, type PresetFilterState } from './filter-state.js';
+import { buildFilterState, filterStatesEqual, type PresetFilterState } from './filter-state.js';
 
 const noop = () => {};
 
 function makeControls(overrides: Partial<SimulationFiltersContextType> = {}): SimulationFiltersContextType {
-  const tier = (overrides.selectedTier ?? FILTER_DEFAULTS.tier);
   return {
-    selectedTier: tier,
-    setSelectedTier: noop,
     targetCount: FILTER_DEFAULTS.targetCount,
     setTargetCount: noop,
     capEnabled: FILTER_DEFAULTS.capEnabled,
@@ -28,8 +24,6 @@ function makeControls(overrides: Partial<SimulationFiltersContextType> = {}): Si
     setBuffOverrides: noop,
     elementModifiers: {},
     setElementModifiers: noop,
-    cgsValues: { ...(CGS_DEFAULTS[tier] ?? CGS_DEFAULTS.perfect) },
-    setCgsValues: noop,
     activeGroups: new Set(DEFAULT_SKILL_GROUPS),
     setActiveGroups: noop,
     toggleGroup: noop,
@@ -45,11 +39,6 @@ describe('buildFilterState', () => {
   it('returns empty object for all defaults', () => {
     const controls = makeControls();
     expect(buildFilterState(controls)).toEqual({});
-  });
-
-  it('captures non-default tier', () => {
-    const controls = makeControls({ selectedTier: 'low' });
-    expect(buildFilterState(controls)).toEqual({ tier: 'low' });
   });
 
   it('captures buff overrides', () => {
@@ -95,27 +84,6 @@ describe('buildFilterState', () => {
     const controls = makeControls({ breakdownEnabled: true });
     expect(buildFilterState(controls)).toEqual({ breakdown: true });
   });
-
-  it('captures CGS overrides', () => {
-    const controls = makeControls({ cgsValues: { cape: 20, glove: 20, shoe: 20 } });
-    expect(buildFilterState(controls)).toEqual({ cgs: { cape: 20, glove: 20, shoe: 20 } });
-  });
-});
-
-describe('stripCgs', () => {
-  it('removes cgs field', () => {
-    const state = { tier: 'low', cgs: { cape: 20, glove: 20, shoe: 20 } };
-    expect(stripCgs(state)).toEqual({ tier: 'low' });
-  });
-
-  it('returns same shape if no cgs', () => {
-    const state = { tier: 'high', targets: 3 };
-    expect(stripCgs(state)).toEqual({ tier: 'high', targets: 3 });
-  });
-
-  it('returns empty object for empty input', () => {
-    expect(stripCgs({})).toEqual({});
-  });
 });
 
 describe('filterStatesEqual', () => {
@@ -123,13 +91,9 @@ describe('filterStatesEqual', () => {
     expect(filterStatesEqual({}, {})).toBe(true);
   });
 
-  it('detects tier difference', () => {
-    expect(filterStatesEqual({ tier: 'low' }, { tier: 'high' })).toBe(false);
-  });
-
   it('detects missing vs present field', () => {
-    expect(filterStatesEqual({ tier: 'low' }, {})).toBe(false);
-    expect(filterStatesEqual({}, { tier: 'low' })).toBe(false);
+    expect(filterStatesEqual({ targets: 3 }, {})).toBe(false);
+    expect(filterStatesEqual({}, { targets: 3 })).toBe(false);
   });
 
   it('compares buffs deeply', () => {
@@ -158,7 +122,6 @@ describe('filterStatesEqual', () => {
 
   it('compares complex states', () => {
     const a: PresetFilterState = {
-      tier: 'high',
       buffs: { sharpEyes: false },
       kb: { interval: 2.0 },
       targets: 3,
@@ -167,7 +130,6 @@ describe('filterStatesEqual', () => {
       breakdown: true,
     };
     const b: PresetFilterState = {
-      tier: 'high',
       buffs: { sharpEyes: false },
       kb: { interval: 2.0 },
       targets: 3,
@@ -177,7 +139,7 @@ describe('filterStatesEqual', () => {
     };
     expect(filterStatesEqual(a, b)).toBe(true);
 
-    expect(filterStatesEqual(a, { ...b, tier: 'low' })).toBe(false);
+    expect(filterStatesEqual(a, { ...b, targets: 1 })).toBe(false);
   });
 
   it('handles KB comparison', () => {

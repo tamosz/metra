@@ -1,7 +1,12 @@
 {
   "className": "Hero (ST)",
+  "category": "physical",
+  "primaryStat": "STR",
+  "secondaryStat": "DEX",
   "weaponType": "2H Sword",
   "weaponSpeed": 5,
+  "godlyCleanWATK": 111,
+  "weaponStat": 21,
   "projectile": 0,
   "echoActive": true,
   "mwLevel": 20,

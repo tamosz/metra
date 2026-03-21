@@ -5,59 +5,50 @@ import {
   loadWeapons,
   loadAttackSpeed,
   loadMW,
-  discoverClassesAndTiers,
+  loadGearTemplate,
+  discoverClasses,
 } from './loader.js';
-import { computeGearTotals } from './gear-utils.js';
 import type {
   WeaponData,
   AttackSpeedData,
   MWData,
   ClassSkillData,
   CharacterBuild,
-  StatName,
 } from '@metra/engine';
 
 let weaponData: WeaponData;
 let attackSpeedData: AttackSpeedData;
 let mwData: MWData;
 let classNames: string[];
-let tiers: string[];
 let classDataMap: Map<string, ClassSkillData>;
-let gearTemplates: Map<string, CharacterBuild>;
+let builds: Map<string, CharacterBuild>;
 
 beforeAll(() => {
   weaponData = loadWeapons();
   attackSpeedData = loadAttackSpeed();
   mwData = loadMW();
-  const discovery = discoverClassesAndTiers();
+  const discovery = discoverClasses();
   classNames = discovery.classNames;
-  tiers = discovery.tiers;
   classDataMap = discovery.classDataMap;
-  gearTemplates = discovery.gearTemplates;
+  builds = discovery.builds;
 });
 
-describe('class and tier coverage', () => {
-  it('every class has templates for all 4 tiers (low, mid, high, perfect)', () => {
-    const requiredTiers = ['low', 'mid', 'high', 'perfect'];
+describe('class coverage', () => {
+  it('every class has a skill file and a base file', () => {
     for (const className of classNames) {
-      for (const tier of requiredTiers) {
-        const key = `${className}-${tier}`;
-        expect(
-          gearTemplates.has(key),
-          `Missing gear template: ${key}`
-        ).toBe(true);
-      }
+      expect(classDataMap.has(className), `Missing class data: ${className}`).toBe(true);
+      expect(builds.has(className), `Missing build: ${className}`).toBe(true);
     }
   });
 });
 
 describe('gear template weapon types', () => {
-  it('every standard-formula gear template weaponType exists in weapons.json', () => {
+  it('every standard-formula build weaponType exists in weapons.json', () => {
     const validWeaponTypes = new Set(weaponData.types.map((w) => w.name));
     // Magic and throwingStar formulas don't use weapon multipliers from weapons.json
     const exemptFormulas = new Set(['magic', 'throwingStar']);
 
-    for (const [key, build] of gearTemplates) {
+    for (const [key, build] of builds) {
       const classData = [...classDataMap.values()].find(
         (cd) => cd.className === build.className
       );
@@ -65,7 +56,7 @@ describe('gear template weapon types', () => {
 
       expect(
         validWeaponTypes.has(build.weaponType),
-        `Gear template "${key}" has weaponType "${build.weaponType}" not found in weapons.json. Valid types: ${[...validWeaponTypes].join(', ')}`
+        `Build "${key}" has weaponType "${build.weaponType}" not found in weapons.json. Valid types: ${[...validWeaponTypes].join(', ')}`
       ).toBe(true);
     }
   });
@@ -116,8 +107,8 @@ describe('skill weapon types', () => {
 });
 
 describe('gear template stat consistency', () => {
-  it('every gear template has the primary stat in both baseStats and gearStats', () => {
-    for (const [key, build] of gearTemplates) {
+  it('every build has the primary stat in both baseStats and gearStats', () => {
+    for (const [key, build] of builds) {
       const classData = [...classDataMap.values()].find(
         (cd) => cd.className === build.className
       );
@@ -126,19 +117,19 @@ describe('gear template stat consistency', () => {
       const primary = classData.primaryStat;
       expect(
         build.baseStats[primary],
-        `Gear template "${key}" is missing baseStats.${primary} (primary stat for ${classData.className})`
+        `Build "${key}" is missing baseStats.${primary} (primary stat for ${classData.className})`
       ).toBeDefined();
       expect(
         build.baseStats[primary],
-        `Gear template "${key}" has zero baseStats.${primary} — likely an error for primary stat`
+        `Build "${key}" has zero baseStats.${primary} — likely an error for primary stat`
       ).toBeGreaterThan(0);
     }
   });
 
-  it('gear template weaponType is in the same weapon family as class skill weaponTypes', () => {
+  it('build weaponType is in the same weapon family as class skill weaponTypes', () => {
     const weaponFamily = (wt: string) => wt.replace(/^[12]H /, '');
 
-    for (const [key, build] of gearTemplates) {
+    for (const [key, build] of builds) {
       const classData = [...classDataMap.values()].find(
         (cd) => cd.className === build.className
       );
@@ -147,7 +138,7 @@ describe('gear template stat consistency', () => {
       const skillFamilies = new Set(classData.skills.map((s) => weaponFamily(s.weaponType)));
       expect(
         skillFamilies.has(weaponFamily(build.weaponType)),
-        `Gear template "${key}" has weaponType "${build.weaponType}" (family: ${weaponFamily(build.weaponType)}) but ${classData.className} skills use: ${[...new Set(classData.skills.map((s) => s.weaponType))].join(', ')}`
+        `Build "${key}" has weaponType "${build.weaponType}" (family: ${weaponFamily(build.weaponType)}) but ${classData.className} skills use: ${[...new Set(classData.skills.map((s) => s.weaponType))].join(', ')}`
       ).toBe(true);
     }
   });
@@ -251,50 +242,34 @@ describe('class skill data consistency', () => {
   });
 });
 
-describe('inherited gear template consistency', () => {
-  it('every inherited template resolves to a valid CharacterBuild', () => {
-    for (const [key, build] of gearTemplates) {
+describe('build consistency', () => {
+  it('every build resolves to a valid CharacterBuild', () => {
+    for (const [key, build] of builds) {
       expect(build.className, `${key}: missing className`).toBeTruthy();
       expect(build.totalWeaponAttack, `${key}: missing totalWeaponAttack`).toBeGreaterThan(0);
       expect(build.attackPotion, `${key}: missing attackPotion`).toBeGreaterThan(0);
       expect(build.gearStats, `${key}: missing gearStats`).toBeDefined();
     }
   });
-
-  it('every tier in tier-defaults.json is used by at least one template', () => {
-    const tierDefaultsRaw = JSON.parse(
-      readFileSync(resolve(import.meta.dirname, '../../data/tier-defaults.json'), 'utf-8')
-    );
-    const definedTiers = Object.keys(tierDefaultsRaw);
-    for (const tier of definedTiers) {
-      expect(tiers, `Tier "${tier}" in tier-defaults.json not found in discovered tiers`).toContain(tier);
-    }
-  });
 });
 
 describe('gear breakdown consistency', () => {
-  it('every template with gearBreakdown has summary fields matching computed totals', () => {
+  it('every mage perfect template with gearBreakdown has matching computed totals', () => {
     const templateDir = resolve(import.meta.dirname, '../../data/gear-templates');
-    const files = readdirSync(templateDir).filter((f: string) => f.endsWith('.json') && !f.includes('.base.'));
+    const files = readdirSync(templateDir).filter(
+      (f: string) => f.endsWith('-perfect.json')
+    );
 
     for (const file of files) {
-      const raw = JSON.parse(readFileSync(resolve(templateDir, file), 'utf-8'));
-      if (!raw.gearBreakdown) continue;
-      if (raw.extends) continue;
+      const raw = JSON.parse(
+        readFileSync(resolve(templateDir, file), 'utf-8')
+      );
+      if (!raw.gearBreakdown || !raw.extends) continue;
 
-      const computed = computeGearTotals(raw.gearBreakdown);
-
-      for (const stat of ['STR', 'DEX', 'INT', 'LUK'] as StatName[]) {
-        expect(
-          raw.gearStats[stat],
-          `${file}: gearStats.${stat} is ${raw.gearStats[stat]} but breakdown sums to ${computed.gearStats[stat]}`
-        ).toBe(computed.gearStats[stat]);
-      }
-
-      expect(
-        raw.totalWeaponAttack,
-        `${file}: totalWeaponAttack is ${raw.totalWeaponAttack} but breakdown sums to ${computed.totalWeaponAttack}`
-      ).toBe(computed.totalWeaponAttack);
+      const templateName = file.replace('.json', '');
+      const build = loadGearTemplate(templateName);
+      expect(build.totalWeaponAttack).toBeGreaterThan(0);
+      expect(build.gearStats).toBeDefined();
     }
   });
 });

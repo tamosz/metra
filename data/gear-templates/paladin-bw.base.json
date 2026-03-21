@@ -1,7 +1,12 @@
 {
   "className": "Paladin (BW)",
+  "category": "physical",
+  "primaryStat": "STR",
+  "secondaryStat": "DEX",
   "weaponType": "2H BW",
   "weaponSpeed": 7,
+  "godlyCleanWATK": 122,
+  "weaponStat": 21,
   "projectile": 0,
   "echoActive": true,
   "mwLevel": 20,

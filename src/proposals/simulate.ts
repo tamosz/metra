@@ -18,17 +18,15 @@ import type { ScenarioConfig, ScenarioResult } from './types.js';
 /** Fallback scenario when none is provided: fully buffed, no overrides. */
 const FALLBACK_SCENARIO: ScenarioConfig[] = [{ name: 'Buffed' }];
 
-/** Configuration for which classes/tiers to simulate. */
+/** Configuration for which classes to simulate. */
 export interface SimulationConfig {
   /** Class names to include (lowercase keys matching classDataMap). */
   classes: string[];
-  /** Tier names to simulate (must match gear template naming, e.g. ["low", "high"]). */
-  tiers: string[];
   /** Scenarios to evaluate. Defaults to a single "Buffed" scenario with no overrides. */
   scenarios?: ScenarioConfig[];
 }
 
-/** Map of "className-tier" → CharacterBuild. */
+/** Map of className → CharacterBuild. */
 export type GearTemplateMap = Map<string, CharacterBuild>;
 
 /**
@@ -79,7 +77,7 @@ export function applyKnockbackUptime(dps: DpsResult, uptimeMultiplier: number): 
 }
 
 /**
- * Run a simulation across all classes × tiers × skills × scenarios.
+ * Run a simulation across all classes × skills × scenarios.
  * Returns a ScenarioResult for each combination.
  */
 export function runSimulation(
@@ -102,113 +100,108 @@ export function runSimulation(
         );
       }
 
-      for (const tier of config.tiers) {
-        const templateKey = `${className}-${tier}`;
-        const build = gearTemplates.get(templateKey);
-        if (!build) {
-          throw new Error(
-            `Gear template "${templateKey}" not found. Available: ${[...gearTemplates.keys()].join(', ')}`
-          );
-        }
+      const build = gearTemplates.get(className);
+      if (!build) {
+        throw new Error(
+          `Build for "${className}" not found. Available: ${[...gearTemplates.keys()].join(', ')}`
+        );
+      }
 
-        const effectiveBuild = applyScenarioOverrides(build, scenario);
+      const effectiveBuild = applyScenarioOverrides(build, scenario);
 
-        // Compute DPS for each individual skill
-        const skillResults: { skill: SkillEntry; result: ScenarioResult }[] = [];
-        const skillResultsByName = new Map<string, ScenarioResult>();
+      // Compute DPS for each individual skill
+      const skillResults: { skill: SkillEntry; result: ScenarioResult }[] = [];
+      const skillResultsByName = new Map<string, ScenarioResult>();
 
-        for (const skill of classData.skills) {
-          // Compute element modifier before DPS calculation so it interacts
-          // with the per-line damage cap (199,999).
-          let elementModifier = 1;
-          let selectedElement: string | undefined;
-          if (scenario.elementModifiers && skill.element) {
-            elementModifier = scenario.elementModifiers[skill.element] ?? 1;
-          } else if (scenario.elementModifiers && skill.elementOptions) {
-            let bestMod = 1;
-            for (const e of skill.elementOptions) {
-              const mod = scenario.elementModifiers![e] ?? 1;
-              if (mod > bestMod) {
-                bestMod = mod;
-                selectedElement = e;
-              }
+      for (const skill of classData.skills) {
+        // Compute element modifier before DPS calculation so it interacts
+        // with the per-line damage cap (199,999).
+        let elementModifier = 1;
+        let selectedElement: string | undefined;
+        if (scenario.elementModifiers && skill.element) {
+          elementModifier = scenario.elementModifiers[skill.element] ?? 1;
+        } else if (scenario.elementModifiers && skill.elementOptions) {
+          let bestMod = 1;
+          for (const e of skill.elementOptions) {
+            const mod = scenario.elementModifiers![e] ?? 1;
+            if (mod > bestMod) {
+              bestMod = mod;
+              selectedElement = e;
             }
-            elementModifier = bestMod;
           }
-
-          const dps = calculateSkillDps(
-            effectiveBuild,
-            classData,
-            skill,
-            weaponData,
-            attackSpeedData,
-            mwData,
-            elementModifier
-          );
-
-          let effectiveDps = scenario.pdr != null ? applyPdr(dps, scenario.pdr) : dps;
-          if (scenario.targetCount != null && scenario.targetCount > 1) {
-            const effectiveTargets = Math.min(skill.maxTargets ?? 1, scenario.targetCount);
-            if (effectiveTargets > 1) effectiveDps = applyTargetCount(effectiveDps, effectiveTargets, skill.bounceDecay);
-          }
-          if (scenario.bossAttackInterval != null && scenario.bossAttackInterval > 0) {
-            const dodgeChance = calculateDodgeChance(
-              effectiveBuild.avoidability ?? 0,
-              scenario.bossAccuracy ?? Infinity
-            );
-            const kbProb = calculateKnockbackProbability(
-              dodgeChance,
-              classData.stanceRate ?? 0,
-              classData.shadowShifterRate ?? 0
-            );
-            const recovery = getKnockbackRecovery(skill, effectiveDps.attackTime);
-            const uptime = calculateKnockbackUptime(kbProb, scenario.bossAttackInterval, recovery);
-            effectiveDps = applyKnockbackUptime(effectiveDps, uptime);
-          }
-
-          let resolvedSkillName = skill.name;
-          if (selectedElement && skill.nameTemplate) {
-            resolvedSkillName = skill.nameTemplate.replace('{element}', selectedElement);
-          }
-
-          const isHeadline = skill.headline !== false;
-          const effectiveMaxTargets = skill.maxTargets ?? 1;
-          const result: ScenarioResult = {
-            className: classData.className,
-            skillName: resolvedSkillName,
-            tier,
-            scenario: scenario.name,
-            dps: effectiveDps,
-            ...(skill.description ? { description: skill.description } : {}),
-            ...(isHeadline ? {} : { headline: false }),
-            ...(effectiveMaxTargets > 1 ? { maxTargets: effectiveMaxTargets } : {}),
-          };
-
-          // Store all skills (including hidden) for mixed rotation lookups
-          skillResultsByName.set(skill.name, result);
-
-          if (!skill.hidden) {
-            skillResults.push({ skill, result });
-          }
+          elementModifier = bestMod;
         }
 
-        // Resolve element variant groups: keep only the highest-DPS variant
-        const variantResolved = resolveElementVariantGroups(skillResults);
-        // Aggregate comboGroup skills: sum DPS for skills sharing the same group
-        const grouped = aggregateComboGroups(variantResolved);
-        results.push(...grouped);
+        const dps = calculateSkillDps(
+          effectiveBuild,
+          classData,
+          skill,
+          weaponData,
+          attackSpeedData,
+          mwData,
+          elementModifier
+        );
 
-        // Process mixed rotations
-        if (classData.mixedRotations) {
-          const mixedResults = processMixedRotations(
-            classData.mixedRotations,
-            skillResultsByName,
-            classData.className,
-            tier,
-            scenario,
-          );
-          results.push(...mixedResults);
+        let effectiveDps = scenario.pdr != null ? applyPdr(dps, scenario.pdr) : dps;
+        if (scenario.targetCount != null && scenario.targetCount > 1) {
+          const effectiveTargets = Math.min(skill.maxTargets ?? 1, scenario.targetCount);
+          if (effectiveTargets > 1) effectiveDps = applyTargetCount(effectiveDps, effectiveTargets, skill.bounceDecay);
         }
+        if (scenario.bossAttackInterval != null && scenario.bossAttackInterval > 0) {
+          const dodgeChance = calculateDodgeChance(
+            effectiveBuild.avoidability ?? 0,
+            scenario.bossAccuracy ?? Infinity
+          );
+          const kbProb = calculateKnockbackProbability(
+            dodgeChance,
+            classData.stanceRate ?? 0,
+            classData.shadowShifterRate ?? 0
+          );
+          const recovery = getKnockbackRecovery(skill, effectiveDps.attackTime);
+          const uptime = calculateKnockbackUptime(kbProb, scenario.bossAttackInterval, recovery);
+          effectiveDps = applyKnockbackUptime(effectiveDps, uptime);
+        }
+
+        let resolvedSkillName = skill.name;
+        if (selectedElement && skill.nameTemplate) {
+          resolvedSkillName = skill.nameTemplate.replace('{element}', selectedElement);
+        }
+
+        const isHeadline = skill.headline !== false;
+        const effectiveMaxTargets = skill.maxTargets ?? 1;
+        const result: ScenarioResult = {
+          className: classData.className,
+          skillName: resolvedSkillName,
+          scenario: scenario.name,
+          dps: effectiveDps,
+          ...(skill.description ? { description: skill.description } : {}),
+          ...(isHeadline ? {} : { headline: false }),
+          ...(effectiveMaxTargets > 1 ? { maxTargets: effectiveMaxTargets } : {}),
+        };
+
+        // Store all skills (including hidden) for mixed rotation lookups
+        skillResultsByName.set(skill.name, result);
+
+        if (!skill.hidden) {
+          skillResults.push({ skill, result });
+        }
+      }
+
+      // Resolve element variant groups: keep only the highest-DPS variant
+      const variantResolved = resolveElementVariantGroups(skillResults);
+      // Aggregate comboGroup skills: sum DPS for skills sharing the same group
+      const grouped = aggregateComboGroups(variantResolved);
+      results.push(...grouped);
+
+      // Process mixed rotations
+      if (classData.mixedRotations) {
+        const mixedResults = processMixedRotations(
+          classData.mixedRotations,
+          skillResultsByName,
+          classData.className,
+          scenario,
+        );
+        results.push(...mixedResults);
       }
     }
   }
@@ -294,7 +287,6 @@ function aggregateComboGroups(
     output.push({
       className: first.className,
       skillName: groupName,
-      tier: first.tier,
       scenario: first.scenario,
       ...(isHeadline ? {} : { headline: false }),
       ...(comboMaxTargets > 1 ? { maxTargets: comboMaxTargets } : {}),
@@ -327,7 +319,6 @@ function processMixedRotations(
   mixedRotations: MixedRotation[],
   allSkillResults: Map<string, ScenarioResult>,
   className: string,
-  tier: string,
   scenario: ScenarioConfig,
 ): ScenarioResult[] {
   const output: ScenarioResult[] = [];
@@ -375,7 +366,6 @@ function processMixedRotations(
     output.push({
       className,
       skillName: rotation.name,
-      tier,
       scenario: scenario.name,
       description: rotation.description,
       ...(isHeadline ? {} : { headline: false }),

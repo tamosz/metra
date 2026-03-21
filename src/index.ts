@@ -10,13 +10,12 @@ export {
   loadMW,
   loadClassSkills,
   loadGearTemplate,
-  discoverClassesAndTiers,
-  type DiscoveryResult,
+  discoverClasses,
+  type ClassDiscoveryResult,
 } from './data/loader.js';
 
 // Data utilities
-export { computeGearTotals, type GearTotals } from './data/gear-utils.js';
-export { mergeGearTemplate, type TierDefaults, type ClassBase, type TierOverride } from './data/gear-merge.js';
+export { computeBuild, type ClassBase } from './data/gear-compute.js';
 
 // Proposal system
 export { applyProposal, skillSlug } from './proposals/apply.js';
@@ -40,4 +39,4 @@ export { renderComparisonBBCode, renderBaselineBBCode } from './report/bbcode.js
 // Audit
 export { analyzeBalance } from './audit/analyze.js';
 export { formatAuditReport } from './audit/format.js';
-export type { BalanceAudit, OutlierEntry, TierSensitivity, GroupSummary } from './audit/types.js';
+export type { BalanceAudit, OutlierEntry, GroupSummary } from './audit/types.js';

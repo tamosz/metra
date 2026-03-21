@@ -17,8 +17,8 @@ export function BuildComparison({ state }: BuildComparisonProps) {
 
   const handleShare = () => {
     const encoded = encodeComparison({
-      a: { class: buildA.selectedClass, tier: buildA.selectedTier, overrides: buildA.overrides },
-      b: { class: buildB.selectedClass, tier: buildB.selectedTier, overrides: buildB.overrides },
+      a: { class: buildA.selectedClass, overrides: buildA.overrides },
+      b: { class: buildB.selectedClass, overrides: buildB.overrides },
     });
     const url = `${window.location.origin}${window.location.pathname}#c=${encoded}`;
     navigator.clipboard.writeText(url);
@@ -68,9 +68,9 @@ export function BuildComparison({ state }: BuildComparisonProps) {
 
 function BuildPanel({ label, state }: { label: string; state: BuildExplorerState }) {
   const {
-    classNames, tiers, selectedClass, selectedTier,
+    classNames, selectedClass,
     classData, template, overrides,
-    setClass, setTier, resetOverrides,
+    setClass, resetOverrides,
   } = state;
 
   const hasOverrides = Object.keys(overrides).length > 0;
@@ -87,12 +87,6 @@ function BuildPanel({ label, state }: { label: string; state: BuildExplorerState
           value={selectedClass}
           options={classNames.map((c) => ({ value: c, label: formatClassName(c) }))}
           onChange={setClass}
-        />
-        <Select
-          label="Tier"
-          value={selectedTier}
-          options={tiers.map((t) => ({ value: t, label: t.charAt(0).toUpperCase() + t.slice(1) }))}
-          onChange={setTier}
         />
         {hasOverrides && (
           <button
@@ -120,7 +114,7 @@ function BuildPanel({ label, state }: { label: string; state: BuildExplorerState
 
       {!template && selectedClass && (
         <div className="py-4 text-xs text-text-dim">
-          No template for {formatClassName(selectedClass)} ({selectedTier}).
+          No build for {formatClassName(selectedClass)}.
         </div>
       )}
     </div>
@@ -195,4 +189,3 @@ function Select({ label, value, options, onChange }: {
     </div>
   );
 }
-

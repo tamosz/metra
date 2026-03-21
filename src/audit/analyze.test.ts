@@ -22,11 +22,10 @@ function makeDpsResult(dps: number): DpsResult {
   };
 }
 
-function makeResult(opts: { className?: string; skillName?: string; tier?: string; scenario?: string; dps: number }): ScenarioResult {
+function makeResult(opts: { className?: string; skillName?: string; scenario?: string; dps: number }): ScenarioResult {
   return {
     className: opts.className ?? 'TestClass',
     skillName: opts.skillName ?? 'TestSkill',
-    tier: opts.tier ?? 'high',
     scenario: opts.scenario ?? 'Buffed',
     dps: makeDpsResult(opts.dps),
   };
@@ -93,51 +92,6 @@ describe('analyzeBalance', () => {
     expect(group.count).toBe(3);
   });
 
-  it('groups by scenario and tier separately', () => {
-    const results = [
-      makeResult({ className: 'A', skillName: 'S1', tier: 'high', scenario: 'Buffed', dps: 200000 }),
-      makeResult({ className: 'A', skillName: 'S1', tier: 'low', scenario: 'Buffed', dps: 100000 }),
-      makeResult({ className: 'B', skillName: 'S2', tier: 'high', scenario: 'Buffed', dps: 200000 }),
-      makeResult({ className: 'B', skillName: 'S2', tier: 'low', scenario: 'Buffed', dps: 100000 }),
-    ];
-    const audit = analyzeBalance(results);
-    expect(audit.groups).toHaveLength(2);
-    expect(audit.groups.find((g) => g.tier === 'high')?.mean).toBe(200000);
-    expect(audit.groups.find((g) => g.tier === 'low')?.mean).toBe(100000);
-  });
-
-  it('detects tier sensitivity outliers', () => {
-    // Most classes scale 2x from low to perfect. One class scales 4x.
-    const results = [
-      makeResult({ className: 'A', skillName: 'S1', tier: 'perfect', dps: 200000 }),
-      makeResult({ className: 'A', skillName: 'S1', tier: 'low', dps: 100000 }),
-      makeResult({ className: 'B', skillName: 'S2', tier: 'perfect', dps: 200000 }),
-      makeResult({ className: 'B', skillName: 'S2', tier: 'low', dps: 100000 }),
-      makeResult({ className: 'C', skillName: 'S3', tier: 'perfect', dps: 200000 }),
-      makeResult({ className: 'C', skillName: 'S3', tier: 'low', dps: 100000 }),
-      makeResult({ className: 'D', skillName: 'S4', tier: 'perfect', dps: 200000 }),
-      makeResult({ className: 'D', skillName: 'S4', tier: 'low', dps: 100000 }),
-      makeResult({ className: 'Outlier', skillName: 'BigScale', tier: 'perfect', dps: 400000 }),
-      makeResult({ className: 'Outlier', skillName: 'BigScale', tier: 'low', dps: 100000 }),
-    ];
-    const audit = analyzeBalance(results);
-    const sensitive = audit.tierSensitivities.find((t) => t.className === 'Outlier');
-    expect(sensitive).toBeDefined();
-    expect(sensitive!.ratio).toBe(4);
-    expect(sensitive!.deviation).toBeGreaterThan(0);
-  });
-
-  it('returns empty tier sensitivities when all ratios are the same', () => {
-    const results = [
-      makeResult({ className: 'A', skillName: 'S1', tier: 'high', dps: 200000 }),
-      makeResult({ className: 'A', skillName: 'S1', tier: 'low', dps: 100000 }),
-      makeResult({ className: 'B', skillName: 'S2', tier: 'high', dps: 300000 }),
-      makeResult({ className: 'B', skillName: 'S2', tier: 'low', dps: 150000 }),
-    ];
-    const audit = analyzeBalance(results);
-    expect(audit.tierSensitivities).toHaveLength(0);
-  });
-
   it('handles single entry group without crashing', () => {
     const results = [
       makeResult({ className: 'A', skillName: 'S1', dps: 100000 }),
@@ -166,11 +120,9 @@ describe('analyzeBalance', () => {
     const audit = analyzeBalance([]);
     expect(audit.groups).toHaveLength(0);
     expect(audit.outliers).toHaveLength(0);
-    expect(audit.tierSensitivities).toHaveLength(0);
   });
 
-  it('does not flag values within 1.5σ of the group mean', () => {
-    // Tight cluster: all within 1.5σ of each other
+  it('does not flag values within 1.5s of the group mean', () => {
     const results = [
       makeResult({ className: 'A', skillName: 'S1', dps: 95000 }),
       makeResult({ className: 'B', skillName: 'S2', dps: 100000 }),
@@ -182,7 +134,6 @@ describe('analyzeBalance', () => {
   });
 
   it('flags extreme value in a large uniform group', () => {
-    // 9 entries at ~100k, one at 300k — the extreme value is clearly >1.5σ
     const results = Array.from({ length: 9 }, (_, i) =>
       makeResult({ className: `C${i}`, skillName: `S${i}`, dps: 100000 })
     );
@@ -202,35 +153,10 @@ describe('analyzeBalance', () => {
     expect(audit.groups[0].spread).toBe(Infinity);
   });
 
-  it('skips tier sensitivity when only one tier exists', () => {
-    const results = [
-      makeResult({ className: 'A', skillName: 'S1', tier: 'high', dps: 200000 }),
-      makeResult({ className: 'B', skillName: 'S2', tier: 'high', dps: 100000 }),
-    ];
-    const audit = analyzeBalance(results);
-    // No low tier data → no tier sensitivity entries
-    expect(audit.tierSensitivities).toHaveLength(0);
-  });
-
-  it('skips tier sensitivity when low DPS is 0', () => {
-    const results = [
-      makeResult({ className: 'A', skillName: 'S1', tier: 'high', dps: 200000 }),
-      makeResult({ className: 'A', skillName: 'S1', tier: 'low', dps: 0 }),
-      makeResult({ className: 'B', skillName: 'S2', tier: 'high', dps: 100000 }),
-      makeResult({ className: 'B', skillName: 'S2', tier: 'low', dps: 50000 }),
-    ];
-    const audit = analyzeBalance(results);
-    // A has low=0 so it should be skipped in ratio computation
-    const sensA = audit.tierSensitivities.find((t) => t.className === 'A');
-    expect(sensA).toBeUndefined();
-  });
-
   it('handles multiple scenarios independently', () => {
     const results = [
-      // Buffed: all equal → no outliers
       makeResult({ className: 'A', skillName: 'S1', scenario: 'Buffed', dps: 100000 }),
       makeResult({ className: 'B', skillName: 'S2', scenario: 'Buffed', dps: 100000 }),
-      // Scenario B: big spread → outlier
       makeResult({ className: 'A', skillName: 'S1', scenario: 'Scenario B', dps: 50000 }),
       makeResult({ className: 'B', skillName: 'S2', scenario: 'Scenario B', dps: 50000 }),
       makeResult({ className: 'C', skillName: 'S3', scenario: 'Scenario B', dps: 50000 }),
@@ -238,12 +164,10 @@ describe('analyzeBalance', () => {
       makeResult({ className: 'E', skillName: 'S5', scenario: 'Scenario B', dps: 150000 }),
     ];
     const audit = analyzeBalance(results);
-    // Should have groups for both scenarios
     const buffedGroups = audit.groups.filter((g) => g.scenario === 'Buffed');
     const scenarioBGroups = audit.groups.filter((g) => g.scenario === 'Scenario B');
     expect(buffedGroups).toHaveLength(1);
     expect(scenarioBGroups).toHaveLength(1);
-    // Outlier should only be in Scenario B
     const buffedOutliers = audit.outliers.filter((o) => o.scenario === 'Buffed');
     const scenarioBOutliers = audit.outliers.filter((o) => o.scenario === 'Scenario B');
     expect(buffedOutliers).toHaveLength(0);
@@ -251,20 +175,16 @@ describe('analyzeBalance', () => {
   });
 
   it('handles two entries in a group (pair)', () => {
-    // Two entries: neither can be >1.5σ since σ = half the spread
-    // and each value is exactly 1σ from mean
     const results = [
       makeResult({ className: 'A', skillName: 'S1', dps: 100000 }),
       makeResult({ className: 'B', skillName: 'S2', dps: 200000 }),
     ];
     const audit = analyzeBalance(results);
     expect(audit.groups[0].count).toBe(2);
-    // Deviations = 1.0 for each, below threshold
     expect(audit.outliers).toHaveLength(0);
   });
 
   it('produces no false outliers in a very tight cluster', () => {
-    // Three values differing by 1 each — stdDev ≈ 0.82, max deviation < 1.5σ
     const results = [
       makeResult({ className: 'A', skillName: 'S1', dps: 100000 }),
       makeResult({ className: 'B', skillName: 'S2', dps: 100001 }),
@@ -276,7 +196,6 @@ describe('analyzeBalance', () => {
   });
 
   it('flags symmetric outliers on both sides', () => {
-    // 4 entries at 100k and one extreme on each side
     const results = [
       makeResult({ className: 'A', skillName: 'S1', dps: 100000 }),
       makeResult({ className: 'B', skillName: 'S2', dps: 100000 }),
@@ -292,15 +211,5 @@ describe('analyzeBalance', () => {
     expect(lowOutlier!.direction).toBe('under');
     expect(highOutlier).toBeDefined();
     expect(highOutlier!.direction).toBe('over');
-  });
-
-  it('returns empty tier sensitivities when all entries are in one tier', () => {
-    const results = [
-      makeResult({ className: 'A', skillName: 'S1', tier: 'high', dps: 200000 }),
-      makeResult({ className: 'B', skillName: 'S2', tier: 'high', dps: 150000 }),
-      makeResult({ className: 'C', skillName: 'S3', tier: 'high', dps: 300000 }),
-    ];
-    const audit = analyzeBalance(results);
-    expect(audit.tierSensitivities).toHaveLength(0);
   });
 });

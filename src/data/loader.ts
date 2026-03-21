@@ -1,15 +1,14 @@
 import { readFileSync, readdirSync } from 'fs';
 import { resolve } from 'path';
 import {
-  compareTiers,
   type WeaponData,
   type AttackSpeedData,
   type MWData,
   type ClassSkillData,
   type CharacterBuild,
+  type StatName,
 } from '@metra/engine';
-import { computeGearTotals } from './gear-utils.js';
-import { mergeGearTemplate, type TierDefaults, type ClassBase, type TierOverride } from './gear-merge.js';
+import { computeBuild, type ClassBase } from './gear-compute.js';
 
 const DATA_DIR = resolve(import.meta.dirname, '../../data');
 
@@ -43,52 +42,73 @@ export function loadClassSkills(className: string): ClassSkillData {
   return loadJson<ClassSkillData>(`skills/${filename}`);
 }
 
-let tierDefaultsCache: Record<string, TierDefaults> | null = null;
+const STAT_NAMES: readonly StatName[] = ['STR', 'DEX', 'INT', 'LUK'];
+const ATTACK_KEYS = ['WATK', 'MATK'] as const;
 
-function loadTierDefaults(): Record<string, TierDefaults> {
-  if (!tierDefaultsCache) {
-    tierDefaultsCache = loadJson<Record<string, TierDefaults>>('tier-defaults.json');
+function computeGearTotals(
+  gearBreakdown: Record<string, Record<string, number>>
+): { gearStats: Record<StatName, number>; totalWeaponAttack: number } {
+  const gearStats: Record<StatName, number> = { STR: 0, DEX: 0, INT: 0, LUK: 0 };
+  let totalWeaponAttack = 0;
+
+  for (const [slot, values] of Object.entries(gearBreakdown)) {
+    if (slot === 'comment') continue;
+    for (const stat of STAT_NAMES) {
+      gearStats[stat] += values[stat] ?? 0;
+    }
+    for (const key of ATTACK_KEYS) {
+      totalWeaponAttack += values[key] ?? 0;
+    }
   }
-  return tierDefaultsCache;
+
+  return { gearStats, totalWeaponAttack };
 }
 
-function loadClassBase(className: string): ClassBase | null {
-  const fullPath = resolve(DATA_DIR, `gear-templates/${className}.base.json`);
-  try {
-    return JSON.parse(readFileSync(fullPath, 'utf-8')) as ClassBase;
-  } catch {
-    return null;
-  }
-}
-
+/**
+ * Load a gear template JSON file and resolve it into a CharacterBuild.
+ * Supports two modes:
+ * - Inheritance: template has "extends" pointing to a .base.json (used by mage perfect templates)
+ * - Flat: template contains all fields directly
+ */
 export function loadGearTemplate(templateName: string): CharacterBuild {
   const raw = loadJson<Record<string, unknown>>(
     `gear-templates/${templateName}.json`
   );
 
-  // Inheritance mode: tier file has "extends" pointing to a class base
   if (typeof raw.extends === 'string') {
     const baseName = raw.extends as string;
-    const base = loadClassBase(baseName);
-    if (!base) {
-      throw new Error(
-        `Gear template "${templateName}" extends "${baseName}" but no ${baseName}.base.json found`
-      );
-    }
+    const base = loadJson<ClassBase>(`gear-templates/${baseName}.base.json`);
 
-    const tier = templateName.slice(baseName.length + 1);
-    const allDefaults = loadTierDefaults();
-    const defaults = allDefaults[tier];
-    if (!defaults) {
-      throw new Error(
-        `Gear template "${templateName}" uses tier "${tier}" but no tier defaults found for it`
-      );
+    const breakdown = raw.gearBreakdown as Record<string, Record<string, number>> | undefined;
+    if (!breakdown) {
+      throw new Error(`Template "${templateName}" extends "${baseName}" but has no gearBreakdown`);
     }
+    if (!raw.baseStats) {
+      throw new Error(`Template "${templateName}" is missing baseStats`);
+    }
+    if (raw.attackPotion == null) {
+      throw new Error(`Template "${templateName}" is missing attackPotion`);
+    }
+    const computed = computeGearTotals(breakdown);
 
-    return mergeGearTemplate(base, raw as unknown as TierOverride, defaults);
+    return {
+      className: base.className,
+      baseStats: raw.baseStats as CharacterBuild['baseStats'],
+      gearStats: computed.gearStats,
+      totalWeaponAttack: computed.totalWeaponAttack,
+      weaponType: (raw.weaponType as string | undefined) ?? base.weaponType,
+      weaponSpeed: (raw.weaponSpeed as number | undefined) ?? base.weaponSpeed,
+      attackPotion: raw.attackPotion as number,
+      projectile: (raw.projectile as number | undefined) ?? base.projectile,
+      echoActive: base.echoActive,
+      mwLevel: base.mwLevel,
+      speedInfusion: base.speedInfusion,
+      sharpEyes: base.sharpEyes,
+      shadowPartner: base.shadowPartner,
+    };
   }
 
-  // Flat mode (backward compatible)
+  // Flat mode
   const breakdown = raw.gearBreakdown as Record<string, Record<string, number>> | undefined;
   const computed = breakdown ? computeGearTotals(breakdown) : undefined;
 
@@ -109,74 +129,52 @@ export function loadGearTemplate(templateName: string): CharacterBuild {
   };
 }
 
-export interface DiscoveryResult {
+export interface ClassDiscoveryResult {
   classNames: string[];
-  tiers: string[];
   classDataMap: Map<string, ClassSkillData>;
-  gearTemplates: Map<string, CharacterBuild>;
+  builds: Map<string, CharacterBuild>;
 }
 
 /**
- * Auto-discover classes and tiers by scanning data/skills/ and data/gear-templates/.
- * A class is included only if it has both a skill file and at least one gear template.
+ * Auto-discover classes by scanning data/skills/ and data/gear-templates/.
+ * A class is included only if it has both a skill file and a .base.json file.
+ * Physical classes use computeBuild(); mage classes load {className}-perfect.json.
  */
-export function discoverClassesAndTiers(): DiscoveryResult {
+export function discoverClasses(): ClassDiscoveryResult {
   const skillFiles = readdirSync(resolve(DATA_DIR, 'skills'))
     .filter((f: string) => f.endsWith('.json'))
     .map((f: string) => f.replace('.json', ''));
-  const templateFiles = readdirSync(resolve(DATA_DIR, 'gear-templates'))
-    .filter((f: string) => f.endsWith('.json') && !f.includes('.base.'))
-    .map((f: string) => f.replace('.json', ''));
+
+  const baseFiles = readdirSync(resolve(DATA_DIR, 'gear-templates'))
+    .filter((f: string) => f.endsWith('.base.json'))
+    .map((f: string) => f.replace('.base.json', ''));
 
   if (skillFiles.length === 0) {
     throw new Error(`No skill files found in data/skills/. Expected .json files defining class skills.`);
   }
-  if (templateFiles.length === 0) {
-    throw new Error(`No gear template files found in data/gear-templates/. Expected .json files defining character builds.`);
+  if (baseFiles.length === 0) {
+    throw new Error(`No base files found in data/gear-templates/. Expected .base.json files defining class weapon data.`);
   }
 
-  // Sort skill file names longest-first to handle prefix overlaps
-  // (e.g., "hero-axe" must match before "hero" for template "hero-axe-high")
-  const sortedSkillFiles = [...skillFiles].sort((a, b) => b.length - a.length);
-
-  // Assign each template to the longest matching class name
-  const templateToClass = new Map<string, string>();
-  for (const t of templateFiles as string[]) {
-    for (const name of sortedSkillFiles as string[]) {
-      if (t.startsWith(name + '-')) {
-        templateToClass.set(t, name);
-        break;
-      }
-    }
-  }
-
-  const classNames: string[] = [];
-  const tiers = new Set<string>();
-  for (const name of skillFiles) {
-    const classTiers = templateFiles
-      .filter((t: string) => templateToClass.get(t) === name)
-      .map((t: string) => t.slice(name.length + 1));
-    if (classTiers.length > 0) {
-      classNames.push(name);
-      for (const tier of classTiers) tiers.add(tier);
-    }
-  }
+  const baseSet = new Set(baseFiles);
+  const classNames = skillFiles.filter(name => baseSet.has(name));
 
   const classDataMap = new Map<string, ClassSkillData>();
+  const builds = new Map<string, CharacterBuild>();
+
   for (const name of classNames) {
     classDataMap.set(name, loadClassSkills(name));
-  }
 
-  const tierArray = [...tiers].sort(compareTiers);
-  const gearTemplates = new Map<string, CharacterBuild>();
-  for (const name of classNames) {
-    for (const tier of tierArray) {
-      const key = `${name}-${tier}`;
-      if (templateFiles.includes(key)) {
-        gearTemplates.set(key, loadGearTemplate(key));
-      }
+    const base = loadJson<ClassBase>(`gear-templates/${name}.base.json`);
+    if (base.category !== 'physical' && base.category !== 'mage') {
+      throw new Error(`Invalid category "${base.category}" in gear-templates/${name}.base.json (expected "physical" or "mage")`);
+    }
+    if (base.category === 'mage') {
+      builds.set(name, loadGearTemplate(`${name}-perfect`));
+    } else {
+      builds.set(name, computeBuild(base));
     }
   }
 
-  return { classNames, tiers: tierArray, classDataMap, gearTemplates };
+  return { classNames, classDataMap, builds };
 }

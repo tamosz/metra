@@ -1,7 +1,13 @@
 {
   "className": "Night Lord",
+  "category": "physical",
+  "primaryStat": "LUK",
+  "secondaryStat": "DEX",
   "weaponType": "Claw",
   "weaponSpeed": 4,
+  "godlyCleanWATK": 60,
+  "weaponStat": 20,
+  "baseSecondaryOverride": 25,
   "projectile": 30,
   "echoActive": true,
   "mwLevel": 20,

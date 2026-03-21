@@ -47,12 +47,12 @@ export function compareProposal(
   return { proposal, before, after, deltas };
 }
 
-/** Null-byte separated composite key — uniquely identifies a result across scenario/class/skill/tier.
+/** Null-byte separated composite key — uniquely identifies a result across scenario/class/skill.
  *  Uses comparisonKey (from elementVariantGroup) when available so the key stays stable
  *  even when a different variant wins before vs after a proposal. */
 function scenarioKey(r: ScenarioResult): string {
   const effectiveSkillName = r.comparisonKey ?? r.skillName;
-  return `${r.scenario}\0${r.className}\0${effectiveSkillName}\0${r.tier}`;
+  return `${r.scenario}\0${r.className}\0${effectiveSkillName}`;
 }
 
 export function computeDeltas(
@@ -69,7 +69,7 @@ export function computeDeltas(
     beforeMap.set(scenarioKey(r), r);
   }
 
-  // Compute ranks per (scenario, tier) group
+  // Compute ranks per scenario group
   const beforeRanks = computeRanks(before);
   const afterRanks = computeRanks(after);
 
@@ -90,7 +90,6 @@ export function computeDeltas(
     deltas.push({
       className: b.className,
       skillName: b.skillName,
-      tier: b.tier,
       scenario: b.scenario,
       before: beforeDps,
       after: afterDps,
@@ -115,7 +114,6 @@ export function computeDeltas(
     deltas.push({
       className: a.className,
       skillName: a.skillName,
-      tier: a.tier,
       scenario: a.scenario,
       before: 0,
       after: afterDps,
@@ -134,14 +132,14 @@ export function computeDeltas(
 }
 
 /**
- * Compute DPS rank per (scenario, tier) group.
+ * Compute DPS rank per scenario group.
  * Returns a map of scenarioKey → rank (1-based, highest DPS = rank 1).
  */
 function computeRanks(results: ScenarioResult[]): Map<string, number> {
-  // Group by (scenario, tier) using null-byte separated composite keys
+  // Group by scenario
   const groups = new Map<string, ScenarioResult[]>();
   for (const r of results) {
-    const groupKey = `${r.scenario}\0${r.tier}`;
+    const groupKey = r.scenario;
     const group = groups.get(groupKey);
     if (group) {
       group.push(r);

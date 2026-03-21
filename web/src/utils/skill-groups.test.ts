@@ -6,7 +6,6 @@ function makeResult(overrides: Partial<ScenarioResult> = {}): ScenarioResult {
   return {
     className: 'Hero',
     skillName: 'Brandish',
-    tier: 'high',
     scenario: 'Baseline',
     dps: {} as ScenarioResult['dps'],
     ...overrides,

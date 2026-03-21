@@ -7,7 +7,6 @@ import { PartyBuilder } from './components/PartyBuilder.js';
 import { useSimulation } from './hooks/useSimulation.js';
 import { useBuildExplorer } from './hooks/useBuildExplorer.js';
 import { useBuildComparison } from './hooks/useBuildComparison.js';
-import { useBuilds } from './hooks/useBuilds.js';
 import { useSavedBuilds } from './hooks/useSavedBuilds.js';
 import { getProposalFromUrl, getBuildFromUrl, getComparisonFromUrl, getPartyFromUrl } from './utils/url-encoding.js';
 import { getFilterFromUrl } from './utils/filter-url.js';
@@ -32,13 +31,11 @@ export function App() {
 function AppContent() {
   const filters = useSimulationFilters();
   const edit = useProposalEdit();
-  const buildsState = useBuilds();
   const simulation = useSimulation({
     targetCount: filters.targetCount > 1 ? filters.targetCount : undefined,
     elementModifiers: Object.keys(filters.elementModifiers).length > 0 ? filters.elementModifiers : undefined,
     buffOverrides: Object.keys(filters.buffOverrides).length > 0 ? filters.buffOverrides : undefined,
     kbConfig: filters.kbConfig,
-    cgsOverride: { tier: filters.selectedTier, values: filters.cgsValues },
     efficiencyOverrides: Object.keys(filters.efficiencyOverrides).length > 0 ? filters.efficiencyOverrides : undefined,
   });
   const savedBuildsState = useSavedBuilds();
@@ -72,7 +69,7 @@ function AppContent() {
     }
     const urlBuild = getBuildFromUrl();
     if (urlBuild) {
-      buildState.loadFromUrl(urlBuild.class, urlBuild.tier, urlBuild.overrides);
+      buildState.loadFromUrl(urlBuild.class, urlBuild.overrides);
       setPage('build');
       return;
     }
@@ -87,7 +84,6 @@ function AppContent() {
     }
     const urlFilter = getFilterFromUrl();
     if (urlFilter) {
-      if (urlFilter.tier) filters.setSelectedTier(urlFilter.tier);
       if (urlFilter.buffs) filters.setBuffOverrides(urlFilter.buffs);
       if (urlFilter.elements) filters.setElementModifiers(urlFilter.elements);
       if (urlFilter.kb) {
@@ -97,7 +93,6 @@ function AppContent() {
       }
       if (urlFilter.targets !== undefined) filters.setTargetCount(urlFilter.targets);
       if (urlFilter.cap !== undefined) filters.setCapEnabled(urlFilter.cap);
-      if (urlFilter.cgs) filters.setCgsValues(urlFilter.cgs);
       if (urlFilter.groups) filters.setActiveGroups(new Set(urlFilter.groups as SkillGroupId[]));
       if (urlFilter.breakdown !== undefined) filters.setBreakdownEnabled(urlFilter.breakdown);
       setPage('dashboard');
@@ -197,10 +192,7 @@ function AppContent() {
       <main className="mx-auto max-w-[1200px] px-4 py-6 sm:px-8">
         {page === 'dashboard' && (
           <ErrorBoundary>
-            <Dashboard
-              simulation={simulation}
-              buildsState={buildsState}
-            />
+            <Dashboard simulation={simulation} />
           </ErrorBoundary>
         )}
         {page === 'build' && <ErrorBoundary><BuildExplorer state={buildState} savedBuilds={savedBuildsState} /></ErrorBoundary>}

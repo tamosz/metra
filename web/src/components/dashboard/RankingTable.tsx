@@ -4,8 +4,8 @@ import { ClassIcon } from '../icons/index.js';
 import { Tooltip } from '../Tooltip.js';
 import { formatDps } from '../../utils/format.js';
 import { getClassColor } from '../../utils/class-colors.js';
-import { compareTiers, type DpsResult } from '@metra/engine';
-import type { ScenarioResult, ComparisonResult, ComboSubResult } from '@engine/proposals/types.js';
+import type { DpsResult } from '@metra/engine';
+import type { ComparisonResult, ComboSubResult } from '@engine/proposals/types.js';
 import { useProposalEdit } from '../../context/ProposalEditContext.js';
 import { discoveredData } from '../../data/bundle.js';
 import { skillSlug } from '@engine/proposals/apply.js';
@@ -14,47 +14,18 @@ import type { AnimatedDpsResult } from '../../hooks/useAnimatedDps.js';
 import { TRANSITION_DURATION_MS, EMPHASIS_DURATION_MS } from '../../utils/animation-config.js';
 import { useAnimatedNumber } from '../../hooks/useAnimatedNumber.js';
 
-type SortColumn = 'class' | 'skill' | 'tier' | 'dps' | 'capLoss';
+type SortColumn = 'class' | 'skill' | 'dps' | 'capLoss';
 type SortDirection = 'asc' | 'desc';
 
 const COLUMN_DEFAULTS: Record<SortColumn, SortDirection> = {
   class: 'asc',
   skill: 'asc',
-  tier: 'asc',
   dps: 'desc',
   capLoss: 'desc',
 };
 
-function tierDisplayName(tier: string): string {
-  return tier.charAt(0).toUpperCase() + tier.slice(1);
-}
-
 function SortArrow({ direction }: { direction: SortDirection }) {
   return <span className="ml-1 text-[10px]">{direction === 'asc' ? '\u25B2' : '\u25BC'}</span>;
-}
-
-export function buildTierData(
-  row: { className: string; skillName: string },
-  allResults: ScenarioResult[],
-  capEnabled: boolean,
-): { tier: string; dps: number }[] {
-  const firstMatch = allResults.find(
-    (r) => r.className === row.className && r.skillName === row.skillName,
-  );
-  if (!firstMatch) return [];
-
-  return allResults
-    .filter(
-      (r) =>
-        r.className === row.className &&
-        r.skillName === row.skillName &&
-        r.scenario === firstMatch.scenario,
-    )
-    .sort((a, b) => compareTiers(a.tier, b.tier))
-    .map((r) => ({
-      tier: r.tier,
-      dps: capEnabled ? r.dps.dps : r.dps.uncappedDps,
-    }));
 }
 
 function AnimatedDpsCell({ value }: { value: number }) {
@@ -64,13 +35,11 @@ function AnimatedDpsCell({ value }: { value: number }) {
 
 export function RankingTable({
   data,
-  allResults,
   capEnabled,
   editComparison,
   animation,
 }: {
-  data: { className: string; skillName: string; tier: string; scenario: string; dps: DpsResult; description?: string; isComposite?: boolean; comboSubResults?: ComboSubResult[] }[];
-  allResults: ScenarioResult[];
+  data: { className: string; skillName: string; scenario: string; dps: DpsResult; description?: string; isComposite?: boolean; comboSubResults?: ComboSubResult[] }[];
   capEnabled: boolean;
   editComparison?: ComparisonResult | null;
   animation?: AnimatedDpsResult;
@@ -203,7 +172,7 @@ export function RankingTable({
 
   const getEffectiveDps = useCallback((r: typeof data[0]) => {
     if (deltaMap) {
-      const delta = deltaMap.get(deltaMapKey(r.className, r.skillName, r.tier, r.scenario));
+      const delta = deltaMap.get(deltaMapKey(r.className, r.skillName, r.scenario));
       const change = delta ? (capEnabled ? delta.change : delta.uncappedChange) : 0;
       if (delta && change !== 0) {
         return capEnabled ? delta.after : delta.uncappedAfter;
@@ -218,7 +187,6 @@ export function RankingTable({
       switch (sortColumn) {
         case 'class': return dir * a.className.localeCompare(b.className);
         case 'skill': return dir * a.skillName.localeCompare(b.skillName);
-        case 'tier': return dir * compareTiers(a.tier, b.tier);
         case 'dps': return dir * (getEffectiveDps(a) - getEffectiveDps(b));
         case 'capLoss': return dir * (a.dps.capLossPercent - b.dps.capLossPercent);
       }
@@ -232,14 +200,14 @@ export function RankingTable({
     const baselineOrder = new Map<string, number>();
     for (let i = 0; i < data.length; i++) {
       const r = data[i];
-      baselineOrder.set(`${r.className}\0${r.skillName}\0${r.tier}`, i + 1);
+      baselineOrder.set(`${r.className}\0${r.skillName}`, i + 1);
     }
     // sorted by edit-adjusted DPS (when sorting by DPS desc)
     const editOrder = [...data].sort((a, b) => getEffectiveDps(b) - getEffectiveDps(a));
     const diffs = new Map<string, number>();
     for (let i = 0; i < editOrder.length; i++) {
       const r = editOrder[i];
-      const key = `${r.className}\0${r.skillName}\0${r.tier}`;
+      const key = `${r.className}\0${r.skillName}`;
       const baseRank = baselineOrder.get(key) ?? i + 1;
       const diff = baseRank - (i + 1);
       if (diff !== 0) diffs.set(key, diff);
@@ -295,7 +263,7 @@ export function RankingTable({
 
   const thBase = 'px-3 py-2 text-[11px] uppercase tracking-wide text-text-dim font-medium';
   const thSortable = `${thBase} cursor-pointer select-none`;
-  const columnCount = capEnabled ? 6 : 5;
+  const columnCount = capEnabled ? 5 : 4;
 
   return (
     <>
@@ -309,9 +277,6 @@ export function RankingTable({
             </th>
             <th className={`${thSortable} text-left`} onClick={() => handleSort('skill')}>
               Skill{sortColumn === 'skill' && <SortArrow direction={sortDirection} />}
-            </th>
-            <th className={`${thSortable} text-left`} onClick={() => handleSort('tier')}>
-              Tier{sortColumn === 'tier' && <SortArrow direction={sortDirection} />}
             </th>
             <th className={`${thSortable} text-right`} onClick={() => handleSort('dps')}>
               DPS{sortColumn === 'dps' && <SortArrow direction={sortDirection} />}
@@ -332,16 +297,16 @@ export function RankingTable({
             </tr>
           ) : (
             sorted.map((r, i) => {
-              const rowKey = `${r.className}-${r.skillName}-${r.tier}`;
+              const rowKey = `${r.className}-${r.skillName}`;
               const isExpanded = expandedRows.has(rowKey);
-              const delta = deltaMap?.get(deltaMapKey(r.className, r.skillName, r.tier, r.scenario));
+              const delta = deltaMap?.get(deltaMapKey(r.className, r.skillName, r.scenario));
               const change = delta ? (capEnabled ? delta.change : delta.uncappedChange) : 0;
               const changePercent = delta ? (capEnabled ? delta.changePercent : delta.uncappedChangePercent) : 0;
               const displayDps = change !== 0 && delta
                 ? (capEnabled ? delta.after : delta.uncappedAfter)
                 : getDps(r);
-              const rankDiff = visibleRankDiffs?.get(`${r.className}\0${r.skillName}\0${r.tier}`) ?? 0;
-              const animKey = `${r.className}|${r.skillName}|${r.tier}`;
+              const rankDiff = visibleRankDiffs?.get(`${r.className}\0${r.skillName}`) ?? 0;
+              const animKey = `${r.className}|${r.skillName}`;
               const animEntry = animation?.entries.get(animKey);
               const isHighImpact = (animEntry?.isHighImpact ?? false) && !emphasisFading;
               return (
@@ -382,7 +347,6 @@ export function RankingTable({
                       {r.skillName}
                       {r.description && <Tooltip text={r.description} />}
                     </td>
-                    <td className="px-3 py-2 text-text-muted">{tierDisplayName(r.tier)}</td>
                     <td className="px-3 py-2 text-right tabular-nums">
                       <div className="flex items-center justify-end gap-2">
                         {animation && !animation.prefersReducedMotion
@@ -407,7 +371,6 @@ export function RankingTable({
                     <ExpandedRow
                       row={r}
                       columnCount={columnCount}
-                      allResults={allResults}
                       capEnabled={capEnabled}
                       editEnabled={editEnabled}
                       getSkillEditInfo={getSkillEditInfo}
@@ -435,7 +398,6 @@ export function RankingTable({
 function ExpandedRow({
   row,
   columnCount,
-  allResults,
   capEnabled,
   editEnabled,
   getSkillEditInfo,
@@ -443,9 +405,8 @@ function ExpandedRow({
   handleFieldChange,
   applyFieldChange,
 }: {
-  row: { className: string; skillName: string; tier: string; dps: DpsResult; isComposite?: boolean; comboSubResults?: Array<{ skillName: string; dps: DpsResult; weight?: number }> };
+  row: { className: string; skillName: string; dps: DpsResult; isComposite?: boolean; comboSubResults?: Array<{ skillName: string; dps: DpsResult; weight?: number }> };
   columnCount: number;
-  allResults: ScenarioResult[];
   capEnabled: boolean;
   editEnabled: boolean;
   getSkillEditInfo: (className: string, skillName: string) => { skillFields: Record<string, number>; activeChanges: Record<string, number>; target: string } | null;
@@ -461,12 +422,10 @@ function ExpandedRow({
       <td colSpan={columnCount} className="p-0">
         <SkillDetailPanel
           dps={row.dps}
-          tierData={buildTierData(row, allResults, capEnabled)}
           classColor={getClassColor(row.className)}
           isComposite={!!row.isComposite}
           comboSubResults={row.comboSubResults}
           capEnabled={capEnabled}
-          currentTier={row.tier}
           editEnabled={editEnabled}
           skillFields={editInfo?.skillFields}
           onFieldChange={(field, value, original) =>

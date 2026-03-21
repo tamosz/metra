@@ -6,7 +6,6 @@ import { BuildBuffToggles } from './BuildBuffToggles.js';
 import { BuildDpsResults } from './BuildDpsResults.js';
 import { ArcherPassiveNote } from './ArcherPassiveNote.js';
 import { MarginalGainsTable } from './MarginalGainsTable.js';
-import { TemplateEditor } from './TemplateEditor.js';
 import { formatClassName } from '../utils/format.js';
 
 interface BuildExplorerProps {
@@ -16,14 +15,13 @@ interface BuildExplorerProps {
 
 export function BuildExplorer({ state, savedBuilds }: BuildExplorerProps) {
   const {
-    classNames, tiers, selectedClass, selectedTier,
+    classNames, selectedClass,
     classData, template, overrides,
-    setClass, setTier, resetOverrides, loadFromUrl,
+    setClass, resetOverrides, loadFromUrl,
   } = state;
 
   const [saveName, setSaveName] = useState('');
   const [showSaveInput, setShowSaveInput] = useState(false);
-  const [showTemplateEditor, setShowTemplateEditor] = useState(false);
 
   const hasOverrides = Object.keys(overrides).length > 0;
 
@@ -33,7 +31,7 @@ export function BuildExplorer({ state, savedBuilds }: BuildExplorerProps) {
 
   const handleSave = () => {
     if (!saveName.trim()) return;
-    savedBuilds.save(saveName.trim(), selectedClass, selectedTier, overrides);
+    savedBuilds.save(saveName.trim(), selectedClass, overrides);
     setSaveName('');
     setShowSaveInput(false);
   };
@@ -41,7 +39,7 @@ export function BuildExplorer({ state, savedBuilds }: BuildExplorerProps) {
   const handleLoad = (buildId: string) => {
     const build = savedBuilds.builds.find((b) => b.id === buildId);
     if (!build) return;
-    loadFromUrl(build.className, build.tier, build.overrides);
+    loadFromUrl(build.className, build.overrides);
   };
 
   const actionBtn =
@@ -56,12 +54,6 @@ export function BuildExplorer({ state, savedBuilds }: BuildExplorerProps) {
           options={classNames.map((c) => ({ value: c, label: formatClassName(c) }))}
           onChange={setClass}
         />
-        <Select
-          label="Tier"
-          value={selectedTier}
-          options={tiers.map((t) => ({ value: t, label: t.charAt(0).toUpperCase() + t.slice(1) }))}
-          onChange={setTier}
-        />
         {hasOverrides && (
           <button
             onClick={resetOverrides}
@@ -73,14 +65,6 @@ export function BuildExplorer({ state, savedBuilds }: BuildExplorerProps) {
       </div>
 
       <div className="mb-5 flex flex-wrap items-center gap-2">
-        {template && (
-          <button
-            onClick={() => setShowTemplateEditor(!showTemplateEditor)}
-            className={actionBtn}
-          >
-            {showTemplateEditor ? 'Hide Template' : 'Edit Template'}
-          </button>
-        )}
         {!showSaveInput ? (
           <button onClick={() => setShowSaveInput(true)} className={actionBtn}>
             Save Build
@@ -117,7 +101,7 @@ export function BuildExplorer({ state, savedBuilds }: BuildExplorerProps) {
             value=""
             options={[
               { value: '', label: 'Saved builds...' },
-              ...relevantBuilds.map((b) => ({ value: b.id, label: `${b.name} (${b.tier})` })),
+              ...relevantBuilds.map((b) => ({ value: b.id, label: b.name })),
             ]}
             onChange={(v) => { if (v) handleLoad(v); }}
           />
@@ -165,18 +149,9 @@ export function BuildExplorer({ state, savedBuilds }: BuildExplorerProps) {
         </div>
       )}
 
-      {showTemplateEditor && template && (
-        <div className="mt-6">
-          <div className="mb-3 text-[11px] font-medium uppercase tracking-wide text-text-dim">
-            Gear Breakdown — {formatClassName(selectedClass)} ({selectedTier})
-          </div>
-          <TemplateEditor key={`${selectedClass}-${selectedTier}`} className={selectedClass} tier={selectedTier} />
-        </div>
-      )}
-
       {!template && selectedClass && (
         <div className="py-6 text-sm text-text-dim">
-          No gear template found for {formatClassName(selectedClass)} ({selectedTier}).
+          No build found for {formatClassName(selectedClass)}.
         </div>
       )}
     </div>

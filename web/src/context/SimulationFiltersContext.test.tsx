@@ -18,7 +18,6 @@ describe('filter state', () => {
     const { result } = renderFilters();
 
     act(() => {
-      result.current.setSelectedTier('low');
       result.current.setTargetCount(6);
       result.current.setCapEnabled(false);
       result.current.setKbEnabled(true);
@@ -32,7 +31,6 @@ describe('filter state', () => {
 
     act(() => result.current.resetFilters());
 
-    expect(result.current.selectedTier).toBe('perfect');
     expect(result.current.targetCount).toBe(1);
     expect(result.current.capEnabled).toBe(true);
     expect(result.current.kbEnabled).toBe(false);

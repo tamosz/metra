@@ -20,7 +20,7 @@ function saveToStorage(builds: SavedBuild[]): void {
 
 export interface SavedBuildsState {
   builds: SavedBuild[];
-  save: (name: string, className: string, tier: string, overrides: Partial<BuildOverrides>) => SavedBuild;
+  save: (name: string, className: string, overrides: Partial<BuildOverrides>) => SavedBuild;
   remove: (id: string) => void;
 }
 
@@ -32,12 +32,11 @@ export function useSavedBuilds(): SavedBuildsState {
     saveToStorage(next);
   }, []);
 
-  const save = useCallback((name: string, className: string, tier: string, overrides: Partial<BuildOverrides>) => {
+  const save = useCallback((name: string, className: string, overrides: Partial<BuildOverrides>) => {
     const build: SavedBuild = {
       id: 'sb-' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
       name,
       className,
-      tier,
       overrides,
       savedAt: Date.now(),
     };

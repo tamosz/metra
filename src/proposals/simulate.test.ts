@@ -4,8 +4,8 @@ import {
   loadAttackSpeed,
   loadMW,
   loadClassSkills,
-  loadGearTemplate,
 } from '../data/loader.js';
+import { TEST_BUILDS } from '../engine/test-builds.js';
 import type {
   WeaponData,
   AttackSpeedData,
@@ -109,15 +109,13 @@ beforeAll(() => {
   ]);
 
   gearTemplates = new Map([
-    ['hero-low', loadGearTemplate('hero-low')],
-    ['hero-high', loadGearTemplate('hero-high')],
-    ['bucc-low', loadGearTemplate('bucc-low')],
-    ['bucc-high', loadGearTemplate('bucc-high')],
-    ['paladin-high', loadGearTemplate('paladin-high')],
-    ['paladin-bw-high', loadGearTemplate('paladin-bw-high')],
-    ['shadower-high', loadGearTemplate('shadower-high')],
-    ['archmage-il-high', loadGearTemplate('archmage-il-high')],
-    ['night-lord-high', loadGearTemplate('night-lord-high')],
+    ['hero', TEST_BUILDS['hero-high']],
+    ['bucc', TEST_BUILDS['bucc-high']],
+    ['paladin', TEST_BUILDS['paladin-high']],
+    ['paladin-bw', TEST_BUILDS['paladin-bw-high']],
+    ['shadower', TEST_BUILDS['shadower-high']],
+    ['archmage-il', TEST_BUILDS['archmage-il-high']],
+    ['night-lord', TEST_BUILDS['night-lord-high']],
   ]);
 });
 
@@ -125,7 +123,6 @@ describe('runSimulation basics', () => {
   it('defaults to single Buffed scenario when scenarios omitted', () => {
     const config: SimulationConfig = {
       classes: ['hero'],
-      tiers: ['high'],
     };
 
     const results = runSimulation(
@@ -142,7 +139,6 @@ describe('runSimulation basics', () => {
   it('returns correct number of results for single class/tier/scenario', () => {
     const config: SimulationConfig = {
       classes: ['hero'],
-      tiers: ['high'],
       scenarios: [{ name: 'Buffed' }],
     };
 
@@ -155,10 +151,9 @@ describe('runSimulation basics', () => {
     expect(results.length).toBe(heroSkillCount);
   });
 
-  it('multiplies results across tiers and scenarios', () => {
+  it('multiplies results across scenarios', () => {
     const config: SimulationConfig = {
       classes: ['hero'],
-      tiers: ['low', 'high'],
       scenarios: [{ name: 'Buffed' }, { name: 'Bossing (50% PDR)', pdr: 0.5 }],
     };
 
@@ -168,13 +163,12 @@ describe('runSimulation basics', () => {
     );
 
     const heroSkillCount = classDataMap.get('hero')!.skills.length;
-    expect(results.length).toBe(heroSkillCount * 2 * 2); // skills × tiers × scenarios
+    expect(results.length).toBe(heroSkillCount * 2); // skills × scenarios
   });
 
-  it('results have correct className, tier, and scenario fields', () => {
+  it('results have correct className and scenario fields', () => {
     const config: SimulationConfig = {
       classes: ['hero'],
-      tiers: ['low', 'high'],
       scenarios: [{ name: 'Buffed' }, { name: 'Test' }],
     };
 
@@ -185,7 +179,6 @@ describe('runSimulation basics', () => {
 
     for (const r of results) {
       expect(r.className).toBe('Hero');
-      expect(['low', 'high']).toContain(r.tier);
       expect(['Buffed', 'Test']).toContain(r.scenario);
       expect(r.dps.dps).toBeGreaterThan(0);
     }
@@ -196,7 +189,6 @@ describe('runSimulation error handling', () => {
   it('throws for missing class in classDataMap', () => {
     const config: SimulationConfig = {
       classes: ['nonexistent'],
-      tiers: ['high'],
     };
 
     expect(() =>
@@ -207,18 +199,18 @@ describe('runSimulation error handling', () => {
     ).toThrow(/Class "nonexistent" not found/);
   });
 
-  it('throws for missing gear template', () => {
+  it('throws for missing build in gearTemplates', () => {
     const config: SimulationConfig = {
       classes: ['hero'],
-      tiers: ['mythical'],
     };
+    const emptyTemplates: GearTemplateMap = new Map();
 
     expect(() =>
       runSimulation(
-        config, classDataMap, gearTemplates,
+        config, classDataMap, emptyTemplates,
         weaponData, attackSpeedData, mwData
       )
-    ).toThrow(/Gear template "hero-mythical" not found/);
+    ).toThrow(/Build for "hero" not found/);
   });
 });
 
@@ -226,7 +218,6 @@ describe('runSimulation scenario overrides', () => {
   it('no-buffs scenario produces lower DPS than buffed', () => {
     const config: SimulationConfig = {
       classes: ['hero'],
-      tiers: ['high'],
       scenarios: [
         { name: 'Buffed' },
         {
@@ -262,7 +253,6 @@ describe('runSimulation scenario overrides', () => {
   it('echo-off scenario produces slightly lower DPS (within ~10%)', () => {
     const config: SimulationConfig = {
       classes: ['hero'],
-      tiers: ['high'],
       scenarios: [
         { name: 'Buffed' },
         { name: 'Echo Off', overrides: { echoActive: false } },
@@ -286,13 +276,12 @@ describe('runSimulation scenario overrides', () => {
   });
 
   it('overrides do not mutate the original build objects', () => {
-    const originalBuild = gearTemplates.get('hero-high')!;
+    const originalBuild = gearTemplates.get('hero')!;
     const originalPotion = originalBuild.attackPotion;
     const originalMW = originalBuild.mwLevel;
 
     const config: SimulationConfig = {
       classes: ['hero'],
-      tiers: ['high'],
       scenarios: [{
         name: 'Zeroed',
         overrides: { mwLevel: 0, attackPotion: 0 },
@@ -304,7 +293,7 @@ describe('runSimulation scenario overrides', () => {
       weaponData, attackSpeedData, mwData
     );
 
-    const buildAfter = gearTemplates.get('hero-high')!;
+    const buildAfter = gearTemplates.get('hero')!;
     expect(buildAfter.attackPotion).toBe(originalPotion);
     expect(buildAfter.mwLevel).toBe(originalMW);
   });
@@ -314,7 +303,6 @@ describe('runSimulation PDR', () => {
   it('PDR 0.5 produces exactly 50% of buffed DPS', () => {
     const config: SimulationConfig = {
       classes: ['hero'],
-      tiers: ['high'],
       scenarios: [
         { name: 'Buffed' },
         { name: 'Bossing', pdr: 0.5 },
@@ -339,7 +327,6 @@ describe('runSimulation PDR', () => {
   it('PDR 0 has no effect', () => {
     const config: SimulationConfig = {
       classes: ['hero'],
-      tiers: ['high'],
       scenarios: [
         { name: 'Buffed' },
         { name: 'No PDR', pdr: 0 },
@@ -364,7 +351,6 @@ describe('runSimulation PDR', () => {
   it('PDR 1 reduces DPS to 0', () => {
     const config: SimulationConfig = {
       classes: ['hero'],
-      tiers: ['high'],
       scenarios: [{ name: 'Full PDR', pdr: 1 }],
     };
 
@@ -383,7 +369,6 @@ describe('elementModifiers', () => {
   it('Holy 1.5x boosts Holy-element skill DPS (capped below naive 1.5x)', () => {
     const config: SimulationConfig = {
       classes: ['paladin'],
-      tiers: ['high'],
       scenarios: [
         { name: 'Buffed' },
         { name: 'Holy Advantage', elementModifiers: { Holy: 1.5 } },
@@ -414,7 +399,6 @@ describe('elementModifiers', () => {
   it('holy element boost wins over neutral charge in variant group', () => {
     const config: SimulationConfig = {
       classes: ['paladin'],
-      tiers: ['high'],
       scenarios: [
         { name: 'Buffed' },
         { name: 'Holy Advantage', elementModifiers: { Holy: 1.5 } },
@@ -437,7 +421,6 @@ describe('elementModifiers', () => {
   it('element modifier stacks multiplicatively with PDR', () => {
     const config: SimulationConfig = {
       classes: ['paladin'],
-      tiers: ['high'],
       scenarios: [
         { name: 'Buffed' },
         { name: 'Holy Only', elementModifiers: { Holy: 1.5 } },
@@ -463,7 +446,6 @@ describe('elementModifiers', () => {
   it('element resistance (0.5x) reduces elemental skill DPS', () => {
     const config: SimulationConfig = {
       classes: ['paladin'],
-      tiers: ['high'],
       scenarios: [
         { name: 'Buffed' },
         { name: 'Holy Resist', elementModifiers: { Holy: 0.5 } },
@@ -495,7 +477,6 @@ describe('comboGroup aggregation', () => {
   it('collapses Barrage + Demolition sub-skills into 1 result', () => {
     const config: SimulationConfig = {
       classes: ['bucc'],
-      tiers: ['high'],
       scenarios: [{ name: 'Buffed' }],
     };
 
@@ -512,7 +493,6 @@ describe('comboGroup aggregation', () => {
   it('aggregated result uses the comboGroup name as skillName', () => {
     const config: SimulationConfig = {
       classes: ['bucc'],
-      tiers: ['high'],
       scenarios: [{ name: 'Buffed' }],
     };
 
@@ -529,7 +509,6 @@ describe('comboGroup aggregation', () => {
   it('aggregated DPS equals sum of individual sub-skill DPS values', () => {
     const config: SimulationConfig = {
       classes: ['bucc'],
-      tiers: ['high'],
       scenarios: [{ name: 'Buffed' }],
     };
 
@@ -547,7 +526,6 @@ describe('comboGroup aggregation', () => {
   it('hidden skills are excluded from simulation', () => {
     const config: SimulationConfig = {
       classes: ['bucc'],
-      tiers: ['high'],
       scenarios: [{ name: 'Buffed' }],
     };
 
@@ -560,10 +538,9 @@ describe('comboGroup aggregation', () => {
     expect(demolition).toBeUndefined();
   });
 
-  it('produces correct count across tiers and scenarios', () => {
+  it('produces correct count across scenarios', () => {
     const config: SimulationConfig = {
       classes: ['bucc'],
-      tiers: ['low', 'high'],
       scenarios: [{ name: 'Buffed' }, { name: 'Test' }],
     };
 
@@ -572,8 +549,8 @@ describe('comboGroup aggregation', () => {
       weaponData, attackSpeedData, mwData
     );
 
-    // 2 skills after aggregation (hidden Demolition excluded, Dragon Strike standalone) × 2 tiers × 2 scenarios = 8
-    expect(results.length).toBe(8);
+    // 2 skills after aggregation (hidden Demolition excluded, Dragon Strike standalone) × 2 scenarios = 4
+    expect(results.length).toBe(4);
   });
 });
 
@@ -581,7 +558,6 @@ describe('targetCount (multi-target scaling)', () => {
   it('scales AoE skill DPS by effective target count', () => {
     const config: SimulationConfig = {
       classes: ['hero'],
-      tiers: ['high'],
       scenarios: [
         { name: 'Buffed' },
         { name: 'Training', targetCount: 3 },
@@ -603,7 +579,6 @@ describe('targetCount (multi-target scaling)', () => {
   it('caps effective targets at skill maxTargets', () => {
     const config: SimulationConfig = {
       classes: ['hero'],
-      tiers: ['high'],
       scenarios: [
         { name: 'Buffed' },
         { name: 'Training', targetCount: 10 },
@@ -625,7 +600,6 @@ describe('targetCount (multi-target scaling)', () => {
   it('single-target skills are unaffected by targetCount', () => {
     const config: SimulationConfig = {
       classes: ['night-lord'],
-      tiers: ['high'],
       scenarios: [
         { name: 'Buffed' },
         { name: 'Training', targetCount: 6 },
@@ -647,7 +621,6 @@ describe('targetCount (multi-target scaling)', () => {
   it('targetCount of 1 has no effect', () => {
     const config: SimulationConfig = {
       classes: ['hero'],
-      tiers: ['high'],
       scenarios: [
         { name: 'Buffed' },
         { name: 'Training 1', targetCount: 1 },
@@ -668,7 +641,6 @@ describe('targetCount (multi-target scaling)', () => {
   it('combo sub-skills scale independently by their maxTargets', () => {
     const config: SimulationConfig = {
       classes: ['shadower'],
-      tiers: ['high'],
       scenarios: [
         { name: 'Buffed' },
         { name: 'Training', targetCount: 6 },
@@ -696,7 +668,6 @@ describe('targetCount (multi-target scaling)', () => {
   it('high-maxTargets skill scales correctly', () => {
     const config: SimulationConfig = {
       classes: ['archmage-il'],
-      tiers: ['high'],
       scenarios: [
         { name: 'Buffed' },
         { name: 'Training 6', targetCount: 6 },
@@ -780,11 +751,10 @@ describe('targetCount (multi-target scaling)', () => {
     };
 
     const localClassDataMap = new Map([['testbounce', classData]]);
-    const localGearTemplates: GearTemplateMap = new Map([['testbounce-high', build]]);
+    const localGearTemplates: GearTemplateMap = new Map([['testbounce', build]]);
 
     const config: SimulationConfig = {
       classes: ['testbounce'],
-      tiers: ['high'],
       scenarios: [
         { name: 'Buffed' },
         { name: 'Training 6', targetCount: 6 },
@@ -866,11 +836,10 @@ describe('bounceDecay edge cases', () => {
   it('bounceDecay >= 1 falls back to flat scaling', () => {
     const classData = makeBounceClassData(1.0);
     const localClassDataMap = new Map([['testbounce', classData]]);
-    const localGearTemplates: GearTemplateMap = new Map([['testbounce-high', bounceBuild]]);
+    const localGearTemplates: GearTemplateMap = new Map([['testbounce', bounceBuild]]);
 
     const config: SimulationConfig = {
       classes: ['testbounce'],
-      tiers: ['high'],
       scenarios: [
         { name: 'Buffed' },
         { name: 'Training 6', targetCount: 6 },
@@ -893,11 +862,10 @@ describe('bounceDecay edge cases', () => {
   it('negative bounceDecay falls back to flat scaling', () => {
     const classData = makeBounceClassData(-0.5);
     const localClassDataMap = new Map([['testbounce', classData]]);
-    const localGearTemplates: GearTemplateMap = new Map([['testbounce-high', bounceBuild]]);
+    const localGearTemplates: GearTemplateMap = new Map([['testbounce', bounceBuild]]);
 
     const config: SimulationConfig = {
       classes: ['testbounce'],
-      tiers: ['high'],
       scenarios: [
         { name: 'Buffed' },
         { name: 'Training 6', targetCount: 6 },
@@ -919,11 +887,10 @@ describe('bounceDecay edge cases', () => {
   it('uses flat multiplication when bounceDecay is 0', () => {
     const classData = makeBounceClassData(0);
     const localClassDataMap = new Map([['testbounce', classData]]);
-    const localGearTemplates: GearTemplateMap = new Map([['testbounce-high', bounceBuild]]);
+    const localGearTemplates: GearTemplateMap = new Map([['testbounce', bounceBuild]]);
 
     const config: SimulationConfig = {
       classes: ['testbounce'],
-      tiers: ['high'],
       scenarios: [
         { name: 'Buffed' },
         { name: 'Training 6', targetCount: 6 },
@@ -946,7 +913,6 @@ describe('elementOptions (adaptive element selection)', () => {
   it('picks the best element when charge variant wins', () => {
     const config: SimulationConfig = {
       classes: ['paladin'],
-      tiers: ['high'],
       scenarios: [
         { name: 'Buffed' },
         { name: 'Mixed', elementModifiers: { Fire: 1.5, Ice: 0.5 } },
@@ -969,7 +935,6 @@ describe('elementOptions (adaptive element selection)', () => {
   it('holy still wins when only Holy element is active', () => {
     const config: SimulationConfig = {
       classes: ['paladin'],
-      tiers: ['high'],
       scenarios: [
         { name: 'Buffed' },
         { name: 'Holy Only', elementModifiers: { Holy: 1.5 } },
@@ -992,7 +957,6 @@ describe('elementOptions (adaptive element selection)', () => {
   it('charge variant wins for BW with matching element', () => {
     const config: SimulationConfig = {
       classes: ['paladin-bw'],
-      tiers: ['high'],
       scenarios: [
         { name: 'Buffed' },
         { name: 'Ice Weak', elementModifiers: { Ice: 1.5 } },
@@ -1017,8 +981,8 @@ describe('mixed rotations', () => {
   it('creates a weighted DPS entry from component skills', () => {
     const { classData, build, weaponData, attackSpeedData, mwData } = makeMixedRotationFixtures();
     const classDataMap = new Map([['testclass', classData]]);
-    const gearTemplates = new Map([['testclass-high', build]]);
-    const config: SimulationConfig = { classes: ['testclass'], tiers: ['high'] };
+    const gearTemplates = new Map([['testclass', build]]);
+    const config: SimulationConfig = { classes: ['testclass'] };
 
     const results = runSimulation(config, classDataMap, gearTemplates, weaponData, attackSpeedData, mwData);
 
@@ -1034,7 +998,6 @@ describe('mixed rotations', () => {
     expect(mixed!.dps.dps).toBeCloseTo(expectedDps, 0);
     expect(mixed!.description).toBe('Test mixed rotation');
     expect(mixed!.className).toBe('TestClass');
-    expect(mixed!.tier).toBe('high');
 
     const expectedUncappedDps = skillA!.dps.uncappedDps * 0.8 + skillB!.dps.uncappedDps * 0.2;
     expect(mixed!.dps.uncappedDps).toBeCloseTo(expectedUncappedDps, 0);
@@ -1049,10 +1012,9 @@ describe('mixed rotations', () => {
     classData.skills[0].element = 'Fire';
 
     const classDataMap = new Map([['testclass', classData]]);
-    const gearTemplates = new Map([['testclass-high', build]]);
+    const gearTemplates = new Map([['testclass', build]]);
     const config: SimulationConfig = {
       classes: ['testclass'],
-      tiers: ['high'],
       scenarios: [{ name: 'Test', elementModifiers: { Fire: 1.5 } }],
     };
 
@@ -1070,10 +1032,9 @@ describe('mixed rotations', () => {
   it('uses efficiencyOverrides when provided', () => {
     const { classData, build, weaponData, attackSpeedData, mwData } = makeMixedRotationFixtures();
     const classDataMap = new Map([['testclass', classData]]);
-    const gearTemplates = new Map([['testclass-high', build]]);
+    const gearTemplates = new Map([['testclass', build]]);
     const config: SimulationConfig = {
       classes: ['testclass'],
-      tiers: ['high'],
       scenarios: [{
         name: 'Custom',
         efficiencyOverrides: { 'TestClass.Mixed A+B': [0.5, 0.5] },
@@ -1094,10 +1055,9 @@ describe('mixed rotations', () => {
   it('ignores malformed efficiencyOverrides (wrong array length)', () => {
     const { classData, build, weaponData, attackSpeedData, mwData } = makeMixedRotationFixtures();
     const classDataMap = new Map([['testclass', classData]]);
-    const gearTemplates = new Map([['testclass-high', build]]);
+    const gearTemplates = new Map([['testclass', build]]);
     const config: SimulationConfig = {
       classes: ['testclass'],
-      tiers: ['high'],
       scenarios: [{
         name: 'Bad Override',
         efficiencyOverrides: { 'TestClass.Mixed A+B': [0.5] },
@@ -1120,8 +1080,8 @@ describe('mixed rotations', () => {
     delete (classData as any).mixedRotations;
 
     const classDataMap = new Map([['testclass', classData]]);
-    const gearTemplates = new Map([['testclass-high', build]]);
-    const config: SimulationConfig = { classes: ['testclass'], tiers: ['high'] };
+    const gearTemplates = new Map([['testclass', build]]);
+    const config: SimulationConfig = { classes: ['testclass'] };
 
     const results = runSimulation(config, classDataMap, gearTemplates, weaponData, attackSpeedData, mwData);
     expect(results).toHaveLength(2); // Just Skill A and Skill B
@@ -1132,7 +1092,6 @@ describe('elementVariantGroup', () => {
   it('merges variants into single result (Holy wins with no element modifiers)', () => {
     const config: SimulationConfig = {
       classes: ['paladin'],
-      tiers: ['high'],
       scenarios: [{ name: 'Buffed' }],
     };
 
@@ -1149,7 +1108,6 @@ describe('elementVariantGroup', () => {
   it('charge variant wins when its element is weak (1.5x)', () => {
     const config: SimulationConfig = {
       classes: ['paladin'],
-      tiers: ['high'],
       scenarios: [{ name: 'Fire Weak', elementModifiers: { Fire: 1.5 } }],
     };
 
@@ -1166,7 +1124,6 @@ describe('elementVariantGroup', () => {
   it('holy wins when both holy and F/I/L element are weak', () => {
     const config: SimulationConfig = {
       classes: ['paladin'],
-      tiers: ['high'],
       scenarios: [{ name: 'Both Weak', elementModifiers: { Holy: 1.5, Fire: 1.5 } }],
     };
 
@@ -1183,7 +1140,6 @@ describe('elementVariantGroup', () => {
   it('merged result is always headline regardless of component headline status', () => {
     const config: SimulationConfig = {
       classes: ['paladin'],
-      tiers: ['high'],
       scenarios: [{ name: 'Fire Weak', elementModifiers: { Fire: 1.5 } }],
     };
 
@@ -1199,7 +1155,6 @@ describe('elementVariantGroup', () => {
   it('works for BW variants too', () => {
     const config: SimulationConfig = {
       classes: ['paladin-bw'],
-      tiers: ['high'],
       scenarios: [
         { name: 'Buffed' },
         { name: 'Ice Weak', elementModifiers: { Ice: 1.5 } },
@@ -1223,7 +1178,6 @@ describe('elementVariantGroup', () => {
   it('DPS of merged result is correct for both scenarios', () => {
     const config: SimulationConfig = {
       classes: ['paladin'],
-      tiers: ['high'],
       scenarios: [
         { name: 'Buffed' },
         { name: 'Fire Weak', elementModifiers: { Fire: 1.5 } },
@@ -1248,7 +1202,6 @@ describe('modifier composition (PDR + KB + element + targets)', () => {
     // Baseline: no modifiers
     const baseConfig: SimulationConfig = {
       classes: ['paladin', 'hero'],
-      tiers: ['high'],
       scenarios: [{ name: 'Baseline' }],
     };
     const baseResults = runSimulation(
@@ -1259,7 +1212,6 @@ describe('modifier composition (PDR + KB + element + targets)', () => {
     // Combined: PDR 0.3 + KB + Holy 1.5x + 3 targets
     const composedConfig: SimulationConfig = {
       classes: ['paladin', 'hero'],
-      tiers: ['high'],
       scenarios: [{
         name: 'Composed',
         pdr: 0.3,
@@ -1303,7 +1255,6 @@ describe('modifier composition (PDR + KB + element + targets)', () => {
   it('KB reduces DPS for a class with no stance/shifter more than one with stance', () => {
     const kbConfig: SimulationConfig = {
       classes: ['hero', 'archmage-il'],
-      tiers: ['high'],
       scenarios: [
         { name: 'No KB' },
         { name: 'With KB', bossAttackInterval: 1.5, bossAccuracy: 250 },
@@ -1347,7 +1298,7 @@ describe('modifier composition (PDR + KB + element + targets)', () => {
 
     const run = (scenarios: ScenarioConfig[]) =>
       runSimulation(
-        { classes: ['paladin'], tiers: ['high'], scenarios },
+        { classes: ['paladin'], scenarios },
         classDataMap, gearTemplates, weaponData, attackSpeedData, mwData
       );
 
@@ -1593,11 +1544,10 @@ describe('mixed rotation with missing skill reference', () => {
     const localMwData: MWData = [{ level: 20, multiplier: 1.1 }];
 
     const localClassDataMap = new Map([['testclass', classData]]);
-    const localGearTemplates: GearTemplateMap = new Map([['testclass-high', build]]);
+    const localGearTemplates: GearTemplateMap = new Map([['testclass', build]]);
 
     const config: SimulationConfig = {
       classes: ['testclass'],
-      tiers: ['high'],
     };
 
     const results = runSimulation(

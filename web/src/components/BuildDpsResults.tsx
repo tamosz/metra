@@ -9,10 +9,10 @@ interface BuildDpsResultsProps {
 }
 
 export function BuildDpsResults({ state, showCopyLink = true }: BuildDpsResultsProps) {
-  const { results, selectedClass, selectedTier, overrides } = state;
+  const { results, selectedClass, overrides } = state;
 
   const handleShare = () => {
-    const encoded = encodeBuild({ class: selectedClass, tier: selectedTier, overrides });
+    const encoded = encodeBuild({ class: selectedClass, overrides });
     const url = `${window.location.origin}${window.location.pathname}#b=${encoded}`;
     navigator.clipboard.writeText(url);
   };
@@ -80,4 +80,3 @@ export function BuildDpsResults({ state, showCopyLink = true }: BuildDpsResultsP
     </div>
   );
 }
-

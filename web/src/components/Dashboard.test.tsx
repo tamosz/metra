@@ -2,7 +2,6 @@ import { describe, it, expect, vi, afterEach } from 'vitest';
 import { render, screen, cleanup } from '@testing-library/react';
 import { Dashboard } from './Dashboard.js';
 import type { SimulationData } from '../hooks/useSimulation.js';
-import type { BuildsState } from '../hooks/useBuilds.js';
 import { SimulationFiltersProvider } from '../context/SimulationFiltersContext.js';
 import { ProposalEditProvider } from '../context/ProposalEditContext.js';
 
@@ -25,20 +24,11 @@ const mockDps = (dps: number) => ({
 
 const mockSimulation: SimulationData = {
   results: [
-    { scenario: 'Baseline', className: 'Hero', skillName: 'Brandish (Sword)', tier: 'perfect', dps: mockDps(240000), headline: true },
-    { scenario: 'Baseline', className: 'Night Lord', skillName: 'Triple Throw', tier: 'perfect', dps: mockDps(300000), headline: true },
+    { scenario: 'Baseline', className: 'Hero', skillName: 'Brandish (Sword)', dps: mockDps(240000), headline: true },
+    { scenario: 'Baseline', className: 'Night Lord', skillName: 'Triple Throw', dps: mockDps(300000), headline: true },
   ],
   classNames: ['Hero', 'Night Lord'],
-  tiers: ['perfect'],
   error: null,
-};
-
-const mockBuilds: BuildsState = {
-  builds: [],
-  activeBuildId: null,
-  save: vi.fn() as any,
-  remove: vi.fn(),
-  setActive: vi.fn(),
 };
 
 globalThis.ResizeObserver = class {
@@ -65,7 +55,7 @@ function renderDashboard() {
   return render(
     <SimulationFiltersProvider>
       <ProposalEditProvider>
-        <Dashboard simulation={mockSimulation} buildsState={mockBuilds} />
+        <Dashboard simulation={mockSimulation} />
       </ProposalEditProvider>
     </SimulationFiltersProvider>
   );

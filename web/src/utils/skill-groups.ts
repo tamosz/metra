@@ -21,7 +21,7 @@ export const SKILL_GROUPS: SkillGroup[] = [
 export const DEFAULT_SKILL_GROUPS: readonly SkillGroupId[] = ['main'] as const;
 
 // Keys must match className values from data/skills/*.json and CLASS_COLORS in class-colors.ts.
-const CLASS_TO_GROUP: Record<string, SkillGroupId> = {
+export const CLASS_TO_GROUP: Record<string, SkillGroupId> = {
   'Hero': 'warriors',
   'Hero (Axe)': 'warriors',
   'Hero (ST)': 'warriors',

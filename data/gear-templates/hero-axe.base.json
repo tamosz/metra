@@ -1,7 +1,12 @@
 {
   "className": "Hero (Axe)",
+  "category": "physical",
+  "primaryStat": "STR",
+  "secondaryStat": "DEX",
   "weaponType": "2H Axe",
   "weaponSpeed": 6,
+  "godlyCleanWATK": 117,
+  "weaponStat": 21,
   "projectile": 0,
   "echoActive": true,
   "mwLevel": 20,

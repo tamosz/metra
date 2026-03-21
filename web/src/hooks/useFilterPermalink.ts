@@ -19,7 +19,6 @@ export function useFilterPermalink(controls: SimulationFiltersContextType): void
       setFilterInUrl(state);
     }
   }, [
-    controls.selectedTier,
     controls.buffOverrides,
     controls.elementModifiers,
     controls.kbEnabled,
@@ -27,7 +26,6 @@ export function useFilterPermalink(controls: SimulationFiltersContextType): void
     controls.bossAccuracy,
     controls.targetCount,
     controls.capEnabled,
-    controls.cgsValues,
     controls.activeGroups,
     controls.breakdownEnabled,
   ]);

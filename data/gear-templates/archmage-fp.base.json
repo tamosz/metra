@@ -1,11 +1,15 @@
 {
   "className": "Archmage F/P",
+  "category": "mage",
+  "primaryStat": "INT",
+  "secondaryStat": "LUK",
   "weaponType": "Staff",
   "weaponSpeed": 6,
+  "godlyCleanWATK": 155,
+  "weaponStat": 29,
   "projectile": 0,
   "echoActive": true,
   "mwLevel": 20,
   "speedInfusion": false,
-  "sharpEyes": true,
-  "cgsStatName": "INT"
+  "sharpEyes": true
 }

@@ -1,21 +1,39 @@
 import {
-  compareTiers,
   type WeaponData,
   type AttackSpeedData,
   type MWData,
   type ClassSkillData,
   type CharacterBuild,
+  type StatName,
 } from '@metra/engine';
-import { computeGearTotals } from '@engine/data/gear-utils.js';
-import { mergeGearTemplate, type TierDefaults, type ClassBase, type TierOverride } from '@engine/data/gear-merge.js';
+
+const STAT_NAMES: readonly StatName[] = ['STR', 'DEX', 'INT', 'LUK'];
+const ATTACK_KEYS = ['WATK', 'MATK'] as const;
+
+function computeGearTotals(
+  gearBreakdown: Record<string, Record<string, number>>
+): { gearStats: Record<StatName, number>; totalWeaponAttack: number } {
+  const gearStats: Record<StatName, number> = { STR: 0, DEX: 0, INT: 0, LUK: 0 };
+  let totalWeaponAttack = 0;
+
+  for (const [slot, values] of Object.entries(gearBreakdown)) {
+    if (slot === 'comment') continue;
+    for (const stat of STAT_NAMES) {
+      gearStats[stat] += values[stat] ?? 0;
+    }
+    for (const key of ATTACK_KEYS) {
+      totalWeaponAttack += values[key] ?? 0;
+    }
+  }
+
+  return { gearStats, totalWeaponAttack };
+}
 
 // Static imports — bundled at build time, no fetch latency
 import weaponsJson from '@data/weapons.json';
 import attackSpeedJson from '@data/attack-speed.json';
 import mwJson from '@data/mw.json';
-import tierDefaultsJson from '@data/tier-defaults.json';
-
-const tierDefaults = tierDefaultsJson as Record<string, TierDefaults>;
+import gearBudgetJson from '@data/gear-budget.json';
 
 // Skill data
 const skillModules = import.meta.glob('@data/skills/*.json', { eager: true, import: 'default' }) as Record<string, ClassSkillData>;
@@ -33,45 +51,117 @@ export const weaponData: WeaponData = weaponsJson as WeaponData;
 export const attackSpeedData: AttackSpeedData = attackSpeedJson as AttackSpeedData;
 export const mwData: MWData = (mwJson as { entries: MWData }).entries;
 
-function findClassBase(templateName: string): ClassBase | null {
-  const entries = Object.entries(baseModules)
-    .map(([path, base]) => {
-      const match = path.match(/\/([^/]+)\.base\.json$/);
-      return match ? { name: match[1], base } : null;
-    })
-    .filter((e): e is { name: string; base: ClassBase } => e !== null)
-    .sort((a, b) => b.name.length - a.name.length);
-
-  for (const { name, base } of entries) {
-    if (templateName.startsWith(name + '-')) {
-      return base;
-    }
-  }
-  return null;
+export interface ClassBase {
+  className: string;
+  category: 'physical' | 'mage';
+  primaryStat: StatName;
+  secondaryStat: StatName | StatName[];
+  weaponType: string;
+  weaponSpeed: number;
+  godlyCleanWATK: number;
+  weaponStat: number;
+  shieldWATK?: number;
+  shieldStats?: Partial<Record<StatName, number>>;
+  passiveWATK?: number;
+  projectile: number;
+  echoActive: boolean;
+  mwLevel: number;
+  speedInfusion: boolean;
+  sharpEyes: boolean;
+  shadowPartner?: boolean;
+  baseSecondaryOverride?: number;
 }
 
-function findTemplateModule(templateKey: string): Record<string, unknown> | null {
-  const entry = Object.entries(templateModules).find(
-    ([path]) => path.endsWith(`/${templateKey}.json`)
-  );
-  return entry ? entry[1] : null;
+export interface GearBudget {
+  gearPrimary: number;
+  gearSecondary: number;
+  nonWeaponWATK: number;
+  scrollBonus: number;
+  basePrimary: number;
+  baseSecondary: number;
+  attackPotion: number;
 }
 
-function parseGearTemplate(templateName: string, raw: Record<string, unknown>): CharacterBuild {
-  if (typeof raw.extends === 'string') {
-    const base = findClassBase(templateName);
-    if (!base) {
-      throw new Error(`Template "${templateName}" extends "${raw.extends}" but no base file found`);
-    }
-    const tier = templateName.slice((raw.extends as string).length + 1);
-    const defaults = tierDefaults[tier];
-    if (!defaults) {
-      throw new Error(`Template "${templateName}" uses tier "${tier}" with no tier defaults`);
-    }
-    return mergeGearTemplate(base, raw as unknown as TierOverride, defaults);
+const budget = gearBudgetJson as GearBudget;
+
+const ALL_STATS: StatName[] = ['STR', 'DEX', 'INT', 'LUK'];
+
+export function scaleBudget(fraction: number): GearBudget {
+  return {
+    gearPrimary: Math.round(budget.gearPrimary * fraction),
+    gearSecondary: Math.round(budget.gearSecondary * fraction),
+    nonWeaponWATK: Math.round(budget.nonWeaponWATK * fraction),
+    scrollBonus: Math.round(budget.scrollBonus * fraction),
+    basePrimary: budget.basePrimary,
+    baseSecondary: budget.baseSecondary,
+    attackPotion: budget.attackPotion,
+  };
+}
+
+function computeBuildFromBudget(base: ClassBase, b: GearBudget): CharacterBuild {
+  const totalWeaponAttack =
+    base.godlyCleanWATK +
+    b.scrollBonus +
+    b.nonWeaponWATK +
+    (base.passiveWATK ?? 0) +
+    (base.shieldWATK ?? 0);
+
+  const primary = base.primaryStat;
+  const secondaryArr = Array.isArray(base.secondaryStat)
+    ? base.secondaryStat
+    : [base.secondaryStat];
+
+  const gearStats = { STR: 0, DEX: 0, INT: 0, LUK: 0 };
+  gearStats[primary] = b.gearPrimary + base.weaponStat;
+  for (const sec of secondaryArr) {
+    gearStats[sec] += b.gearSecondary;
   }
 
-  // Flat mode (existing logic)
+  if (base.shieldStats) {
+    for (const stat of ALL_STATS) {
+      gearStats[stat] += base.shieldStats[stat] ?? 0;
+    }
+  }
+
+  const baseStats = { STR: 4, DEX: 4, INT: 4, LUK: 4 };
+  for (const sec of secondaryArr) {
+    baseStats[sec] = base.baseSecondaryOverride ?? b.baseSecondary;
+  }
+  baseStats[primary] = b.basePrimary;
+
+  return {
+    className: base.className,
+    baseStats,
+    gearStats,
+    totalWeaponAttack,
+    weaponType: base.weaponType,
+    weaponSpeed: base.weaponSpeed,
+    attackPotion: b.attackPotion,
+    projectile: base.projectile,
+    echoActive: base.echoActive,
+    mwLevel: base.mwLevel,
+    speedInfusion: base.speedInfusion,
+    sharpEyes: base.sharpEyes,
+    shadowPartner: base.shadowPartner,
+  };
+}
+
+/**
+ * Browser-safe version of computeBuild from src/data/gear-compute.ts.
+ * Uses statically imported gear-budget.json instead of fs.readFileSync.
+ */
+function computeBuildBrowser(base: ClassBase): CharacterBuild {
+  return computeBuildFromBudget(base, budget);
+}
+
+export function computeBuildAtFunding(base: ClassBase, fraction: number): CharacterBuild {
+  return computeBuildFromBudget(base, scaleBudget(fraction));
+}
+
+/**
+ * Parse a mage flat-mode gear template into a CharacterBuild.
+ */
+function parseMageTemplate(raw: Record<string, unknown>): CharacterBuild {
   const breakdown = raw.gearBreakdown as Record<string, Record<string, number>> | undefined;
   const computed = breakdown ? computeGearTotals(breakdown) : undefined;
 
@@ -92,104 +182,83 @@ function parseGearTemplate(templateName: string, raw: Record<string, unknown>): 
   };
 }
 
-export interface DiscoveryResult {
-  classNames: string[];
-  tiers: string[];
-  classDataMap: Map<string, ClassSkillData>;
-  gearTemplates: Map<string, CharacterBuild>;
+function findBaseForClass(className: string): ClassBase | null {
+  for (const [path, base] of Object.entries(baseModules)) {
+    const match = path.match(/\/([^/]+)\.base\.json$/);
+    if (match && match[1] === className) return base;
+  }
+  return null;
 }
 
-/**
- * Discover classes and tiers from bundled JSON data.
- * Browser equivalent of loader.ts discoverClassesAndTiers().
- */
-export function discoverClassesAndTiers(): DiscoveryResult {
-  // Extract class names from skill file paths
-  const skillNames: string[] = [];
-  const classDataMap = new Map<string, ClassSkillData>();
-  for (const [path, data] of Object.entries(skillModules)) {
-    const match = path.match(/\/([^/]+)\.json$/);
-    if (match) {
-      const name = match[1];
-      skillNames.push(name);
-      classDataMap.set(name, data);
-    }
-  }
-
-  // Extract template names and tiers
-  const templateNames: string[] = [];
-  const gearTemplates = new Map<string, CharacterBuild>();
-  for (const [path] of Object.entries(templateModules)) {
-    const match = path.match(/\/([^/]+)\.json$/);
-    if (match) {
-      templateNames.push(match[1]);
-    }
-  }
-
-  // Sort skill names longest-first to handle prefix overlaps
-  // (e.g., "hero-axe" must match before "hero" for template "hero-axe-high")
-  const sortedSkillNames = [...skillNames].sort((a, b) => b.length - a.length);
-
-  // Assign each template to the longest matching class name
-  const templateToClass = new Map<string, string>();
-  for (const t of templateNames) {
-    for (const name of sortedSkillNames) {
-      if (t.startsWith(name + '-')) {
-        templateToClass.set(t, name);
-        break;
-      }
-    }
-  }
-
-  const classNames: string[] = [];
-  const tiers = new Set<string>();
-  for (const name of skillNames) {
-    const classTiers = templateNames
-      .filter((t) => templateToClass.get(t) === name)
-      .map((t) => t.slice(name.length + 1));
-    if (classTiers.length > 0) {
-      classNames.push(name);
-      for (const tier of classTiers) tiers.add(tier);
-    }
-  }
-
-  const tierArray = [...tiers].sort(compareTiers);
-  for (const name of classNames) {
-    for (const tier of tierArray) {
-      const key = `${name}-${tier}`;
-      if (templateNames.includes(key)) {
-        const raw = findTemplateModule(key);
-        if (raw) {
-          gearTemplates.set(key, parseGearTemplate(key, raw));
-        }
-      }
-    }
-  }
-
-  return { classNames, tiers: tierArray, classDataMap, gearTemplates };
+function findTemplateModule(templateKey: string): Record<string, unknown> | null {
+  const entry = Object.entries(templateModules).find(
+    ([path]) => path.endsWith(`/${templateKey}.json`)
+  );
+  return entry ? entry[1] : null;
 }
 
-export const discoveredData = discoverClassesAndTiers();
-
-/**
- * Get the raw per-slot gear breakdown for a template.
- * Returns the gearBreakdown object from the JSON file as-is.
- * CGS slots that come from tier-defaults are NOT included — only class-specific gear.
- */
-export function getGearBreakdown(
-  templateKey: string
-): Record<string, Record<string, number>> | null {
-  const raw = findTemplateModule(templateKey);
-  if (!raw) return null;
-  const breakdown = raw.gearBreakdown as
-    | Record<string, Record<string, number>>
-    | undefined;
-  if (!breakdown) return null;
-
-  // Deep clone so callers can't mutate the bundled data
-  const result: Record<string, Record<string, number>> = {};
-  for (const [slot, stats] of Object.entries(breakdown)) {
-    result[slot] = { ...stats };
+export function getAllClassBases(): Map<string, ClassBase> {
+  const result = new Map<string, ClassBase>();
+  for (const [path, base] of Object.entries(baseModules)) {
+    const match = path.match(/\/([^/]+)\.base\.json$/);
+    if (match) result.set(match[1], base);
   }
   return result;
 }
+
+export interface DiscoveryResult {
+  classNames: string[];
+  classDataMap: Map<string, ClassSkillData>;
+  builds: Map<string, CharacterBuild>;
+}
+
+/**
+ * Discover classes from bundled JSON data.
+ * Physical classes: compute build from base + gear budget.
+ * Mage classes: parse the perfect-tier flat template.
+ */
+export function discoverClasses(): DiscoveryResult {
+  const classDataMap = new Map<string, ClassSkillData>();
+  const builds = new Map<string, CharacterBuild>();
+  const classNames: string[] = [];
+
+  // Extract class names and data from skill files
+  for (const [path, data] of Object.entries(skillModules)) {
+    const match = path.match(/\/([^/]+)\.json$/);
+    if (!match) continue;
+    const name = match[1];
+    classDataMap.set(name, data);
+
+    const base = findBaseForClass(name);
+    if (!base) continue;
+
+    if (base.category === 'physical') {
+      builds.set(name, computeBuildBrowser(base));
+      classNames.push(name);
+    } else {
+      // Mage: parse the perfect-tier template in flat mode
+      const raw = findTemplateModule(`${name}-perfect`);
+      if (raw) {
+        // Merge base defaults under raw, but always use base for identity/buff fields
+        const merged = {
+          weaponType: base.weaponType,
+          weaponSpeed: base.weaponSpeed,
+          projectile: base.projectile,
+          echoActive: base.echoActive,
+          mwLevel: base.mwLevel,
+          speedInfusion: base.speedInfusion,
+          sharpEyes: base.sharpEyes,
+          ...raw,
+          className: base.className,
+        };
+        builds.set(name, parseMageTemplate(merged));
+        classNames.push(name);
+      }
+    }
+  }
+
+  return { classNames, classDataMap, builds };
+}
+
+export const discoveredData = discoverClasses();
+export const allClassBases = getAllClassBases();
