@@ -74,8 +74,8 @@ all other equipment stats.
 | Dragon Flame | Paladin (BW) | 117 | 122 | +35 | 157 |
 | Dragon Purple Claw | Night Lord | 55 | 60 | +35 | 95 |
 | Dragon Shiner Bow | Bowmaster | 105 | 110 | +35 | 145 |
-| Dark Neschere | Marksman | 103 | 108 | +35 | 143 |
-| Concerto | Corsair | 79 | 84 | +35 | 119 |
+| Dragon Shiner Cross | Marksman | 108 | 113 | +35 | 148 |
+| Dragonfire Revolver | Corsair | 83 | 88 | +35 | 123 |
 | Dragon Slash Claw | Buccaneer | 83 | 88 | +35 | 123 |
 | Dragon Kanzir | Shadower | 105 | 110 | +35 | 145 |
 | Elemental Wand 5 | Mages | 150 | 155 | +35 | 190 MATK |
@@ -120,7 +120,7 @@ Uses Balanced Fury throwing stars (30 WATK).
 
 ### Corsair
 
-Gun speed 5. Uses Blaze Capsule (20 WATK projectile).
+Gun speed 5. Uses Royal Bullet (24 WATK projectile).
 
 ### Buccaneer
 
@@ -142,7 +142,7 @@ retains the arrow's attack bonus, so projectile WATK is effectively always activ
 | Bowmaster | Royal Bow Quiver | 12 | Von Leon craft |
 | Marksman | Royal Crossbow Quiver | 10 | Von Leon craft |
 | Night Lord | Balanced Fury | 30 | |
-| Corsair | Blaze Capsule | 20 | |
+| Corsair | Royal Bullet | 24 | |
 
 Sources:
 [Update #73.3 Patch Notes](https://royals.ms/forum/threads/update-73-3-05-08-2021.194629/),
