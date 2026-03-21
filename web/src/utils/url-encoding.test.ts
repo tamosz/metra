@@ -2,14 +2,9 @@ import { describe, it, expect } from 'vitest';
 import {
   encodeProposal,
   decodeProposal,
-  encodeBuild,
-  decodeBuild,
-  encodeComparison,
-  decodeComparison,
   encodeParty,
   decodeParty,
 } from './url-encoding.js';
-import type { BuildUrlPayload, ComparisonUrlPayload } from './url-encoding.js';
 import type { Proposal } from '@engine/proposals/types.js';
 
 describe('url-encoding', () => {
@@ -64,68 +59,6 @@ describe('url-encoding', () => {
     expect(decodeProposal('')).toBeNull();
     expect(decodeProposal('not-valid-lz-data')).toBeNull();
     expect(decodeProposal('abc123')).toBeNull();
-  });
-});
-
-describe('build url encoding', () => {
-  it('roundtrips a build with overrides', () => {
-    const payload: BuildUrlPayload = {
-      class: 'hero',
-      overrides: { gearSTR: 200 },
-    };
-
-    const encoded = encodeBuild(payload);
-    const decoded = decodeBuild(encoded);
-
-    expect(decoded).toEqual(payload);
-  });
-
-  it('roundtrips a build with empty overrides', () => {
-    const payload: BuildUrlPayload = {
-      class: 'night-lord',
-      overrides: {},
-    };
-
-    const encoded = encodeBuild(payload);
-    const decoded = decodeBuild(encoded);
-
-    expect(decoded).toEqual(payload);
-  });
-
-  it('returns null for malformed input', () => {
-    expect(decodeBuild('garbage')).toBeNull();
-  });
-});
-
-describe('comparison url encoding', () => {
-  it('roundtrips two builds with different classes', () => {
-    const payload: ComparisonUrlPayload = {
-      a: { class: 'hero', overrides: {} },
-      b: { class: 'dark-knight', overrides: {} },
-    };
-
-    const encoded = encodeComparison(payload);
-    const decoded = decodeComparison(encoded);
-
-    expect(decoded).toEqual(payload);
-  });
-
-  it('returns null for malformed input', () => {
-    expect(decodeComparison('garbage')).toBeNull();
-  });
-
-  it('preserves nested overrides on both builds', () => {
-    const payload: ComparisonUrlPayload = {
-      a: { class: 'hero', overrides: { gearSTR: 300, totalWeaponAttack: 250 } },
-      b: { class: 'night-lord', overrides: { gearLUK: 400 } },
-    };
-
-    const encoded = encodeComparison(payload);
-    const decoded = decodeComparison(encoded);
-
-    expect(decoded).toEqual(payload);
-    expect(decoded!.a.overrides).toEqual({ gearSTR: 300, totalWeaponAttack: 250 });
-    expect(decoded!.b.overrides).toEqual({ gearLUK: 400 });
   });
 });
 
