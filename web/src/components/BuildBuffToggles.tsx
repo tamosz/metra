@@ -2,6 +2,7 @@ import type { CharacterBuild } from '@metra/engine';
 import type { BuildExplorerState, BuildOverrides } from '../hooks/useBuildExplorer.js';
 import { Tooltip } from './Tooltip.js';
 import { BUFF_DESCRIPTIONS } from '../utils/game-terms.js';
+import { SECTION_LABEL } from '../utils/styles.js';
 
 interface BuildBuffTogglesProps {
   state: BuildExplorerState;
@@ -18,7 +19,7 @@ export function BuildBuffToggles({ state }: BuildBuffTogglesProps) {
 
   return (
     <div>
-      <div className="mb-2 text-[11px] font-medium uppercase tracking-wide text-text-dim">
+      <div className={`${SECTION_LABEL} mb-2`}>
         Buffs
       </div>
 

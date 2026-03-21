@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import type { CharacterBuild } from '@metra/engine';
 import { useSimulationFilters } from '../context/SimulationFiltersContext.js';
-import { TOGGLE_ON, TOGGLE_OFF_RED } from '../utils/styles.js';
+import { TOGGLE_ON, TOGGLE_OFF_RED, SECTION_LABEL } from '../utils/styles.js';
 
 type BuffOverrides = Partial<Pick<CharacterBuild, 'sharpEyes' | 'echoActive' | 'speedInfusion' | 'mwLevel' | 'attackPotion' | 'bullseye'>>;
 
@@ -63,7 +63,7 @@ export function BuffToggles({ visibleClassNames }: BuffTogglesProps) {
 
   return (
     <div className="flex flex-col gap-1">
-      <span className="text-[11px] font-medium uppercase tracking-wide text-text-dim">Buffs</span>
+      <span className={SECTION_LABEL}>Buffs</span>
       <div className="flex gap-1">
         {visibleBuffs.map(({ key, label, offValue, tooltip }) => {
           const isOff = key in overrides;

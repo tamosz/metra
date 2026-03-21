@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import type { FilterPresetsState } from '../hooks/useFilterPresets.js';
+import { SECTION_LABEL } from '../utils/styles.js';
 
 interface FilterPresetsProps {
   presetsState: FilterPresetsState;
@@ -48,7 +49,7 @@ export function FilterPresets({ presetsState }: FilterPresetsProps) {
   return (
     <div className="rounded-lg border border-border-subtle bg-bg-raised/50 px-5 py-3">
       <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
-        <span className="text-[11px] font-medium uppercase tracking-wide text-text-dim">Preset</span>
+        <span className={SECTION_LABEL}>Preset</span>
 
         {presets.map((preset) => {
           const isActive = preset.id === activePresetId;

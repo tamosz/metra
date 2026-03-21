@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { discoveredData } from '../data/bundle.js';
 import { useSimulationFilters } from '../context/SimulationFiltersContext.js';
+import { SECTION_LABEL } from '../utils/styles.js';
 
 interface RotationConfig {
   key: string;
@@ -36,7 +37,7 @@ export function EfficiencyPanel() {
 
   return (
     <div className="flex flex-col gap-1">
-      <span className="text-[11px] font-medium uppercase tracking-wide text-text-dim">
+      <span className={SECTION_LABEL}>
         Skill Efficiency
       </span>
       <button

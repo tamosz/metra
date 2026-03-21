@@ -1,7 +1,7 @@
 import type { BuildExplorerState } from '../hooks/useBuildExplorer.js';
 import { encodeBuild } from '../utils/url-encoding.js';
 import { formatDps, formatChange, changeColorClass } from '../utils/format.js';
-import { TH } from '../utils/styles.js';
+import { TH, SECTION_LABEL } from '../utils/styles.js';
 
 interface BuildDpsResultsProps {
   state: BuildExplorerState;
@@ -21,7 +21,7 @@ export function BuildDpsResults({ state, showCopyLink = true }: BuildDpsResultsP
   return (
     <div>
       <div className="mb-2 flex items-center justify-between">
-        <div className="text-[11px] font-medium uppercase tracking-wide text-text-dim">
+        <div className={SECTION_LABEL}>
           DPS Results
         </div>
         {showCopyLink && (

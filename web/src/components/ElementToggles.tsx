@@ -1,4 +1,5 @@
 import { useSimulationFilters } from '../context/SimulationFiltersContext.js';
+import { SECTION_LABEL } from '../utils/styles.js';
 
 const ELEMENTS = ['Holy', 'Fire', 'Ice', 'Lightning', 'Poison'] as const;
 
@@ -61,7 +62,7 @@ export function ElementToggles() {
 
   return (
     <div className="flex flex-col gap-1">
-      <span className="text-[11px] font-medium uppercase tracking-wide text-text-dim">Elements</span>
+      <span className={SECTION_LABEL}>Elements</span>
       <div className="flex gap-1">
         {ELEMENTS.map((element) => {
           const state = getState(modifiers, element);
