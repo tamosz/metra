@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { calculateSkillDps } from '@metra/engine';
-import type { SkillEntry } from '@metra/engine';
+import type { SkillEntry, ClassSkillData } from '@metra/engine';
 import {
   getAllClassBases,
   computeBuildAtFunding,
@@ -9,7 +9,7 @@ import {
   mwData,
   discoveredData,
 } from '../data/bundle.js';
-import { type SkillGroupId } from '../utils/skill-groups.js';
+import { CLASS_TO_GROUP, type SkillGroupId } from '../utils/skill-groups.js';
 import { VARIANT_CLASSES } from '../utils/class-colors.js';
 
 export interface FundingPoint {
@@ -31,27 +31,8 @@ export interface FundingScalingData {
 
 const FUNDING_LEVELS = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
 
-const CLASS_TO_GROUP: Record<string, SkillGroupId> = {
-  'Hero': 'warriors',
-  'Hero (Axe)': 'warriors',
-  'Hero (ST)': 'warriors',
-  'Dark Knight': 'warriors',
-  'Paladin': 'warriors',
-  'Paladin (BW)': 'warriors',
-  'Bishop': 'mages',
-  'Archmage I/L': 'mages',
-  'Archmage F/P': 'mages',
-  'Bowmaster': 'archers',
-  'Marksman': 'archers',
-  'Night Lord': 'thieves',
-  'Shadower': 'thieves',
-  'Corsair': 'pirates',
-  'Buccaneer': 'pirates',
-};
+const SEP = ' \u2014 ';
 
-/**
- * Check if a skill is visible given active groups and the class name.
- */
 function isSkillVisible(
   skill: SkillEntry,
   className: string,
@@ -59,14 +40,16 @@ function isSkillVisible(
 ): boolean {
   if (skill.hidden) return false;
 
-  // "main" group: headline skills for non-variant classes
   if (activeGroups.has('main') && skill.headline !== false && !VARIANT_CLASSES.has(className)) {
     return true;
   }
 
-  // Class archetype groups: all non-hidden skills for those classes
   const classGroup = CLASS_TO_GROUP[className];
   if (classGroup && activeGroups.has(classGroup)) {
+    return true;
+  }
+
+  if (activeGroups.has('multi-target') && (skill.maxTargets ?? 1) > 1) {
     return true;
   }
 
@@ -83,36 +66,30 @@ export function useFundingScaling(options: {
     const allBases = getAllClassBases();
     const { classDataMap } = discoveredData;
 
-    // Collect visible physical class bases (mages excluded)
+    // Build className → ClassSkillData lookup (classDataMap is keyed by file slug)
+    const classDataByName = new Map<string, ClassSkillData>();
+    for (const data of classDataMap.values()) {
+      classDataByName.set(data.className, data);
+    }
+
+    // Physical classes only (mages don't use the computed budget model)
     const physicalBases = Array.from(allBases.values()).filter(
       (base) => base.category === 'physical'
     );
 
-    // Build a map of all lines (class + skill combinations) that will appear in the chart.
-    // We determine lines by looking at the full-funding build.
+    // Determine which lines appear by evaluating at 100% funding.
+    // Element variant winner is determined at full funding — assumed stable across levels.
     const lineMap = new Map<string, FundingLine>();
 
     for (const base of physicalBases) {
       const className = base.className;
-
-      // Find the skill data by matching className
-      let classData = null;
-      for (const [, data] of classDataMap.entries()) {
-        if (data.className === className) {
-          classData = data;
-          break;
-        }
-      }
+      const classData = classDataByName.get(className);
       if (!classData) continue;
 
-      // Group skills by comboGroup and elementVariantGroup to determine final line names.
-      // We use a representative funding level (100%) to determine which elementVariant wins.
       const fullBuild = computeBuildAtFunding(base, 1.0);
 
-      // Track combo groups: comboGroup → combined line key
       const comboGroupSeen = new Set<string>();
-      // Track element variant groups: variantGroup → best skill so far
-      const elementVariantBest = new Map<string, { key: string; dps: number; className: string; skillName: string }>();
+      const variantBest = new Map<string, { key: string; dps: number; className: string; skillName: string }>();
 
       for (const skill of classData.skills) {
         if (!isSkillVisible(skill, className, activeGroups)) continue;
@@ -120,7 +97,7 @@ export function useFundingScaling(options: {
         if (skill.comboGroup) {
           if (comboGroupSeen.has(skill.comboGroup)) continue;
           comboGroupSeen.add(skill.comboGroup);
-          const key = `${className} \u2014 ${skill.comboGroup}`;
+          const key = `${className}${SEP}${skill.comboGroup}`;
           lineMap.set(key, { key, className, skillName: skill.comboGroup });
           continue;
         }
@@ -130,23 +107,25 @@ export function useFundingScaling(options: {
             fullBuild, classData, skill, weaponData, attackSpeedData, mwData
           );
           const dps = capEnabled ? dpsResult.dps : dpsResult.uncappedDps;
-          const key = `${className} \u2014 ${skill.name}`;
-          const existing = elementVariantBest.get(skill.elementVariantGroup);
+          const key = `${className}${SEP}${skill.name}`;
+          const existing = variantBest.get(skill.elementVariantGroup);
           if (!existing || dps > existing.dps) {
-            elementVariantBest.set(skill.elementVariantGroup, { key, dps, className, skillName: skill.name });
+            variantBest.set(skill.elementVariantGroup, { key, dps, className, skillName: skill.name });
           }
           continue;
         }
 
-        const key = `${className} \u2014 ${skill.name}`;
+        const key = `${className}${SEP}${skill.name}`;
         lineMap.set(key, { key, className, skillName: skill.name });
       }
 
-      // Add winning elementVariant lines
-      for (const best of elementVariantBest.values()) {
+      for (const best of variantBest.values()) {
         lineMap.set(best.key, { key: best.key, className: best.className, skillName: best.skillName });
       }
     }
+
+    // TODO: mixedRotations (e.g. Corsair's Practical Bossing) are not included.
+    // These would need time-weighted DPS blending at each funding level.
 
     const lines = Array.from(lineMap.values());
 
@@ -156,22 +135,13 @@ export function useFundingScaling(options: {
 
       for (const base of physicalBases) {
         const className = base.className;
-
-        let classData = null;
-        for (const [, data] of classDataMap.entries()) {
-          if (data.className === className) {
-            classData = data;
-            break;
-          }
-        }
+        const classData = classDataByName.get(className);
         if (!classData) continue;
 
         const build = computeBuildAtFunding(base, level / 100);
 
-        // Accumulate combo groups
         const comboDps = new Map<string, number>();
-        // Track element variant best per group
-        const elementVariantBest = new Map<string, { key: string; dps: number }>();
+        const variantBest = new Map<string, { key: string; dps: number }>();
 
         for (const skill of classData.skills) {
           if (!isSkillVisible(skill, className, activeGroups)) continue;
@@ -182,35 +152,33 @@ export function useFundingScaling(options: {
           const dps = capEnabled ? dpsResult.dps : dpsResult.uncappedDps;
 
           if (skill.comboGroup) {
-            const key = `${className} \u2014 ${skill.comboGroup}`;
+            const key = `${className}${SEP}${skill.comboGroup}`;
             comboDps.set(key, (comboDps.get(key) ?? 0) + dps);
             continue;
           }
 
           if (skill.elementVariantGroup) {
-            const key = `${className} \u2014 ${skill.name}`;
-            const existing = elementVariantBest.get(skill.elementVariantGroup);
+            const key = `${className}${SEP}${skill.name}`;
+            const existing = variantBest.get(skill.elementVariantGroup);
             if (!existing || dps > existing.dps) {
-              elementVariantBest.set(skill.elementVariantGroup, { key, dps });
+              variantBest.set(skill.elementVariantGroup, { key, dps });
             }
             continue;
           }
 
-          const key = `${className} \u2014 ${skill.name}`;
+          const key = `${className}${SEP}${skill.name}`;
           if (lineMap.has(key)) {
             point[key] = dps;
           }
         }
 
-        // Write combo group totals
         for (const [key, totalDps] of comboDps.entries()) {
           if (lineMap.has(key)) {
             point[key] = totalDps;
           }
         }
 
-        // Write winning element variant DPS values
-        for (const best of elementVariantBest.values()) {
+        for (const best of variantBest.values()) {
           if (lineMap.has(best.key)) {
             point[best.key] = best.dps;
           }
@@ -220,7 +188,6 @@ export function useFundingScaling(options: {
       return point;
     });
 
-    // Compute tight yDomain from all DPS values across all points
     let yMin = Infinity;
     let yMax = -Infinity;
     for (const point of points) {
@@ -232,7 +199,6 @@ export function useFundingScaling(options: {
         }
       }
     }
-    // Fall back to [0, 1] if no data
     if (!isFinite(yMin) || !isFinite(yMax)) {
       yMin = 0;
       yMax = 1;
