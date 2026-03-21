@@ -167,6 +167,9 @@ export function computeBuildAtFunding(base: ClassBase, fraction: number): Charac
     shieldWATK: base.shieldWATK
       ? Math.round(SHIELD_BASE_WATK + (base.shieldWATK - SHIELD_BASE_WATK) * fraction)
       : undefined,
+    baseSecondaryOverride: base.baseSecondaryOverride != null
+      ? Math.round(base.baseSecondaryOverride * fraction)
+      : undefined,
   };
   return computeBuildFromBudget(scaledBase, scaleBudget(fraction));
 }

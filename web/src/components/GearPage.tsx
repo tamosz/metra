@@ -6,7 +6,6 @@ import gearBudgetJson from '@data/gear-budget.json';
 
 const budget = gearBudgetJson as GearBudget;
 
-const EXCLUDED_SLUGS = new Set(['hero-axe', 'hero-st', 'paladin-bw']);
 
 const CGS_SEGMENTS = [
   { label: 'Gloves', value: 24, color: '#3b82f6' },
@@ -64,7 +63,7 @@ function buildExtrasLabel(base: ClassBase): string {
 function buildClassRows(): ClassRow[] {
   const rows: ClassRow[] = [];
   for (const [slug, base] of allClassBases) {
-    if (EXCLUDED_SLUGS.has(slug) || VARIANT_CLASS_SLUGS.has(slug)) continue;
+    if (VARIANT_CLASS_SLUGS.has(slug)) continue;
     if (base.category !== 'physical') continue;
     const extras = (base.passiveWATK ?? 0) + (base.shieldWATK ?? 0) + base.projectile;
     const totalWATK =
@@ -143,7 +142,7 @@ function WeaponTableSection({ rows }: { rows: ClassRow[] }) {
           <thead>
             <tr className="border-b border-border text-text-muted text-xs">
               <th className="text-left px-4 py-2.5 font-medium">Class</th>
-              <th className="text-left px-4 py-2.5 font-medium">Weapon</th>
+              <th className="text-left px-4 py-2.5 font-medium">Weapon Type</th>
               <th className="text-right px-4 py-2.5 font-medium">Speed</th>
               <th className="text-right px-4 py-2.5 font-medium">Godly Clean</th>
               <th className="text-left px-4 py-2.5 font-medium">Extras</th>
