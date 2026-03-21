@@ -84,7 +84,7 @@ export function loadGearTemplate(templateName: string): CharacterBuild {
     const baseName = raw.extends as string;
     const base = loadJson<ClassBase>(`gear-templates/${baseName}.base.json`);
 
-    const breakdown = raw.gearBreakdown as Record<string, Record<string, number>> | undefined;
+    let breakdown = raw.gearBreakdown as Record<string, Record<string, number>> | undefined;
     if (!breakdown) {
       throw new Error(`Template "${templateName}" extends "${baseName}" but has no gearBreakdown`);
     }
@@ -94,6 +94,14 @@ export function loadGearTemplate(templateName: string): CharacterBuild {
     if (raw.attackPotion == null) {
       throw new Error(`Template "${templateName}" is missing attackPotion`);
     }
+
+    if (typeof raw.sharedGear === 'string') {
+      const shared = loadJson<Record<string, Record<string, number>>>(
+        `gear-templates/${raw.sharedGear}.json`
+      );
+      breakdown = { ...shared, ...breakdown };
+    }
+
     const computed = computeGearTotals(breakdown);
 
     return {
