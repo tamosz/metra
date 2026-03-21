@@ -1,8 +1,7 @@
 import { createContext, useCallback, useContext, useState, useMemo, type ReactNode } from 'react';
 import type { BuffOverrides } from '../components/BuffToggles.js';
-import type { CgsValues } from '../utils/cgs.js';
 import type { KbConfig } from '../hooks/useSimulation.js';
-import { FILTER_DEFAULTS, defaultCgsForTier, defaultActiveGroups, defaultBuffOverrides, defaultElementModifiers } from '../utils/filter-defaults.js';
+import { FILTER_DEFAULTS, defaultActiveGroups, defaultBuffOverrides, defaultElementModifiers } from '../utils/filter-defaults.js';
 import type { SkillGroupId } from '../utils/skill-groups.js';
 
 export interface SimulationFiltersContextType {
@@ -20,10 +19,6 @@ export interface SimulationFiltersContextType {
   setBossAccuracy: (n: number) => void;
   capEnabled: boolean;
   setCapEnabled: (enabled: boolean) => void;
-  selectedTier: string;
-  setSelectedTier: (tier: string) => void;
-  cgsValues: CgsValues;
-  setCgsValues: (values: CgsValues) => void;
   kbConfig: KbConfig | undefined;
   efficiencyOverrides: Record<string, number[]>;
   setEfficiencyOverrides: (overrides: Record<string, number[]>) => void;
@@ -45,14 +40,11 @@ export function SimulationFiltersProvider({ children }: { children: ReactNode })
   const [bossAttackInterval, setBossAttackInterval] = useState(FILTER_DEFAULTS.bossAttackInterval);
   const [bossAccuracy, setBossAccuracy] = useState(FILTER_DEFAULTS.bossAccuracy);
   const [capEnabled, setCapEnabled] = useState(FILTER_DEFAULTS.capEnabled);
-  const [selectedTier, setSelectedTier] = useState(FILTER_DEFAULTS.tier);
-  const [cgsValues, setCgsValues] = useState<CgsValues>(defaultCgsForTier(FILTER_DEFAULTS.tier));
   const [efficiencyOverrides, setEfficiencyOverrides] = useState<Record<string, number[]>>({});
   const [breakdownEnabled, setBreakdownEnabled] = useState(FILTER_DEFAULTS.breakdownEnabled);
   const [activeGroups, setActiveGroups] = useState<Set<SkillGroupId>>(defaultActiveGroups);
 
   const resetFilters = useCallback(() => {
-    setSelectedTier(FILTER_DEFAULTS.tier);
     setTargetCount(FILTER_DEFAULTS.targetCount);
     setCapEnabled(FILTER_DEFAULTS.capEnabled);
     setKbEnabled(FILTER_DEFAULTS.kbEnabled);
@@ -61,7 +53,6 @@ export function SimulationFiltersProvider({ children }: { children: ReactNode })
     setBreakdownEnabled(FILTER_DEFAULTS.breakdownEnabled);
     setBuffOverrides(defaultBuffOverrides());
     setElementModifiers(defaultElementModifiers());
-    setCgsValues(defaultCgsForTier(FILTER_DEFAULTS.tier));
     setEfficiencyOverrides({});
     setActiveGroups(defaultActiveGroups());
   }, []);
@@ -96,10 +87,6 @@ export function SimulationFiltersProvider({ children }: { children: ReactNode })
       setBossAccuracy,
       capEnabled,
       setCapEnabled,
-      selectedTier,
-      setSelectedTier,
-      cgsValues,
-      setCgsValues,
       kbConfig,
       efficiencyOverrides,
       setEfficiencyOverrides,
@@ -110,7 +97,7 @@ export function SimulationFiltersProvider({ children }: { children: ReactNode })
       toggleGroup,
       resetFilters,
     }),
-    [targetCount, elementModifiers, buffOverrides, kbEnabled, bossAttackInterval, bossAccuracy, capEnabled, selectedTier, cgsValues, kbConfig, efficiencyOverrides, breakdownEnabled, activeGroups, toggleGroup, resetFilters],
+    [targetCount, elementModifiers, buffOverrides, kbEnabled, bossAttackInterval, bossAccuracy, capEnabled, kbConfig, efficiencyOverrides, breakdownEnabled, activeGroups, toggleGroup, resetFilters],
   );
 
   return (

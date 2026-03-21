@@ -1,16 +1,13 @@
 import LZString from 'lz-string';
 import type { BuffOverrides } from '../components/BuffToggles.js';
-import type { CgsValues } from './cgs.js';
 import { SKILL_GROUPS } from './skill-groups.js';
 
 export interface FilterState {
-  tier?: string;
   buffs?: BuffOverrides;
   elements?: Record<string, number>;
   kb?: { interval?: number; accuracy?: number };
   targets?: number;
   cap?: boolean;
-  cgs?: CgsValues;
   groups?: string[];
   breakdown?: boolean;
 }
@@ -33,7 +30,7 @@ export function decodeFilterState(encoded: string): FilterState | null {
 
     const result: FilterState = {};
 
-    if (typeof parsed.tier === 'string') result.tier = parsed.tier;
+    // Silently ignore old `tier` and `cgs` fields from legacy URLs
     if (typeof parsed.buffs === 'object' && parsed.buffs !== null && !Array.isArray(parsed.buffs)) {
       if (Object.values(parsed.buffs).every((v) => typeof v === 'boolean' || typeof v === 'number'))
         result.buffs = parsed.buffs;
@@ -56,15 +53,6 @@ export function decodeFilterState(encoded: string): FilterState | null {
     }
     if (typeof parsed.targets === 'number' && Number.isFinite(parsed.targets)) result.targets = parsed.targets;
     if (typeof parsed.cap === 'boolean') result.cap = parsed.cap;
-    if (typeof parsed.cgs === 'object' && parsed.cgs !== null && !Array.isArray(parsed.cgs)) {
-      if (
-        typeof parsed.cgs.cape === 'number' && Number.isFinite(parsed.cgs.cape) &&
-        typeof parsed.cgs.glove === 'number' && Number.isFinite(parsed.cgs.glove) &&
-        typeof parsed.cgs.shoe === 'number' && Number.isFinite(parsed.cgs.shoe)
-      )
-        result.cgs = parsed.cgs;
-      else return null;
-    }
     if (typeof parsed.breakdown === 'boolean') result.breakdown = parsed.breakdown;
 
     if (Array.isArray(parsed.groups)) {

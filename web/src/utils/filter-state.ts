@@ -1,10 +1,9 @@
 import type { SimulationFiltersContextType } from '../context/SimulationFiltersContext.js';
 import { FILTER_DEFAULTS } from './filter-defaults.js';
-import { CGS_DEFAULTS } from './cgs.js';
 import { DEFAULT_SKILL_GROUPS } from './skill-groups.js';
 import type { FilterState } from './filter-url.js';
 
-export type PresetFilterState = Omit<FilterState, 'cgs'>;
+export type PresetFilterState = FilterState;
 
 function setsEqual(a: Set<string>, b: Set<string>): boolean {
   if (a.size !== b.size) return false;
@@ -14,10 +13,6 @@ function setsEqual(a: Set<string>, b: Set<string>): boolean {
 
 export function buildFilterState(controls: SimulationFiltersContextType): FilterState {
   const state: FilterState = {};
-
-  if (controls.selectedTier !== FILTER_DEFAULTS.tier) {
-    state.tier = controls.selectedTier;
-  }
 
   if (Object.keys(controls.buffOverrides).length > 0) {
     state.buffs = controls.buffOverrides;
@@ -46,15 +41,6 @@ export function buildFilterState(controls: SimulationFiltersContextType): Filter
     state.cap = controls.capEnabled;
   }
 
-  const tierDefaults = CGS_DEFAULTS[controls.selectedTier] ?? CGS_DEFAULTS.perfect;
-  if (
-    controls.cgsValues.cape !== tierDefaults.cape ||
-    controls.cgsValues.glove !== tierDefaults.glove ||
-    controls.cgsValues.shoe !== tierDefaults.shoe
-  ) {
-    state.cgs = controls.cgsValues;
-  }
-
   const defaultGroups = new Set<string>(DEFAULT_SKILL_GROUPS);
   if (!setsEqual(controls.activeGroups as Set<string>, defaultGroups)) {
     state.groups = [...controls.activeGroups].sort();
@@ -65,11 +51,6 @@ export function buildFilterState(controls: SimulationFiltersContextType): Filter
   }
 
   return state;
-}
-
-export function stripCgs(state: FilterState): PresetFilterState {
-  const { cgs: _, ...rest } = state;
-  return rest;
 }
 
 function shallowObjectEqual(a: Record<string, unknown>, b: Record<string, unknown>): boolean {

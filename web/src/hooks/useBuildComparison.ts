@@ -13,8 +13,8 @@ export interface BuildComparisonState {
   buildB: BuildExplorerState;
   comparison: ComparisonResult;
   loadFromUrl: (
-    a: { class: string; tier: string; overrides: Partial<BuildOverrides> },
-    b: { class: string; tier: string; overrides: Partial<BuildOverrides> },
+    a: { class: string; overrides: Partial<BuildOverrides> },
+    b: { class: string; overrides: Partial<BuildOverrides> },
   ) => void;
 }
 
@@ -42,11 +42,11 @@ export function useBuildComparison(): BuildComparisonState {
   const { loadFromUrl: loadB } = buildB;
   const loadFromUrl = useCallback(
     (
-      a: { class: string; tier: string; overrides: Partial<BuildOverrides> },
-      b: { class: string; tier: string; overrides: Partial<BuildOverrides> },
+      a: { class: string; overrides: Partial<BuildOverrides> },
+      b: { class: string; overrides: Partial<BuildOverrides> },
     ) => {
-      loadA(a.class, a.tier, a.overrides);
-      loadB(b.class, b.tier, b.overrides);
+      loadA(a.class, a.overrides);
+      loadB(b.class, b.overrides);
     },
     [loadA, loadB],
   );

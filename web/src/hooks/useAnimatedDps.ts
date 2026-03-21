@@ -14,8 +14,8 @@ export interface AnimatedDpsResult {
   prefersReducedMotion: boolean;
 }
 
-function entryKey(className: string, skillName: string, tier: string): string {
-  return `${className}|${skillName}|${tier}`;
+function entryKey(className: string, skillName: string): string {
+  return `${className}|${skillName}`;
 }
 
 function getReducedMotion(): boolean {
@@ -37,7 +37,7 @@ export function useAnimatedDps(
     const map = new Map<string, number>();
     for (const r of results) {
       const dps = Math.round(capEnabled ? r.dps.dps : r.dps.uncappedDps);
-      map.set(entryKey(r.className, r.skillName, r.tier), dps);
+      map.set(entryKey(r.className, r.skillName), dps);
     }
     return map;
   }, [results, capEnabled]);

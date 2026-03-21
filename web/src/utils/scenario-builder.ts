@@ -1,7 +1,5 @@
-import type { CharacterBuild, ClassSkillData } from '@metra/engine';
 import type { ScenarioConfig } from '@engine/proposals/types.js';
 import type { SimulationOptions } from '../hooks/useSimulation.js';
-import { applyCgsOverride } from './cgs.js';
 
 /**
  * Build ScenarioConfig[] from simulation control state.
@@ -44,24 +42,4 @@ export function buildScenarios(
   }
 
   return scenarios;
-}
-
-/**
- * Apply CGS overrides to gear templates, returning a new Map.
- * Returns the original templates unchanged if no override is set.
- */
-export function prepareTemplates(
-  gearTemplates: Map<string, CharacterBuild>,
-  classDataMap: Map<string, ClassSkillData>,
-  classNames: string[],
-  cgsOverride?: { tier: string; values: { cape: number; glove: number; shoe: number } },
-): Map<string, CharacterBuild> {
-  if (!cgsOverride) return gearTemplates;
-  return applyCgsOverride(
-    gearTemplates,
-    classDataMap,
-    classNames,
-    cgsOverride.tier,
-    cgsOverride.values,
-  );
 }

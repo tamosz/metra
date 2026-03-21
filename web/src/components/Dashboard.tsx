@@ -1,11 +1,7 @@
 import { useState, useMemo, useRef, useEffect } from 'react';
 import { DpsChart } from './DpsChart.js';
-import { TierScalingChart } from './TierScalingChart.js';
-import { TierPresets } from './TierPresets.js';
 import { AssassinateBugNote } from './AssassinateBugNote.js';
-import { TierAssumptions } from './TierAssumptions.js';
 import type { SimulationData } from '../hooks/useSimulation.js';
-import type { BuildsState } from '../hooks/useBuilds.js';
 import { ElementToggles } from './ElementToggles.js';
 import { BuffToggles } from './BuffToggles.js';
 import { KbToggle } from './KbToggle.js';
@@ -27,26 +23,23 @@ import { useAnimatedDps } from '../hooks/useAnimatedDps.js';
 
 interface DashboardProps {
   simulation: SimulationData;
-  buildsState: BuildsState;
 }
 
-export function Dashboard({ simulation, buildsState }: DashboardProps) {
+export function Dashboard({ simulation }: DashboardProps) {
   const filters = useSimulationFilters();
   const edit = useProposalEdit();
   const presetsState = useFilterPresets();
-  const { selectedTier, targetCount, capEnabled, cgsValues, setCgsValues, breakdownEnabled, setBreakdownEnabled, activeGroups, toggleGroup } = filters;
+  const { targetCount, capEnabled, breakdownEnabled, setBreakdownEnabled, activeGroups, toggleGroup } = filters;
   const { editEnabled, setEditEnabled, editChanges } = edit;
-  const { results, tiers } = simulation;
+  const { results } = simulation;
 
-  const cgsOverride = useMemo(() => ({ tier: selectedTier, values: cgsValues }), [selectedTier, cgsValues]);
   const simOptions = useMemo(() => ({
     targetCount: targetCount > 1 ? targetCount : undefined,
     elementModifiers: Object.keys(filters.elementModifiers).length > 0 ? filters.elementModifiers : undefined,
     buffOverrides: Object.keys(filters.buffOverrides).length > 0 ? filters.buffOverrides : undefined,
     kbConfig: filters.kbConfig,
-    cgsOverride,
     efficiencyOverrides: Object.keys(filters.efficiencyOverrides).length > 0 ? filters.efficiencyOverrides : undefined,
-  }), [targetCount, filters.elementModifiers, filters.buffOverrides, filters.kbConfig, cgsOverride, filters.efficiencyOverrides]);
+  }), [targetCount, filters.elementModifiers, filters.buffOverrides, filters.kbConfig, filters.efficiencyOverrides]);
   const comparison = useEditComparison({
     changes: editChanges,
     ...simOptions,
@@ -58,11 +51,10 @@ export function Dashboard({ simulation, buildsState }: DashboardProps) {
     return results
       .filter((r) => {
         if (r.scenario !== activeScenario) return false;
-        if (r.tier !== selectedTier) return false;
         return isResultVisible(r, activeGroups);
       })
       .sort((a, b) => capEnabled ? b.dps.dps - a.dps.dps : b.dps.uncappedDps - a.dps.uncappedDps);
-  }, [results, selectedTier, targetCount, capEnabled, activeGroups]);
+  }, [results, targetCount, capEnabled, activeGroups]);
 
   const animationEnabled = !editEnabled && !comparison.result;
   const animation = useAnimatedDps(filtered, capEnabled, animationEnabled);
@@ -80,12 +72,7 @@ export function Dashboard({ simulation, buildsState }: DashboardProps) {
         </div>
       )}
 
-
-      <TierAssumptions />
-
       <AssassinateBugNote classNames={[...new Set(filtered.map((r) => r.className))]} />
-
-      <TierScalingChart data={results} capEnabled={capEnabled} activeGroups={activeGroups} targetCount={targetCount} selectedTier={selectedTier} editComparison={editEnabled ? comparison.result : null} animation={animation} />
 
       <div className="mt-8">
         <FilterPresets presetsState={presetsState} />
@@ -106,24 +93,6 @@ export function Dashboard({ simulation, buildsState }: DashboardProps) {
 
           <div className="self-stretch border-l border-border-default" />
 
-          <TierPresets
-            tiers={tiers}
-            builds={buildsState.builds}
-            activeBuildId={buildsState.activeBuildId}
-            onSaveBuild={(name) => {
-              const build = buildsState.save(name, cgsValues);
-              buildsState.setActive(build.id);
-            }}
-            onSelectBuild={(id) => {
-              const build = buildsState.builds.find((b) => b.id === id);
-              if (build) {
-                setCgsValues({ ...build.cgs });
-                buildsState.setActive(id);
-              }
-            }}
-            onDeleteBuild={(id) => buildsState.remove(id)}
-            onClearBuild={() => buildsState.setActive(null)}
-          />
           <BreakdownToggle enabled={breakdownEnabled} onToggle={setBreakdownEnabled} />
 
           <div className="ml-auto flex items-end gap-3">
@@ -138,7 +107,7 @@ export function Dashboard({ simulation, buildsState }: DashboardProps) {
       </div>
 
       <div className="mt-6">
-        <RankingTable data={filtered} allResults={results} capEnabled={capEnabled} editComparison={editEnabled ? comparison.result : null} animation={animation} />
+        <RankingTable data={filtered} capEnabled={capEnabled} editComparison={editEnabled ? comparison.result : null} animation={animation} />
       </div>
     </div>
   );

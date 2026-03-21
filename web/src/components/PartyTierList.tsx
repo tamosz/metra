@@ -184,13 +184,13 @@ export function PartyTierList({ onLoadParty }: PartyTierListProps) {
   const [maxDuplicates, setMaxDuplicates] = useState<number | undefined>(2);
   const [showAll, setShowAll] = useState(false);
 
-  const { classDataMap, gearTemplates } = discoveredData;
+  const { classDataMap, builds } = discoveredData;
 
   const topParties = useMemo(() => {
     try {
       const excluded = [...VARIANT_CLASS_SLUGS];
       const opt = findOptimalParty(
-        classDataMap, gearTemplates, weaponData, attackSpeedData, mwData,
+        classDataMap, builds, weaponData, attackSpeedData, mwData,
         6,
         { excluded, ...(maxDuplicates !== undefined ? { maxDuplicates } : {}) },
         100_000,
@@ -199,14 +199,14 @@ export function PartyTierList({ onLoadParty }: PartyTierListProps) {
     } catch {
       return [];
     }
-  }, [classDataMap, gearTemplates, maxDuplicates]);
+  }, [classDataMap, builds, maxDuplicates]);
 
   const expandedAttribution = useMemo(() => {
     if (expandedRank === null || expandedRank > topParties.length) return null;
     const party = topParties[expandedRank - 1];
     const p: Party = { name: '', members: party.members.map((m) => ({ className: m.className })) };
-    return computeBuffAttribution(p, classDataMap, gearTemplates, weaponData, attackSpeedData, mwData);
-  }, [expandedRank, topParties, classDataMap, gearTemplates]);
+    return computeBuffAttribution(p, classDataMap, builds, weaponData, attackSpeedData, mwData);
+  }, [expandedRank, topParties, classDataMap, builds]);
 
   if (topParties.length === 0) {
     return <div className="py-6 text-center text-sm text-text-dim">No party compositions found</div>;

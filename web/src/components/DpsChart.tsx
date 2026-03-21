@@ -107,7 +107,7 @@ export function DpsChart({ data, editComparison, breakdownMap, animation }: DpsC
     let dps = rawDps;
     let baselineDps: number | undefined;
     if (deltaMap) {
-      const delta = deltaMap.get(deltaMapKey(r.className, r.skillName, r.tier, r.scenario));
+      const delta = deltaMap.get(deltaMapKey(r.className, r.skillName, r.scenario));
       const change = capEnabled ? delta?.change : delta?.uncappedChange;
       if (delta && change !== 0) {
         dps = Math.round(capEnabled ? delta.after : delta.uncappedAfter);
@@ -120,7 +120,7 @@ export function DpsChart({ data, editComparison, breakdownMap, animation }: DpsC
     let siDps = 0;
     let echoDps = 0;
     if (breakdownMap) {
-      const bd = breakdownMap.get(breakdownKey(r.className, r.skillName, r.tier, r.scenario));
+      const bd = breakdownMap.get(breakdownKey(r.className, r.skillName, r.scenario));
       if (bd) {
         baseDps = Math.round(bd.baseDps);
         seDps = Math.round(bd.seContribution);
@@ -129,14 +129,14 @@ export function DpsChart({ data, editComparison, breakdownMap, animation }: DpsC
       }
     }
 
-    const animKey = `${r.className}|${r.skillName}|${r.tier}`;
+    const animKey = `${r.className}|${r.skillName}`;
     const animEntry = animation?.entries.get(animKey);
-    const uid = `${r.className} — ${r.skillName} [${r.tier}]`;
+    const uid = `${r.className} — ${r.skillName}`;
 
     return {
       label: r.className,
       skillLabel: r.skillName,
-      sublabel: r.tier.charAt(0).toUpperCase() + r.tier.slice(1),
+      sublabel: r.skillName,
       uid,
       dps,
       className: r.className,
@@ -164,7 +164,7 @@ export function DpsChart({ data, editComparison, breakdownMap, animation }: DpsC
     }
 
     for (const d of baseChartData) {
-      const animKey = `${d.className}|${d.skillLabel}|${d.sublabel.toLowerCase()}`;
+      const animKey = `${d.className}|${d.skillLabel}`;
       const animEntry = animation.entries.get(animKey);
       const from = animEntry?.previousDps ?? d.dps;
       const to = d.dps;
@@ -251,7 +251,7 @@ export function DpsChart({ data, editComparison, breakdownMap, animation }: DpsC
                       fill={colors.textFaint}
                       fontSize={sublabelFontSize}
                     >
-                      {entry.skillLabel} · {entry.sublabel}
+                      {entry.skillLabel}
                     </text>
                   )}
                 </g>
@@ -269,7 +269,7 @@ export function DpsChart({ data, editComparison, breakdownMap, animation }: DpsC
                   <div className="font-semibold" style={{ color: getClassColor(d.className) }}>
                     {d.className}
                   </div>
-                  <div className="text-text-secondary">{d.sublabel}</div>
+                  <div className="text-text-secondary">{d.skillLabel}</div>
                   <div className="mt-1 tabular-nums">
                     {d.dps.toLocaleString()} DPS
                   </div>

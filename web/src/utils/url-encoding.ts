@@ -54,7 +54,6 @@ export function clearProposalFromUrl(): void {
 
 export interface BuildUrlPayload {
   class: string;
-  tier: string;
   overrides: Partial<BuildOverrides>;
 }
 
@@ -67,7 +66,10 @@ export function decodeBuild(encoded: string): BuildUrlPayload | null {
   try {
     const json = LZString.decompressFromEncodedURIComponent(encoded);
     if (!json) return null;
-    return JSON.parse(json) as BuildUrlPayload;
+    const parsed = JSON.parse(json) as BuildUrlPayload & { tier?: string };
+    // Gracefully ignore old `tier` field from legacy URLs
+    const { tier: _tier, ...rest } = parsed;
+    return rest;
   } catch {
     return null;
   }
@@ -101,7 +103,13 @@ export function decodeComparison(encoded: string): ComparisonUrlPayload | null {
   try {
     const json = LZString.decompressFromEncodedURIComponent(encoded);
     if (!json) return null;
-    return JSON.parse(json) as ComparisonUrlPayload;
+    const parsed = JSON.parse(json) as ComparisonUrlPayload;
+    // Gracefully strip old tier fields from legacy URLs
+    const strip = (p: BuildUrlPayload & { tier?: string }): BuildUrlPayload => {
+      const { tier: _t, ...rest } = p;
+      return rest;
+    };
+    return { a: strip(parsed.a), b: strip(parsed.b) };
   } catch {
     return null;
   }

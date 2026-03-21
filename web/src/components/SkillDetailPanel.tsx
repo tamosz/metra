@@ -3,19 +3,12 @@ import type { DpsResult } from '@metra/engine';
 import type { ComboSubResult } from '@engine/proposals/types.js';
 import { formatDps } from '../utils/format.js';
 
-interface TierDpsEntry {
-  tier: string;
-  dps: number;
-}
-
 interface SkillDetailPanelProps {
   dps: DpsResult;
-  tierData: TierDpsEntry[];
   classColor: string;
   isComposite: boolean;
   comboSubResults?: ComboSubResult[];
   capEnabled: boolean;
-  currentTier: string;
   editEnabled?: boolean;
   /** Current skill field values: { basePower: 260, multiplier: 1, ... } */
   skillFields?: Record<string, number>;
@@ -43,12 +36,10 @@ const FIELD_LABELS: Record<string, string> = {
 
 function SkillDetailPanelInner({
   dps,
-  tierData,
   classColor,
   isComposite,
   comboSubResults,
   capEnabled,
-  currentTier,
   editEnabled,
   skillFields,
   onFieldChange,
@@ -56,7 +47,6 @@ function SkillDetailPanelInner({
   comboSkills,
   onComboFieldChange,
 }: SkillDetailPanelProps) {
-  const maxTierDps = Math.max(...tierData.map((t) => t.dps));
   const critContribution = computeCritContribution(dps);
 
   const showEditFields = editEnabled && skillFields && !isComposite;
@@ -119,7 +109,7 @@ function SkillDetailPanelInner({
       )}
 
       <div className="flex flex-col gap-4 md:flex-row md:gap-8">
-        {/* Left: Formula breakdown */}
+        {/* Formula breakdown */}
         {!isComposite && (
           <div className="flex-1 min-w-0">
             <SkillBreakdown dps={dps} critContribution={critContribution} capEnabled={capEnabled} />
@@ -132,39 +122,6 @@ function SkillDetailPanelInner({
             ))}
           </div>
         )}
-
-        {/* Right: Tier comparison */}
-        <div className={isComposite && !comboSubResults?.length ? 'w-full' : 'flex-1 min-w-0'}>
-          <div className="text-[11px] font-medium uppercase tracking-wide text-text-dim mb-2">
-            DPS by Tier
-          </div>
-          <div className="flex flex-col gap-1.5">
-            {tierData.map((t) => {
-              const widthPercent = maxTierDps > 0 ? (t.dps / maxTierDps) * 100 : 0;
-              const isCurrent = t.tier === currentTier;
-              return (
-                <div key={t.tier} className="flex items-center gap-2 text-sm">
-                  <span className={`w-16 text-right tabular-nums ${isCurrent ? 'text-text-bright font-medium' : 'text-text-muted'}`}>
-                    {t.tier.charAt(0).toUpperCase() + t.tier.slice(1)}
-                  </span>
-                  <div className="flex-1 h-4 rounded-sm bg-white/[0.04] overflow-hidden">
-                    <div
-                      className="h-full rounded-sm transition-all"
-                      style={{
-                        width: `${widthPercent}%`,
-                        backgroundColor: classColor,
-                        opacity: isCurrent ? 1 : 0.5,
-                      }}
-                    />
-                  </div>
-                  <span className={`w-20 text-right tabular-nums ${isCurrent ? 'text-text-bright' : 'text-text-secondary'}`}>
-                    {formatDps(t.dps)}
-                  </span>
-                </div>
-              );
-            })}
-          </div>
-        </div>
       </div>
     </div>
   );

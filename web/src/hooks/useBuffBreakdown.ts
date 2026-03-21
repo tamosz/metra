@@ -10,7 +10,7 @@ import {
   mwData,
 } from '../data/bundle.js';
 import type { SimulationOptions } from './useSimulation.js';
-import { buildScenarios, prepareTemplates } from '../utils/scenario-builder.js';
+import { buildScenarios } from '../utils/scenario-builder.js';
 
 export interface BuffBreakdown {
   baseDps: number;
@@ -21,8 +21,8 @@ export interface BuffBreakdown {
 
 export type BuffBreakdownMap = Map<string, BuffBreakdown>;
 
-export function breakdownKey(className: string, skillName: string, tier: string, scenario: string): string {
-  return `${className}|${skillName}|${tier}|${scenario}`;
+export function breakdownKey(className: string, skillName: string, scenario: string): string {
+  return `${className}|${skillName}|${scenario}`;
 }
 
 function runWithBuffOff(
@@ -30,15 +30,15 @@ function runWithBuffOff(
   buffOff: Record<string, unknown>,
   finalTemplates: Map<string, CharacterBuild>,
 ): ScenarioResult[] {
-  const { classNames, tiers, classDataMap } = discoveredData;
+  const { classNames, classDataMap, builds } = discoveredData;
 
   const scenarios = buildScenarios(options, buffOff);
-  const config: SimulationConfig = { classes: classNames, tiers, scenarios };
-  return runSimulation(config, classDataMap, finalTemplates, weaponData, attackSpeedData, mwData);
+  const config: SimulationConfig = { classes: classNames, scenarios };
+  return runSimulation(config, classDataMap, builds, weaponData, attackSpeedData, mwData);
 }
 
 function resultKey(r: ScenarioResult): string {
-  return breakdownKey(r.className, r.skillName, r.tier, r.scenario);
+  return breakdownKey(r.className, r.skillName, r.scenario);
 }
 
 export function useBuffBreakdown(

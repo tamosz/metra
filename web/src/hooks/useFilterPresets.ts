@@ -1,6 +1,6 @@
 import { useState, useMemo, useCallback } from 'react';
 import { useSimulationFilters } from '../context/SimulationFiltersContext.js';
-import { buildFilterState, stripCgs, filterStatesEqual, type PresetFilterState } from '../utils/filter-state.js';
+import { buildFilterState, filterStatesEqual, type PresetFilterState } from '../utils/filter-state.js';
 import {
   type FilterPreset,
   loadUserPresets,
@@ -39,11 +39,10 @@ export function useFilterPresets(): FilterPresetsState {
 
   const isDirty = useMemo(() => {
     if (!activePreset) return false;
-    const current = stripCgs(buildFilterState(controls));
+    const current = buildFilterState(controls);
     return !filterStatesEqual(current, activePreset.state);
   }, [
     activePreset,
-    controls.selectedTier,
     controls.buffOverrides,
     controls.elementModifiers,
     controls.kbEnabled,
@@ -58,7 +57,6 @@ export function useFilterPresets(): FilterPresetsState {
   const applyState = useCallback(
     (state: PresetFilterState) => {
       // Reset preset-managed controls to defaults
-      controls.setSelectedTier(FILTER_DEFAULTS.tier);
       controls.setBuffOverrides(defaultBuffOverrides());
       controls.setElementModifiers(defaultElementModifiers());
       controls.setKbEnabled(FILTER_DEFAULTS.kbEnabled);
@@ -70,7 +68,6 @@ export function useFilterPresets(): FilterPresetsState {
       controls.setBreakdownEnabled(FILTER_DEFAULTS.breakdownEnabled);
 
       // Overlay preset values
-      if (state.tier !== undefined) controls.setSelectedTier(state.tier);
       if (state.buffs) controls.setBuffOverrides(state.buffs);
       if (state.elements) controls.setElementModifiers(state.elements);
       if (state.kb) {
@@ -109,7 +106,7 @@ export function useFilterPresets(): FilterPresetsState {
 
   const save = useCallback(
     (name: string) => {
-      const state = stripCgs(buildFilterState(controls));
+      const state = buildFilterState(controls);
       const id = 'preset-' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
       const preset: FilterPreset = { id, name, state, builtIn: false };
       const current = loadUserPresets();
