@@ -273,7 +273,7 @@ function ScalingChartSection() {
       <p className="text-sm text-text-secondary mt-4">
         At 50%, a class has half the base stats, half the gear stats, half the weapon attack, and half the
         projectile WATK of a max build. This is a uniform power curve for comparing class scaling, not a
-        model of any specific funding level.
+        model of any specific gear set.
       </p>
     </section>
   );

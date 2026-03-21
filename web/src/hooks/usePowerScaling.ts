@@ -4,7 +4,7 @@ import type { SimulationConfig } from '@engine/proposals/simulate.js';
 import type { ScenarioResult } from '@engine/proposals/types.js';
 import {
   allClassBases,
-  computeBuildAtFunding,
+  computeBuildAtPowerLevel,
   discoveredData,
   weaponData,
   attackSpeedData,
@@ -15,39 +15,38 @@ import { buildScenarios } from '../utils/scenario-builder.js';
 import { resolveActiveScenario } from '../utils/scenario.js';
 import type { SimulationOptions } from './useSimulation.js';
 
-export interface FundingPoint {
-  funding: number; // 0–100
+export interface ScalingPoint {
+  power: number; // 0–100
   [classSkillKey: string]: number | string;
 }
 
-export interface FundingLine {
+export interface ScalingLine {
   key: string; // "ClassName — SkillName"
   className: string;
   skillName: string;
 }
 
-export interface FundingScalingData {
-  points: FundingPoint[];
-  lines: FundingLine[];
+export interface PowerScalingData {
+  points: ScalingPoint[];
+  lines: ScalingLine[];
   yDomain: [number, number];
 }
 
-const FUNDING_LEVELS = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
+const POWER_LEVELS = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
 
 const SEP = ' \u2014 ';
 
-export function useFundingScaling(options: {
+export function usePowerScaling(options: {
   activeGroups: Set<SkillGroupId>;
   capEnabled: boolean;
   simOptions: SimulationOptions;
-}): FundingScalingData {
+}): PowerScalingData {
   const { activeGroups, capEnabled, simOptions } = options;
   const { targetCount, elementModifiers, buffOverrides, kbConfig, efficiencyOverrides } = simOptions;
 
   return useMemo(() => {
     const { classNames, classDataMap, builds } = discoveredData;
 
-    // Physical class display names (mages don't scale with funding)
     const physicalClassNames = new Set<string>();
     for (const base of allClassBases.values()) {
       if (base.category === 'physical') physicalClassNames.add(base.className);
@@ -56,15 +55,13 @@ export function useFundingScaling(options: {
     const scenarios = buildScenarios(simOptions);
     const config: SimulationConfig = { classes: classNames, scenarios };
 
-    // Run the full simulation at each funding level
     const allLevelResults: { level: number; results: ScenarioResult[] }[] = [];
 
-    for (const level of FUNDING_LEVELS) {
-      // Build gear templates: physical classes get scaled builds, mages keep their fixed build
+    for (const level of POWER_LEVELS) {
       const scaledBuilds = new Map(builds);
       for (const [slug, base] of allClassBases.entries()) {
         if (base.category === 'physical') {
-          scaledBuilds.set(slug, computeBuildAtFunding(base, level / 100));
+          scaledBuilds.set(slug, computeBuildAtPowerLevel(base, level / 100));
         }
       }
 
@@ -80,16 +77,13 @@ export function useFundingScaling(options: {
       allLevelResults.push({ level, results });
     }
 
-    // Determine which results to show based on active scenario and visibility filters.
-    // Use the 100% funding results to determine the set of lines.
     const fullResults = allLevelResults[allLevelResults.length - 1].results;
     const activeScenario = resolveActiveScenario(fullResults, targetCount ?? 1);
 
-    const lineMap = new Map<string, FundingLine>();
+    const lineMap = new Map<string, ScalingLine>();
     for (const r of fullResults) {
       if (r.scenario !== activeScenario) continue;
       if (!isResultVisible(r, activeGroups)) continue;
-      // Exclude mages — they don't scale with funding
       if (!physicalClassNames.has(r.className)) continue;
 
       const key = `${r.className}${SEP}${r.skillName}`;
@@ -98,9 +92,8 @@ export function useFundingScaling(options: {
 
     const lines = Array.from(lineMap.values());
 
-    // Build chart data points
-    const points: FundingPoint[] = allLevelResults.map(({ level, results }) => {
-      const point: FundingPoint = { funding: level };
+    const points: ScalingPoint[] = allLevelResults.map(({ level, results }) => {
+      const point: ScalingPoint = { power: level };
 
       for (const r of results) {
         if (r.scenario !== activeScenario) continue;
@@ -112,7 +105,6 @@ export function useFundingScaling(options: {
       return point;
     });
 
-    // Compute tight yDomain
     let yMin = Infinity;
     let yMax = -Infinity;
     for (const point of points) {
