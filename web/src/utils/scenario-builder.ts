@@ -1,6 +1,6 @@
 import type { CharacterBuild, ClassSkillData } from '@metra/engine';
 import type { ScenarioConfig } from '@engine/proposals/types.js';
-import type { SimulationOptions, KbConfig } from '../hooks/useSimulation.js';
+import type { SimulationOptions } from '../hooks/useSimulation.js';
 import { applyCgsOverride } from './cgs.js';
 
 /**

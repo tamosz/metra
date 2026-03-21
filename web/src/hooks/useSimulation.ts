@@ -41,7 +41,7 @@ export function useSimulation(options: SimulationOptions = {}): SimulationData {
 
     try {
       const finalTemplates = prepareTemplates(gearTemplates, classDataMap, classNames, cgsOverride);
-      const scenarios = buildScenarios(options);
+      const scenarios = buildScenarios({ targetCount, elementModifiers, buffOverrides, kbConfig, efficiencyOverrides });
       const config: SimulationConfig = { classes: classNames, tiers, scenarios };
 
       const results = runSimulation(

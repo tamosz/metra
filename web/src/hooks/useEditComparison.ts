@@ -72,7 +72,7 @@ export function useEditComparison(options: EditComparisonOptions): EditCompariso
   const [state, setState] = useState<EditComparisonData>(() => {
     if (changes.length > 0) {
       hasRun.current = true;
-      return runComparison(changes, options);
+      return runComparison(changes, { targetCount, elementModifiers, buffOverrides, kbConfig, cgsOverride, efficiencyOverrides });
     }
     return { result: null, error: null };
   });
@@ -91,7 +91,7 @@ export function useEditComparison(options: EditComparisonOptions): EditCompariso
     }
 
     const timer = setTimeout(() => {
-      setState(runComparison(changes, options));
+      setState(runComparison(changes, { targetCount, elementModifiers, buffOverrides, kbConfig, cgsOverride, efficiencyOverrides }));
     }, DEBOUNCE_MS);
     return () => clearTimeout(timer);
   }, [changes, targetCount, elementModifiers, buffOverrides, kbConfig, cgsOverride, efficiencyOverrides]);
