@@ -2,9 +2,7 @@ import { calculateBuildDps, type SkillDpsRow } from './build-dps.js';
 import type {
   CharacterBuild,
   ClassSkillData,
-  WeaponData,
-  AttackSpeedData,
-  MWData,
+  GameData,
 } from './types.js';
 
 export interface PartyMember {
@@ -77,16 +75,14 @@ function simulateMember(
   className: string,
   classDataMap: Map<string, ClassSkillData>,
   gearTemplates: Map<string, CharacterBuild>,
-  weaponData: WeaponData,
-  attackSpeedData: AttackSpeedData,
-  mwData: MWData,
+  gameData: GameData,
   buffs: PartyBuffState,
 ): { skillName: string; dps: number } | null {
   const classData = classDataMap.get(className);
   const baseBuild = gearTemplates.get(`${className}-${DEFAULT_TIER}`);
   if (!classData || !baseBuild) return null;
   const build = applyPartyBuffs(baseBuild, buffs);
-  const result = calculateBuildDps(build, classData, weaponData, attackSpeedData, mwData);
+  const result = calculateBuildDps(build, classData, gameData);
   const top = getTopSkill(result.aggregated, classData);
   if (!top) return null;
   return { skillName: top.skillName, dps: top.dps };
@@ -96,9 +92,7 @@ export function simulateParty(
   party: Party,
   classDataMap: Map<string, ClassSkillData>,
   gearTemplates: Map<string, CharacterBuild>,
-  weaponData: WeaponData,
-  attackSpeedData: AttackSpeedData,
-  mwData: MWData,
+  gameData: GameData,
 ): PartySimulationResult {
   const activeBuffs = resolvePartyBuffs(party.members);
   const members: PartyMemberResult[] = [];
@@ -108,9 +102,7 @@ export function simulateParty(
       member.className,
       classDataMap,
       gearTemplates,
-      weaponData,
-      attackSpeedData,
-      mwData,
+      gameData,
       activeBuffs,
     );
     members.push({
@@ -130,11 +122,9 @@ export function computeBuffAttribution(
   party: Party,
   classDataMap: Map<string, ClassSkillData>,
   gearTemplates: Map<string, CharacterBuild>,
-  weaponData: WeaponData,
-  attackSpeedData: AttackSpeedData,
-  mwData: MWData,
+  gameData: GameData,
 ): PartySimulationResult {
-  const fullResult = simulateParty(party, classDataMap, gearTemplates, weaponData, attackSpeedData, mwData);
+  const fullResult = simulateParty(party, classDataMap, gearTemplates, gameData);
 
   // Buff attribution: for each member, simulate without them and measure total DPS loss
   for (let i = 0; i < party.members.length; i++) {
@@ -143,9 +133,7 @@ export function computeBuffAttribution(
       { name: party.name, members: withoutMembers },
       classDataMap,
       gearTemplates,
-      weaponData,
-      attackSpeedData,
-      mwData,
+      gameData,
     );
     const dpsLoss = fullResult.totalDps - withoutResult.totalDps;
     fullResult.members[i].buffContribution = Math.max(0, dpsLoss - fullResult.members[i].dps);

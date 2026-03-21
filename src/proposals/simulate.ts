@@ -6,9 +6,7 @@ import {
   getKnockbackRecovery,
   type ClassSkillData,
   type CharacterBuild,
-  type WeaponData,
-  type AttackSpeedData,
-  type MWData,
+  type GameData,
   type MixedRotation,
   type SkillEntry,
   type DpsResult,
@@ -41,39 +39,30 @@ function applyScenarioOverrides(
 }
 
 /**
- * Apply Physical Damage Reduction to a DPS result.
- * Returns a new result with DPS and averageDamage scaled by (1 - pdr).
+ * Scale a DPS result's damage values (dps, averageDamage, uncappedDps) by a factor.
+ * Used for PDR, multi-target scaling, and knockback uptime.
  */
-export function applyPdr(dps: DpsResult, pdr: number): DpsResult {
-  const factor = 1 - pdr;
-  return { ...dps, dps: dps.dps * factor, averageDamage: dps.averageDamage * factor, uncappedDps: dps.uncappedDps * factor };
+export function scaleDpsResult(result: DpsResult, factor: number): DpsResult {
+  return {
+    ...result,
+    dps: result.dps * factor,
+    averageDamage: result.averageDamage * factor,
+    uncappedDps: result.uncappedDps * factor,
+  };
 }
 
-
 /**
- * Apply multi-target scaling to a DPS result.
- * effectiveTargets = min(skill.maxTargets, scenario.targetCount).
+ * Compute the multi-target scaling factor.
  * When bounceDecay is in (0, 1), uses a geometric series:
  *   multiplier = (1 - d^n) / (1 - d)
  * Otherwise, flat linear scaling by effectiveTargets.
  */
-export function applyTargetCount(dps: DpsResult, effectiveTargets: number, bounceDecay?: number): DpsResult {
-  let multiplier: number;
+export function targetCountFactor(effectiveTargets: number, bounceDecay?: number): number {
   if (bounceDecay != null && bounceDecay > 0 && bounceDecay < 1) {
     const clamped = Math.max(0.01, bounceDecay);
-    multiplier = (1 - clamped ** effectiveTargets) / (1 - clamped);
-  } else {
-    multiplier = effectiveTargets;
+    return (1 - clamped ** effectiveTargets) / (1 - clamped);
   }
-  return { ...dps, dps: dps.dps * multiplier, averageDamage: dps.averageDamage * multiplier, uncappedDps: dps.uncappedDps * multiplier };
-}
-
-/**
- * Apply knockback uptime multiplier to a DPS result.
- * Returns a new result with DPS and averageDamage scaled by the uptime factor.
- */
-export function applyKnockbackUptime(dps: DpsResult, uptimeMultiplier: number): DpsResult {
-  return { ...dps, dps: dps.dps * uptimeMultiplier, averageDamage: dps.averageDamage * uptimeMultiplier, uncappedDps: dps.uncappedDps * uptimeMultiplier };
+  return effectiveTargets;
 }
 
 /**
@@ -84,9 +73,7 @@ export function runSimulation(
   config: SimulationConfig,
   classDataMap: Map<string, ClassSkillData>,
   gearTemplates: GearTemplateMap,
-  weaponData: WeaponData,
-  attackSpeedData: AttackSpeedData,
-  mwData: MWData
+  gameData: GameData,
 ): ScenarioResult[] {
   const scenarios = config.scenarios ?? FALLBACK_SCENARIO;
   const results: ScenarioResult[] = [];
@@ -136,16 +123,16 @@ export function runSimulation(
           effectiveBuild,
           classData,
           skill,
-          weaponData,
-          attackSpeedData,
-          mwData,
+          gameData,
           elementModifier
         );
 
-        let effectiveDps = scenario.pdr != null ? applyPdr(dps, scenario.pdr) : dps;
+        let effectiveDps = scenario.pdr != null
+          ? scaleDpsResult(dps, 1 - scenario.pdr)
+          : dps;
         if (scenario.targetCount != null && scenario.targetCount > 1) {
           const effectiveTargets = Math.min(skill.maxTargets ?? 1, scenario.targetCount);
-          if (effectiveTargets > 1) effectiveDps = applyTargetCount(effectiveDps, effectiveTargets, skill.bounceDecay);
+          if (effectiveTargets > 1) effectiveDps = scaleDpsResult(effectiveDps, targetCountFactor(effectiveTargets, skill.bounceDecay));
         }
         if (scenario.bossAttackInterval != null && scenario.bossAttackInterval > 0) {
           const dodgeChance = calculateDodgeChance(
@@ -159,7 +146,7 @@ export function runSimulation(
           );
           const recovery = getKnockbackRecovery(skill, effectiveDps.attackTime);
           const uptime = calculateKnockbackUptime(kbProb, scenario.bossAttackInterval, recovery);
-          effectiveDps = applyKnockbackUptime(effectiveDps, uptime);
+          effectiveDps = scaleDpsResult(effectiveDps, uptime);
         }
 
         let resolvedSkillName = skill.name;

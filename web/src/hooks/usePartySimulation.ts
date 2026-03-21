@@ -8,7 +8,7 @@ import {
   type PartySimulationResult,
   type PresetParty,
 } from '@metra/engine';
-import { discoveredData, weaponData, attackSpeedData, mwData } from '../data/bundle.js';
+import { discoveredData, gameData } from '../data/bundle.js';
 
 export interface SlotSwapOption {
   className: string;
@@ -28,7 +28,7 @@ export function usePartySimulation(members: string[]): UsePartySimulationResult 
   const result = useMemo(() => {
     if (members.length === 0) return null;
     const party: Party = { name: 'Custom', members: members.map(className => ({ className })) };
-    return computeBuffAttribution(party, classDataMap, builds, weaponData, attackSpeedData, mwData);
+    return computeBuffAttribution(party, classDataMap, builds, gameData);
   }, [members, classDataMap, builds]);
 
   const presets = useMemo(() => {
@@ -36,11 +36,11 @@ export function usePartySimulation(members: string[]): UsePartySimulationResult 
       if (!preset.autoComputed) return preset;
       try {
         if (preset.name === 'Meta') {
-          const opt = findOptimalParty(classDataMap, builds, weaponData, attackSpeedData, mwData);
+          const opt = findOptimalParty(classDataMap, builds, gameData);
           return { ...preset, members: opt.optimal.members.map(m => ({ className: m.className })) };
         }
         if (preset.name === 'No Support') {
-          const opt = findOptimalParty(classDataMap, builds, weaponData, attackSpeedData, mwData, 6,
+          const opt = findOptimalParty(classDataMap, builds, gameData, 6,
             { excluded: ['bowmaster', 'marksman', 'bucc'] });
           return { ...preset, members: opt.optimal.members.map(m => ({ className: m.className })) };
         }
@@ -59,7 +59,7 @@ export function usePartySimulation(members: string[]): UsePartySimulationResult 
       for (const candidate of allClasses) {
         const swapped = members.map((m, i) => (i === memberIndex ? candidate : m));
         const party: Party = { name: 'Swap', members: swapped.map(className => ({ className })) };
-        const swapResult = simulateParty(party, classDataMap, builds, weaponData, attackSpeedData, mwData);
+        const swapResult = simulateParty(party, classDataMap, builds, gameData);
         options.push({ className: candidate, partyDpsDelta: swapResult.totalDps - result.totalDps, newTotalDps: swapResult.totalDps });
       }
       options.sort((a, b) => b.partyDpsDelta - a.partyDpsDelta);

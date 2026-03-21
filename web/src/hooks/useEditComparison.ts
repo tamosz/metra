@@ -5,9 +5,7 @@ import type { ComparisonResult, ProposalChange } from '@engine/proposals/types.j
 
 import {
   discoveredData,
-  weaponData,
-  attackSpeedData,
-  mwData,
+  gameData,
 } from '../data/bundle.js';
 import type { BuffOverrides } from '../components/BuffToggles.js';
 import { buildScenarios } from '../utils/scenario-builder.js';
@@ -49,9 +47,7 @@ function runComparison(
       config,
       classDataMap,
       builds,
-      weaponData,
-      attackSpeedData,
-      mwData,
+      gameData,
     );
 
     return { result, error: null };

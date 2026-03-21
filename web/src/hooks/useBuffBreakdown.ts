@@ -4,9 +4,7 @@ import type { SimulationConfig } from '@engine/proposals/simulate.js';
 import type { ScenarioResult } from '@engine/proposals/types.js';
 import {
   discoveredData,
-  weaponData,
-  attackSpeedData,
-  mwData,
+  gameData,
 } from '../data/bundle.js';
 import type { SimulationOptions } from './useSimulation.js';
 import { buildScenarios } from '../utils/scenario-builder.js';
@@ -32,7 +30,7 @@ function runWithBuffOff(
 
   const scenarios = buildScenarios(options, buffOff);
   const config: SimulationConfig = { classes: classNames, scenarios };
-  return runSimulation(config, classDataMap, builds, weaponData, attackSpeedData, mwData);
+  return runSimulation(config, classDataMap, builds, gameData);
 }
 
 function resultKey(r: ScenarioResult): string {

@@ -16,6 +16,7 @@ export {
   type MixedRotation,
   type ClassSkillData,
   type CharacterBuild,
+  type GameData,
 } from './types.js';
 
 // Damage calculation

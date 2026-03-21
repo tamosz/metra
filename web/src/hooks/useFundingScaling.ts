@@ -6,9 +6,7 @@ import {
   allClassBases,
   computeBuildAtFunding,
   discoveredData,
-  weaponData,
-  attackSpeedData,
-  mwData,
+  gameData,
 } from '../data/bundle.js';
 import { isResultVisible, type SkillGroupId } from '../utils/skill-groups.js';
 import { buildScenarios } from '../utils/scenario-builder.js';
@@ -72,9 +70,7 @@ export function useFundingScaling(options: {
         config,
         classDataMap,
         scaledBuilds,
-        weaponData,
-        attackSpeedData,
-        mwData,
+        gameData,
       );
 
       allLevelResults.push({ level, results });

@@ -5,7 +5,7 @@ import {
   loadMW,
   discoverClasses,
 } from './data/loader.js';
-import type { ClassSkillData } from '@metra/engine';
+import type { ClassSkillData, GameData } from '@metra/engine';
 import { compareProposal } from './proposals/compare.js';
 import { runSimulation } from './proposals/simulate.js';
 import type { SimulationConfig, GearTemplateMap } from './proposals/simulate.js';
@@ -37,14 +37,14 @@ const warriorRebalance: Proposal = {
 let classDataMap: Map<string, ClassSkillData>;
 let gearTemplates: GearTemplateMap;
 let config: SimulationConfig;
-let weaponData: ReturnType<typeof loadWeapons>;
-let attackSpeedData: ReturnType<typeof loadAttackSpeed>;
-let mwData: ReturnType<typeof loadMW>;
+let gameData: GameData;
 
 beforeAll(() => {
-  weaponData = loadWeapons();
-  attackSpeedData = loadAttackSpeed();
-  mwData = loadMW();
+  gameData = {
+    weaponData: loadWeapons(),
+    attackSpeedData: loadAttackSpeed(),
+    mwData: loadMW(),
+  };
 
   const discovery = discoverClasses();
   classDataMap = discovery.classDataMap;
@@ -60,9 +60,7 @@ describe('End-to-end: brandish-buff-20 proposal', () => {
       config,
       classDataMap,
       gearTemplates,
-      weaponData,
-      attackSpeedData,
-      mwData
+      gameData,
     );
     const report = renderComparisonReport(result);
 
@@ -106,9 +104,7 @@ describe('End-to-end: warrior-rebalance proposal', () => {
       config,
       classDataMap,
       gearTemplates,
-      weaponData,
-      attackSpeedData,
-      mwData
+      gameData,
     );
 
     // Hero goes up (Brandish buffed 260→280)
@@ -145,10 +141,10 @@ describe('End-to-end: warrior-rebalance proposal', () => {
     const rebalance = warriorRebalance;
 
     const report1 = renderComparisonReport(
-      compareProposal(brandish, config, classDataMap, gearTemplates, weaponData, attackSpeedData, mwData)
+      compareProposal(brandish, config, classDataMap, gearTemplates, gameData)
     );
     const report2 = renderComparisonReport(
-      compareProposal(rebalance, config, classDataMap, gearTemplates, weaponData, attackSpeedData, mwData)
+      compareProposal(rebalance, config, classDataMap, gearTemplates, gameData)
     );
 
     // Reports should be different
@@ -174,9 +170,7 @@ describe('Baseline mode', () => {
       baselineConfig,
       classDataMap,
       gearTemplates,
-      weaponData,
-      attackSpeedData,
-      mwData
+      gameData,
     );
     baselineReport = renderBaselineReport(baselineResults);
   });
@@ -215,9 +209,7 @@ describe('Special mechanics', () => {
       buffedConfig,
       classDataMap,
       gearTemplates,
-      weaponData,
-      attackSpeedData,
-      mwData
+      gameData,
     );
   });
 
@@ -295,7 +287,7 @@ describe('Special mechanics', () => {
     ];
     const pdrConfig: SimulationConfig = { ...config, scenarios: pdrScenarios };
     const pdrResults = runSimulation(
-      pdrConfig, classDataMap, gearTemplates, weaponData, attackSpeedData, mwData
+      pdrConfig, classDataMap, gearTemplates, gameData
     );
     const heroBuffed = pdrResults.find(
       (r) => r.className === 'Hero' && r.skillName === 'Brandish (Sword)' && r.scenario === 'Buffed'    )!;
@@ -341,9 +333,7 @@ describe('Multi-scenario baseline', () => {
       multiConfig,
       classDataMap,
       gearTemplates,
-      weaponData,
-      attackSpeedData,
-      mwData
+      gameData,
     );
     const report = renderBaselineReport(results);
 
@@ -375,9 +365,7 @@ describe('Ranking integrity', () => {
       rankConfig,
       classDataMap,
       gearTemplates,
-      weaponData,
-      attackSpeedData,
-      mwData
+      gameData,
     );
 
     // Group deltas by scenario
@@ -417,9 +405,7 @@ describe('Multi-target training scenario', () => {
       trainingConfig,
       classDataMap,
       gearTemplates,
-      weaponData,
-      attackSpeedData,
-      mwData
+      gameData,
     );
 
     const find = (className: string, skillName: string, scenario: string) =>

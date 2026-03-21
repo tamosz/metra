@@ -1,9 +1,7 @@
 import type {
   CharacterBuild,
   ClassSkillData,
-  WeaponData,
-  AttackSpeedData,
-  MWData,
+  GameData,
 } from './types.js';
 import { calculateSkillDps, type DpsResult } from './dps.js';
 
@@ -22,16 +20,14 @@ export interface BuildDpsResult {
 export function calculateBuildDps(
   build: CharacterBuild,
   classData: ClassSkillData,
-  weaponData: WeaponData,
-  attackSpeedData: AttackSpeedData,
-  mwData: MWData,
+  gameData: GameData,
   elementModifier?: number,
 ): BuildDpsResult {
   const skills: SkillDpsRow[] = [];
 
   for (const skill of classData.skills) {
     const result = calculateSkillDps(
-      build, classData, skill, weaponData, attackSpeedData, mwData, elementModifier,
+      build, classData, skill, gameData, elementModifier,
     );
     skills.push({
       skillName: skill.name,

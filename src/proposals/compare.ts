@@ -1,8 +1,6 @@
 import type {
   ClassSkillData,
-  WeaponData,
-  AttackSpeedData,
-  MWData,
+  GameData,
 } from '@metra/engine';
 import { applyProposal } from './apply.js';
 import { runSimulation, type SimulationConfig, type GearTemplateMap } from './simulate.js';
@@ -16,18 +14,14 @@ export function compareProposal(
   config: SimulationConfig,
   classDataMap: Map<string, ClassSkillData>,
   gearTemplates: GearTemplateMap,
-  weaponData: WeaponData,
-  attackSpeedData: AttackSpeedData,
-  mwData: MWData
+  gameData: GameData,
 ): ComparisonResult {
   // Run "before" simulation
   const before = runSimulation(
     config,
     classDataMap,
     gearTemplates,
-    weaponData,
-    attackSpeedData,
-    mwData
+    gameData,
   );
 
   // Apply proposal and run "after" simulation
@@ -36,9 +30,7 @@ export function compareProposal(
     config,
     modifiedClassData,
     gearTemplates,
-    weaponData,
-    attackSpeedData,
-    mwData
+    gameData,
   );
 
   // Compute deltas

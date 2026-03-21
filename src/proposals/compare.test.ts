@@ -7,26 +7,24 @@ import {
 } from '../data/loader.js';
 import { TEST_BUILDS } from '../engine/test-builds.js';
 import type {
-  WeaponData,
-  AttackSpeedData,
-  MWData,
+  GameData,
   ClassSkillData,
 } from '@metra/engine';
 import { compareProposal, computeDeltas } from './compare.js';
 import type { SimulationConfig, GearTemplateMap } from './simulate.js';
 import type { Proposal, ScenarioConfig, ScenarioResult } from './types.js';
 
-let weaponData: WeaponData;
-let attackSpeedData: AttackSpeedData;
-let mwData: MWData;
+let gameData: GameData;
 let classDataMap: Map<string, ClassSkillData>;
 let gearTemplates: GearTemplateMap;
 let config: SimulationConfig;
 
 beforeAll(() => {
-  weaponData = loadWeapons();
-  attackSpeedData = loadAttackSpeed();
-  mwData = loadMW();
+  gameData = {
+    weaponData: loadWeapons(),
+    attackSpeedData: loadAttackSpeed(),
+    mwData: loadMW(),
+  };
 
   classDataMap = new Map([
     ['hero', loadClassSkills('Hero')],
@@ -68,9 +66,7 @@ describe('compareProposal', () => {
       config,
       classDataMap,
       gearTemplates,
-      weaponData,
-      attackSpeedData,
-      mwData
+      gameData,
     );
 
     // Should have results for all class × skill combos
@@ -140,9 +136,7 @@ describe('compareProposal', () => {
       config,
       classDataMap,
       gearTemplates,
-      weaponData,
-      attackSpeedData,
-      mwData
+      gameData,
     );
 
     // Hero goes up
@@ -201,9 +195,7 @@ describe('compareProposal with multiple scenarios', () => {
       multiConfig,
       classDataMap,
       gearTemplates,
-      weaponData,
-      attackSpeedData,
-      mwData
+      gameData,
     );
 
     // Should have results for both scenarios × skills
@@ -262,9 +254,7 @@ describe('compareProposal with multiple scenarios', () => {
       multiConfig,
       classDataMap,
       gearTemplates,
-      weaponData,
-      attackSpeedData,
-      mwData
+      gameData,
     );
 
     const buffedBrandish = result.deltas.find(
@@ -306,9 +296,7 @@ describe('compareProposal with multiple scenarios', () => {
       multiConfig,
       classDataMap,
       gearTemplates,
-      weaponData,
-      attackSpeedData,
-      mwData
+      gameData,
     );
 
     const buffedBrandish = result.deltas.find(
@@ -348,9 +336,7 @@ describe('compareProposal with multiple scenarios', () => {
       multiConfig,
       classDataMap,
       gearTemplates,
-      weaponData,
-      attackSpeedData,
-      mwData
+      gameData,
     );
 
     const buffedDelta = result.deltas.find(
@@ -393,9 +379,7 @@ describe('compareProposal with multiple scenarios', () => {
       multiConfig,
       classDataMap,
       gearTemplates,
-      weaponData,
-      attackSpeedData,
-      mwData
+      gameData,
     );
 
     // All deltas should have rank fields
@@ -437,9 +421,7 @@ describe('compareProposal with multiple scenarios', () => {
       multiConfig,
       classDataMap,
       gearTemplates,
-      weaponData,
-      attackSpeedData,
-      mwData
+      gameData,
     );
 
     const noPdrDelta = result.deltas.find(

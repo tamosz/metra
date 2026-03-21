@@ -5,9 +5,7 @@ import {
   computeBuffAttribution,
   type CharacterBuild,
   type ClassSkillData,
-  type WeaponData,
-  type AttackSpeedData,
-  type MWData,
+  type GameData,
   type Party,
 } from '@metra/engine';
 
@@ -79,24 +77,24 @@ function makeArcherBuild(): CharacterBuild {
   return makeBuild({ className: 'bowmaster', weaponType: '2H Sword', sharpEyes: false });
 }
 
-const weaponData: WeaponData = {
-  types: [
-    { name: '2H Sword', slashMultiplier: 4.6, stabMultiplier: 0 },
-    { name: 'Claw', slashMultiplier: 0, stabMultiplier: 3.6 },
+const gameData: GameData = {
+  weaponData: {
+    types: [
+      { name: '2H Sword', slashMultiplier: 4.6, stabMultiplier: 0 },
+      { name: 'Claw', slashMultiplier: 0, stabMultiplier: 3.6 },
+    ],
+  },
+  attackSpeedData: {
+    categories: ['Brandish', 'Triple Throw'],
+    entries: [
+      { speed: 2, times: { Brandish: 0.63, 'Triple Throw': 0.60 } },
+    ],
+  },
+  mwData: [
+    { level: 0, multiplier: 1 },
+    { level: 20, multiplier: 1.1 },
   ],
 };
-
-const attackSpeedData: AttackSpeedData = {
-  categories: ['Brandish', 'Triple Throw'],
-  entries: [
-    { speed: 2, times: { Brandish: 0.63, 'Triple Throw': 0.60 } },
-  ],
-};
-
-const mwData: MWData = [
-  { level: 0, multiplier: 1 },
-  { level: 20, multiplier: 1.1 },
-];
 
 // ── resolvePartyBuffs (already covered in prior tests; just a sanity check) ──
 
@@ -160,7 +158,7 @@ describe('simulateParty', () => {
     const classDataMap = new Map([['hero', makeClassData()]]);
     const gearTemplates = new Map([['hero-perfect', makeBuild()]]);
 
-    const result = simulateParty(party, classDataMap, gearTemplates, weaponData, attackSpeedData, mwData);
+    const result = simulateParty(party, classDataMap, gearTemplates, gameData);
 
     expect(result.members).toHaveLength(2);
     for (const member of result.members) {
@@ -178,7 +176,7 @@ describe('simulateParty', () => {
     const classDataMap = new Map([['hero', makeClassData()]]);
     const gearTemplates = new Map([['hero-perfect', makeBuild()]]);
 
-    const result = simulateParty(party, classDataMap, gearTemplates, weaponData, attackSpeedData, mwData);
+    const result = simulateParty(party, classDataMap, gearTemplates, gameData);
     const expectedTotal = result.members.reduce((sum, m) => sum + m.dps, 0);
 
     expect(result.totalDps).toBeCloseTo(expectedTotal, 5);
@@ -208,8 +206,8 @@ describe('simulateParty', () => {
       ['bowmaster-perfect', makeArcherBuild()],
     ]);
 
-    const withArcher = simulateParty(partyWithArcher, classDataMap, gearTemplates, weaponData, attackSpeedData, mwData);
-    const withoutArcher = simulateParty(partyNoArcher, classDataMap, gearTemplates, weaponData, attackSpeedData, mwData);
+    const withArcher = simulateParty(partyWithArcher, classDataMap, gearTemplates, gameData);
+    const withoutArcher = simulateParty(partyNoArcher, classDataMap, gearTemplates, gameData);
 
     const heroDpsWithSE = withArcher.members.find((m) => m.className === 'hero')!.dps;
     const heroDpsWithoutSE = withoutArcher.members.find((m) => m.className === 'hero')!.dps;
@@ -225,7 +223,7 @@ describe('simulateParty', () => {
     const classDataMap = new Map([['hero', makeClassData()]]);
     const gearTemplates = new Map([['hero-perfect', makeBuild()]]);
 
-    const result = simulateParty(party, classDataMap, gearTemplates, weaponData, attackSpeedData, mwData);
+    const result = simulateParty(party, classDataMap, gearTemplates, gameData);
 
     expect(result.members[0].dps).toBe(0);
     expect(result.members[0].skillName).toBe('Unknown');
@@ -261,7 +259,7 @@ describe('simulateParty', () => {
     const classDataMap = new Map([['hero', classDataWithHidden]]);
     const gearTemplates = new Map([['hero-perfect', makeBuild()]]);
 
-    const result = simulateParty(party, classDataMap, gearTemplates, weaponData, attackSpeedData, mwData);
+    const result = simulateParty(party, classDataMap, gearTemplates, gameData);
     expect(result.members[0].skillName).toBe('Visible Skill');
   });
 });
@@ -281,7 +279,7 @@ describe('computeBuffAttribution', () => {
     const classDataMap = new Map([['night-lord', nightLordData]]);
     const gearTemplates = new Map([['night-lord-perfect', nightLordBuild]]);
 
-    const result = computeBuffAttribution(party, classDataMap, gearTemplates, weaponData, attackSpeedData, mwData);
+    const result = computeBuffAttribution(party, classDataMap, gearTemplates, gameData);
 
     for (const member of result.members) {
       expect(member.buffContribution).toBe(0);
@@ -308,7 +306,7 @@ describe('computeBuffAttribution', () => {
       ['bowmaster-perfect', archerBuild],
     ]);
 
-    const result = computeBuffAttribution(party, classDataMap, gearTemplates, weaponData, attackSpeedData, mwData);
+    const result = computeBuffAttribution(party, classDataMap, gearTemplates, gameData);
 
     const archer = result.members.find((m) => m.className === 'bowmaster')!;
     expect(archer.buffContribution).toBeGreaterThan(0);
