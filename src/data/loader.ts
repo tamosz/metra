@@ -39,7 +39,12 @@ export function loadMW(): MWData {
 
 export function loadClassSkills(className: string): ClassSkillData {
   const filename = className.toLowerCase().replace(/\//g, '').replace(/\s+/g, '-') + '.json';
-  return loadJson<ClassSkillData>(`skills/${filename}`);
+  const data = loadJson<ClassSkillData>(`skills/${filename}`);
+  data.sharpEyesCritRate ??= 0.15;
+  data.sharpEyesCritDamageBonus ??= 140;
+  data.seCritFormula ??= 'addBeforeMultiply';
+  data.damageFormula ??= 'standard';
+  return data;
 }
 
 const STAT_NAMES: readonly StatName[] = ['STR', 'DEX', 'INT', 'LUK'];
@@ -79,7 +84,7 @@ export function loadGearTemplate(templateName: string): CharacterBuild {
     const baseName = raw.extends as string;
     const base = loadJson<ClassBase>(`gear-templates/${baseName}.base.json`);
 
-    const breakdown = raw.gearBreakdown as Record<string, Record<string, number>> | undefined;
+    let breakdown = raw.gearBreakdown as Record<string, Record<string, number>> | undefined;
     if (!breakdown) {
       throw new Error(`Template "${templateName}" extends "${baseName}" but has no gearBreakdown`);
     }
@@ -89,6 +94,14 @@ export function loadGearTemplate(templateName: string): CharacterBuild {
     if (raw.attackPotion == null) {
       throw new Error(`Template "${templateName}" is missing attackPotion`);
     }
+
+    if (typeof raw.sharedGear === 'string') {
+      const shared = loadJson<Record<string, Record<string, number>>>(
+        `gear-templates/${raw.sharedGear}.json`
+      );
+      breakdown = { ...shared, ...breakdown };
+    }
+
     const computed = computeGearTotals(breakdown);
 
     return {
@@ -100,10 +113,10 @@ export function loadGearTemplate(templateName: string): CharacterBuild {
       weaponSpeed: (raw.weaponSpeed as number | undefined) ?? base.weaponSpeed,
       attackPotion: raw.attackPotion as number,
       projectile: (raw.projectile as number | undefined) ?? base.projectile,
-      echoActive: base.echoActive,
-      mwLevel: base.mwLevel,
-      speedInfusion: base.speedInfusion,
-      sharpEyes: base.sharpEyes,
+      echoActive: base.echoActive ?? true,
+      mwLevel: base.mwLevel ?? 20,
+      speedInfusion: base.speedInfusion ?? true,
+      sharpEyes: base.sharpEyes ?? true,
       shadowPartner: base.shadowPartner,
     };
   }

@@ -64,10 +64,10 @@ export interface ClassBase {
   shieldStats?: Partial<Record<StatName, number>>;
   passiveWATK?: number;
   projectile: number;
-  echoActive: boolean;
-  mwLevel: number;
-  speedInfusion: boolean;
-  sharpEyes: boolean;
+  echoActive?: boolean;
+  mwLevel?: number;
+  speedInfusion?: boolean;
+  sharpEyes?: boolean;
   shadowPartner?: boolean;
   baseSecondaryOverride?: number;
 }
@@ -138,10 +138,10 @@ function computeBuildFromBudget(base: ClassBase, b: GearBudget): CharacterBuild 
     weaponSpeed: base.weaponSpeed,
     attackPotion: b.attackPotion,
     projectile: base.projectile,
-    echoActive: base.echoActive,
-    mwLevel: base.mwLevel,
-    speedInfusion: base.speedInfusion,
-    sharpEyes: base.sharpEyes,
+    echoActive: base.echoActive ?? true,
+    mwLevel: base.mwLevel ?? 20,
+    speedInfusion: base.speedInfusion ?? true,
+    sharpEyes: base.sharpEyes ?? true,
     shadowPartner: base.shadowPartner,
   };
 }
@@ -227,7 +227,14 @@ export function discoverClasses(): DiscoveryResult {
     const match = path.match(/\/([^/]+)\.json$/);
     if (!match) continue;
     const name = match[1];
-    classDataMap.set(name, data);
+    const classData: ClassSkillData = {
+      ...data,
+      sharpEyesCritRate: data.sharpEyesCritRate ?? 0.15,
+      sharpEyesCritDamageBonus: data.sharpEyesCritDamageBonus ?? 140,
+      seCritFormula: data.seCritFormula ?? 'addBeforeMultiply',
+      damageFormula: data.damageFormula ?? 'standard',
+    };
+    classDataMap.set(name, classData);
 
     const base = findBaseForClass(name);
     if (!base) continue;
@@ -239,18 +246,32 @@ export function discoverClasses(): DiscoveryResult {
       // Mage: parse the perfect-tier template in flat mode
       const raw = findTemplateModule(`${name}-perfect`);
       if (raw) {
-        // Merge base defaults under raw, but always use base for identity/buff fields
-        const merged = {
+        // Resolve sharedGear: merge shared breakdown under template's breakdown
+        let gearBreakdown = raw.gearBreakdown;
+        if (typeof raw.sharedGear === 'string') {
+          const sharedModule = findTemplateModule(raw.sharedGear as string);
+          if (!sharedModule) {
+            console.warn(`Shared gear file "${raw.sharedGear}" not found for ${name}`);
+          } else {
+            const templateBreakdown = raw.gearBreakdown as Record<string, Record<string, number>> | undefined;
+            gearBreakdown = { ...sharedModule, ...templateBreakdown };
+          }
+        }
+
+        // Merge base defaults under raw; base identity/buff fields override raw
+        const merged: Record<string, unknown> = {
           weaponType: base.weaponType,
           weaponSpeed: base.weaponSpeed,
           projectile: base.projectile,
-          echoActive: base.echoActive,
-          mwLevel: base.mwLevel,
-          speedInfusion: base.speedInfusion,
-          sharpEyes: base.sharpEyes,
+          echoActive: base.echoActive ?? true,
+          mwLevel: base.mwLevel ?? 20,
+          speedInfusion: base.speedInfusion ?? true,
+          sharpEyes: base.sharpEyes ?? true,
           ...raw,
+          gearBreakdown,
           className: base.className,
         };
+
         builds.set(name, parseMageTemplate(merged));
         classNames.push(name);
       }
