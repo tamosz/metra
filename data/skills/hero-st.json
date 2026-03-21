@@ -1,5 +1,5 @@
 {
-  "source": "dmg sheet rows 15-18 (Brandish), range calculator D7 (mastery). Stonetooth variant: speed 5, requires 120 DEX.",
+  "source": "dmg sheet rows 15-18 (Brandish), range calculator D7 (mastery). Stonetooth variant: speed 5, requires 120 DEX. Combo multiplier 1.9x confirmed via in-game testing — see skill-library.md discrepancy note.",
   "className": "Hero (ST)",
   "mastery": 0.6,
   "primaryStat": "STR",

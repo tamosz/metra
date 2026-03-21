@@ -19,6 +19,8 @@ may override some of these (check `data/references/balance-changes.md`).
 | Holy Charge: Sword | Paladin (4th) | 140% multiplier | — | — | 300s duration |
 | Divine Charge: BW | Paladin (4th) | 140% multiplier | — | — | 300s duration |
 | Fire/Ice/Lightning Charge | WK (3rd) | 130% multiplier | — | — | 200s duration |
+| Combo Attack | Fighter (3rd) | 220% tooltip | — | — | Tooltip misleading; see discrepancy below |
+| Advanced Combo Attack | Hero (4th) | +30% tooltip | — | — | Tooltip misleading; see discrepancy below |
 | Berserk | Dark Knight (4th) | 210% multiplier | — | — | Below 50% HP |
 
 ## Thieves
@@ -88,6 +90,16 @@ hit that only occurs if the monster survives the first 3 hits and the player is
 interrupted. All three Shadower guides confirm the base attack is 3 lines
 (950% x3 = 2850% total). The 4th hit is not part of standard DPS rotation.
 Sources: 2026 guide (thread 252048), Quokka guide (thread 180490), In-Depth guide (thread 8122).
+
+### Hero Combo Attack multiplier: Tooltip says 220%/+30%, actual is ~1.9× (CORRECT)
+Combo Attack tooltip says 220% and Advanced Combo Attack says +30%, suggesting
+a 2.5× total multiplier. However, in-game testing confirms the actual multiplier
+is approximately 1.9× at 5 orbs with max Advanced Combo. Royals staff confirmed
+the skill works as intended and the tooltip description is misleading.
+Sources: [Combo attack damage boost seems wrong](https://royals.ms/forum/threads/combo-attack-damage-boost-seems-wrong.93972/)
+(staff response on page 2: "The client handles the damage so the damage is what
+it should be...it seems to just be a faulty description").
+The spreadsheet's 1.9× multiplier matches in-game behavior and is correct.
 
 ### Barrage per-hit multipliers: Not in library
 Library shows flat 330% x6 hits. The 5th hit 2x / 6th hit 4x breakdown comes

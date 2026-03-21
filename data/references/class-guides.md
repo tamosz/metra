@@ -10,7 +10,7 @@ Per-class verified values extracted from community guides on royals.ms.
 **Used in:** `data/skills/hero.json`, `data/gear-templates/hero-*.json`
 
 - Mastery: 0.6 (from range calculator D7)
-- Brandish: 260% base, 1.9x multiplier, 2 hits
+- Brandish: 260% base, 1.9x combo multiplier (tooltip says 2.5x but in-game ~1.9x), 2 hits
 - Primary: STR, Secondary: DEX
 - Endgame weapon: Stonetooth Sword (speed 5, ~145-150 WATK perfect)
 - SE crit formula: addBeforeMultiply
