@@ -5,8 +5,8 @@
   "secondaryStat": "STR",
   "weaponType": "Gun",
   "weaponSpeed": 5,
-  "godlyCleanWATK": 84,
+  "godlyCleanWATK": 88,
   "weaponStat": 7,
-  "projectile": 20,
+  "projectile": 24,
   "shadowPartner": false
 }
