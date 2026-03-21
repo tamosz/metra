@@ -15,10 +15,10 @@ export interface ClassBase {
   shieldStats?: Partial<Record<StatName, number>>;
   passiveWATK?: number;
   projectile: number;
-  echoActive: boolean;
-  mwLevel: number;
-  speedInfusion: boolean;
-  sharpEyes: boolean;
+  echoActive?: boolean;
+  mwLevel?: number;
+  speedInfusion?: boolean;
+  sharpEyes?: boolean;
   shadowPartner?: boolean;
   baseSecondaryOverride?: number;
 }
@@ -93,10 +93,10 @@ export function computeBuild(base: ClassBase): CharacterBuild {
     weaponSpeed: base.weaponSpeed,
     attackPotion: budget.attackPotion,
     projectile: base.projectile,
-    echoActive: base.echoActive,
-    mwLevel: base.mwLevel,
-    speedInfusion: base.speedInfusion,
-    sharpEyes: base.sharpEyes,
+    echoActive: base.echoActive ?? true,
+    mwLevel: base.mwLevel ?? 20,
+    speedInfusion: base.speedInfusion ?? true,
+    sharpEyes: base.sharpEyes ?? true,
     shadowPartner: base.shadowPartner,
   };
 }

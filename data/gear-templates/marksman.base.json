@@ -8,9 +8,5 @@
   "godlyCleanWATK": 108,
   "weaponStat": 7,
   "passiveWATK": 15,
-  "projectile": 10,
-  "echoActive": true,
-  "mwLevel": 20,
-  "speedInfusion": true,
-  "sharpEyes": true
+  "projectile": 10
 }

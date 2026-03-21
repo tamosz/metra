@@ -105,10 +105,10 @@ export function loadGearTemplate(templateName: string): CharacterBuild {
       weaponSpeed: (raw.weaponSpeed as number | undefined) ?? base.weaponSpeed,
       attackPotion: raw.attackPotion as number,
       projectile: (raw.projectile as number | undefined) ?? base.projectile,
-      echoActive: base.echoActive,
-      mwLevel: base.mwLevel,
-      speedInfusion: base.speedInfusion,
-      sharpEyes: base.sharpEyes,
+      echoActive: base.echoActive ?? true,
+      mwLevel: base.mwLevel ?? 20,
+      speedInfusion: base.speedInfusion ?? true,
+      sharpEyes: base.sharpEyes ?? true,
       shadowPartner: base.shadowPartner,
     };
   }

@@ -9,9 +9,5 @@
   "weaponStat": 20,
   "baseSecondaryOverride": 25,
   "projectile": 30,
-  "echoActive": true,
-  "mwLevel": 20,
-  "speedInfusion": true,
-  "sharpEyes": true,
   "shadowPartner": true
 }

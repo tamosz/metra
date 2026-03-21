@@ -10,9 +10,5 @@
   "shieldWATK": 43,
   "shieldStats": { "LUK": 8, "STR": 14 },
   "projectile": 0,
-  "echoActive": true,
-  "mwLevel": 20,
-  "speedInfusion": true,
-  "sharpEyes": true,
   "shadowPartner": false
 }
