@@ -64,10 +64,10 @@ export interface ClassBase {
   shieldStats?: Partial<Record<StatName, number>>;
   passiveWATK?: number;
   projectile: number;
-  echoActive: boolean;
-  mwLevel: number;
-  speedInfusion: boolean;
-  sharpEyes: boolean;
+  echoActive?: boolean;
+  mwLevel?: number;
+  speedInfusion?: boolean;
+  sharpEyes?: boolean;
   shadowPartner?: boolean;
   baseSecondaryOverride?: number;
 }
@@ -138,10 +138,10 @@ function computeBuildFromBudget(base: ClassBase, b: GearBudget): CharacterBuild 
     weaponSpeed: base.weaponSpeed,
     attackPotion: b.attackPotion,
     projectile: base.projectile,
-    echoActive: base.echoActive,
-    mwLevel: base.mwLevel,
-    speedInfusion: base.speedInfusion,
-    sharpEyes: base.sharpEyes,
+    echoActive: base.echoActive ?? true,
+    mwLevel: base.mwLevel ?? 20,
+    speedInfusion: base.speedInfusion ?? true,
+    sharpEyes: base.sharpEyes ?? true,
     shadowPartner: base.shadowPartner,
   };
 }
@@ -227,6 +227,10 @@ export function discoverClasses(): DiscoveryResult {
     const match = path.match(/\/([^/]+)\.json$/);
     if (!match) continue;
     const name = match[1];
+    data.sharpEyesCritRate ??= 0.15;
+    data.sharpEyesCritDamageBonus ??= 140;
+    data.seCritFormula ??= 'addBeforeMultiply';
+    data.damageFormula ??= 'standard';
     classDataMap.set(name, data);
 
     const base = findBaseForClass(name);
@@ -239,18 +243,28 @@ export function discoverClasses(): DiscoveryResult {
       // Mage: parse the perfect-tier template in flat mode
       const raw = findTemplateModule(`${name}-perfect`);
       if (raw) {
+        // Support sharedGear: merge shared breakdown under template's breakdown
+        if (typeof raw.sharedGear === 'string') {
+          const sharedModule = findTemplateModule(raw.sharedGear as string);
+          if (sharedModule) {
+            const templateBreakdown = raw.gearBreakdown as Record<string, Record<string, number>> | undefined;
+            raw.gearBreakdown = { ...sharedModule, ...templateBreakdown };
+          }
+        }
+
         // Merge base defaults under raw, but always use base for identity/buff fields
-        const merged = {
+        const merged: Record<string, unknown> = {
           weaponType: base.weaponType,
           weaponSpeed: base.weaponSpeed,
           projectile: base.projectile,
-          echoActive: base.echoActive,
-          mwLevel: base.mwLevel,
-          speedInfusion: base.speedInfusion,
-          sharpEyes: base.sharpEyes,
+          echoActive: base.echoActive ?? true,
+          mwLevel: base.mwLevel ?? 20,
+          speedInfusion: base.speedInfusion ?? true,
+          sharpEyes: base.sharpEyes ?? true,
           ...raw,
           className: base.className,
         };
+
         builds.set(name, parseMageTemplate(merged));
         classNames.push(name);
       }
