@@ -60,7 +60,7 @@ export function Dashboard({ simulation }: DashboardProps) {
 
   const animationEnabled = !editEnabled && !comparison.result;
   const animation = useAnimatedDps(filtered, capEnabled, animationEnabled);
-  const fundingData = useFundingScaling({ activeGroups, capEnabled });
+  const fundingData = useFundingScaling({ activeGroups, capEnabled, targetCount });
 
   const visibleClassNames = useMemo(
     () => new Set(filtered.map((r) => r.className)),

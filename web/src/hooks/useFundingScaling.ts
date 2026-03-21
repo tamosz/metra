@@ -59,8 +59,9 @@ function isSkillVisible(
 export function useFundingScaling(options: {
   activeGroups: Set<SkillGroupId>;
   capEnabled: boolean;
+  targetCount: number;
 }): FundingScalingData {
-  const { activeGroups, capEnabled } = options;
+  const { activeGroups, capEnabled, targetCount } = options;
 
   return useMemo(() => {
     const allBases = allClassBases;
@@ -154,7 +155,14 @@ export function useFundingScaling(options: {
           const dpsResult = calculateSkillDps(
             build, classData, skill, weaponData, attackSpeedData, mwData
           );
-          const dps = capEnabled ? dpsResult.dps : dpsResult.uncappedDps;
+          let dps = capEnabled ? dpsResult.dps : dpsResult.uncappedDps;
+
+          // Apply multi-target scaling (same as runSimulation's applyTargetCount)
+          if (targetCount > 1) {
+            const effectiveTargets = Math.min(skill.maxTargets ?? 1, targetCount);
+            if (effectiveTargets > 1) dps *= effectiveTargets;
+          }
+
           skillDpsByName.set(skill.name, dps);
 
           if (!isSkillVisible(skill, className, activeGroups)) continue;
@@ -232,5 +240,5 @@ export function useFundingScaling(options: {
     }
 
     return { points, lines, yDomain: [yMin, yMax] };
-  }, [activeGroups, capEnabled]);
+  }, [activeGroups, capEnabled, targetCount]);
 }
