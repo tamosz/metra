@@ -211,9 +211,19 @@ export function discoverClasses(): DiscoveryResult {
       // Mage: parse the perfect-tier template in flat mode
       const raw = findTemplateModule(`${name}-perfect`);
       if (raw) {
-        // Flat templates may reference base for className — fill in from base
-        const withClassName = { ...raw, className: base.className };
-        builds.set(name, parseMageTemplate(withClassName));
+        // Merge base fields (weaponSpeed, weaponType, etc.) under the template
+        const merged = {
+          className: base.className,
+          weaponType: base.weaponType,
+          weaponSpeed: base.weaponSpeed,
+          projectile: base.projectile,
+          echoActive: base.echoActive,
+          mwLevel: base.mwLevel,
+          speedInfusion: base.speedInfusion,
+          sharpEyes: base.sharpEyes,
+          ...raw,
+        };
+        builds.set(name, parseMageTemplate(merged));
         classNames.push(name);
       }
     }
