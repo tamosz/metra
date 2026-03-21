@@ -168,13 +168,27 @@ describe('class data value ranges', () => {
   });
 
   it('every class seCritFormula is a valid enum value', () => {
-    const validFormulas = new Set(['addBeforeMultiply', 'multiplicative']);
+    const validFormulas = new Set(['addBeforeMultiply', 'multiplicative', 'scaleOnBase']);
     for (const [, classData] of classDataMap) {
       if (classData.seCritFormula != null) {
         expect(
           validFormulas.has(classData.seCritFormula),
           `${classData.className} has invalid seCritFormula "${classData.seCritFormula}"`
         ).toBe(true);
+      }
+    }
+  });
+
+  it('every per-skill seCritFormula is a valid enum value', () => {
+    const validFormulas = new Set(['addBeforeMultiply', 'multiplicative', 'scaleOnBase']);
+    for (const [, classData] of classDataMap) {
+      for (const skill of classData.skills) {
+        if (skill.seCritFormula != null) {
+          expect(
+            validFormulas.has(skill.seCritFormula),
+            `${classData.className} skill "${skill.name}" has invalid seCritFormula "${skill.seCritFormula}"`
+          ).toBe(true);
+        }
       }
     }
   });
