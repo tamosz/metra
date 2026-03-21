@@ -89,14 +89,14 @@ At speed 2: 7 Strafes fit in the remaining time (5.0 / 0.714 ≈ 7).
 
 **Source:** Community guides, in-game verification
 **Accessed:** 2026-02-01
-**Used in:** `data/gear-templates/*.json`
+**Used in:** `data/gear-templates/*.base.json`
 
 | Weapon | Speed | Classes |
 |--------|-------|---------|
-| Stonetooth Sword | 5 (Fast) | Hero high tier |
-| Other 2H Swords | 6 (Normal) | Hero low/mid, Paladin |
-| 2H Axe | 6 (Normal) | Hero (Axe), all tiers |
-| 2H BW | 6 (Normal) | Paladin BW variant |
+| Stonetooth Sword | 5 (Fast) | Hero (Stonetooth) |
+| Other 2H Swords | 6 (Normal) | Hero, Paladin |
+| 2H Axe | 6 (Normal) | Hero (Axe) |
+| 2H BW | 6 (Normal) | Paladin BW |
 | Spear (Sky Ski) | 6 (Normal) | Dark Knight |
 | Claw | 4 (Fast) | Night Lord |
 | Bow | 6 (Normal) | Bowmaster |
@@ -110,7 +110,7 @@ At speed 2: 7 Strafes fit in the remaining time (5.0 / 0.714 ≈ 7).
 **Source:** [Why is Stonetooth the endgame weapon?](https://royals.ms/forum/threads/for-heros-why-is-stonetooth-the-end-game-weapon.116341/)
 **Source:** [Claymore vs Stonetooth](https://royals.ms/forum/threads/claymore-vs-stonetooth.58556/)
 **Accessed:** 2026-02-01
-**Used in:** `data/gear-templates/hero-high.json`
+**Used in:** `data/gear-templates/hero-st.base.json`
 
 Stonetooth Sword (speed 5) is standard endgame Hero weapon. Dragon Claymore has higher
 WATK but speed 6 — only advantageous with SI. Stonetooth gives 8.7% DPS advantage in

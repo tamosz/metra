@@ -10,6 +10,8 @@ Community feedback from the simulator's public launch thread.
 
 ### Gear Template Concerns (Sylafia, PinaColadaPirate, ssmage)
 
+**Partially resolved:** The tier system was removed in PR #158 — there is now one build per class, computed from a shared gear budget. This resolves the tier naming/calibration concerns below. Mage-specific and per-item accuracy concerns may still apply.
+
 - Mage gear templates needed manual review — Sylafia submitted PR with corrected mage gear breakdowns
 - TMA is capped at 2000 in-game (mage gear templates should respect this)
 - Perfect tier setups don't reflect realistic player equipment across several classes
@@ -44,6 +46,8 @@ Community feedback from the simulator's public launch thread.
 - Mage controls: INT/TMA input fields with auto-suggestions in web app
 
 ### Tier/Funding Philosophy (PinaColadaPirate, Kamuna, ssmage)
+
+**Resolved:** The tier system (low/mid/high/perfect) was removed entirely in PR #158. All classes now use a single build computed from a shared gear budget + per-class weapon base. This sidesteps the naming/calibration debate — there's one build per class, no tier ambiguity.
 
 - Kamuna pointed to CGS optimization thread for pricing data to calibrate tier definitions
 - Consensus: current tier names (low/mid/high/perfect) are ambiguous — funding-based tiers would be more useful and maintainable

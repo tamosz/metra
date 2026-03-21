@@ -2,13 +2,13 @@
 
 DPS calculator for Royals.
 
-Punch in a class and tier, toggle buffs, and see where things land. Useful for balance discussions or just figuring out what to upgrade next.
+Punch in a class, toggle buffs, and see where things land. Useful for balance discussions or just figuring out what to upgrade next.
 
 **Live site:** [tomeblog.com/metra](https://tomeblog.com/metra)
 
 ## What You Can Do
 
-- DPS rankings across all classes and funding tiers (low/mid/high/perfect)
+- DPS rankings across all classes at standardized gear
 - Toggle stuff on and off. SE, Echo, SI, knockback, multi-target, element modifiers.
 - Build explorer. Tweak gear and stats, see DPS update live, figure out what to upgrade next.
 - Propose balance changes and get before/after comparisons with rank shifts.

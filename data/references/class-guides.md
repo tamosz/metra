@@ -7,7 +7,7 @@ Per-class verified values extracted from community guides on royals.ms.
 **Source:** [Hero Guide](https://royals.ms/forum/threads/hero-guide.57080/)
 **Source:** [Sire's Complete Warrior Guide](https://royals.ms/forum/threads/sires-complete-mapleroyals-warrior-guide.8474/)
 **Accessed:** 2026-02-01
-**Used in:** `data/skills/hero.json`, `data/gear-templates/hero-*.json`
+**Used in:** `data/skills/hero.json`, `data/gear-templates/hero.base.json`, `data/gear-templates/hero-st.base.json`
 
 - Mastery: 0.6 (from range calculator D7)
 - Brandish: 260% base, 1.9x combo multiplier (tooltip says 2.5x but in-game ~1.9x), 2 hits
@@ -20,7 +20,7 @@ Per-class verified values extracted from community guides on royals.ms.
 **Source:** [The Balancing of Axes/Blunt Weapons](https://royals.ms/forum/threads/the-balancing-of-axes-blunt-weapons-data-included.53212/)
 **Source:** [Warrior 2H Weapon Balancing](https://royals.ms/forum/threads/warrior-2h-weapon-balancing.163124/)
 **Accessed:** 2026-02-15
-**Used in:** `data/skills/hero-axe.json`, `data/gear-templates/hero-axe-*.json`
+**Used in:** `data/skills/hero-axe.json`, `data/gear-templates/hero-axe.base.json`
 
 - Same skills as Hero Sword but with 2H Axe (4.8x multiplier vs 4.6x)
 - All 2H Axes are speed 6 — no speed-5 option exists
@@ -31,7 +31,7 @@ Per-class verified values extracted from community guides on royals.ms.
 
 **Source:** [A Guide to Dark Knight 2026](https://royals.ms/forum/threads/a-guide-to-dark-knight-2026.230387/)
 **Accessed:** 2026-02-01
-**Used in:** `data/skills/dark-knight.json`, `data/gear-templates/dark-knight-*.json`
+**Used in:** `data/skills/dark-knight.json`, `data/gear-templates/dark-knight.base.json`
 
 - Mastery: 0.8 (highest among warriors)
 - Spear Crusher: 170% base, 2.1x Berserk multiplier, 3 hits, stab (5.0x Spear multiplier)
@@ -45,7 +45,7 @@ Per-class verified values extracted from community guides on royals.ms.
 
 **Source:** [Comprehensive Paladin Guide (Haplopelma)](https://royals.ms/forum/threads/comprehensive-paladin-guide-haplopelma.161247/)
 **Accessed:** 2026-02-01
-**Used in:** `data/skills/paladin.json`, `data/gear-templates/paladin-*.json`
+**Used in:** `data/skills/paladin.json`, `data/gear-templates/paladin.base.json`, `data/gear-templates/paladin-bw.base.json`
 
 - Mastery: 0.6
 - Blast: 580% base, 4 variants (Holy/Charge × Sword/BW)
@@ -59,7 +59,7 @@ Per-class verified values extracted from community guides on royals.ms.
 **Source:** [Darko's Night Lord Guide 2024](https://royals.ms/forum/threads/darkos-night-lord-guide-2024.227431/)
 **Source:** [Comprehensive Night Lord Guide](https://royals.ms/forum/threads/a-comprehensive-night-lord-guide.23303/)
 **Accessed:** 2026-02-01
-**Used in:** `data/skills/night-lord.json`, `data/gear-templates/nl-*.json`
+**Used in:** `data/skills/night-lord.json`, `data/gear-templates/night-lord.base.json`
 
 - Triple Throw: 150% base, 3 hits, built-in 50% crit (+100 dmg bonus)
 - Throwing star formula (LUK-only scaling, no weapon multiplier)
@@ -72,7 +72,7 @@ Per-class verified values extracted from community guides on royals.ms.
 
 **Source:** [Hero Guide](https://royals.ms/forum/threads/hero-guide.57080/) (archer section references)
 **Accessed:** 2026-02-01
-**Used in:** `data/skills/bowmaster.json`, `data/gear-templates/bowmaster-*.json`
+**Used in:** `data/skills/bowmaster.json`, `data/gear-templates/bowmaster.base.json`
 
 - Hurricane: 100% base, fixed 0.12s attack time, 1 hit
 - Strafe: 125% base, 4 hits
@@ -84,7 +84,7 @@ Per-class verified values extracted from community guides on royals.ms.
 
 **Source:** [Comprehensive List of Changes](https://royals.ms/forum/threads/comprehensive-list-of-changes-since-the-new-source.183746/)
 **Accessed:** 2026-02-15
-**Used in:** `data/skills/marksman.json`, `data/gear-templates/marksman-*.json`
+**Used in:** `data/skills/marksman.json`, `data/gear-templates/marksman.base.json`
 
 - Snipe: 195,000 fixed damage, ~5s effective cooldown (4s + ~1s server tick)
 - Strafe (MM): 125% base, 4 hits, 0.6s at speed 2
@@ -97,7 +97,7 @@ Per-class verified values extracted from community guides on royals.ms.
 
 **Source:** Source spreadsheet dmg sheet rows 9-10
 **Accessed:** 2026-02-15
-**Used in:** `data/skills/sair.json`, `data/gear-templates/sair-*.json`
+**Used in:** `data/skills/sair.json`, `data/gear-templates/sair.base.json`
 
 - Battleship Cannon: 380% base, 1.2x multiplier, 4 hits, 0.60s at speed 2
 - Rapid Fire: 200% base (buffed from 170% in Update #50), 1.2x multiplier, Hurricane-style 0.12s
@@ -109,7 +109,7 @@ Per-class verified values extracted from community guides on royals.ms.
 **Source:** Source spreadsheet dmg sheet rows 21-24
 **Source:** Forum DPS discussions for Barrage+Demo cycle time
 **Accessed:** 2026-02-15
-**Used in:** `data/skills/bucc.json`, `data/gear-templates/bucc-*.json`
+**Used in:** `data/skills/bucc.json`, `data/gear-templates/bucc.base.json`
 
 - Demolition: 500% base (buffed from 400%), 8 hits, 2.34s fixed cycle
 - Barrage: 330% base (buffed from 230%), 6 hits with escalating multipliers (1x/1x/1x/1x/2x/4x)
@@ -123,7 +123,7 @@ Per-class verified values extracted from community guides on royals.ms.
 **Source:** [How to maximize Shadower's single target DPS](https://royals.ms/forum/threads/how-to-maximize-shadowers-single-target-dps.236808/)
 **Source:** [Assassinate and Sharp Eye](https://royals.ms/forum/threads/assassinate-and-sharp-eye.180132/)
 **Accessed:** 2026-03-03
-**Used in:** `data/skills/shadower.json`, `data/gear-templates/shadower-*.json`
+**Used in:** `data/skills/shadower.json`, `data/gear-templates/shadower.base.json`
 
 - BStep + Assassinate 30 combo: 2.31s cycle (0.69 + 1.62)
 - Boomerang Step: 600% base (buffed from 500%), 2 hits
@@ -137,7 +137,7 @@ Per-class verified values extracted from community guides on royals.ms.
 
 **Source:** Source spreadsheet dmg sheet rows 37-38, 40
 **Accessed:** 2026-02-25
-**Used in:** `data/skills/archmage-il.json`, `data/gear-templates/archmage-il-*.json`
+**Used in:** `data/skills/archmage-il.json`, `data/gear-templates/archmage-il.base.json`, `data/gear-templates/archmage-il-perfect.json`
 
 - Chain Lightning: 210% base (buffed from 180%), 0.69s fixed
 - Blizzard: 570% base, 3.06s fixed (forum says buffed to 600 — spreadsheet may predate this)
@@ -149,7 +149,7 @@ Per-class verified values extracted from community guides on royals.ms.
 
 **Source:** Source spreadsheet dmg sheet rows 41-42
 **Accessed:** 2026-02-25
-**Used in:** `data/skills/bishop.json`, `data/gear-templates/bishop-*.json`
+**Used in:** `data/skills/bishop.json`, `data/gear-templates/bishop.base.json`, `data/gear-templates/bishop-perfect.json`
 
 - Angel Ray: 240% base, 0.81s fixed
 - Genesis: 670% base, 2.7s fixed
