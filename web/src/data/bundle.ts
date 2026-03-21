@@ -154,16 +154,22 @@ function computeBuildBrowser(base: ClassBase): CharacterBuild {
   return computeBuildFromBudget(base, budget);
 }
 
-const SHIELD_BASE_WATK = 10;
+export const SHIELD_BASE_WATK = 10;
 
 export function computeBuildAtFunding(base: ClassBase, fraction: number): CharacterBuild {
   const scaledBase = {
     ...base,
     godlyCleanWATK: Math.round(base.godlyCleanWATK * fraction),
+    weaponStat: Math.round(base.weaponStat * fraction),
     projectile: Math.round(base.projectile * fraction),
     passiveWATK: base.passiveWATK ? Math.round(base.passiveWATK * fraction) : undefined,
     shieldWATK: base.shieldWATK
       ? Math.round(SHIELD_BASE_WATK + (base.shieldWATK - SHIELD_BASE_WATK) * fraction)
+      : undefined,
+    shieldStats: base.shieldStats
+      ? Object.fromEntries(
+          Object.entries(base.shieldStats).map(([k, v]) => [k, Math.round((v ?? 0) * fraction)])
+        ) as Partial<Record<StatName, number>>
       : undefined,
     baseSecondaryOverride: base.baseSecondaryOverride != null
       ? Math.round(base.baseSecondaryOverride * fraction)

@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { allClassBases, type ClassBase, type GearBudget } from '../data/bundle.js';
+import { allClassBases, SHIELD_BASE_WATK, type ClassBase, type GearBudget } from '../data/bundle.js';
 import { getClassColor, VARIANT_CLASS_SLUGS } from '../utils/class-colors.js';
 import { colors } from '../theme.js';
 import gearBudgetJson from '@data/gear-budget.json';
@@ -60,7 +60,7 @@ function buildExtrasLabel(base: ClassBase): string {
     const statsStr = base.shieldStats
       ? `, ${Object.entries(base.shieldStats).map(([s, v]) => `+${v} ${s}`).join(' ')}`
       : '';
-    parts.push(`Shield: 10\u2013${base.shieldWATK} WATK${statsStr}`);
+    parts.push(`Shield: ${SHIELD_BASE_WATK}\u2013${base.shieldWATK} WATK${statsStr}`);
   }
   return parts.length > 0 ? parts.join(', ') : '\u2014';
 }
