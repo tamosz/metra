@@ -1,14 +1,10 @@
 import { useState, useEffect, useRef } from 'react';
 import { Dashboard } from './components/Dashboard.js';
-import { BuildExplorer } from './components/BuildExplorer.js';
-import { BuildComparison } from './components/BuildComparison.js';
+import { GearPage } from './components/GearPage.js';
 import { FormulasPage } from './components/FormulasPage.js';
 import { PartyBuilder } from './components/PartyBuilder.js';
 import { useSimulation } from './hooks/useSimulation.js';
-import { useBuildExplorer } from './hooks/useBuildExplorer.js';
-import { useBuildComparison } from './hooks/useBuildComparison.js';
-import { useSavedBuilds } from './hooks/useSavedBuilds.js';
-import { getProposalFromUrl, getBuildFromUrl, getComparisonFromUrl, getPartyFromUrl } from './utils/url-encoding.js';
+import { getProposalFromUrl, getPartyFromUrl } from './utils/url-encoding.js';
 import { getFilterFromUrl } from './utils/filter-url.js';
 import { SimulationFiltersProvider, useSimulationFilters } from './context/SimulationFiltersContext.js';
 import { ProposalEditProvider, useProposalEdit } from './context/ProposalEditContext.js';
@@ -16,7 +12,7 @@ import { useFilterPermalink } from './hooks/useFilterPermalink.js';
 import { ErrorBoundary } from './components/ErrorBoundary.js';
 import type { SkillGroupId } from './utils/skill-groups.js';
 
-type Page = 'dashboard' | 'build' | 'compare' | 'formulas' | 'party';
+type Page = 'dashboard' | 'gear' | 'formulas' | 'party';
 
 export function App() {
   return (
@@ -38,9 +34,6 @@ function AppContent() {
     kbConfig: filters.kbConfig,
     efficiencyOverrides: Object.keys(filters.efficiencyOverrides).length > 0 ? filters.efficiencyOverrides : undefined,
   });
-  const savedBuildsState = useSavedBuilds();
-  const buildState = useBuildExplorer();
-  const comparisonState = useBuildComparison();
   const [page, setPage] = useState<Page>('dashboard');
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -59,18 +52,6 @@ function AppContent() {
     const urlParty = getPartyFromUrl();
     if (urlParty) {
       setPage('party');
-      return;
-    }
-    const urlComparison = getComparisonFromUrl();
-    if (urlComparison) {
-      comparisonState.loadFromUrl(urlComparison.a, urlComparison.b);
-      setPage('compare');
-      return;
-    }
-    const urlBuild = getBuildFromUrl();
-    if (urlBuild) {
-      buildState.loadFromUrl(urlBuild.class, urlBuild.overrides);
-      setPage('build');
       return;
     }
     const urlProposal = getProposalFromUrl();
@@ -130,11 +111,8 @@ function AppContent() {
             <NavButton active={page === 'dashboard'} onClick={() => navigate('dashboard')}>
               rankings
             </NavButton>
-            <NavButton active={page === 'build'} onClick={() => navigate('build')}>
-              builds
-            </NavButton>
-            <NavButton active={page === 'compare'} onClick={() => navigate('compare')}>
-              compare
+            <NavButton active={page === 'gear'} onClick={() => navigate('gear')}>
+              gear
             </NavButton>
             <NavButton active={page === 'formulas'} onClick={() => navigate('formulas')}>
               formulas
@@ -173,11 +151,8 @@ function AppContent() {
             <NavButton active={page === 'dashboard'} onClick={() => navigate('dashboard')}>
               rankings
             </NavButton>
-            <NavButton active={page === 'build'} onClick={() => navigate('build')}>
-              builds
-            </NavButton>
-            <NavButton active={page === 'compare'} onClick={() => navigate('compare')}>
-              compare
+            <NavButton active={page === 'gear'} onClick={() => navigate('gear')}>
+              gear
             </NavButton>
             <NavButton active={page === 'formulas'} onClick={() => navigate('formulas')}>
               formulas
@@ -195,8 +170,11 @@ function AppContent() {
             <Dashboard simulation={simulation} />
           </ErrorBoundary>
         )}
-        {page === 'build' && <ErrorBoundary><BuildExplorer state={buildState} savedBuilds={savedBuildsState} /></ErrorBoundary>}
-        {page === 'compare' && <ErrorBoundary><BuildComparison state={comparisonState} /></ErrorBoundary>}
+        {page === 'gear' && (
+          <ErrorBoundary>
+            <GearPage />
+          </ErrorBoundary>
+        )}
         {page === 'formulas' && <ErrorBoundary><FormulasPage /></ErrorBoundary>}
         {page === 'party' && <ErrorBoundary><PartyBuilder /></ErrorBoundary>}
       </main>
