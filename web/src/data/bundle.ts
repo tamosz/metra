@@ -51,7 +51,7 @@ export const weaponData: WeaponData = weaponsJson as WeaponData;
 export const attackSpeedData: AttackSpeedData = attackSpeedJson as AttackSpeedData;
 export const mwData: MWData = (mwJson as { entries: MWData }).entries;
 
-interface ClassBase {
+export interface ClassBase {
   className: string;
   category: 'physical' | 'mage';
   primaryStat: StatName;
@@ -71,7 +71,7 @@ interface ClassBase {
   shadowPartner?: boolean;
 }
 
-interface GearBudget {
+export interface GearBudget {
   gearPrimary: number;
   gearSecondary: number;
   nonWeaponWATK: number;
@@ -85,15 +85,23 @@ const budget = gearBudgetJson as GearBudget;
 
 const ALL_STATS: StatName[] = ['STR', 'DEX', 'INT', 'LUK'];
 
-/**
- * Browser-safe version of computeBuild from src/data/gear-compute.ts.
- * Uses statically imported gear-budget.json instead of fs.readFileSync.
- */
-function computeBuildBrowser(base: ClassBase): CharacterBuild {
+export function scaleBudget(fraction: number): GearBudget {
+  return {
+    gearPrimary: Math.round(budget.gearPrimary * fraction),
+    gearSecondary: Math.round(budget.gearSecondary * fraction),
+    nonWeaponWATK: Math.round(budget.nonWeaponWATK * fraction),
+    scrollBonus: Math.round(budget.scrollBonus * fraction),
+    basePrimary: Math.round(budget.basePrimary * fraction),
+    baseSecondary: Math.round(budget.baseSecondary * fraction),
+    attackPotion: Math.round(budget.attackPotion * fraction),
+  };
+}
+
+function computeBuildFromBudget(base: ClassBase, b: GearBudget): CharacterBuild {
   const totalWeaponAttack =
     base.godlyCleanWATK +
-    budget.scrollBonus +
-    budget.nonWeaponWATK +
+    b.scrollBonus +
+    b.nonWeaponWATK +
     (base.passiveWATK ?? 0) +
     (base.shieldWATK ?? 0);
 
@@ -103,9 +111,9 @@ function computeBuildBrowser(base: ClassBase): CharacterBuild {
     : [base.secondaryStat];
 
   const gearStats = { STR: 0, DEX: 0, INT: 0, LUK: 0 };
-  gearStats[primary] = budget.gearPrimary + base.weaponStat;
+  gearStats[primary] = b.gearPrimary + base.weaponStat;
   for (const sec of secondaryArr) {
-    gearStats[sec] += budget.gearSecondary;
+    gearStats[sec] += b.gearSecondary;
   }
 
   if (base.shieldStats) {
@@ -115,9 +123,9 @@ function computeBuildBrowser(base: ClassBase): CharacterBuild {
   }
 
   const baseStats = { STR: 4, DEX: 4, INT: 4, LUK: 4 };
-  baseStats[primary] = budget.basePrimary;
+  baseStats[primary] = b.basePrimary;
   for (const sec of secondaryArr) {
-    baseStats[sec] = budget.baseSecondary;
+    baseStats[sec] = b.baseSecondary;
   }
 
   return {
@@ -127,7 +135,7 @@ function computeBuildBrowser(base: ClassBase): CharacterBuild {
     totalWeaponAttack,
     weaponType: base.weaponType,
     weaponSpeed: base.weaponSpeed,
-    attackPotion: budget.attackPotion,
+    attackPotion: b.attackPotion,
     projectile: base.projectile,
     echoActive: base.echoActive,
     mwLevel: base.mwLevel,
@@ -135,6 +143,18 @@ function computeBuildBrowser(base: ClassBase): CharacterBuild {
     sharpEyes: base.sharpEyes,
     shadowPartner: base.shadowPartner,
   };
+}
+
+/**
+ * Browser-safe version of computeBuild from src/data/gear-compute.ts.
+ * Uses statically imported gear-budget.json instead of fs.readFileSync.
+ */
+function computeBuildBrowser(base: ClassBase): CharacterBuild {
+  return computeBuildFromBudget(base, budget);
+}
+
+export function computeBuildAtFunding(base: ClassBase, fraction: number): CharacterBuild {
+  return computeBuildFromBudget(base, scaleBudget(fraction));
 }
 
 /**
@@ -174,6 +194,15 @@ function findTemplateModule(templateKey: string): Record<string, unknown> | null
     ([path]) => path.endsWith(`/${templateKey}.json`)
   );
   return entry ? entry[1] : null;
+}
+
+export function getAllClassBases(): Map<string, ClassBase> {
+  const result = new Map<string, ClassBase>();
+  for (const [path, base] of Object.entries(baseModules)) {
+    const match = path.match(/\/([^/]+)\.base\.json$/);
+    if (match) result.set(match[1], base);
+  }
+  return result;
 }
 
 export interface DiscoveryResult {
