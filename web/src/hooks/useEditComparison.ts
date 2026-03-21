@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { compareProposal } from '@engine/proposals/compare.js';
 import type { SimulationConfig } from '@engine/proposals/simulate.js';
-import type { ScenarioConfig, ComparisonResult, ProposalChange } from '@engine/proposals/types.js';
+import type { ComparisonResult, ProposalChange } from '@engine/proposals/types.js';
 
 import {
   discoveredData,
@@ -10,7 +10,8 @@ import {
   mwData,
 } from '../data/bundle.js';
 import type { BuffOverrides } from '../components/BuffToggles.js';
-import { applyCgsOverride, type CgsValues } from '../utils/cgs.js';
+import type { CgsValues } from '../utils/cgs.js';
+import { buildScenarios, prepareTemplates } from '../utils/scenario-builder.js';
 import type { KbConfig } from './useSimulation.js';
 
 export interface EditComparisonOptions {
@@ -32,12 +33,7 @@ const DEBOUNCE_MS = 80;
 
 function runComparison(
   changes: ProposalChange[],
-  targetCount: number | undefined,
-  elementModifiers: Record<string, number> | undefined,
-  buffOverrides: BuffOverrides | undefined,
-  kbConfig: KbConfig | undefined,
-  cgsOverride: { tier: string; values: CgsValues } | undefined,
-  efficiencyOverrides: Record<string, number[]> | undefined,
+  options: Omit<EditComparisonOptions, 'changes'>,
 ): { result: ComparisonResult | null; error: Error | null } {
   if (changes.length === 0) {
     return { result: null, error: null };
@@ -46,42 +42,8 @@ function runComparison(
   const { classNames, tiers, classDataMap, gearTemplates } = discoveredData;
 
   try {
-    let finalTemplates = new Map(gearTemplates);
-    if (cgsOverride) {
-      finalTemplates = applyCgsOverride(
-        finalTemplates,
-        classDataMap,
-        classNames,
-        cgsOverride.tier,
-        cgsOverride.values,
-      );
-    }
-
-    const hasElementMods = elementModifiers && Object.keys(elementModifiers).length > 0;
-    const hasBuffOverrides = buffOverrides && Object.keys(buffOverrides).length > 0;
-    const hasEfficiencyOverrides = efficiencyOverrides && Object.keys(efficiencyOverrides).length > 0;
-
-    const scenario: ScenarioConfig = { name: 'Baseline' };
-    if (hasElementMods) scenario.elementModifiers = { ...elementModifiers };
-    if (hasBuffOverrides) scenario.overrides = { ...buffOverrides };
-    if (kbConfig) {
-      scenario.bossAttackInterval = kbConfig.bossAttackInterval;
-      scenario.bossAccuracy = kbConfig.bossAccuracy;
-    }
-    if (hasEfficiencyOverrides) scenario.efficiencyOverrides = { ...efficiencyOverrides };
-    const scenarios: ScenarioConfig[] = [scenario];
-    if (targetCount != null && targetCount > 1) {
-      const training: ScenarioConfig = { name: `Training (${targetCount} mobs)`, targetCount };
-      if (hasElementMods) training.elementModifiers = { ...elementModifiers };
-      if (hasBuffOverrides) training.overrides = { ...buffOverrides };
-      if (kbConfig) {
-        training.bossAttackInterval = kbConfig.bossAttackInterval;
-        training.bossAccuracy = kbConfig.bossAccuracy;
-      }
-      if (hasEfficiencyOverrides) training.efficiencyOverrides = { ...efficiencyOverrides };
-      scenarios.push(training);
-    }
-
+    const finalTemplates = prepareTemplates(gearTemplates, classDataMap, classNames, options.cgsOverride);
+    const scenarios = buildScenarios(options);
     const config: SimulationConfig = { classes: classNames, tiers, scenarios };
     const proposal = { name: '', author: '', changes };
 
@@ -110,7 +72,7 @@ export function useEditComparison(options: EditComparisonOptions): EditCompariso
   const [state, setState] = useState<EditComparisonData>(() => {
     if (changes.length > 0) {
       hasRun.current = true;
-      return runComparison(changes, targetCount, elementModifiers, buffOverrides, kbConfig, cgsOverride, efficiencyOverrides);
+      return runComparison(changes, options);
     }
     return { result: null, error: null };
   });
@@ -129,7 +91,7 @@ export function useEditComparison(options: EditComparisonOptions): EditCompariso
     }
 
     const timer = setTimeout(() => {
-      setState(runComparison(changes, targetCount, elementModifiers, buffOverrides, kbConfig, cgsOverride, efficiencyOverrides));
+      setState(runComparison(changes, options));
     }, DEBOUNCE_MS);
     return () => clearTimeout(timer);
   }, [changes, targetCount, elementModifiers, buffOverrides, kbConfig, cgsOverride, efficiencyOverrides]);

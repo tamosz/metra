@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { runSimulation } from '@engine/proposals/simulate.js';
 import type { SimulationConfig } from '@engine/proposals/simulate.js';
-import type { ScenarioConfig, ScenarioResult } from '@engine/proposals/types.js';
+import type { ScenarioResult } from '@engine/proposals/types.js';
 import {
   discoveredData,
   weaponData,
@@ -9,7 +9,7 @@ import {
   mwData,
 } from '../data/bundle.js';
 import type { SimulationOptions } from './useSimulation.js';
-import { applyCgsOverride } from '../utils/cgs.js';
+import { buildScenarios, prepareTemplates } from '../utils/scenario-builder.js';
 
 export interface BuffBreakdown {
   baseDps: number;
@@ -24,61 +24,13 @@ export function breakdownKey(className: string, skillName: string, tier: string,
   return `${className}|${skillName}|${tier}|${scenario}`;
 }
 
-function buildScenarios(
-  options: SimulationOptions,
-  buffOff: Record<string, unknown>,
-): ScenarioConfig[] {
-  const { targetCount, elementModifiers, buffOverrides, kbConfig, efficiencyOverrides } = options;
-  const hasElementMods = elementModifiers && Object.keys(elementModifiers).length > 0;
-  const hasEfficiencyOverrides = efficiencyOverrides && Object.keys(efficiencyOverrides).length > 0;
-
-  const mergedOverrides = { ...buffOverrides, ...buffOff };
-
-  const scenario: ScenarioConfig = { name: 'Baseline', overrides: mergedOverrides };
-  if (hasElementMods) scenario.elementModifiers = { ...elementModifiers };
-  if (kbConfig) {
-    scenario.bossAttackInterval = kbConfig.bossAttackInterval;
-    scenario.bossAccuracy = kbConfig.bossAccuracy;
-  }
-  if (hasEfficiencyOverrides) scenario.efficiencyOverrides = { ...efficiencyOverrides };
-
-  const scenarios: ScenarioConfig[] = [scenario];
-  if (targetCount != null && targetCount > 1) {
-    const training: ScenarioConfig = {
-      name: `Training (${targetCount} mobs)`,
-      targetCount,
-      overrides: mergedOverrides,
-    };
-    if (hasElementMods) training.elementModifiers = { ...elementModifiers };
-    if (kbConfig) {
-      training.bossAttackInterval = kbConfig.bossAttackInterval;
-      training.bossAccuracy = kbConfig.bossAccuracy;
-    }
-    if (hasEfficiencyOverrides) training.efficiencyOverrides = { ...efficiencyOverrides };
-    scenarios.push(training);
-  }
-
-  return scenarios;
-}
-
 function runWithBuffOff(
   options: SimulationOptions,
   buffOff: Record<string, unknown>,
 ): ScenarioResult[] {
   const { classNames, tiers, classDataMap, gearTemplates } = discoveredData;
-  const { cgsOverride } = options;
 
-  let finalTemplates = new Map(gearTemplates);
-  if (cgsOverride) {
-    finalTemplates = applyCgsOverride(
-      finalTemplates,
-      classDataMap,
-      classNames,
-      cgsOverride.tier,
-      cgsOverride.values,
-    );
-  }
-
+  const finalTemplates = prepareTemplates(gearTemplates, classDataMap, classNames, options.cgsOverride);
   const scenarios = buildScenarios(options, buffOff);
   const config: SimulationConfig = { classes: classNames, tiers, scenarios };
   return runSimulation(config, classDataMap, finalTemplates, weaponData, attackSpeedData, mwData);
