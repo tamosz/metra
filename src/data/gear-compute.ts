@@ -20,7 +20,6 @@ export interface ClassBase {
   speedInfusion: boolean;
   sharpEyes: boolean;
   shadowPartner?: boolean;
-  dexRequirement?: number;
   baseSecondaryOverride?: number;
 }
 
