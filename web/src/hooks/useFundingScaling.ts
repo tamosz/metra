@@ -1,20 +1,23 @@
 import { useMemo } from 'react';
-import { calculateSkillDps } from '@metra/engine';
-import type { SkillEntry, ClassSkillData } from '@metra/engine';
+import { runSimulation } from '@engine/proposals/simulate.js';
+import type { SimulationConfig } from '@engine/proposals/simulate.js';
+import type { ScenarioResult } from '@engine/proposals/types.js';
 import {
   allClassBases,
   computeBuildAtFunding,
+  discoveredData,
   weaponData,
   attackSpeedData,
   mwData,
-  discoveredData,
 } from '../data/bundle.js';
-import { CLASS_TO_GROUP, type SkillGroupId } from '../utils/skill-groups.js';
-import { VARIANT_CLASSES } from '../utils/class-colors.js';
+import { isResultVisible, type SkillGroupId } from '../utils/skill-groups.js';
+import { buildScenarios } from '../utils/scenario-builder.js';
+import { resolveActiveScenario } from '../utils/scenario.js';
+import type { SimulationOptions } from './useSimulation.js';
 
 export interface FundingPoint {
   funding: number; // 0–100
-  [classSkillKey: string]: number | string; // DPS values keyed by "ClassName — SkillName"
+  [classSkillKey: string]: number | string;
 }
 
 export interface FundingLine {
@@ -33,196 +36,83 @@ const FUNDING_LEVELS = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
 
 const SEP = ' \u2014 ';
 
-function isSkillVisible(
-  skill: SkillEntry,
-  className: string,
-  activeGroups: Set<SkillGroupId>
-): boolean {
-  if (skill.hidden) return false;
-
-  if (activeGroups.has('main') && skill.headline !== false && !VARIANT_CLASSES.has(className)) {
-    return true;
-  }
-
-  const classGroup = CLASS_TO_GROUP[className];
-  if (classGroup && activeGroups.has(classGroup)) {
-    return true;
-  }
-
-  if (activeGroups.has('multi-target') && (skill.maxTargets ?? 1) > 1) {
-    return true;
-  }
-
-  return false;
-}
-
 export function useFundingScaling(options: {
   activeGroups: Set<SkillGroupId>;
   capEnabled: boolean;
-  targetCount: number;
+  simOptions: SimulationOptions;
 }): FundingScalingData {
-  const { activeGroups, capEnabled, targetCount } = options;
+  const { activeGroups, capEnabled, simOptions } = options;
+  const { targetCount, elementModifiers, buffOverrides, kbConfig, efficiencyOverrides } = simOptions;
 
   return useMemo(() => {
-    const allBases = allClassBases;
-    const { classDataMap } = discoveredData;
+    const { classNames, classDataMap, builds } = discoveredData;
 
-    // Build className → ClassSkillData lookup (classDataMap is keyed by file slug)
-    const classDataByName = new Map<string, ClassSkillData>();
-    for (const data of classDataMap.values()) {
-      classDataByName.set(data.className, data);
+    // Physical class display names (mages don't scale with funding)
+    const physicalClassNames = new Set<string>();
+    for (const base of allClassBases.values()) {
+      if (base.category === 'physical') physicalClassNames.add(base.className);
     }
 
-    // Physical classes only (mages don't use the computed budget model)
-    const physicalBases = Array.from(allBases.values()).filter(
-      (base) => base.category === 'physical'
-    );
+    const scenarios = buildScenarios(simOptions);
+    const config: SimulationConfig = { classes: classNames, scenarios };
 
-    // Determine which lines appear by evaluating at 100% funding.
-    // Element variant winner is determined at full funding — assumed stable across levels.
+    // Run the full simulation at each funding level
+    const allLevelResults: { level: number; results: ScenarioResult[] }[] = [];
+
+    for (const level of FUNDING_LEVELS) {
+      // Build gear templates: physical classes get scaled builds, mages keep their fixed build
+      const scaledBuilds = new Map(builds);
+      for (const [slug, base] of allClassBases.entries()) {
+        if (base.category === 'physical') {
+          scaledBuilds.set(slug, computeBuildAtFunding(base, level / 100));
+        }
+      }
+
+      const results = runSimulation(
+        config,
+        classDataMap,
+        scaledBuilds,
+        weaponData,
+        attackSpeedData,
+        mwData,
+      );
+
+      allLevelResults.push({ level, results });
+    }
+
+    // Determine which results to show based on active scenario and visibility filters.
+    // Use the 100% funding results to determine the set of lines.
+    const fullResults = allLevelResults[allLevelResults.length - 1].results;
+    const activeScenario = resolveActiveScenario(fullResults, targetCount ?? 1);
+
     const lineMap = new Map<string, FundingLine>();
+    for (const r of fullResults) {
+      if (r.scenario !== activeScenario) continue;
+      if (!isResultVisible(r, activeGroups)) continue;
+      // Exclude mages — they don't scale with funding
+      if (!physicalClassNames.has(r.className)) continue;
 
-    for (const base of physicalBases) {
-      const className = base.className;
-      const classData = classDataByName.get(className);
-      if (!classData) continue;
-
-      const fullBuild = computeBuildAtFunding(base, 1.0);
-
-      const comboGroupSeen = new Set<string>();
-      const variantBest = new Map<string, { key: string; dps: number; className: string; skillName: string }>();
-
-      for (const skill of classData.skills) {
-        if (!isSkillVisible(skill, className, activeGroups)) continue;
-
-        if (skill.comboGroup) {
-          if (comboGroupSeen.has(skill.comboGroup)) continue;
-          comboGroupSeen.add(skill.comboGroup);
-          const key = `${className}${SEP}${skill.comboGroup}`;
-          lineMap.set(key, { key, className, skillName: skill.comboGroup });
-          continue;
-        }
-
-        if (skill.elementVariantGroup) {
-          const dpsResult = calculateSkillDps(
-            fullBuild, classData, skill, weaponData, attackSpeedData, mwData
-          );
-          const dps = capEnabled ? dpsResult.dps : dpsResult.uncappedDps;
-          const key = `${className}${SEP}${skill.name}`;
-          const existing = variantBest.get(skill.elementVariantGroup);
-          if (!existing || dps > existing.dps) {
-            variantBest.set(skill.elementVariantGroup, { key, dps, className, skillName: skill.name });
-          }
-          continue;
-        }
-
-        const key = `${className}${SEP}${skill.name}`;
-        lineMap.set(key, { key, className, skillName: skill.name });
-      }
-
-      for (const best of variantBest.values()) {
-        lineMap.set(best.key, { key: best.key, className: best.className, skillName: best.skillName });
-      }
-
-      // Mixed rotations are always headline
-      if (classData.mixedRotations && (activeGroups.has('main') && !VARIANT_CLASSES.has(className) || CLASS_TO_GROUP[className] && activeGroups.has(CLASS_TO_GROUP[className]!))) {
-        for (const rotation of classData.mixedRotations) {
-          const key = `${className}${SEP}${rotation.name}`;
-          lineMap.set(key, { key, className, skillName: rotation.name });
-        }
-      }
+      const key = `${r.className}${SEP}${r.skillName}`;
+      lineMap.set(key, { key, className: r.className, skillName: r.skillName });
     }
 
     const lines = Array.from(lineMap.values());
 
-    // Compute DPS at each funding level
-    const points: FundingPoint[] = FUNDING_LEVELS.map((level) => {
+    // Build chart data points
+    const points: FundingPoint[] = allLevelResults.map(({ level, results }) => {
       const point: FundingPoint = { funding: level };
 
-      for (const base of physicalBases) {
-        const className = base.className;
-        const classData = classDataByName.get(className);
-        if (!classData) continue;
-
-        const build = computeBuildAtFunding(base, level / 100);
-
-        // Compute DPS for all skills (including non-visible ones needed by mixedRotations)
-        const skillDpsByName = new Map<string, number>();
-        const comboDps = new Map<string, number>();
-        const variantBest = new Map<string, { key: string; dps: number }>();
-
-        for (const skill of classData.skills) {
-          const dpsResult = calculateSkillDps(
-            build, classData, skill, weaponData, attackSpeedData, mwData
-          );
-          let dps = capEnabled ? dpsResult.dps : dpsResult.uncappedDps;
-
-          // Apply multi-target scaling (same as runSimulation's applyTargetCount)
-          if (targetCount > 1) {
-            const effectiveTargets = Math.min(skill.maxTargets ?? 1, targetCount);
-            if (effectiveTargets > 1) dps *= effectiveTargets;
-          }
-
-          skillDpsByName.set(skill.name, dps);
-
-          if (!isSkillVisible(skill, className, activeGroups)) continue;
-
-          if (skill.comboGroup) {
-            const key = `${className}${SEP}${skill.comboGroup}`;
-            comboDps.set(key, (comboDps.get(key) ?? 0) + dps);
-            continue;
-          }
-
-          if (skill.elementVariantGroup) {
-            const key = `${className}${SEP}${skill.name}`;
-            const existing = variantBest.get(skill.elementVariantGroup);
-            if (!existing || dps > existing.dps) {
-              variantBest.set(skill.elementVariantGroup, { key, dps });
-            }
-            continue;
-          }
-
-          const key = `${className}${SEP}${skill.name}`;
-          if (lineMap.has(key)) {
-            point[key] = dps;
-          }
-        }
-
-        for (const [key, totalDps] of comboDps.entries()) {
-          if (lineMap.has(key)) {
-            point[key] = totalDps;
-          }
-        }
-
-        for (const best of variantBest.values()) {
-          if (lineMap.has(best.key)) {
-            point[best.key] = best.dps;
-          }
-        }
-
-        // Mixed rotations: weight-averaged DPS from component skills
-        if (classData.mixedRotations) {
-          for (const rotation of classData.mixedRotations) {
-            const key = `${className}${SEP}${rotation.name}`;
-            if (!lineMap.has(key)) continue;
-
-            let blendedDps = 0;
-            let valid = true;
-            for (const component of rotation.components) {
-              const componentDps = skillDpsByName.get(component.skill);
-              if (componentDps == null) { valid = false; break; }
-              blendedDps += componentDps * component.weight;
-            }
-            if (valid) {
-              point[key] = blendedDps;
-            }
-          }
-        }
+      for (const r of results) {
+        if (r.scenario !== activeScenario) continue;
+        const key = `${r.className}${SEP}${r.skillName}`;
+        if (!lineMap.has(key)) continue;
+        point[key] = capEnabled ? r.dps.dps : r.dps.uncappedDps;
       }
 
       return point;
     });
 
+    // Compute tight yDomain
     let yMin = Infinity;
     let yMax = -Infinity;
     for (const point of points) {
@@ -240,5 +130,5 @@ export function useFundingScaling(options: {
     }
 
     return { points, lines, yDomain: [yMin, yMax] };
-  }, [activeGroups, capEnabled, targetCount]);
+  }, [activeGroups, capEnabled, targetCount, elementModifiers, buffOverrides, kbConfig, efficiencyOverrides]);
 }
