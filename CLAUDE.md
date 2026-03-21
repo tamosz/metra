@@ -83,8 +83,8 @@ Actual files:
 - `source-sheet.xlsx` — original spreadsheet (read-only reference).
 - `references/` — extracted forum knowledge organized by topic. Check these BEFORE web-searching royals.ms. When adding forum-sourced data: add to the relevant file with source URL, access date, and which data files it relates to.
 
-### 2. Simulation Engine (`/src/engine`)
-Pure functions. No side effects, no I/O. Takes game data + a character build, outputs damage ranges and DPS.
+### 2. Simulation Engine (`/packages/engine/src`)
+Pure functions. No side effects, no I/O. Takes game data + a character build, outputs damage ranges and DPS. Published as `@metra/engine` workspace package.
 
 **Implemented:**
 - `damage.ts` — raw damage range (min/max), throwing star range (Night Lord/Shad), range cap from damage cap, adjusted range for capped distributions.
@@ -253,6 +253,22 @@ metra/
 ├── package.json
 ├── tsconfig.json
 ├── vitest.config.ts
+├── packages/
+│   └── engine/                  # @metra/engine workspace package (pure functions)
+│       ├── package.json
+│       ├── tsconfig.json
+│       └── src/
+│           ├── types.ts         # WeaponData, ClassSkillData, CharacterBuild, SkillEntry, etc.
+│           ├── damage.ts        # raw damage range, range cap, adjusted range
+│           ├── buffs.ts         # MW, Echo, total attack/stat calculation
+│           ├── attack-speed.ts  # weapon speed resolution, attack time lookup
+│           ├── dps.ts           # full DPS pipeline
+│           ├── build-dps.ts     # build-level DPS calculation
+│           ├── knockback.ts     # KB uptime modeling (Stance, Shadow Shifter)
+│           ├── marginal.ts      # marginal gain analysis
+│           ├── party.ts         # party DPS simulation
+│           ├── party-optimization.ts  # class swap analysis
+│           └── index.ts         # re-exports
 ├── data/
 │   ├── source-sheet.xlsx        # original spreadsheet (read-only reference)
 │   ├── gear-assumptions.md      # gear template assumptions documentation
@@ -275,17 +291,9 @@ metra/
 │   ├── cli.ts                   # CLI entry: baseline rankings or proposal comparison
 │   ├── audit/                   # balance audit (outlier detection, tier sensitivity)
 │   ├── data/
-│   │   ├── types.ts             # WeaponData, ClassSkillData, CharacterBuild, SkillEntry, MixedRotation, etc.
+│   │   ├── types.ts             # re-exports from @metra/engine (backward compat)
 │   │   ├── loader.ts            # JSON data loaders + discoverClassesAndTiers()
 │   │   └── gear-merge.ts        # gear template inheritance (base + tier delta)
-│   ├── engine/
-│   │   ├── damage.ts            # raw damage range, range cap, adjusted range
-│   │   ├── buffs.ts             # MW, Echo, total attack/stat calculation
-│   │   ├── attack-speed.ts      # weapon speed resolution, attack time lookup
-│   │   ├── dps.ts               # full DPS pipeline
-│   │   ├── build-dps.ts         # build-level DPS calculation
-│   │   ├── knockback.ts         # KB uptime modeling (Stance, Shadow Shifter)
-│   │   └── marginal.ts          # marginal gain analysis
 │   ├── proposals/
 │   │   ├── types.ts             # Proposal, ScenarioResult, DeltaEntry, ComparisonResult
 │   │   ├── apply.ts             # apply proposal changes to skill data

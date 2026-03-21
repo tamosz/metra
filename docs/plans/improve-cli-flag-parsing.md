@@ -48,3 +48,5 @@ const { values, positionals } = parseArgs({
 ## Notes
 
 The `parseTargetsFlag()` and `parseKbFlags()` exported functions are used in tests. After refactoring, they can be replaced with a single `parseCliArgs()` that returns a typed options object. Keep the validation logic (positive integer check for targets, positive number for interval).
+
+`allowPositionals: true` is critical — proposal file paths are positional args, and `strict: true` without it would reject them.
