@@ -268,6 +268,7 @@ metra/
 │           ├── marginal.ts      # marginal gain analysis
 │           ├── party.ts         # party DPS simulation
 │           ├── party-optimization.ts  # class swap analysis
+│           ├── party-presets.ts  # predefined party compositions
 │           └── index.ts         # re-exports
 ├── data/
 │   ├── source-sheet.xlsx        # original spreadsheet (read-only reference)
