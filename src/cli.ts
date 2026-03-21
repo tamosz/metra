@@ -76,9 +76,11 @@ export function main() {
   const proposalPath = positionalArgs[0];
 
   // Load game data
-  const weaponData = loadWeapons();
-  const attackSpeedData = loadAttackSpeed();
-  const mwData = loadMW();
+  const gameData = {
+    weaponData: loadWeapons(),
+    attackSpeedData: loadAttackSpeed(),
+    mwData: loadMW(),
+  };
   const { classNames, classDataMap, builds } = discoverClasses();
 
   const baseline: ScenarioConfig = {
@@ -114,9 +116,7 @@ export function main() {
       config,
       classDataMap,
       builds,
-      weaponData,
-      attackSpeedData,
-      mwData
+      gameData,
     );
 
     const displayResults = uncapped
@@ -156,9 +156,7 @@ export function main() {
     config,
     classDataMap,
     builds,
-    weaponData,
-    attackSpeedData,
-    mwData
+    gameData,
   );
 
   const report = renderComparisonReport(result);

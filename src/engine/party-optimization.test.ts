@@ -4,9 +4,7 @@ import {
   type OptimizationConstraints,
   type CharacterBuild,
   type ClassSkillData,
-  type WeaponData,
-  type AttackSpeedData,
-  type MWData,
+  type GameData,
 } from '@metra/engine';
 
 // ── Fixtures ───────────────────────────────────────────────────────────────────
@@ -50,23 +48,23 @@ function makeClassData(className: string, basePower = 260): ClassSkillData {
   };
 }
 
-const weaponData: WeaponData = {
-  types: [
-    { name: '2H Sword', slashMultiplier: 4.6, stabMultiplier: 0 },
+const gameData: GameData = {
+  weaponData: {
+    types: [
+      { name: '2H Sword', slashMultiplier: 4.6, stabMultiplier: 0 },
+    ],
+  },
+  attackSpeedData: {
+    categories: ['Brandish'],
+    entries: [
+      { speed: 2, times: { Brandish: 0.63 } },
+    ],
+  },
+  mwData: [
+    { level: 0, multiplier: 1 },
+    { level: 20, multiplier: 1.1 },
   ],
 };
-
-const attackSpeedData: AttackSpeedData = {
-  categories: ['Brandish'],
-  entries: [
-    { speed: 2, times: { Brandish: 0.63 } },
-  ],
-};
-
-const mwData: MWData = [
-  { level: 0, multiplier: 1 },
-  { level: 20, multiplier: 1.1 },
-];
 
 // Three classes: alpha (highest base power), beta, gamma (lowest)
 function makeFixtures() {
@@ -88,7 +86,7 @@ function makeFixtures() {
 describe('findOptimalParty', () => {
   it('finds the best party from available classes', () => {
     const { classDataMap, gearTemplates } = makeFixtures();
-    const result = findOptimalParty(classDataMap, gearTemplates, weaponData, attackSpeedData, mwData, 2);
+    const result = findOptimalParty(classDataMap, gearTemplates, gameData, 2);
 
     // Best 2-member party should prefer alpha (highest DPS)
     const optimalClasses = result.optimal.party.members.map((m) => m.className);
@@ -98,7 +96,7 @@ describe('findOptimalParty', () => {
 
   it('returns topParties sorted by descending total DPS', () => {
     const { classDataMap, gearTemplates } = makeFixtures();
-    const result = findOptimalParty(classDataMap, gearTemplates, weaponData, attackSpeedData, mwData, 2, undefined, 5);
+    const result = findOptimalParty(classDataMap, gearTemplates, gameData, 2, undefined, 5);
 
     expect(result.topParties.length).toBeLessThanOrEqual(5);
     for (let i = 1; i < result.topParties.length; i++) {
@@ -109,7 +107,7 @@ describe('findOptimalParty', () => {
   it('returns exactly topN parties when enough combinations exist', () => {
     const { classDataMap, gearTemplates } = makeFixtures();
     // With 3 classes and party size 2, combinations with repetition = C(3+2-1,2) = 6
-    const result = findOptimalParty(classDataMap, gearTemplates, weaponData, attackSpeedData, mwData, 2, undefined, 3);
+    const result = findOptimalParty(classDataMap, gearTemplates, gameData, 2, undefined, 3);
     expect(result.topParties).toHaveLength(3);
   });
 
@@ -121,14 +119,14 @@ describe('findOptimalParty', () => {
       ['alpha-perfect', makeBuild('alpha')],
     ]);
     // Only 1 combination with 1 class and party size 1
-    const result = findOptimalParty(classDataMap, gearTemplates, weaponData, attackSpeedData, mwData, 1, undefined, 10);
+    const result = findOptimalParty(classDataMap, gearTemplates, gameData, 1, undefined, 10);
     expect(result.topParties).toHaveLength(1);
   });
 
   it('respects required constraint — required classes always appear in optimal', () => {
     const { classDataMap, gearTemplates } = makeFixtures();
     const constraints: OptimizationConstraints = { required: ['gamma'] };
-    const result = findOptimalParty(classDataMap, gearTemplates, weaponData, attackSpeedData, mwData, 2, constraints);
+    const result = findOptimalParty(classDataMap, gearTemplates, gameData, 2, constraints);
 
     // Every party must include 'gamma'
     for (const party of result.topParties) {
@@ -140,7 +138,7 @@ describe('findOptimalParty', () => {
   it('respects excluded constraint — excluded classes never appear', () => {
     const { classDataMap, gearTemplates } = makeFixtures();
     const constraints: OptimizationConstraints = { excluded: ['alpha'] };
-    const result = findOptimalParty(classDataMap, gearTemplates, weaponData, attackSpeedData, mwData, 2, constraints);
+    const result = findOptimalParty(classDataMap, gearTemplates, gameData, 2, constraints);
 
     for (const party of result.topParties) {
       const classNames = party.party.members.map((m) => m.className);
@@ -151,7 +149,7 @@ describe('findOptimalParty', () => {
   it('respects maxDuplicates constraint', () => {
     const { classDataMap, gearTemplates } = makeFixtures();
     const constraints: OptimizationConstraints = { maxDuplicates: 1 };
-    const result = findOptimalParty(classDataMap, gearTemplates, weaponData, attackSpeedData, mwData, 2, constraints, 10);
+    const result = findOptimalParty(classDataMap, gearTemplates, gameData, 2, constraints, 10);
 
     for (const party of result.topParties) {
       const counts = new Map<string, number>();
@@ -166,7 +164,7 @@ describe('findOptimalParty', () => {
 
   it('optimal is always the first entry in topParties', () => {
     const { classDataMap, gearTemplates } = makeFixtures();
-    const result = findOptimalParty(classDataMap, gearTemplates, weaponData, attackSpeedData, mwData, 2);
+    const result = findOptimalParty(classDataMap, gearTemplates, gameData, 2);
     expect(result.optimal).toBe(result.topParties[0]);
   });
 
@@ -174,7 +172,7 @@ describe('findOptimalParty', () => {
     const { classDataMap, gearTemplates } = makeFixtures();
     const constraints: OptimizationConstraints = { required: ['alpha', 'beta', 'gamma'] };
     expect(() =>
-      findOptimalParty(classDataMap, gearTemplates, weaponData, attackSpeedData, mwData, 2, constraints),
+      findOptimalParty(classDataMap, gearTemplates, gameData, 2, constraints),
     ).toThrow();
   });
 
@@ -188,7 +186,7 @@ describe('findOptimalParty', () => {
       // no 'no-gear-perfect' entry
     ]);
 
-    const result = findOptimalParty(classDataMap, gearTemplates, weaponData, attackSpeedData, mwData, 1);
+    const result = findOptimalParty(classDataMap, gearTemplates, gameData, 1);
     const classNames = result.optimal.party.members.map((m) => m.className);
     expect(classNames).not.toContain('no-gear');
     expect(classNames).toContain('alpha');

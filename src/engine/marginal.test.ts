@@ -1,11 +1,13 @@
 import { describe, it, expect } from 'vitest';
-import { calculateMarginalGains } from '@metra/engine';
+import { calculateMarginalGains, type GameData } from '@metra/engine';
 import { loadWeapons, loadAttackSpeed, loadMW, loadClassSkills } from '../data/loader.js';
 import { TEST_BUILDS } from './test-builds.js';
 
-const weaponData = loadWeapons();
-const attackSpeedData = loadAttackSpeed();
-const mwData = loadMW();
+const gameData: GameData = {
+  weaponData: loadWeapons(),
+  attackSpeedData: loadAttackSpeed(),
+  mwData: loadMW(),
+};
 
 describe('calculateMarginalGains', () => {
   it('returns gains for WATK, primary, and secondary stats', () => {
@@ -13,7 +15,7 @@ describe('calculateMarginalGains', () => {
     const build = TEST_BUILDS['hero-high'];
     const skill = classData.skills.find(s => s.name === 'Brandish (Sword)')!;
 
-    const gains = calculateMarginalGains(build, classData, skill, weaponData, attackSpeedData, mwData);
+    const gains = calculateMarginalGains(build, classData, skill, gameData);
 
     // Should have 3 entries: WATK, STR (primary), DEX (secondary)
     expect(gains).toHaveLength(3);
@@ -37,7 +39,7 @@ describe('calculateMarginalGains', () => {
     const build = TEST_BUILDS['archmage-il-high'];
     const skill = classData.skills.find(s => s.name === 'Chain Lightning')!;
 
-    const gains = calculateMarginalGains(build, classData, skill, weaponData, attackSpeedData, mwData);
+    const gains = calculateMarginalGains(build, classData, skill, gameData);
 
     expect(gains.map(g => g.stat)).toEqual(expect.arrayContaining(['WATK', 'INT', 'LUK']));
   });
@@ -47,7 +49,7 @@ describe('calculateMarginalGains', () => {
     const build = TEST_BUILDS['shadower-high'];
     const skill = classData.skills.find(s => s.name === 'Savage Blow')!;
 
-    const gains = calculateMarginalGains(build, classData, skill, weaponData, attackSpeedData, mwData);
+    const gains = calculateMarginalGains(build, classData, skill, gameData);
 
     // Shadower: WATK, LUK (primary), STR (secondary), DEX (secondary)
     expect(gains).toHaveLength(4);
@@ -59,7 +61,7 @@ describe('calculateMarginalGains', () => {
     const build = TEST_BUILDS['marksman-high'];
     const snipe = classData.skills.find(s => s.name === 'Snipe')!;
 
-    const gains = calculateMarginalGains(build, classData, snipe, weaponData, attackSpeedData, mwData);
+    const gains = calculateMarginalGains(build, classData, snipe, gameData);
 
     // Snipe has fixedDamage — all stat gains should be 0
     for (const g of gains) {

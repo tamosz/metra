@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { calculateMarginalGains, calculateSkillDps, type MarginalGain, type CharacterBuild, type ClassSkillData, type SkillEntry } from '@metra/engine';
-import { weaponData, attackSpeedData, mwData } from '../data/bundle.js';
+import { gameData } from '../data/bundle.js';
 import { formatDps } from '../utils/format.js';
 import { TH } from '../utils/styles.js';
 
@@ -17,7 +17,7 @@ export function MarginalGainsTable({ build, classData }: MarginalGainsTableProps
     const comboSkills = new Map<string, { skills: SkillEntry[]; totalDps: number }>();
 
     for (const skill of classData.skills) {
-      const dps = calculateSkillDps(build, classData, skill, weaponData, attackSpeedData, mwData).dps;
+      const dps = calculateSkillDps(build, classData, skill, gameData).dps;
       if (skill.comboGroup) {
         const existing = comboSkills.get(skill.comboGroup);
         if (existing) {
@@ -50,7 +50,7 @@ export function MarginalGainsTable({ build, classData }: MarginalGainsTableProps
       skillLabel = bestComboGroup;
       // Sum marginal gains across all sub-skills in the combo
       const gainsBySubSkill = group.skills.map(skill =>
-        calculateMarginalGains(build, classData, skill, weaponData, attackSpeedData, mwData)
+        calculateMarginalGains(build, classData, skill, gameData)
       );
       const statMap = new Map<string, MarginalGain>();
       for (const subGains of gainsBySubSkill) {
@@ -70,7 +70,7 @@ export function MarginalGainsTable({ build, classData }: MarginalGainsTableProps
       marginalGains.sort((a, b) => b.dpsGain - a.dpsGain);
     } else if (bestSingle) {
       skillLabel = bestSingle.name;
-      marginalGains = calculateMarginalGains(build, classData, bestSingle, weaponData, attackSpeedData, mwData);
+      marginalGains = calculateMarginalGains(build, classData, bestSingle, gameData);
     } else {
       return { bestSkill: null, gains: [] };
     }

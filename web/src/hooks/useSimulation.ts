@@ -5,9 +5,7 @@ import type { ScenarioResult } from '@engine/proposals/types.js';
 
 import {
   discoveredData,
-  weaponData,
-  attackSpeedData,
-  mwData,
+  gameData,
 } from '../data/bundle.js';
 import type { BuffOverrides } from '../components/BuffToggles.js';
 import { buildScenarios } from '../utils/scenario-builder.js';
@@ -44,9 +42,7 @@ export function useSimulation(options: SimulationOptions = {}): SimulationData {
         config,
         classDataMap,
         builds,
-        weaponData,
-        attackSpeedData,
-        mwData
+        gameData,
       );
 
       return { results, classNames, error: null };

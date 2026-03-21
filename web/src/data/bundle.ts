@@ -2,6 +2,7 @@ import {
   type WeaponData,
   type AttackSpeedData,
   type MWData,
+  type GameData,
   type ClassSkillData,
   type CharacterBuild,
   type StatName,
@@ -50,6 +51,7 @@ const templateModules = import.meta.glob([
 export const weaponData: WeaponData = weaponsJson as WeaponData;
 export const attackSpeedData: AttackSpeedData = attackSpeedJson as AttackSpeedData;
 export const mwData: MWData = (mwJson as { entries: MWData }).entries;
+export const gameData: GameData = { weaponData, attackSpeedData, mwData };
 
 export interface ClassBase {
   className: string;

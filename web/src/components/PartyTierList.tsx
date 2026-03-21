@@ -6,7 +6,7 @@ import {
   type PartySimulationResult,
   type Party,
 } from '@metra/engine';
-import { discoveredData, weaponData, attackSpeedData, mwData } from '../data/bundle.js';
+import { discoveredData, gameData } from '../data/bundle.js';
 import { getClassColor, getClassColorWithOpacity, VARIANT_CLASS_SLUGS } from '../utils/class-colors.js';
 import { colors } from '../theme.js';
 
@@ -190,7 +190,7 @@ export function PartyTierList({ onLoadParty }: PartyTierListProps) {
     try {
       const excluded = [...VARIANT_CLASS_SLUGS];
       const opt = findOptimalParty(
-        classDataMap, builds, weaponData, attackSpeedData, mwData,
+        classDataMap, builds, gameData,
         6,
         { excluded, ...(maxDuplicates !== undefined ? { maxDuplicates } : {}) },
         100_000,
@@ -205,7 +205,7 @@ export function PartyTierList({ onLoadParty }: PartyTierListProps) {
     if (expandedRank === null || expandedRank > topParties.length) return null;
     const party = topParties[expandedRank - 1];
     const p: Party = { name: '', members: party.members.map((m) => ({ className: m.className })) };
-    return computeBuffAttribution(p, classDataMap, builds, weaponData, attackSpeedData, mwData);
+    return computeBuffAttribution(p, classDataMap, builds, gameData);
   }, [expandedRank, topParties, classDataMap, builds]);
 
   if (topParties.length === 0) {

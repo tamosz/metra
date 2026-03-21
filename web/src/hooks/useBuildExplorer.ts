@@ -2,9 +2,7 @@ import { useState, useMemo, useCallback } from 'react';
 import { calculateBuildDps, type CharacterBuild, type ClassSkillData } from '@metra/engine';
 import {
   discoveredData,
-  weaponData,
-  attackSpeedData,
-  mwData,
+  gameData,
 } from '../data/bundle.js';
 
 export interface BuildOverrides {
@@ -76,7 +74,7 @@ function computeAggregatedDps(
   build: CharacterBuild,
   classData: ClassSkillData,
 ): { skillName: string; dps: number }[] {
-  const result = calculateBuildDps(build, classData, weaponData, attackSpeedData, mwData);
+  const result = calculateBuildDps(build, classData, gameData);
   return result.aggregated.map((row) => ({ skillName: row.skillName, dps: row.dps }));
 }
 

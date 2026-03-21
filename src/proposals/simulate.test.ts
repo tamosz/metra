@@ -7,14 +7,12 @@ import {
 } from '../data/loader.js';
 import { TEST_BUILDS } from '../engine/test-builds.js';
 import type {
-  WeaponData,
-  AttackSpeedData,
-  MWData,
+  GameData,
   ClassSkillData,
   CharacterBuild,
   DpsResult,
 } from '@metra/engine';
-import { runSimulation, applyPdr, applyTargetCount, applyKnockbackUptime } from './simulate.js';
+import { runSimulation, scaleDpsResult, targetCountFactor } from './simulate.js';
 import type { SimulationConfig, GearTemplateMap } from './simulate.js';
 import type { ScenarioConfig } from './types.js';
 
@@ -73,30 +71,30 @@ function makeMixedRotationFixtures() {
     sharpEyes: true,
   };
 
-  const weaponData: WeaponData = {
-    types: [{ name: 'Gun', slashMultiplier: 3.6, stabMultiplier: 3.6 }],
+  const gameData: GameData = {
+    weaponData: {
+      types: [{ name: 'Gun', slashMultiplier: 3.6, stabMultiplier: 3.6 }],
+    },
+    attackSpeedData: {
+      categories: ['Battleship Cannon', 'Hurricane'],
+      entries: [{ speed: 2, times: { 'Battleship Cannon': 0.6, Hurricane: 0.12 } }],
+    },
+    mwData: [{ level: 20, multiplier: 1.1 }],
   };
 
-  const attackSpeedData: AttackSpeedData = {
-    categories: ['Battleship Cannon', 'Hurricane'],
-    entries: [{ speed: 2, times: { 'Battleship Cannon': 0.6, Hurricane: 0.12 } }],
-  };
-
-  const mwData: MWData = [{ level: 20, multiplier: 1.1 }];
-
-  return { classData, build, weaponData, attackSpeedData, mwData };
+  return { classData, build, gameData };
 }
 
-let weaponData: WeaponData;
-let attackSpeedData: AttackSpeedData;
-let mwData: MWData;
+let gameData: GameData;
 let classDataMap: Map<string, ClassSkillData>;
 let gearTemplates: GearTemplateMap;
 
 beforeAll(() => {
-  weaponData = loadWeapons();
-  attackSpeedData = loadAttackSpeed();
-  mwData = loadMW();
+  gameData = {
+    weaponData: loadWeapons(),
+    attackSpeedData: loadAttackSpeed(),
+    mwData: loadMW(),
+  };
 
   classDataMap = new Map([
     ['hero', loadClassSkills('Hero')],
@@ -127,7 +125,7 @@ describe('runSimulation basics', () => {
 
     const results = runSimulation(
       config, classDataMap, gearTemplates,
-      weaponData, attackSpeedData, mwData
+      gameData
     );
 
     expect(results.length).toBeGreaterThan(0);
@@ -144,7 +142,7 @@ describe('runSimulation basics', () => {
 
     const results = runSimulation(
       config, classDataMap, gearTemplates,
-      weaponData, attackSpeedData, mwData
+      gameData
     );
 
     const heroSkillCount = classDataMap.get('hero')!.skills.length;
@@ -159,7 +157,7 @@ describe('runSimulation basics', () => {
 
     const results = runSimulation(
       config, classDataMap, gearTemplates,
-      weaponData, attackSpeedData, mwData
+      gameData
     );
 
     const heroSkillCount = classDataMap.get('hero')!.skills.length;
@@ -174,7 +172,7 @@ describe('runSimulation basics', () => {
 
     const results = runSimulation(
       config, classDataMap, gearTemplates,
-      weaponData, attackSpeedData, mwData
+      gameData
     );
 
     for (const r of results) {
@@ -194,7 +192,7 @@ describe('runSimulation error handling', () => {
     expect(() =>
       runSimulation(
         config, classDataMap, gearTemplates,
-        weaponData, attackSpeedData, mwData
+        gameData
       )
     ).toThrow(/Class "nonexistent" not found/);
   });
@@ -208,7 +206,7 @@ describe('runSimulation error handling', () => {
     expect(() =>
       runSimulation(
         config, classDataMap, emptyTemplates,
-        weaponData, attackSpeedData, mwData
+        gameData
       )
     ).toThrow(/Build for "hero" not found/);
   });
@@ -235,7 +233,7 @@ describe('runSimulation scenario overrides', () => {
 
     const results = runSimulation(
       config, classDataMap, gearTemplates,
-      weaponData, attackSpeedData, mwData
+      gameData
     );
 
     const buffed = results.find(
@@ -261,7 +259,7 @@ describe('runSimulation scenario overrides', () => {
 
     const results = runSimulation(
       config, classDataMap, gearTemplates,
-      weaponData, attackSpeedData, mwData
+      gameData
     );
 
     const buffed = results.find(
@@ -290,7 +288,7 @@ describe('runSimulation scenario overrides', () => {
 
     runSimulation(
       config, classDataMap, gearTemplates,
-      weaponData, attackSpeedData, mwData
+      gameData
     );
 
     const buildAfter = gearTemplates.get('hero')!;
@@ -311,7 +309,7 @@ describe('runSimulation PDR', () => {
 
     const results = runSimulation(
       config, classDataMap, gearTemplates,
-      weaponData, attackSpeedData, mwData
+      gameData
     );
 
     const buffed = results.find(
@@ -335,7 +333,7 @@ describe('runSimulation PDR', () => {
 
     const results = runSimulation(
       config, classDataMap, gearTemplates,
-      weaponData, attackSpeedData, mwData
+      gameData
     );
 
     const buffed = results.find(
@@ -356,7 +354,7 @@ describe('runSimulation PDR', () => {
 
     const results = runSimulation(
       config, classDataMap, gearTemplates,
-      weaponData, attackSpeedData, mwData
+      gameData
     );
 
     for (const r of results) {
@@ -377,7 +375,7 @@ describe('elementModifiers', () => {
 
     const results = runSimulation(
       config, classDataMap, gearTemplates,
-      weaponData, attackSpeedData, mwData
+      gameData
     );
 
     const buffed = results.find(
@@ -407,7 +405,7 @@ describe('elementModifiers', () => {
 
     const results = runSimulation(
       config, classDataMap, gearTemplates,
-      weaponData, attackSpeedData, mwData
+      gameData
     );
 
     // With only Holy boosted, Holy Blast still wins (1.4 * 1.5 = 2.1 > 1.3)
@@ -430,7 +428,7 @@ describe('elementModifiers', () => {
 
     const results = runSimulation(
       config, classDataMap, gearTemplates,
-      weaponData, attackSpeedData, mwData
+      gameData
     );
 
     const holyOnly = results.find(
@@ -454,7 +452,7 @@ describe('elementModifiers', () => {
 
     const results = runSimulation(
       config, classDataMap, gearTemplates,
-      weaponData, attackSpeedData, mwData
+      gameData
     );
 
     const buffed = results.find(
@@ -482,7 +480,7 @@ describe('comboGroup aggregation', () => {
 
     const results = runSimulation(
       config, classDataMap, gearTemplates,
-      weaponData, attackSpeedData, mwData
+      gameData
     );
 
     // Bucc has 4 Barrage+Demo sub-skills (standalone Demolition is hidden) + Dragon Strike
@@ -498,7 +496,7 @@ describe('comboGroup aggregation', () => {
 
     const results = runSimulation(
       config, classDataMap, gearTemplates,
-      weaponData, attackSpeedData, mwData
+      gameData
     );
 
     const combo = results.find(r => r.skillName === 'Barrage + Demolition');
@@ -515,7 +513,7 @@ describe('comboGroup aggregation', () => {
     // Run with real data — DPS value will be computed from new combo data
     const results = runSimulation(
       config, classDataMap, gearTemplates,
-      weaponData, attackSpeedData, mwData
+      gameData
     );
 
     const combo = results.find(r => r.skillName === 'Barrage + Demolition')!;
@@ -531,7 +529,7 @@ describe('comboGroup aggregation', () => {
 
     const results = runSimulation(
       config, classDataMap, gearTemplates,
-      weaponData, attackSpeedData, mwData
+      gameData
     );
 
     const demolition = results.find(r => r.skillName === 'Demolition');
@@ -546,7 +544,7 @@ describe('comboGroup aggregation', () => {
 
     const results = runSimulation(
       config, classDataMap, gearTemplates,
-      weaponData, attackSpeedData, mwData
+      gameData
     );
 
     // 2 skills after aggregation (hidden Demolition excluded, Dragon Strike standalone) × 2 scenarios = 4
@@ -566,7 +564,7 @@ describe('targetCount (multi-target scaling)', () => {
 
     const results = runSimulation(
       config, classDataMap, gearTemplates,
-      weaponData, attackSpeedData, mwData
+      gameData
     );
 
     const buffed = results.find(r => r.scenario === 'Buffed')!;
@@ -587,7 +585,7 @@ describe('targetCount (multi-target scaling)', () => {
 
     const results = runSimulation(
       config, classDataMap, gearTemplates,
-      weaponData, attackSpeedData, mwData
+      gameData
     );
 
     const buffed = results.find(r => r.scenario === 'Buffed')!;
@@ -608,7 +606,7 @@ describe('targetCount (multi-target scaling)', () => {
 
     const results = runSimulation(
       config, classDataMap, gearTemplates,
-      weaponData, attackSpeedData, mwData
+      gameData
     );
 
     const buffed = results.find(r => r.scenario === 'Buffed')!;
@@ -629,7 +627,7 @@ describe('targetCount (multi-target scaling)', () => {
 
     const results = runSimulation(
       config, classDataMap, gearTemplates,
-      weaponData, attackSpeedData, mwData
+      gameData
     );
 
     const buffed = results.find(r => r.scenario === 'Buffed')!;
@@ -649,7 +647,7 @@ describe('targetCount (multi-target scaling)', () => {
 
     const results = runSimulation(
       config, classDataMap, gearTemplates,
-      weaponData, attackSpeedData, mwData
+      gameData
     );
 
     const buffedCombo = results.find(
@@ -676,7 +674,7 @@ describe('targetCount (multi-target scaling)', () => {
 
     const results = runSimulation(
       config, classDataMap, gearTemplates,
-      weaponData, attackSpeedData, mwData
+      gameData
     );
 
     const chainBuffed = results.find(
@@ -763,7 +761,7 @@ describe('targetCount (multi-target scaling)', () => {
 
     const results = runSimulation(
       config, localClassDataMap, localGearTemplates,
-      weaponData, attackSpeedData, mwData
+      gameData
     );
 
     const bouncyBuffed = results.find(
@@ -848,7 +846,7 @@ describe('bounceDecay edge cases', () => {
 
     const results = runSimulation(
       config, localClassDataMap, localGearTemplates,
-      weaponData, attackSpeedData, mwData
+      gameData
     );
 
     const buffed = results.find(r => r.scenario === 'Buffed')!;
@@ -874,7 +872,7 @@ describe('bounceDecay edge cases', () => {
 
     const results = runSimulation(
       config, localClassDataMap, localGearTemplates,
-      weaponData, attackSpeedData, mwData
+      gameData
     );
 
     const buffed = results.find(r => r.scenario === 'Buffed')!;
@@ -899,7 +897,7 @@ describe('bounceDecay edge cases', () => {
 
     const results = runSimulation(
       config, localClassDataMap, localGearTemplates,
-      weaponData, attackSpeedData, mwData
+      gameData
     );
 
     const buffed = results.find(r => r.scenario === 'Buffed')!;
@@ -921,7 +919,7 @@ describe('elementOptions (adaptive element selection)', () => {
 
     const results = runSimulation(
       config, classDataMap, gearTemplates,
-      weaponData, attackSpeedData, mwData
+      gameData
     );
 
     const buffed = results.find(r => r.className === 'Paladin' && r.scenario === 'Buffed')!;
@@ -943,7 +941,7 @@ describe('elementOptions (adaptive element selection)', () => {
 
     const results = runSimulation(
       config, classDataMap, gearTemplates,
-      weaponData, attackSpeedData, mwData
+      gameData
     );
 
     const buffed = results.find(r => r.className === 'Paladin' && r.scenario === 'Buffed')!;
@@ -965,7 +963,7 @@ describe('elementOptions (adaptive element selection)', () => {
 
     const results = runSimulation(
       config, classDataMap, gearTemplates,
-      weaponData, attackSpeedData, mwData
+      gameData
     );
 
     const buffed = results.find(r => r.className === 'Paladin (BW)' && r.scenario === 'Buffed')!;
@@ -979,12 +977,12 @@ describe('elementOptions (adaptive element selection)', () => {
 
 describe('mixed rotations', () => {
   it('creates a weighted DPS entry from component skills', () => {
-    const { classData, build, weaponData, attackSpeedData, mwData } = makeMixedRotationFixtures();
+    const { classData, build, gameData } = makeMixedRotationFixtures();
     const classDataMap = new Map([['testclass', classData]]);
     const gearTemplates = new Map([['testclass', build]]);
     const config: SimulationConfig = { classes: ['testclass'] };
 
-    const results = runSimulation(config, classDataMap, gearTemplates, weaponData, attackSpeedData, mwData);
+    const results = runSimulation(config, classDataMap, gearTemplates, gameData);
 
     const skillA = results.find(r => r.skillName === 'Skill A');
     const skillB = results.find(r => r.skillName === 'Skill B');
@@ -1008,7 +1006,7 @@ describe('mixed rotations', () => {
   });
 
   it('applies element modifiers to mixed rotation components', () => {
-    const { classData, build, weaponData, attackSpeedData, mwData } = makeMixedRotationFixtures();
+    const { classData, build, gameData } = makeMixedRotationFixtures();
     classData.skills[0].element = 'Fire';
 
     const classDataMap = new Map([['testclass', classData]]);
@@ -1018,7 +1016,7 @@ describe('mixed rotations', () => {
       scenarios: [{ name: 'Test', elementModifiers: { Fire: 1.5 } }],
     };
 
-    const results = runSimulation(config, classDataMap, gearTemplates, weaponData, attackSpeedData, mwData);
+    const results = runSimulation(config, classDataMap, gearTemplates, gameData);
 
     const skillA = results.find(r => r.skillName === 'Skill A');
     const skillB = results.find(r => r.skillName === 'Skill B');
@@ -1030,7 +1028,7 @@ describe('mixed rotations', () => {
   });
 
   it('uses efficiencyOverrides when provided', () => {
-    const { classData, build, weaponData, attackSpeedData, mwData } = makeMixedRotationFixtures();
+    const { classData, build, gameData } = makeMixedRotationFixtures();
     const classDataMap = new Map([['testclass', classData]]);
     const gearTemplates = new Map([['testclass', build]]);
     const config: SimulationConfig = {
@@ -1041,7 +1039,7 @@ describe('mixed rotations', () => {
       }],
     };
 
-    const results = runSimulation(config, classDataMap, gearTemplates, weaponData, attackSpeedData, mwData);
+    const results = runSimulation(config, classDataMap, gearTemplates, gameData);
 
     const skillA = results.find(r => r.skillName === 'Skill A');
     const skillB = results.find(r => r.skillName === 'Skill B');
@@ -1053,7 +1051,7 @@ describe('mixed rotations', () => {
   });
 
   it('ignores malformed efficiencyOverrides (wrong array length)', () => {
-    const { classData, build, weaponData, attackSpeedData, mwData } = makeMixedRotationFixtures();
+    const { classData, build, gameData } = makeMixedRotationFixtures();
     const classDataMap = new Map([['testclass', classData]]);
     const gearTemplates = new Map([['testclass', build]]);
     const config: SimulationConfig = {
@@ -1064,7 +1062,7 @@ describe('mixed rotations', () => {
       }],
     };
 
-    const results = runSimulation(config, classDataMap, gearTemplates, weaponData, attackSpeedData, mwData);
+    const results = runSimulation(config, classDataMap, gearTemplates, gameData);
 
     const skillA = results.find(r => r.skillName === 'Skill A');
     const skillB = results.find(r => r.skillName === 'Skill B');
@@ -1076,14 +1074,14 @@ describe('mixed rotations', () => {
   });
 
   it('classes without mixedRotations produce no extra results', () => {
-    const { classData, build, weaponData, attackSpeedData, mwData } = makeMixedRotationFixtures();
+    const { classData, build, gameData } = makeMixedRotationFixtures();
     delete (classData as any).mixedRotations;
 
     const classDataMap = new Map([['testclass', classData]]);
     const gearTemplates = new Map([['testclass', build]]);
     const config: SimulationConfig = { classes: ['testclass'] };
 
-    const results = runSimulation(config, classDataMap, gearTemplates, weaponData, attackSpeedData, mwData);
+    const results = runSimulation(config, classDataMap, gearTemplates, gameData);
     expect(results).toHaveLength(2); // Just Skill A and Skill B
   });
 });
@@ -1097,7 +1095,7 @@ describe('elementVariantGroup', () => {
 
     const results = runSimulation(
       config, classDataMap, gearTemplates,
-      weaponData, attackSpeedData, mwData
+      gameData
     );
 
     const paladinResults = results.filter(r => r.className === 'Paladin');
@@ -1113,7 +1111,7 @@ describe('elementVariantGroup', () => {
 
     const results = runSimulation(
       config, classDataMap, gearTemplates,
-      weaponData, attackSpeedData, mwData
+      gameData
     );
 
     const paladinResults = results.filter(r => r.className === 'Paladin');
@@ -1129,7 +1127,7 @@ describe('elementVariantGroup', () => {
 
     const results = runSimulation(
       config, classDataMap, gearTemplates,
-      weaponData, attackSpeedData, mwData
+      gameData
     );
 
     const paladinResults = results.filter(r => r.className === 'Paladin');
@@ -1145,7 +1143,7 @@ describe('elementVariantGroup', () => {
 
     const results = runSimulation(
       config, classDataMap, gearTemplates,
-      weaponData, attackSpeedData, mwData
+      gameData
     );
 
     const paladinResults = results.filter(r => r.className === 'Paladin');
@@ -1163,7 +1161,7 @@ describe('elementVariantGroup', () => {
 
     const results = runSimulation(
       config, classDataMap, gearTemplates,
-      weaponData, attackSpeedData, mwData
+      gameData
     );
 
     const buffed = results.filter(r => r.className === 'Paladin (BW)' && r.scenario === 'Buffed');
@@ -1186,7 +1184,7 @@ describe('elementVariantGroup', () => {
 
     const results = runSimulation(
       config, classDataMap, gearTemplates,
-      weaponData, attackSpeedData, mwData
+      gameData
     );
 
     const buffed = results.find(r => r.className === 'Paladin' && r.scenario === 'Buffed')!;
@@ -1206,7 +1204,7 @@ describe('modifier composition (PDR + KB + element + targets)', () => {
     };
     const baseResults = runSimulation(
       baseConfig, classDataMap, gearTemplates,
-      weaponData, attackSpeedData, mwData
+      gameData
     );
 
     // Combined: PDR 0.3 + KB + Holy 1.5x + 3 targets
@@ -1223,7 +1221,7 @@ describe('modifier composition (PDR + KB + element + targets)', () => {
     };
     const composedResults = runSimulation(
       composedConfig, classDataMap, gearTemplates,
-      weaponData, attackSpeedData, mwData
+      gameData
     );
 
     const baselinePaladin = baseResults.find(
@@ -1263,7 +1261,7 @@ describe('modifier composition (PDR + KB + element + targets)', () => {
 
     const results = runSimulation(
       kbConfig, classDataMap, gearTemplates,
-      weaponData, attackSpeedData, mwData
+      gameData
     );
 
     const heroNoKb = results.find(r => r.className === 'Hero' && r.scenario === 'No KB')!;
@@ -1299,7 +1297,7 @@ describe('modifier composition (PDR + KB + element + targets)', () => {
     const run = (scenarios: ScenarioConfig[]) =>
       runSimulation(
         { classes: ['paladin'], scenarios },
-        classDataMap, gearTemplates, weaponData, attackSpeedData, mwData
+        classDataMap, gearTemplates, gameData
       );
 
     const baseline = run([...configs.baseline]).find(r => r.scenario === 'Baseline')!;
@@ -1340,26 +1338,26 @@ function makeDpsResult(dps: number): DpsResult {
   };
 }
 
-describe('applyPdr (isolated)', () => {
-  it('PDR = 0 leaves DPS unchanged', () => {
+describe('scaleDpsResult (isolated)', () => {
+  it('factor = 1 leaves DPS unchanged', () => {
     const input = makeDpsResult(100000);
-    const result = applyPdr(input, 0);
+    const result = scaleDpsResult(input, 1);
     expect(result.dps).toBe(100000);
     expect(result.averageDamage).toBe(input.averageDamage);
     expect(result.uncappedDps).toBe(100000);
   });
 
-  it('PDR = 0.5 halves DPS, averageDamage, and uncappedDps', () => {
+  it('factor = 0.5 halves DPS, averageDamage, and uncappedDps', () => {
     const input = makeDpsResult(200000);
-    const result = applyPdr(input, 0.5);
+    const result = scaleDpsResult(input, 0.5);
     expect(result.dps).toBe(100000);
     expect(result.averageDamage).toBe(input.averageDamage * 0.5);
     expect(result.uncappedDps).toBe(100000);
   });
 
-  it('PDR = 1 zeroes DPS, averageDamage, and uncappedDps', () => {
+  it('factor = 0 zeroes DPS, averageDamage, and uncappedDps', () => {
     const input = makeDpsResult(150000);
-    const result = applyPdr(input, 1);
+    const result = scaleDpsResult(input, 0);
     expect(result.dps).toBe(0);
     expect(result.averageDamage).toBe(0);
     expect(result.uncappedDps).toBe(0);
@@ -1368,13 +1366,13 @@ describe('applyPdr (isolated)', () => {
   it('does not mutate the input DpsResult', () => {
     const input = makeDpsResult(100000);
     const originalDps = input.dps;
-    applyPdr(input, 0.5);
+    scaleDpsResult(input, 0.5);
     expect(input.dps).toBe(originalDps);
   });
 
   it('preserves non-scaled fields', () => {
     const input = makeDpsResult(100000);
-    const result = applyPdr(input, 0.3);
+    const result = scaleDpsResult(input, 0.7);
     expect(result.attackTime).toBe(input.attackTime);
     expect(result.skillDamagePercent).toBe(input.skillDamagePercent);
     expect(result.critDamagePercent).toBe(input.critDamagePercent);
@@ -1383,104 +1381,40 @@ describe('applyPdr (isolated)', () => {
   });
 });
 
-describe('applyTargetCount (isolated)', () => {
-  it('effectiveTargets = 1 leaves DPS unchanged', () => {
-    const input = makeDpsResult(100000);
-    const result = applyTargetCount(input, 1);
-    expect(result.dps).toBe(100000);
-    expect(result.averageDamage).toBe(input.averageDamage);
-    expect(result.uncappedDps).toBe(100000);
+describe('targetCountFactor (isolated)', () => {
+  it('effectiveTargets = 1, no bounceDecay → 1', () => {
+    expect(targetCountFactor(1)).toBe(1);
   });
 
-  it('effectiveTargets = 6, no bounceDecay → flat 6x scaling', () => {
-    const input = makeDpsResult(100000);
-    const result = applyTargetCount(input, 6);
-    expect(result.dps).toBe(600000);
-    expect(result.averageDamage).toBe(input.averageDamage * 6);
-    expect(result.uncappedDps).toBe(600000);
+  it('effectiveTargets = 6, no bounceDecay → flat 6x', () => {
+    expect(targetCountFactor(6)).toBe(6);
   });
 
   it('effectiveTargets = 6, bounceDecay = 0.7 → geometric series', () => {
+    const expected = (1 - 0.7 ** 6) / (1 - 0.7);
+    expect(targetCountFactor(6, 0.7)).toBeCloseTo(expected, 5);
+  });
+
+  it('bounceDecay = 0 falls back to flat scaling', () => {
+    expect(targetCountFactor(4, 0)).toBe(4);
+  });
+
+  it('bounceDecay = 1 falls back to flat scaling', () => {
+    expect(targetCountFactor(3, 1)).toBe(3);
+  });
+
+  it('bounceDecay undefined falls back to flat scaling', () => {
+    expect(targetCountFactor(5, undefined)).toBe(5);
+  });
+
+  it('combined with scaleDpsResult reproduces multi-target scaling', () => {
     const input = makeDpsResult(100000);
-    const result = applyTargetCount(input, 6, 0.7);
+    const factor = targetCountFactor(6, 0.7);
+    const result = scaleDpsResult(input, factor);
     const expected = (1 - 0.7 ** 6) / (1 - 0.7);
     expect(result.dps).toBeCloseTo(100000 * expected, 2);
     expect(result.averageDamage).toBeCloseTo(input.averageDamage * expected, 2);
     expect(result.uncappedDps).toBeCloseTo(100000 * expected, 2);
-  });
-
-  it('bounceDecay = 0 falls back to flat scaling', () => {
-    const input = makeDpsResult(100000);
-    const result = applyTargetCount(input, 4, 0);
-    expect(result.dps).toBe(400000);
-  });
-
-  it('bounceDecay = 1 falls back to flat scaling', () => {
-    const input = makeDpsResult(100000);
-    const result = applyTargetCount(input, 3, 1);
-    expect(result.dps).toBe(300000);
-  });
-
-  it('bounceDecay undefined falls back to flat scaling', () => {
-    const input = makeDpsResult(100000);
-    const result = applyTargetCount(input, 5, undefined);
-    expect(result.dps).toBe(500000);
-  });
-
-  it('does not mutate the input DpsResult', () => {
-    const input = makeDpsResult(100000);
-    const originalDps = input.dps;
-    applyTargetCount(input, 6, 0.7);
-    expect(input.dps).toBe(originalDps);
-  });
-
-  it('preserves non-scaled fields', () => {
-    const input = makeDpsResult(100000);
-    const result = applyTargetCount(input, 3);
-    expect(result.attackTime).toBe(input.attackTime);
-    expect(result.hitCount).toBe(input.hitCount);
-    expect(result.totalCritRate).toBe(input.totalCritRate);
-  });
-});
-
-describe('applyKnockbackUptime (isolated)', () => {
-  it('uptime = 1.0 leaves DPS unchanged', () => {
-    const input = makeDpsResult(100000);
-    const result = applyKnockbackUptime(input, 1.0);
-    expect(result.dps).toBe(100000);
-    expect(result.averageDamage).toBe(input.averageDamage);
-    expect(result.uncappedDps).toBe(100000);
-  });
-
-  it('uptime = 0.5 halves DPS, averageDamage, and uncappedDps', () => {
-    const input = makeDpsResult(200000);
-    const result = applyKnockbackUptime(input, 0.5);
-    expect(result.dps).toBe(100000);
-    expect(result.averageDamage).toBe(input.averageDamage * 0.5);
-    expect(result.uncappedDps).toBe(100000);
-  });
-
-  it('uptime = 0 zeroes DPS', () => {
-    const input = makeDpsResult(150000);
-    const result = applyKnockbackUptime(input, 0);
-    expect(result.dps).toBe(0);
-    expect(result.averageDamage).toBe(0);
-    expect(result.uncappedDps).toBe(0);
-  });
-
-  it('does not mutate the input DpsResult', () => {
-    const input = makeDpsResult(100000);
-    const originalDps = input.dps;
-    applyKnockbackUptime(input, 0.5);
-    expect(input.dps).toBe(originalDps);
-  });
-
-  it('preserves non-scaled fields', () => {
-    const input = makeDpsResult(100000);
-    const result = applyKnockbackUptime(input, 0.8);
-    expect(result.attackTime).toBe(input.attackTime);
-    expect(result.skillDamagePercent).toBe(input.skillDamagePercent);
-    expect(result.hitCount).toBe(input.hitCount);
   });
 });
 
@@ -1532,16 +1466,16 @@ describe('mixed rotation with missing skill reference', () => {
       sharpEyes: true,
     };
 
-    const localWeaponData: WeaponData = {
-      types: [{ name: 'Gun', slashMultiplier: 3.6, stabMultiplier: 3.6 }],
+    const localGameData: GameData = {
+      weaponData: {
+        types: [{ name: 'Gun', slashMultiplier: 3.6, stabMultiplier: 3.6 }],
+      },
+      attackSpeedData: {
+        categories: ['Battleship Cannon'],
+        entries: [{ speed: 2, times: { 'Battleship Cannon': 0.6 } }],
+      },
+      mwData: [{ level: 20, multiplier: 1.1 }],
     };
-
-    const localAttackSpeedData: AttackSpeedData = {
-      categories: ['Battleship Cannon'],
-      entries: [{ speed: 2, times: { 'Battleship Cannon': 0.6 } }],
-    };
-
-    const localMwData: MWData = [{ level: 20, multiplier: 1.1 }];
 
     const localClassDataMap = new Map([['testclass', classData]]);
     const localGearTemplates: GearTemplateMap = new Map([['testclass', build]]);
@@ -1551,8 +1485,7 @@ describe('mixed rotation with missing skill reference', () => {
     };
 
     const results = runSimulation(
-      config, localClassDataMap, localGearTemplates,
-      localWeaponData, localAttackSpeedData, localMwData
+      config, localClassDataMap, localGearTemplates, localGameData,
     );
 
     const mixed = results.find(r => r.skillName === 'Mixed A+Missing');

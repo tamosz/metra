@@ -8,17 +8,13 @@ import {
 import { TEST_BUILDS } from './test-builds.js';
 import {
   calculateSkillDps,
-  type WeaponData,
-  type AttackSpeedData,
-  type MWData,
+  type GameData,
   type ClassSkillData,
   type CharacterBuild,
   type SkillEntry,
 } from '@metra/engine';
 
-let weaponData: WeaponData;
-let attackSpeedData: AttackSpeedData;
-let mwData: MWData;
+let gameData: GameData;
 let heroData: ClassSkillData;
 let heroHigh: CharacterBuild;
 let heroLow: CharacterBuild;
@@ -35,9 +31,11 @@ let nightLordHigh: CharacterBuild;
 let nightLordLow: CharacterBuild;
 
 beforeAll(() => {
-  weaponData = loadWeapons();
-  attackSpeedData = loadAttackSpeed();
-  mwData = loadMW();
+  gameData = {
+    weaponData: loadWeapons(),
+    attackSpeedData: loadAttackSpeed(),
+    mwData: loadMW(),
+  };
   heroData = loadClassSkills('Hero');
   heroHigh = TEST_BUILDS['hero-high'];
   heroLow = TEST_BUILDS['hero-low'];
@@ -63,9 +61,7 @@ describe('Hero Brandish (Sword) DPS', () => {
       heroHigh,
       heroData,
       brandish,
-      weaponData,
-      attackSpeedData,
-      mwData
+      gameData
     );
 
     // Verify intermediate values
@@ -88,9 +84,7 @@ describe('Hero Brandish (Sword) DPS', () => {
       heroLow,
       heroData,
       brandish,
-      weaponData,
-      attackSpeedData,
-      mwData
+      gameData
     );
 
     // After CGS WATK update
@@ -110,9 +104,7 @@ describe('Hero Brandish (Sword) DPS', () => {
       heroHigh,
       heroData,
       brandish,
-      weaponData,
-      attackSpeedData,
-      mwData
+      gameData
     );
 
     // After CGS WATK update
@@ -127,9 +119,7 @@ describe('Hero Brandish (Sword) DPS', () => {
       heroLow,
       heroData,
       brandish,
-      weaponData,
-      attackSpeedData,
-      mwData
+      gameData
     );
 
     // After CGS WATK update
@@ -140,7 +130,7 @@ describe('Hero Brandish (Sword) DPS', () => {
     const brandish = heroData.skills.find(
       (s) => s.name === 'Brandish (Sword)'
     )!;
-    const result = calculateSkillDps(heroHigh, heroData, brandish, weaponData, attackSpeedData, mwData);
+    const result = calculateSkillDps(heroHigh, heroData, brandish, gameData);
     // Hero has SE active (sharpEyes: true in high template), SE crit rate is 0.15, no built-in crit
     expect(result.totalCritRate).toBeCloseTo(0.15, 2);
     expect(result.hitCount).toBe(2);
@@ -155,9 +145,7 @@ describe('Dark Knight Spear Crusher DPS', () => {
       darkKnightHigh,
       darkKnightData,
       crusher,
-      weaponData,
-      attackSpeedData,
-      mwData
+      gameData
     );
 
     // Berserk multiplier updated from 2.0 to 2.1 per royals.ms Update #68
@@ -178,9 +166,7 @@ describe('Dark Knight Spear Crusher DPS', () => {
       darkKnightLow,
       darkKnightData,
       crusher,
-      weaponData,
-      attackSpeedData,
-      mwData
+      gameData
     );
 
     // Computed from gear template (Spear, mastery 0.8)
@@ -199,9 +185,7 @@ describe('Dark Knight Spear Crusher DPS', () => {
       darkKnightHigh,
       darkKnightData,
       crusher,
-      weaponData,
-      attackSpeedData,
-      mwData
+      gameData
     );
 
     // SE damage% = (170 + 140) * 2.1 = 651
@@ -225,9 +209,7 @@ describe('Paladin Blast DPS', () => {
       paladinHigh,
       paladinData,
       blast,
-      weaponData,
-      attackSpeedData,
-      mwData
+      gameData
     );
 
     // Paladin SE: (basePower + bonus) * multiplier = (580 + 140) * 1.4 = 1008
@@ -244,9 +226,7 @@ describe('Paladin Blast DPS', () => {
       paladinHigh,
       paladinData,
       blast,
-      weaponData,
-      attackSpeedData,
-      mwData
+      gameData
     );
 
     // Paladin uses Hero-identical gear (gear templates sheet row 3: "Hero & Paladin")
@@ -265,9 +245,7 @@ describe('Paladin Blast DPS', () => {
       paladinLow,
       paladinData,
       blast,
-      weaponData,
-      attackSpeedData,
-      mwData
+      gameData
     );
 
     // Same damage range as Hero Low after CGS WATK update
@@ -285,9 +263,7 @@ describe('Paladin Blast DPS', () => {
       paladinHigh,
       paladinData,
       blast,
-      weaponData,
-      attackSpeedData,
-      mwData
+      gameData
     );
 
     // F/I/L charge uses Blast speed (0.63s at speed 2)
@@ -307,9 +283,7 @@ describe('Paladin (BW) Blast DPS', () => {
       paladinBwHigh,
       paladinBwData,
       blast,
-      weaponData,
-      attackSpeedData,
-      mwData
+      gameData
     );
 
     // Speed 7 + SI + Booster → effective speed 3 → 0.69s Blast
@@ -332,9 +306,7 @@ describe('Paladin (BW) Blast DPS', () => {
       paladinBwHigh,
       paladinBwData,
       blast,
-      weaponData,
-      attackSpeedData,
-      mwData
+      gameData
     );
 
     // BW charge variant uses Blast speed (same as Holy BW variant)
@@ -347,7 +319,7 @@ describe('Paladin (BW) Blast DPS', () => {
       paladinBwData.skills.find((s) => s.name === 'Blast (Holy, BW)')
         ? calculateSkillDps(paladinBwHigh, paladinBwData,
             paladinBwData.skills.find((s) => s.name === 'Blast (Holy, BW)')!,
-            weaponData, attackSpeedData, mwData).damageRange.max
+            gameData).damageRange.max
         : 0
     );
   });
@@ -363,17 +335,13 @@ describe('Paladin (BW) Blast DPS', () => {
       paladinHigh,
       paladinData,
       swordBlast,
-      weaponData,
-      attackSpeedData,
-      mwData
+      gameData
     );
     const bwResult = calculateSkillDps(
       paladinBwHigh,
       paladinBwData,
       bwBlast,
-      weaponData,
-      attackSpeedData,
-      mwData
+      gameData
     );
 
     // 2H BW effective = 4.24 < 2H Sword 4.6, and speed 7 > speed 6 → Sword wins
@@ -390,10 +358,10 @@ describe('Paladin (BW) Blast DPS', () => {
       weaponType: '1H BW',
     };
     const result1h = calculateSkillDps(
-      build1h, paladinBwData, blast, weaponData, attackSpeedData, mwData
+      build1h, paladinBwData, blast, gameData
     );
     const result2h = calculateSkillDps(
-      paladinBwHigh, paladinBwData, blast, weaponData, attackSpeedData, mwData
+      paladinBwHigh, paladinBwData, blast, gameData
     );
 
     // 1H BW effective = 4.4*0.6 + 3.2*0.4 = 3.92
@@ -411,9 +379,7 @@ describe('Night Lord Gear Template DPS', () => {
       nightLordHigh,
       nightLordData,
       tt,
-      weaponData,
-      attackSpeedData,
-      mwData
+      gameData
     );
 
     // totalAttack = 149 + 100 + 30 + echo(floor(279*0.04)=11) = 290
@@ -430,9 +396,7 @@ describe('Night Lord Gear Template DPS', () => {
       nightLordLow,
       nightLordData,
       tt,
-      weaponData,
-      attackSpeedData,
-      mwData
+      gameData
     );
 
     // totalAttack = 111 + 60 + 27 + echo(floor(198*0.04)=7) = 205
@@ -449,17 +413,13 @@ describe('Night Lord Gear Template DPS', () => {
       nightLordHigh,
       nightLordData,
       tt,
-      weaponData,
-      attackSpeedData,
-      mwData
+      gameData
     );
     const lowResult = calculateSkillDps(
       nightLordLow,
       nightLordData,
       tt,
-      weaponData,
-      attackSpeedData,
-      mwData
+      gameData
     );
 
     expect(highResult.dps).toBeGreaterThan(lowResult.dps);
@@ -473,9 +433,7 @@ describe('Night Lord Gear Template DPS', () => {
       nightLordHigh,
       nightLordData,
       tt,
-      weaponData,
-      attackSpeedData,
-      mwData
+      gameData
     );
 
     expect(result.attackTime).toBe(0.60);
@@ -523,9 +481,7 @@ describe('Night Lord Triple Throw DPS', () => {
       nightLordBuild,
       nightLordData,
       tt,
-      weaponData,
-      attackSpeedData,
-      mwData
+      gameData
     );
 
     // Throwing star: max = floor(5.0 * LUK * totalAttack / 100)
@@ -544,9 +500,7 @@ describe('Night Lord Triple Throw DPS', () => {
       nightLordBuild,
       nightLordData,
       tt,
-      weaponData,
-      attackSpeedData,
-      mwData
+      gameData
     );
 
     // Normal: 150 * 1 = 150
@@ -562,9 +516,7 @@ describe('Night Lord Triple Throw DPS', () => {
       noSeBuild,
       nightLordData,
       tt,
-      weaponData,
-      attackSpeedData,
-      mwData
+      gameData
     );
 
     // Without SE: crit bonus = 100 only (built-in), no SE bonus
@@ -578,9 +530,7 @@ describe('Night Lord Triple Throw DPS', () => {
       nightLordBuild,
       nightLordData,
       tt,
-      weaponData,
-      attackSpeedData,
-      mwData
+      gameData
     );
 
     // Verify via average damage formula:
@@ -592,9 +542,7 @@ describe('Night Lord Triple Throw DPS', () => {
       noSpBuild,
       nightLordData,
       tt,
-      weaponData,
-      attackSpeedData,
-      mwData
+      gameData
     );
     // Shadow Partner should multiply by exactly 1.5
     expect(result.averageDamage / resultNoSp.averageDamage).toBeCloseTo(1.5);
@@ -606,18 +554,14 @@ describe('Night Lord Triple Throw DPS', () => {
       nightLordBuild,
       nightLordData,
       tt,
-      weaponData,
-      attackSpeedData,
-      mwData
+      gameData
     );
     const noSpBuild = { ...nightLordBuild, shadowPartner: false };
     const withoutSp = calculateSkillDps(
       noSpBuild,
       nightLordData,
       tt,
-      weaponData,
-      attackSpeedData,
-      mwData
+      gameData
     );
 
     expect(withSp.dps / withoutSp.dps).toBeCloseTo(1.5);
@@ -629,9 +573,7 @@ describe('Night Lord Triple Throw DPS', () => {
       nightLordBuild,
       nightLordData,
       tt,
-      weaponData,
-      attackSpeedData,
-      mwData
+      gameData
     );
 
     // weaponSpeed=4 - booster(2) - SI(1) = speed 1, clamped to 2
@@ -640,7 +582,7 @@ describe('Night Lord Triple Throw DPS', () => {
 
   it('includes hasShadowPartner and built-in crit rate', () => {
     const tt = nightLordData.skills.find((s) => s.name === 'Triple Throw')!;
-    const result = calculateSkillDps(nightLordHigh, nightLordData, tt, weaponData, attackSpeedData, mwData);
+    const result = calculateSkillDps(nightLordHigh, nightLordData, tt, gameData);
     // Night Lord: builtInCritRate 0.50 + SE 0.15 = 0.65
     expect(result.totalCritRate).toBeCloseTo(0.65, 2);
     expect(result.hitCount).toBe(3);
@@ -672,7 +614,7 @@ describe('Shadower DPS', () => {
   it('uses standard damage formula with Dagger 3.6x multiplier', () => {
     const bstep = shadData.skills.find((s) => s.name === 'Boomerang Step')!;
     const result = calculateSkillDps(
-      shadHigh, shadData, bstep, weaponData, attackSpeedData, mwData
+      shadHigh, shadData, bstep, gameData
     );
 
     // Standard formula: max = floor((LUK * 3.6 + STR + DEX) * totalAttack / 100)
@@ -691,10 +633,10 @@ describe('Shadower DPS', () => {
     const bstep = shadData.skills.find((s) => s.name === 'Boomerang Step')!;
     const assn = shadData.skills.find((s) => s.name === 'Assassinate')!;
     const bstepResult = calculateSkillDps(
-      shadHigh, shadData, bstep, weaponData, attackSpeedData, mwData
+      shadHigh, shadData, bstep, gameData
     );
     const assnResult = calculateSkillDps(
-      shadHigh, shadData, assn, weaponData, attackSpeedData, mwData
+      shadHigh, shadData, assn, gameData
     );
 
     // Both share the combo cycle time
@@ -705,7 +647,7 @@ describe('Shadower DPS', () => {
   it('Savage Blow uses Strafe/Snipe speed (0.60s at speed 2)', () => {
     const sb = shadData.skills.find((s) => s.name === 'Savage Blow')!;
     const result = calculateSkillDps(
-      shadHigh, shadData, sb, weaponData, attackSpeedData, mwData
+      shadHigh, shadData, sb, gameData
     );
 
     // weaponSpeed 5 - booster 2 - SI 2 = speed 2 (capped)
@@ -715,7 +657,7 @@ describe('Shadower DPS', () => {
   it('has no built-in crit (SE only at 15%)', () => {
     const bstep = shadData.skills.find((s) => s.name === 'Boomerang Step')!;
     const result = calculateSkillDps(
-      shadHigh, shadData, bstep, weaponData, attackSpeedData, mwData
+      shadHigh, shadData, bstep, gameData
     );
 
     // Normal: 600 * 1 = 600
@@ -728,7 +670,7 @@ describe('Shadower DPS', () => {
     const assn = shadData.skills.find((s) => s.name === 'Assassinate')!;
 
     const result = calculateSkillDps(
-      shadHigh, shadData, assn, weaponData, attackSpeedData, mwData
+      shadHigh, shadData, assn, gameData
     );
 
     expect(result.skillDamagePercent).toBe(950);
@@ -740,7 +682,7 @@ describe('Shadower DPS', () => {
   it('Shadower does not have Shadow Partner', () => {
     const bstep = shadData.skills.find((s) => s.name === 'Boomerang Step')!;
     const result = calculateSkillDps(
-      shadHigh, shadData, bstep, weaponData, attackSpeedData, mwData
+      shadHigh, shadData, bstep, gameData
     );
     expect(result.hasShadowPartner).toBe(false);
   });
@@ -749,10 +691,10 @@ describe('Shadower DPS', () => {
     const bstep = shadData.skills.find((s) => s.name === 'Boomerang Step')!;
     const assn = shadData.skills.find((s) => s.name === 'Assassinate')!;
     const bstepDps = calculateSkillDps(
-      shadHigh, shadData, bstep, weaponData, attackSpeedData, mwData
+      shadHigh, shadData, bstep, gameData
     ).dps;
     const assnDps = calculateSkillDps(
-      shadHigh, shadData, assn, weaponData, attackSpeedData, mwData
+      shadHigh, shadData, assn, gameData
     ).dps;
 
     // Combo DPS = sum of individual DPS (both share 2.31s cycle)
@@ -763,7 +705,7 @@ describe('Shadower DPS', () => {
   it('High tier Savage Blow DPS', () => {
     const sb = shadData.skills.find((s) => s.name === 'Savage Blow')!;
     const result = calculateSkillDps(
-      shadHigh, shadData, sb, weaponData, attackSpeedData, mwData
+      shadHigh, shadData, sb, gameData
     );
 
     expect(result.dps).toBeCloseTo(122730, -1);
@@ -773,10 +715,10 @@ describe('Shadower DPS', () => {
     const bstep = shadData.skills.find((s) => s.name === 'Boomerang Step')!;
     const assn = shadData.skills.find((s) => s.name === 'Assassinate')!;
     const bstepDps = calculateSkillDps(
-      shadLow, shadData, bstep, weaponData, attackSpeedData, mwData
+      shadLow, shadData, bstep, gameData
     ).dps;
     const assnDps = calculateSkillDps(
-      shadLow, shadData, assn, weaponData, attackSpeedData, mwData
+      shadLow, shadData, assn, gameData
     ).dps;
 
     const comboDps = bstepDps + assnDps;
@@ -786,7 +728,7 @@ describe('Shadower DPS', () => {
   it('Low tier Savage Blow DPS', () => {
     const sb = shadData.skills.find((s) => s.name === 'Savage Blow')!;
     const result = calculateSkillDps(
-      shadLow, shadData, sb, weaponData, attackSpeedData, mwData
+      shadLow, shadData, sb, gameData
     );
 
     expect(result.dps).toBeCloseTo(73099, -1);
@@ -795,10 +737,10 @@ describe('Shadower DPS', () => {
   it('High tier DPS is greater than Low tier for all skills', () => {
     for (const skill of shadData.skills) {
       const high = calculateSkillDps(
-        shadHigh, shadData, skill, weaponData, attackSpeedData, mwData
+        shadHigh, shadData, skill, gameData
       );
       const low = calculateSkillDps(
-        shadLow, shadData, skill, weaponData, attackSpeedData, mwData
+        shadLow, shadData, skill, gameData
       );
       expect(high.dps).toBeGreaterThan(low.dps);
     }
@@ -828,7 +770,7 @@ describe('Marksman DPS', () => {
   it('Strafe (MM) uses Crossbow 3.6x multiplier', () => {
     const strafe = mmData.skills.find((s) => s.name === 'Strafe (MM)')!;
     const result = calculateSkillDps(
-      mmHigh, mmData, strafe, weaponData, attackSpeedData, mwData
+      mmHigh, mmData, strafe, gameData
     );
 
     // Standard formula with Crossbow 3.6x, mastery 1.0 (Update #71)
@@ -843,7 +785,7 @@ describe('Marksman DPS', () => {
   it('Strafe (MM) High tier DPS ~232,748', () => {
     const strafe = mmData.skills.find((s) => s.name === 'Strafe (MM)')!;
     const result = calculateSkillDps(
-      mmHigh, mmData, strafe, weaponData, attackSpeedData, mwData
+      mmHigh, mmData, strafe, gameData
     );
 
     // 4-hit, 0.6s attack time, 55% crit (40% Critical Shot + 15% SE)
@@ -857,7 +799,7 @@ describe('Marksman DPS', () => {
   it('Strafe (MM) Low tier DPS ~113,885', () => {
     const strafe = mmData.skills.find((s) => s.name === 'Strafe (MM)')!;
     const result = calculateSkillDps(
-      mmLow, mmData, strafe, weaponData, attackSpeedData, mwData
+      mmLow, mmData, strafe, gameData
     );
 
     expect(result.attackTime).toBe(0.60);
@@ -869,7 +811,7 @@ describe('Marksman DPS', () => {
     expect(snipe.fixedDamage).toBe(195000);
 
     const result = calculateSkillDps(
-      mmHigh, mmData, snipe, weaponData, attackSpeedData, mwData
+      mmHigh, mmData, snipe, gameData
     );
 
     // Fixed damage: bypasses damage formula entirely
@@ -883,7 +825,7 @@ describe('Marksman DPS', () => {
   it('Snipe DPS = 39,000 (195000 / 5.0s rotation cycle)', () => {
     const snipe = mmData.skills.find((s) => s.name === 'Snipe')!;
     const result = calculateSkillDps(
-      mmHigh, mmData, snipe, weaponData, attackSpeedData, mwData
+      mmHigh, mmData, snipe, gameData
     );
 
     expect(result.attackTime).toBe(5.00);
@@ -895,10 +837,10 @@ describe('Marksman DPS', () => {
     const doubleHitSnipe = { ...snipe, hitCount: 2 };
 
     const single = calculateSkillDps(
-      mmHigh, mmData, snipe, weaponData, attackSpeedData, mwData
+      mmHigh, mmData, snipe, gameData
     );
     const double = calculateSkillDps(
-      mmHigh, mmData, doubleHitSnipe, weaponData, attackSpeedData, mwData
+      mmHigh, mmData, doubleHitSnipe, gameData
     );
 
     expect(double.averageDamage).toBe(single.averageDamage * 2);
@@ -910,10 +852,10 @@ describe('Marksman DPS', () => {
   it('Snipe DPS is gear-independent (same at low and high tier)', () => {
     const snipe = mmData.skills.find((s) => s.name === 'Snipe')!;
     const highResult = calculateSkillDps(
-      mmHigh, mmData, snipe, weaponData, attackSpeedData, mwData
+      mmHigh, mmData, snipe, gameData
     );
     const lowResult = calculateSkillDps(
-      mmLow, mmData, snipe, weaponData, attackSpeedData, mwData
+      mmLow, mmData, snipe, gameData
     );
 
     expect(highResult.dps).toBe(lowResult.dps);
@@ -923,7 +865,7 @@ describe('Marksman DPS', () => {
   it('Strafe (in Snipe Rotation) uses 0.714s attack time at speed 2', () => {
     const strafeRotation = mmData.skills.find((s) => s.name === 'Strafe (in Snipe Rotation)')!;
     const result = calculateSkillDps(
-      mmHigh, mmData, strafeRotation, weaponData, attackSpeedData, mwData
+      mmHigh, mmData, strafeRotation, gameData
     );
 
     // 7 Strafes per 5s cycle → effective attack time = 5.0/7 = 0.714s
@@ -936,10 +878,10 @@ describe('Marksman DPS', () => {
   it('Strafe (MM) High tier DPS > Low tier', () => {
     const strafe = mmData.skills.find((s) => s.name === 'Strafe (MM)')!;
     const highResult = calculateSkillDps(
-      mmHigh, mmData, strafe, weaponData, attackSpeedData, mwData
+      mmHigh, mmData, strafe, gameData
     );
     const lowResult = calculateSkillDps(
-      mmLow, mmData, strafe, weaponData, attackSpeedData, mwData
+      mmLow, mmData, strafe, gameData
     );
 
     expect(highResult.dps).toBeGreaterThan(lowResult.dps);
@@ -970,7 +912,7 @@ describe('Archmage I/L DPS', () => {
   it('Chain Lightning High tier damage range', () => {
     const cl = amData.skills.find((s) => s.name === 'Chain Lightning')!;
     const result = calculateSkillDps(
-      amHigh, amData, cl, weaponData, attackSpeedData, mwData
+      amHigh, amData, cl, gameData
     );
 
     // Magic formula: max = floor(((TMA²/1000 + TMA)/30 + INT/200) * 1.4 * 1.25)
@@ -983,7 +925,7 @@ describe('Archmage I/L DPS', () => {
   it('Chain Lightning High tier DPS ~92,400', () => {
     const cl = amData.skills.find((s) => s.name === 'Chain Lightning')!;
     const result = calculateSkillDps(
-      amHigh, amData, cl, weaponData, attackSpeedData, mwData
+      amHigh, amData, cl, gameData
     );
 
     expect(result.attackTime).toBe(0.69);
@@ -996,7 +938,7 @@ describe('Archmage I/L DPS', () => {
   it('Chain Lightning Low tier DPS ~41,848', () => {
     const cl = amData.skills.find((s) => s.name === 'Chain Lightning')!;
     const result = calculateSkillDps(
-      amLow, amData, cl, weaponData, attackSpeedData, mwData
+      amLow, amData, cl, gameData
     );
 
     expect(result.attackTime).toBe(0.69);
@@ -1008,7 +950,7 @@ describe('Archmage I/L DPS', () => {
   it('Blizzard High tier DPS', () => {
     const bliz = amData.skills.find((s) => s.name === 'Blizzard')!;
     const result = calculateSkillDps(
-      amHigh, amData, bliz, weaponData, attackSpeedData, mwData
+      amHigh, amData, bliz, gameData
     );
 
     expect(result.attackTime).toBe(3.06);
@@ -1021,7 +963,7 @@ describe('Archmage I/L DPS', () => {
   it('uses magic formula (not standard weapon multiplier)', () => {
     const cl = amData.skills.find((s) => s.name === 'Chain Lightning')!;
     const result = calculateSkillDps(
-      amHigh, amData, cl, weaponData, attackSpeedData, mwData
+      amHigh, amData, cl, gameData
     );
 
     // Magic range cap uses raw multiplier: 199999/210 = 952.38
@@ -1033,10 +975,10 @@ describe('Archmage I/L DPS', () => {
   it('High tier DPS is greater than Low tier', () => {
     for (const skill of amData.skills) {
       const high = calculateSkillDps(
-        amHigh, amData, skill, weaponData, attackSpeedData, mwData
+        amHigh, amData, skill, gameData
       );
       const low = calculateSkillDps(
-        amLow, amData, skill, weaponData, attackSpeedData, mwData
+        amLow, amData, skill, gameData
       );
       expect(high.dps).toBeGreaterThan(low.dps);
     }
@@ -1050,8 +992,8 @@ describe('Archmage I/L DPS', () => {
   it('engine ignores speedInfusion even if set to true for magic classes', () => {
     const cl = amData.skills.find((s) => s.name === 'Chain Lightning')!;
     const buildWithSI = { ...amHigh, speedInfusion: true };
-    const resultWithSI = calculateSkillDps(buildWithSI, amData, cl, weaponData, attackSpeedData, mwData);
-    const resultWithoutSI = calculateSkillDps(amHigh, amData, cl, weaponData, attackSpeedData, mwData);
+    const resultWithSI = calculateSkillDps(buildWithSI, amData, cl, gameData);
+    const resultWithoutSI = calculateSkillDps(amHigh, amData, cl, gameData);
     expect(resultWithSI.dps).toBe(resultWithoutSI.dps);
     expect(resultWithSI.attackTime).toBe(resultWithoutSI.attackTime);
   });
@@ -1080,7 +1022,7 @@ describe('Bishop DPS', () => {
   it('Angel Ray High tier DPS ~50,750', () => {
     const ar = bishopData.skills.find((s) => s.name === 'Angel Ray')!;
     const result = calculateSkillDps(
-      bishopHigh, bishopData, ar, weaponData, attackSpeedData, mwData
+      bishopHigh, bishopData, ar, gameData
     );
 
     expect(result.attackTime).toBe(0.81);
@@ -1093,7 +1035,7 @@ describe('Bishop DPS', () => {
   it('Genesis High tier DPS ~40,308', () => {
     const gen = bishopData.skills.find((s) => s.name === 'Genesis')!;
     const result = calculateSkillDps(
-      bishopHigh, bishopData, gen, weaponData, attackSpeedData, mwData
+      bishopHigh, bishopData, gen, gameData
     );
 
     expect(result.attackTime).toBe(2.70);
@@ -1108,10 +1050,10 @@ describe('Bishop DPS', () => {
     const ar = bishopData.skills.find((s) => s.name === 'Angel Ray')!;
 
     const amDps = calculateSkillDps(
-      amHigh, amData, cl, weaponData, attackSpeedData, mwData
+      amHigh, amData, cl, gameData
     ).dps;
     const bishopDps = calculateSkillDps(
-      bishopHigh, bishopData, ar, weaponData, attackSpeedData, mwData
+      bishopHigh, bishopData, ar, gameData
     ).dps;
 
     // Archmage has 1.4 * 1.25 = 1.75× amp advantage
@@ -1121,10 +1063,10 @@ describe('Bishop DPS', () => {
   it('High tier DPS is greater than Low tier', () => {
     for (const skill of bishopData.skills) {
       const high = calculateSkillDps(
-        bishopHigh, bishopData, skill, weaponData, attackSpeedData, mwData
+        bishopHigh, bishopData, skill, gameData
       );
       const low = calculateSkillDps(
-        bishopLow, bishopData, skill, weaponData, attackSpeedData, mwData
+        bishopLow, bishopData, skill, gameData
       );
       expect(high.dps).toBeGreaterThan(low.dps);
     }
@@ -1155,7 +1097,7 @@ describe('Archmage F/P DPS', () => {
   it('Paralyze High tier DPS ~100,050', () => {
     const para = fpData.skills.find((s) => s.name === 'Paralyze')!;
     const result = calculateSkillDps(
-      fpHigh, fpData, para, weaponData, attackSpeedData, mwData
+      fpHigh, fpData, para, gameData
     );
 
     expect(result.attackTime).toBe(0.72);
@@ -1170,7 +1112,7 @@ describe('Archmage F/P DPS', () => {
   it('Paralyze Low tier DPS ~45,313', () => {
     const para = fpData.skills.find((s) => s.name === 'Paralyze')!;
     const result = calculateSkillDps(
-      fpLow, fpData, para, weaponData, attackSpeedData, mwData
+      fpLow, fpData, para, gameData
     );
 
     expect(result.attackTime).toBe(0.72);
@@ -1182,7 +1124,7 @@ describe('Archmage F/P DPS', () => {
   it('Meteor High tier DPS', () => {
     const meteor = fpData.skills.find((s) => s.name === 'Meteor')!;
     const result = calculateSkillDps(
-      fpHigh, fpData, meteor, weaponData, attackSpeedData, mwData
+      fpHigh, fpData, meteor, gameData
     );
 
     expect(result.attackTime).toBe(3.06);
@@ -1195,7 +1137,7 @@ describe('Archmage F/P DPS', () => {
   it('Meteor Low tier DPS', () => {
     const meteor = fpData.skills.find((s) => s.name === 'Meteor')!;
     const result = calculateSkillDps(
-      fpLow, fpData, meteor, weaponData, attackSpeedData, mwData
+      fpLow, fpData, meteor, gameData
     );
 
     expect(result.dps).toBeCloseTo(27061, -1);
@@ -1204,10 +1146,10 @@ describe('Archmage F/P DPS', () => {
   it('High tier DPS is greater than Low tier', () => {
     for (const skill of fpData.skills) {
       const high = calculateSkillDps(
-        fpHigh, fpData, skill, weaponData, attackSpeedData, mwData
+        fpHigh, fpData, skill, gameData
       );
       const low = calculateSkillDps(
-        fpLow, fpData, skill, weaponData, attackSpeedData, mwData
+        fpLow, fpData, skill, gameData
       );
       expect(high.dps).toBeGreaterThan(low.dps);
     }
@@ -1237,7 +1179,7 @@ describe('Bowmaster DPS', () => {
   it('Hurricane uses fixed 0.12s attack time', () => {
     const hurricane = bmData.skills.find((s) => s.name === 'Hurricane')!;
     const result = calculateSkillDps(
-      bmHigh, bmData, hurricane, weaponData, attackSpeedData, mwData
+      bmHigh, bmData, hurricane, gameData
     );
 
     expect(result.attackTime).toBe(0.12);
@@ -1246,7 +1188,7 @@ describe('Bowmaster DPS', () => {
   it('Hurricane High tier damage range', () => {
     const hurricane = bmData.skills.find((s) => s.name === 'Hurricane')!;
     const result = calculateSkillDps(
-      bmHigh, bmData, hurricane, weaponData, attackSpeedData, mwData
+      bmHigh, bmData, hurricane, gameData
     );
 
     // DEX: floor(999*1.1) + 158 = 1256, STR: floor(4*1.1) + 97 = 101
@@ -1261,7 +1203,7 @@ describe('Bowmaster DPS', () => {
   it('Hurricane High tier crit uses 55% rate (40% Critical Shot + 15% SE)', () => {
     const hurricane = bmData.skills.find((s) => s.name === 'Hurricane')!;
     const result = calculateSkillDps(
-      bmHigh, bmData, hurricane, weaponData, attackSpeedData, mwData
+      bmHigh, bmData, hurricane, gameData
     );
 
     // basePower 100, multiplier 1 → skillDmg% = 100
@@ -1273,7 +1215,7 @@ describe('Bowmaster DPS', () => {
   it('Hurricane High tier DPS ~233,073', () => {
     const hurricane = bmData.skills.find((s) => s.name === 'Hurricane')!;
     const result = calculateSkillDps(
-      bmHigh, bmData, hurricane, weaponData, attackSpeedData, mwData
+      bmHigh, bmData, hurricane, gameData
     );
 
     expect(result.dps).toBeCloseTo(247834, -2);
@@ -1282,7 +1224,7 @@ describe('Bowmaster DPS', () => {
   it('Hurricane Low tier DPS ~118,581', () => {
     const hurricane = bmData.skills.find((s) => s.name === 'Hurricane')!;
     const result = calculateSkillDps(
-      bmLow, bmData, hurricane, weaponData, attackSpeedData, mwData
+      bmLow, bmData, hurricane, gameData
     );
 
     expect(result.attackTime).toBe(0.12);
@@ -1296,7 +1238,7 @@ describe('Bowmaster DPS', () => {
   it('Arrow Bomb uses scaleOnBase crit formula: 130 * (1 + bonus/100)', () => {
     const arrowBomb = bmData.skills.find((s) => s.name === 'Arrow Bomb')!;
     const result = calculateSkillDps(
-      bmHigh, bmData, arrowBomb, weaponData, attackSpeedData, mwData
+      bmHigh, bmData, arrowBomb, gameData
     );
 
     // skillDmg% = 130 * 1 = 130
@@ -1312,7 +1254,7 @@ describe('Bowmaster DPS', () => {
     const arrowBomb = bmData.skills.find((s) => s.name === 'Arrow Bomb')!;
     const noSeBuild = { ...bmHigh, sharpEyes: false };
     const result = calculateSkillDps(
-      noSeBuild, bmData, arrowBomb, weaponData, attackSpeedData, mwData
+      noSeBuild, bmData, arrowBomb, gameData
     );
 
     // scaleOnBase: 130 * 1 * (1 + 100/100) = 130 * 2 = 260
@@ -1322,10 +1264,10 @@ describe('Bowmaster DPS', () => {
   it('High tier DPS is greater than Low tier for all skills', () => {
     for (const skill of bmData.skills) {
       const high = calculateSkillDps(
-        bmHigh, bmData, skill, weaponData, attackSpeedData, mwData
+        bmHigh, bmData, skill, gameData
       );
       const low = calculateSkillDps(
-        bmLow, bmData, skill, weaponData, attackSpeedData, mwData
+        bmLow, bmData, skill, gameData
       );
       expect(high.dps).toBeGreaterThan(low.dps);
     }
@@ -1357,7 +1299,7 @@ describe('Hero (Axe) DPS', () => {
     expect(brandish.attackRatio).toEqual({ slash: 0.5, stab: 0.5 });
 
     const result = calculateSkillDps(
-      axeHigh, axeData, brandish, weaponData, attackSpeedData, mwData
+      axeHigh, axeData, brandish, gameData
     );
 
     // STR: floor(999*1.1) + 174 = 1272, DEX: floor(23*1.1) + 102 = 127
@@ -1372,7 +1314,7 @@ describe('Hero (Axe) DPS', () => {
   it('Brandish High tier DPS ~221,170', () => {
     const brandish = axeData.skills.find((s) => s.name === 'Brandish')!;
     const result = calculateSkillDps(
-      axeHigh, axeData, brandish, weaponData, attackSpeedData, mwData
+      axeHigh, axeData, brandish, gameData
     );
 
     expect(result.attackTime).toBe(0.63);
@@ -1385,7 +1327,7 @@ describe('Hero (Axe) DPS', () => {
   it('Brandish Low tier DPS ~113,983', () => {
     const brandish = axeData.skills.find((s) => s.name === 'Brandish')!;
     const result = calculateSkillDps(
-      axeLow, axeData, brandish, weaponData, attackSpeedData, mwData
+      axeLow, axeData, brandish, gameData
     );
 
     expect(result.attackTime).toBe(0.63);
@@ -1399,10 +1341,10 @@ describe('Hero (Axe) DPS', () => {
     const swordBrandish = heroData.skills.find((s) => s.name === 'Brandish (Sword)')!;
 
     const axeResult = calculateSkillDps(
-      axeHigh, axeData, axeBrandish, weaponData, attackSpeedData, mwData
+      axeHigh, axeData, axeBrandish, gameData
     );
     const swordResult = calculateSkillDps(
-      heroHigh, heroData, swordBrandish, weaponData, attackSpeedData, mwData
+      heroHigh, heroData, swordBrandish, gameData
     );
 
     // Same stats, same attack time — but Brandish is 1 slash + 1 stab,
@@ -1436,7 +1378,7 @@ describe('Corsair DPS', () => {
   it('Battleship Cannon High tier damage range', () => {
     const cannon = sairData.skills.find((s) => s.name === 'Battleship Cannon')!;
     const result = calculateSkillDps(
-      sairHigh, sairData, cannon, weaponData, attackSpeedData, mwData
+      sairHigh, sairData, cannon, gameData
     );
 
     // DEX: floor(999*1.1) + 165 = 1263, STR: 4 + 90 = 94
@@ -1451,7 +1393,7 @@ describe('Corsair DPS', () => {
   it('Battleship Cannon High tier DPS ~350,586', () => {
     const cannon = sairData.skills.find((s) => s.name === 'Battleship Cannon')!;
     const result = calculateSkillDps(
-      sairHigh, sairData, cannon, weaponData, attackSpeedData, mwData
+      sairHigh, sairData, cannon, gameData
     );
 
     expect(result.attackTime).toBe(0.60);
@@ -1465,7 +1407,7 @@ describe('Corsair DPS', () => {
   it('Battleship Cannon Low tier DPS ~180,049', () => {
     const cannon = sairData.skills.find((s) => s.name === 'Battleship Cannon')!;
     const result = calculateSkillDps(
-      sairLow, sairData, cannon, weaponData, attackSpeedData, mwData
+      sairLow, sairData, cannon, gameData
     );
 
     expect(result.attackTime).toBe(0.60);
@@ -1477,7 +1419,7 @@ describe('Corsair DPS', () => {
   it('Rapid Fire uses Hurricane speed (0.12s)', () => {
     const rf = sairData.skills.find((s) => s.name === 'Rapid Fire')!;
     const result = calculateSkillDps(
-      sairHigh, sairData, rf, weaponData, attackSpeedData, mwData
+      sairHigh, sairData, rf, gameData
     );
 
     expect(result.attackTime).toBe(0.12);
@@ -1486,7 +1428,7 @@ describe('Corsair DPS', () => {
   it('Rapid Fire High tier DPS ~241,520', () => {
     const rf = sairData.skills.find((s) => s.name === 'Rapid Fire')!;
     const result = calculateSkillDps(
-      sairHigh, sairData, rf, weaponData, attackSpeedData, mwData
+      sairHigh, sairData, rf, gameData
     );
 
     // basePower 200, multiplier 1.2 → 240
@@ -1501,7 +1443,7 @@ describe('Corsair DPS', () => {
   it('Rapid Fire Low tier DPS ~124,036', () => {
     const rf = sairData.skills.find((s) => s.name === 'Rapid Fire')!;
     const result = calculateSkillDps(
-      sairLow, sairData, rf, weaponData, attackSpeedData, mwData
+      sairLow, sairData, rf, gameData
     );
 
     expect(result.dps).toBeCloseTo(124987, -2);
@@ -1515,10 +1457,10 @@ describe('Corsair DPS', () => {
   it('High tier DPS is greater than Low tier for all skills', () => {
     for (const skill of sairData.skills) {
       const high = calculateSkillDps(
-        sairHigh, sairData, skill, weaponData, attackSpeedData, mwData
+        sairHigh, sairData, skill, gameData
       );
       const low = calculateSkillDps(
-        sairLow, sairData, skill, weaponData, attackSpeedData, mwData
+        sairLow, sairData, skill, gameData
       );
       expect(high.dps).toBeGreaterThan(low.dps);
     }
@@ -1548,7 +1490,7 @@ describe('Buccaneer DPS', () => {
   it('Demolition High tier damage range', () => {
     const demo = buccData.skills.find((s) => s.name === 'Demolition')!;
     const result = calculateSkillDps(
-      buccHigh, buccData, demo, weaponData, attackSpeedData, mwData
+      buccHigh, buccData, demo, gameData
     );
 
     // STR: floor(999*1.1) + 151 = 1249, DEX: floor(23*1.1) + 116 = 141
@@ -1563,7 +1505,7 @@ describe('Buccaneer DPS', () => {
   it('Demolition uses fixed 2.34s attack time', () => {
     const demo = buccData.skills.find((s) => s.name === 'Demolition')!;
     const result = calculateSkillDps(
-      buccHigh, buccData, demo, weaponData, attackSpeedData, mwData
+      buccHigh, buccData, demo, gameData
     );
 
     expect(result.attackTime).toBe(2.34);
@@ -1572,7 +1514,7 @@ describe('Buccaneer DPS', () => {
   it('Demolition High tier DPS ~247,417', () => {
     const demo = buccData.skills.find((s) => s.name === 'Demolition')!;
     const result = calculateSkillDps(
-      buccHigh, buccData, demo, weaponData, attackSpeedData, mwData
+      buccHigh, buccData, demo, gameData
     );
 
     // basePower 500, multiplier 1.0 → 500
@@ -1585,7 +1527,7 @@ describe('Buccaneer DPS', () => {
   it('Demolition Low tier DPS ~121,362', () => {
     const demo = buccData.skills.find((s) => s.name === 'Demolition')!;
     const result = calculateSkillDps(
-      buccLow, buccData, demo, weaponData, attackSpeedData, mwData
+      buccLow, buccData, demo, gameData
     );
 
     expect(result.damageRange.max).toBe(8685);
@@ -1599,7 +1541,7 @@ describe('Buccaneer DPS', () => {
 
     for (const skill of comboSkills) {
       const result = calculateSkillDps(
-        buccHigh, buccData, skill, weaponData, attackSpeedData, mwData
+        buccHigh, buccData, skill, gameData
       );
       expect(result.attackTime).toBe(4.04);
     }
@@ -1631,10 +1573,10 @@ describe('Buccaneer DPS', () => {
   it('High tier DPS is greater than Low tier for standalone Demolition', () => {
     const demo = buccData.skills.find((s) => s.name === 'Demolition')!;
     const high = calculateSkillDps(
-      buccHigh, buccData, demo, weaponData, attackSpeedData, mwData
+      buccHigh, buccData, demo, gameData
     );
     const low = calculateSkillDps(
-      buccLow, buccData, demo, weaponData, attackSpeedData, mwData
+      buccLow, buccData, demo, gameData
     );
     expect(high.dps).toBeGreaterThan(low.dps);
   });
@@ -1683,7 +1625,7 @@ describe('damage cap behavior', () => {
     // rangeCap = 199999 / 50 = 3999.98
     // With these stats, max damage range should far exceed 3999, so adjusted < average
     const result = calculateSkillDps(
-      capBuild, capClassData, capSkill, weaponData, attackSpeedData, mwData
+      capBuild, capClassData, capSkill, gameData
     );
     expect(result.skillDamagePercent).toBe(5000);
     expect(result.adjustedRangeNormal).toBeLessThan(result.damageRange.average);
@@ -1699,7 +1641,7 @@ describe('damage cap behavior', () => {
     // skillDamagePercent = 100 → skillMultiplier = 1.0 → rangeCap = 199999
     // Max damage with these stats should be well below 199999
     const result = calculateSkillDps(
-      capBuild, capClassData, lowSkill, weaponData, attackSpeedData, mwData
+      capBuild, capClassData, lowSkill, gameData
     );
     expect(result.skillDamagePercent).toBe(100);
     expect(result.adjustedRangeNormal).toBe(result.damageRange.average);
@@ -1717,7 +1659,7 @@ describe('zero crit rate', () => {
       (s) => s.name === 'Brandish (Sword)'
     )!;
     const result = calculateSkillDps(
-      noCritBuild, heroData, brandish, weaponData, attackSpeedData, mwData
+      noCritBuild, heroData, brandish, gameData
     );
 
     // With no crit: averageDamage = skillMultiplier * adjustedRange * hitCount
@@ -1739,9 +1681,7 @@ describe('DPS result structure', () => {
       heroHigh,
       heroData,
       brandish,
-      weaponData,
-      attackSpeedData,
-      mwData
+      gameData
     );
 
     expect(result.skillName).toBe('Brandish (Sword)');
@@ -1764,9 +1704,7 @@ describe('uncapped DPS fields', () => {
       heroHigh,
       heroData,
       brandish,
-      weaponData,
-      attackSpeedData,
-      mwData
+      gameData
     );
 
     // Hero high-tier range (10352-18831) is well below rangeCap (~40486)
@@ -1784,9 +1722,7 @@ describe('uncapped DPS fields', () => {
       heroLow,
       heroData,
       brandish,
-      weaponData,
-      attackSpeedData,
-      mwData
+      gameData
     );
 
     // Low tier damage range is well below the cap, so no capping occurs
@@ -1802,9 +1738,7 @@ describe('uncapped DPS fields', () => {
       heroHigh,
       heroData,
       brandish,
-      weaponData,
-      attackSpeedData,
-      mwData
+      gameData
     );
 
     const expectedCapLoss = result.uncappedDps > 0
@@ -1824,9 +1758,7 @@ describe('uncapped DPS fields', () => {
       mmHigh,
       mmData,
       snipe,
-      weaponData,
-      attackSpeedData,
-      mwData
+      gameData
     );
 
     expect(result.uncappedDps).toBe(result.dps);
@@ -1843,7 +1775,7 @@ describe('element modifier × damage cap interaction', () => {
     // Without element modifier — no cap loss (established baseline)
     const base = calculateSkillDps(
       paladinHigh, paladinData, blast,
-      weaponData, attackSpeedData, mwData
+      gameData
     );
     expect(base.capLossPercent).toBe(0);
 
@@ -1851,7 +1783,7 @@ describe('element modifier × damage cap interaction', () => {
     // rangeCap = 199,999 / (8.12 * 1.5) = 16,420 which is below max damage 18,173
     const withElement = calculateSkillDps(
       paladinHigh, paladinData, blast,
-      weaponData, attackSpeedData, mwData,
+      gameData,
       1.5
     );
 
@@ -1866,11 +1798,11 @@ describe('element modifier × damage cap interaction', () => {
 
     const base = calculateSkillDps(
       paladinHigh, paladinData, blast,
-      weaponData, attackSpeedData, mwData
+      gameData
     );
     const withOne = calculateSkillDps(
       paladinHigh, paladinData, blast,
-      weaponData, attackSpeedData, mwData,
+      gameData,
       1.0
     );
 
@@ -1886,11 +1818,11 @@ describe('element modifier × damage cap interaction', () => {
 
     const base = calculateSkillDps(
       paladinHigh, paladinData, blast,
-      weaponData, attackSpeedData, mwData
+      gameData
     );
     const withElement = calculateSkillDps(
       paladinHigh, paladinData, blast,
-      weaponData, attackSpeedData, mwData,
+      gameData,
       1.5
     );
 
@@ -1905,11 +1837,11 @@ describe('element modifier × damage cap interaction', () => {
 
     const base = calculateSkillDps(
       paladinHigh, paladinData, blast,
-      weaponData, attackSpeedData, mwData
+      gameData
     );
     const withElement = calculateSkillDps(
       paladinHigh, paladinData, blast,
-      weaponData, attackSpeedData, mwData,
+      gameData,
       1.5
     );
 
@@ -1924,7 +1856,7 @@ describe('element modifier × damage cap interaction', () => {
 
     const withResist = calculateSkillDps(
       paladinHigh, paladinData, blast,
-      weaponData, attackSpeedData, mwData,
+      gameData,
       0.5
     );
 
@@ -1978,16 +1910,16 @@ describe('Bullseye toggle', () => {
   };
 
   it('applies 1.2x when skill.bullseye=true and build.bullseye is undefined (default on)', () => {
-    const result = calculateSkillDps(corsairBuild, corsairClassData, cannonSkill, weaponData, attackSpeedData, mwData);
-    const resultNoBullseye = calculateSkillDps(corsairBuild, corsairClassData, cannonSkillNoBullseye, weaponData, attackSpeedData, mwData);
+    const result = calculateSkillDps(corsairBuild, corsairClassData, cannonSkill, gameData);
+    const resultNoBullseye = calculateSkillDps(corsairBuild, corsairClassData, cannonSkillNoBullseye, gameData);
     expect(result.skillDamagePercent).toBeCloseTo(cannonSkillNoBullseye.basePower * 1.2, 5);
     expect(result.dps).toBeGreaterThan(resultNoBullseye.dps);
   });
 
   it('does NOT apply 1.2x when build.bullseye=false', () => {
     const buildOff = { ...corsairBuild, bullseye: false };
-    const result = calculateSkillDps(buildOff, corsairClassData, cannonSkill, weaponData, attackSpeedData, mwData);
-    const resultNoBullseye = calculateSkillDps(buildOff, corsairClassData, cannonSkillNoBullseye, weaponData, attackSpeedData, mwData);
+    const result = calculateSkillDps(buildOff, corsairClassData, cannonSkill, gameData);
+    const resultNoBullseye = calculateSkillDps(buildOff, corsairClassData, cannonSkillNoBullseye, gameData);
     expect(result.skillDamagePercent).toBe(resultNoBullseye.skillDamagePercent);
     expect(result.dps).toBeCloseTo(resultNoBullseye.dps, 5);
   });
@@ -1995,14 +1927,14 @@ describe('Bullseye toggle', () => {
   it('does NOT apply 1.2x to skills without bullseye flag', () => {
     const plainSkill: SkillEntry = { ...cannonSkill, bullseye: undefined };
     const buildOn = { ...corsairBuild, bullseye: true };
-    const result = calculateSkillDps(buildOn, corsairClassData, plainSkill, weaponData, attackSpeedData, mwData);
-    const resultDefault = calculateSkillDps(corsairBuild, corsairClassData, plainSkill, weaponData, attackSpeedData, mwData);
+    const result = calculateSkillDps(buildOn, corsairClassData, plainSkill, gameData);
+    const resultDefault = calculateSkillDps(corsairBuild, corsairClassData, plainSkill, gameData);
     expect(result.dps).toBeCloseTo(resultDefault.dps, 5);
   });
 
   it('applies 1.2x to crit damage path too', () => {
-    const result = calculateSkillDps(corsairBuild, corsairClassData, cannonSkill, weaponData, attackSpeedData, mwData);
-    const resultNoBullseye = calculateSkillDps(corsairBuild, corsairClassData, cannonSkillNoBullseye, weaponData, attackSpeedData, mwData);
+    const result = calculateSkillDps(corsairBuild, corsairClassData, cannonSkill, gameData);
+    const resultNoBullseye = calculateSkillDps(corsairBuild, corsairClassData, cannonSkillNoBullseye, gameData);
     expect(result.critDamagePercent).toBeGreaterThan(resultNoBullseye.critDamagePercent);
     // addBeforeMultiply: (380 + 140) * 1.2 = 624 vs (380 + 140) * 1.0 = 520
     expect(result.critDamagePercent).toBeCloseTo((380 + 140) * 1.2, 5);
