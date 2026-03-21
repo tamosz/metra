@@ -94,9 +94,9 @@ export function scaleBudget(fraction: number): GearBudget {
     gearSecondary: Math.round(budget.gearSecondary * fraction),
     nonWeaponWATK: Math.round(budget.nonWeaponWATK * fraction),
     scrollBonus: Math.round(budget.scrollBonus * fraction),
-    basePrimary: budget.basePrimary,
-    baseSecondary: budget.baseSecondary,
-    attackPotion: budget.attackPotion,
+    basePrimary: Math.round(budget.basePrimary * fraction),
+    baseSecondary: Math.round(budget.baseSecondary * fraction),
+    attackPotion: Math.round(budget.attackPotion * fraction),
   };
 }
 
@@ -156,8 +156,29 @@ function computeBuildBrowser(base: ClassBase): CharacterBuild {
   return computeBuildFromBudget(base, budget);
 }
 
-export function computeBuildAtFunding(base: ClassBase, fraction: number): CharacterBuild {
-  return computeBuildFromBudget(base, scaleBudget(fraction));
+// Shadower shield godly clean WATK before scrolling. Scrolling adds up to +23.
+export const SHIELD_BASE_WATK = 10;
+
+export function computeBuildAtPowerLevel(base: ClassBase, fraction: number): CharacterBuild {
+  const scaledBase = {
+    ...base,
+    godlyCleanWATK: Math.round(base.godlyCleanWATK * fraction),
+    weaponStat: Math.round(base.weaponStat * fraction),
+    projectile: Math.round(base.projectile * fraction),
+    passiveWATK: base.passiveWATK ? Math.round(base.passiveWATK * fraction) : undefined,
+    shieldWATK: base.shieldWATK
+      ? Math.round(SHIELD_BASE_WATK + (base.shieldWATK - SHIELD_BASE_WATK) * fraction)
+      : undefined,
+    shieldStats: base.shieldStats
+      ? Object.fromEntries(
+          Object.entries(base.shieldStats).map(([k, v]) => [k, Math.round((v ?? 0) * fraction)])
+        ) as Partial<Record<StatName, number>>
+      : undefined,
+    baseSecondaryOverride: base.baseSecondaryOverride != null
+      ? Math.round(base.baseSecondaryOverride * fraction)
+      : undefined,
+  };
+  return computeBuildFromBudget(scaledBase, scaleBudget(fraction));
 }
 
 /**

@@ -25,7 +25,7 @@ instead of STR/WATK. A follow-up is planned to compute mage builds the same way.
 |-------|:-----:|---------|
 | `gearPrimary` | 295 | Total primary stat from all non-weapon gear (armor, accessories, scrolls) |
 | `gearSecondary` | 168 | Total secondary stat from all non-weapon gear |
-| `nonWeaponWATK` | 84 | Total WATK from non-weapon sources (gloves, cape, shoe, earring, eye, face, belt, medal) |
+| `nonWeaponWATK` | 72 | Total WATK from non-weapon sources (gloves, cape, shoe, earring, eye, face, belt, medal) |
 | `scrollBonus` | 35 | WATK from weapon scrolling (7 slots x 5 WATK per 30% dark scroll) |
 | `basePrimary` | 999 | Base primary stat (level 200 cap) |
 | `baseSecondary` | 23 | Base secondary stat (dexless/lukless builds). Per-class overrides exist (e.g., Night Lord DEX 25) |
@@ -78,8 +78,8 @@ all other equipment stats.
 | Dragon Flame | Paladin (BW) | 117 | 122 | +35 | 157 |
 | Dragon Purple Claw | Night Lord | 55 | 60 | +35 | 95 |
 | Dragon Shiner Bow | Bowmaster | 105 | 110 | +35 | 145 |
-| Dark Neschere | Marksman | 103 | 108 | +35 | 143 |
-| Concerto | Corsair | 79 | 84 | +35 | 119 |
+| Dragon Shiner Cross | Marksman | 108 | 113 | +35 | 148 |
+| Dragonfire Revolver | Corsair | 83 | 88 | +35 | 123 |
 | Dragon Slash Claw | Buccaneer | 83 | 88 | +35 | 123 |
 | Dragon Kanzir | Shadower | 105 | 110 | +35 | 145 |
 | Elemental Wand 5 | Mages | 150 | 155 | +35 | 190 MATK |
@@ -105,8 +105,8 @@ hard ceiling of character power, not a typical endgame character.
 | Paladin (BW) | Dragon Flame (2H BW) | 122 | 7 |
 | Night Lord | Dragon Purple Claw | 60 | 4 |
 | Bowmaster | Dragon Shiner Bow | 110 | 6 |
-| Marksman | Dark Neschere | 108 | 6 |
-| Corsair | Concerto | 84 | 5 |
+| Marksman | Dragon Shiner Cross | 113 | 6 |
+| Corsair | Dragonfire Revolver | 88 | 5 |
 | Buccaneer | Dragon Slash Claw | 88 | 6 |
 | Shadower | Dragon Kanzir | 110 | 4 |
 
@@ -160,7 +160,7 @@ retains the arrow's attack bonus, so projectile WATK is effectively always activ
 | Bowmaster | Royal Bow Quiver | 12 |
 | Marksman | Royal Crossbow Quiver | 10 |
 | Night Lord | Balanced Fury | 30 |
-| Corsair | Blaze Capsule | 20 |
+| Corsair | Royal Bullet | 24 |
 
 ## Research Findings
 

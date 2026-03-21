@@ -1,7 +1,6 @@
 import LZString from 'lz-string';
 import type { Proposal } from '@engine/proposals/types.js';
 import { validateProposal } from '@engine/proposals/validate.js';
-import type { BuildOverrides } from '../hooks/useBuildExplorer.js';
 
 /**
  * Encode a proposal into a URL-safe compressed string.
@@ -48,83 +47,6 @@ export function setProposalInUrl(proposal: Proposal): void {
  */
 export function clearProposalFromUrl(): void {
   window.history.replaceState(null, '', window.location.pathname);
-}
-
-// --- Build Explorer URL encoding ---
-
-export interface BuildUrlPayload {
-  class: string;
-  overrides: Partial<BuildOverrides>;
-}
-
-export function encodeBuild(payload: BuildUrlPayload): string {
-  const json = JSON.stringify(payload);
-  return LZString.compressToEncodedURIComponent(json);
-}
-
-export function decodeBuild(encoded: string): BuildUrlPayload | null {
-  try {
-    const json = LZString.decompressFromEncodedURIComponent(encoded);
-    if (!json) return null;
-    const parsed = JSON.parse(json) as BuildUrlPayload & { tier?: string };
-    // Gracefully ignore old `tier` field from legacy URLs
-    const { tier: _tier, ...rest } = parsed;
-    return rest;
-  } catch {
-    return null;
-  }
-}
-
-export function getBuildFromUrl(): BuildUrlPayload | null {
-  const hash = window.location.hash;
-  if (!hash.startsWith('#b=')) return null;
-  const encoded = hash.slice(3);
-  return decodeBuild(encoded);
-}
-
-export function setBuildInUrl(payload: BuildUrlPayload): void {
-  const encoded = encodeBuild(payload);
-  window.history.replaceState(null, '', `#b=${encoded}`);
-}
-
-// --- Comparison URL encoding ---
-
-export interface ComparisonUrlPayload {
-  a: BuildUrlPayload;
-  b: BuildUrlPayload;
-}
-
-export function encodeComparison(payload: ComparisonUrlPayload): string {
-  const json = JSON.stringify(payload);
-  return LZString.compressToEncodedURIComponent(json);
-}
-
-export function decodeComparison(encoded: string): ComparisonUrlPayload | null {
-  try {
-    const json = LZString.decompressFromEncodedURIComponent(encoded);
-    if (!json) return null;
-    const parsed = JSON.parse(json) as ComparisonUrlPayload;
-    // Gracefully strip old tier fields from legacy URLs
-    const strip = (p: BuildUrlPayload & { tier?: string }): BuildUrlPayload => {
-      const { tier: _t, ...rest } = p;
-      return rest;
-    };
-    return { a: strip(parsed.a), b: strip(parsed.b) };
-  } catch {
-    return null;
-  }
-}
-
-export function getComparisonFromUrl(): ComparisonUrlPayload | null {
-  const hash = window.location.hash;
-  if (!hash.startsWith('#c=')) return null;
-  const encoded = hash.slice(3);
-  return decodeComparison(encoded);
-}
-
-export function setComparisonInUrl(payload: ComparisonUrlPayload): void {
-  const encoded = encodeComparison(payload);
-  window.history.replaceState(null, '', `#c=${encoded}`);
 }
 
 // --- Party URL encoding ---
