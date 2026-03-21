@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { calculateSkillDps } from '@metra/engine';
 import type { SkillEntry, ClassSkillData } from '@metra/engine';
 import {
-  getAllClassBases,
+  allClassBases,
   computeBuildAtFunding,
   weaponData,
   attackSpeedData,
@@ -63,7 +63,7 @@ export function useFundingScaling(options: {
   const { activeGroups, capEnabled } = options;
 
   return useMemo(() => {
-    const allBases = getAllClassBases();
+    const allBases = allClassBases;
     const { classDataMap } = discoveredData;
 
     // Build className → ClassSkillData lookup (classDataMap is keyed by file slug)

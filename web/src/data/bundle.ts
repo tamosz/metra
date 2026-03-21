@@ -260,3 +260,4 @@ export function discoverClasses(): DiscoveryResult {
 }
 
 export const discoveredData = discoverClasses();
+export const allClassBases = getAllClassBases();
