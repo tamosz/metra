@@ -1,6 +1,5 @@
 import { discoveredData } from '../../data/bundle.js';
 import type { ClassSkillData } from '@metra/engine';
-import { SectionHeading } from './SectionHeading.js';
 
 function getNotables(classData: ClassSkillData): string[] {
   const notes: string[] = [];
@@ -39,8 +38,7 @@ export function ClassReferenceSection() {
   );
 
   return (
-    <section id="class-reference" className="mb-16 scroll-mt-8">
-      <SectionHeading label="Class Reference" />
+    <>
 
       <p className="text-text-secondary text-sm mb-4 leading-relaxed">
         Per-class configuration used by the simulator, populated from the data files.
@@ -91,6 +89,6 @@ export function ClassReferenceSection() {
           </tbody>
         </table>
       </div>
-    </section>
+    </>
   );
 }

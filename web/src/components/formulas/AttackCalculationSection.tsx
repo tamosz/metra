@@ -1,11 +1,9 @@
 import { BlockMath, InlineMath } from 'react-katex';
 import { weaponData } from '../../data/bundle.js';
-import { SectionHeading } from './SectionHeading.js';
 
 export function AttackCalculationSection() {
   return (
-    <section id="attack" className="mb-16 scroll-mt-8">
-      <SectionHeading label="Attack Calculation" />
+    <>
 
       <p className="text-text-secondary text-sm mb-4 leading-relaxed">
         Echo of Hero adds a 4% bonus to attack. For physical classes it applies to WATK + potion +
@@ -73,6 +71,6 @@ export function AttackCalculationSection() {
           </tbody>
         </table>
       </div>
-    </section>
+    </>
   );
 }

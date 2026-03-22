@@ -1,10 +1,8 @@
 import { BlockMath, InlineMath } from 'react-katex';
-import { SectionHeading } from './SectionHeading.js';
 
 export function CriticalDamageSection() {
   return (
-    <section id="crit" className="mb-16 scroll-mt-8">
-      <SectionHeading label="Critical Damage" />
+    <>
 
       <p className="text-text-secondary text-sm mb-4 leading-relaxed">
         Physical classes all use the same crit damage formula:
@@ -50,6 +48,6 @@ export function CriticalDamageSection() {
         simulator does not model this &mdash; Assassinate uses the standard SE crit formula.
         If the bug exists, Shadower combo DPS with SE active may be slightly overestimated.
       </p>
-    </section>
+    </>
   );
 }

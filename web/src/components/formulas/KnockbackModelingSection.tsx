@@ -1,5 +1,4 @@
 import { BlockMath, InlineMath } from 'react-katex';
-import { SectionHeading } from './SectionHeading.js';
 
 export function KnockbackModelingSection() {
   const kbDefenses: Array<{ classes: string; defense: string; rate: string }> = [
@@ -17,8 +16,7 @@ export function KnockbackModelingSection() {
   ];
 
   return (
-    <section id="knockback" className="mb-16 scroll-mt-8">
-      <SectionHeading label="Knockback Modeling" />
+    <>
 
       <p className="text-text-secondary text-sm mb-4 leading-relaxed">
         Boss attacks interrupt skills, reducing effective DPS. The KB model estimates uptime loss
@@ -149,6 +147,6 @@ export function KnockbackModelingSection() {
         Boss AI uses cooldown-based skill systems rather than fixed intervals, so the interval
         parameter is an average estimate. Actual attack frequency varies by boss and encounter phase.
       </p>
-    </section>
+    </>
   );
 }

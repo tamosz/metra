@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
+import { AccordionSection } from './formulas/AccordionSection.js';
 import { StatCalculationSection } from './formulas/StatCalculationSection.js';
 import { AttackCalculationSection } from './formulas/AttackCalculationSection.js';
 import { DamageRangeSection } from './formulas/DamageRangeSection.js';
@@ -10,96 +11,87 @@ import { KnockbackModelingSection } from './formulas/KnockbackModelingSection.js
 import { ClassReferenceSection } from './formulas/ClassReferenceSection.js';
 
 const SECTIONS = [
-  { id: 'stats', label: 'Stat Calculation' },
-  { id: 'attack', label: 'Attack Calculation' },
-  { id: 'damage-range', label: 'Damage Range' },
-  { id: 'crit', label: 'Critical Damage' },
-  { id: 'speed', label: 'Attack Speed' },
-  { id: 'damage-cap', label: 'Damage Cap' },
-  { id: 'dps', label: 'DPS Formula' },
-  { id: 'knockback', label: 'Knockback Modeling' },
-  { id: 'class-reference', label: 'Class Reference' },
+  { id: 'stats', label: 'Stat Calculation', subtitle: 'MW boost, total stats' },
+  { id: 'attack', label: 'Attack Calculation', subtitle: 'Echo, total attack, weapon multipliers' },
+  { id: 'damage-range', label: 'Damage Range', subtitle: 'Standard, throwing star, magic' },
+  { id: 'crit', label: 'Critical Damage', subtitle: 'SE crit, built-in crit' },
+  { id: 'speed', label: 'Attack Speed', subtitle: 'Booster, SI, fixed-speed skills' },
+  { id: 'damage-cap', label: 'Damage Cap', subtitle: '199,999 cap, adjusted ranges' },
+  { id: 'dps', label: 'DPS Formula', subtitle: 'Skill %, crit weighting, combos' },
+  { id: 'knockback', label: 'Knockback Modeling', subtitle: 'Stance, dodge, uptime loss' },
+  { id: 'class-reference', label: 'Class Reference', subtitle: 'Per-class config table' },
 ] as const;
 
 type SectionId = (typeof SECTIONS)[number]['id'];
 
-export function FormulasPage() {
-  const [activeSection, setActiveSection] = useState<SectionId>(SECTIONS[0].id);
+const SECTION_COMPONENTS: Record<SectionId, React.ComponentType> = {
+  'stats': StatCalculationSection,
+  'attack': AttackCalculationSection,
+  'damage-range': DamageRangeSection,
+  'crit': CriticalDamageSection,
+  'speed': AttackSpeedSection,
+  'damage-cap': DamageCapSection,
+  'dps': DpsFormulaSection,
+  'knockback': KnockbackModelingSection,
+  'class-reference': ClassReferenceSection,
+};
 
-  useEffect(() => {
-    const sectionIds = new Set<string>(SECTIONS.map((s) => s.id));
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (entry.isIntersecting && sectionIds.has(entry.target.id)) {
-            setActiveSection(entry.target.id as SectionId);
-          }
-        }
-      },
-      { rootMargin: '-80px 0px -60% 0px' }
-    );
-    for (const { id } of SECTIONS) {
-      const el = document.getElementById(id);
-      if (el) observer.observe(el);
+export function FormulasPage() {
+  const [openSections, setOpenSections] = useState<Set<SectionId>>(() => {
+    const hash = window.location.hash.slice(1);
+    const initial = new Set<SectionId>();
+    if (hash && SECTIONS.some((s) => s.id === hash)) {
+      initial.add(hash as SectionId);
     }
-    return () => observer.disconnect();
+    return initial;
+  });
+
+  const toggle = useCallback((id: SectionId) => {
+    setOpenSections((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) {
+        next.delete(id);
+      } else {
+        next.add(id);
+      }
+      return next;
+    });
+  }, []);
+
+  // Handle hash navigation on load
+  useEffect(() => {
+    const hash = window.location.hash.slice(1) as SectionId;
+    if (hash && SECTIONS.some((s) => s.id === hash)) {
+      // Small delay to let the accordion open and render content
+      setTimeout(() => {
+        document.getElementById(hash)?.scrollIntoView({ behavior: 'smooth' });
+      }, 100);
+    }
   }, []);
 
   return (
-    <div className="flex gap-10">
-      {/* Desktop TOC sidebar */}
-      <nav className="hidden lg:block sticky top-8 self-start w-48 shrink-0">
-        <ul className="space-y-1 text-sm">
-          {SECTIONS.map(({ id, label }) => (
-            <li key={id}>
-              <a
-                href={`#${id}`}
-                className={`block rounded px-2.5 py-1.5 transition-colors no-underline ${
-                  activeSection === id
-                    ? 'bg-bg-active text-text-bright'
-                    : 'text-text-muted hover:text-text-secondary'
-                }`}
-              >
-                {label}
-              </a>
-            </li>
-          ))}
-        </ul>
-      </nav>
+    <div className="max-w-3xl">
+      <h2 className="text-lg font-bold text-text-bright mb-2">Damage Formulas</h2>
+      <p className="text-text-secondary mb-8">
+        The exact formulas used by the simulator, from raw stats to final DPS.
+      </p>
 
-      <div className="min-w-0 flex-1">
-        <h2 className="text-lg font-bold text-text-bright mb-2">Damage Formulas</h2>
-        <p className="text-text-secondary mb-8">
-          The exact formulas used by the simulator, from raw stats to final DPS.
-        </p>
-
-        {/* Mobile TOC */}
-        <div className="flex gap-1.5 overflow-x-auto pb-4 mb-6 lg:hidden">
-          {SECTIONS.map(({ id, label }) => (
-            <a
+      <div className="divide-y divide-border-default border-t border-border-default">
+        {SECTIONS.map(({ id, label, subtitle }) => {
+          const Component = SECTION_COMPONENTS[id];
+          return (
+            <AccordionSection
               key={id}
-              href={`#${id}`}
-              className={`shrink-0 rounded-full px-3 py-1 text-xs no-underline transition-colors ${
-                activeSection === id
-                  ? 'bg-bg-active text-text-bright'
-                  : 'bg-bg-surface text-text-muted hover:text-text-secondary'
-              }`}
+              id={id}
+              title={label}
+              subtitle={subtitle}
+              isOpen={openSections.has(id)}
+              onToggle={() => toggle(id)}
             >
-              {label}
-            </a>
-          ))}
-        </div>
-
-        {/* Content sections */}
-        <StatCalculationSection />
-        <AttackCalculationSection />
-        <DamageRangeSection />
-        <CriticalDamageSection />
-        <AttackSpeedSection />
-        <DamageCapSection />
-        <DpsFormulaSection />
-        <KnockbackModelingSection />
-        <ClassReferenceSection />
+              <Component />
+            </AccordionSection>
+          );
+        })}
       </div>
     </div>
   );

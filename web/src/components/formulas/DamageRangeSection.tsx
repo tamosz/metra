@@ -1,10 +1,8 @@
 import { BlockMath, InlineMath } from 'react-katex';
-import { SectionHeading } from './SectionHeading.js';
 
 export function DamageRangeSection() {
   return (
-    <section id="damage-range" className="mb-16 scroll-mt-8">
-      <SectionHeading label="Damage Range" />
+    <>
 
       <p className="text-text-secondary text-sm mb-4 leading-relaxed">
         Three formula variants exist depending on class type. Each attack deals uniform random
@@ -71,6 +69,6 @@ export function DamageRangeSection() {
       <div className="my-6">
         <BlockMath math="\text{Avg} = (\text{Min} + \text{Max}) / 2" />
       </div>
-    </section>
+    </>
   );
 }

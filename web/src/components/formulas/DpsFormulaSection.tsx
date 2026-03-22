@@ -1,10 +1,8 @@
 import { BlockMath, InlineMath } from 'react-katex';
-import { SectionHeading } from './SectionHeading.js';
 
 export function DpsFormulaSection() {
   return (
-    <section id="dps" className="mb-16 scroll-mt-8">
-      <SectionHeading label="DPS Formula" />
+    <>
 
       <p className="text-text-secondary text-sm mb-4 leading-relaxed">
         The final pipeline combining everything into damage per second.
@@ -69,6 +67,6 @@ export function DpsFormulaSection() {
         into a single combined DPS value. Each sub-skill uses the total rotation cycle time as its
         attack time.
       </p>
-    </section>
+    </>
   );
 }
