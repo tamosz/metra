@@ -37,7 +37,7 @@ export function AccordionSection({
       });
       return () => {
         cancelAnimationFrame(outer);
-        cancelAnimationFrame(inner);
+        if (inner != null) cancelAnimationFrame(inner);
       };
     }
   }, [isOpen]);
