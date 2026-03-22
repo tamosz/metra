@@ -7,5 +7,6 @@
   "weaponSpeed": 5,
   "godlyCleanWATK": 111,
   "weaponStat": 21,
-  "projectile": 0
+  "projectile": 0,
+  "equipmentAvoid": 30
 }

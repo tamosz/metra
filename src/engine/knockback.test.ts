@@ -4,9 +4,12 @@ import {
   calculateKnockbackProbability,
   calculateKnockbackUptime,
   getKnockbackRecovery,
+  computeAvoidability,
   DEFAULT_KB_RECOVERY,
   CHANNEL_WIND_UP,
   type SkillEntry,
+  type CharacterBuild,
+  type MWData,
 } from '@metra/engine';
 
 function makeSkill(overrides: Partial<SkillEntry> = {}): SkillEntry {
@@ -184,5 +187,100 @@ describe('getKnockbackRecovery', () => {
     expect(getKnockbackRecovery(skill, 0.69)).toBe(DEFAULT_KB_RECOVERY);
     expect(getKnockbackRecovery(skill, 0.60)).toBe(DEFAULT_KB_RECOVERY);
     expect(getKnockbackRecovery(skill, 2.34)).toBe(DEFAULT_KB_RECOVERY);
+  });
+});
+
+const MW_DATA: MWData = [
+  { level: 0, multiplier: 1.00 },
+  { level: 20, multiplier: 1.10 },
+];
+
+function makeBuild(overrides: Partial<CharacterBuild> = {}): CharacterBuild {
+  return {
+    className: 'Test',
+    baseStats: { STR: 4, DEX: 4, INT: 4, LUK: 4 },
+    gearStats: { STR: 0, DEX: 0, INT: 0, LUK: 0 },
+    totalWeaponAttack: 200,
+    weaponType: '2H Sword',
+    weaponSpeed: 6,
+    attackPotion: 140,
+    projectile: 0,
+    echoActive: true,
+    mwLevel: 20,
+    speedInfusion: true,
+    sharpEyes: true,
+    ...overrides,
+  };
+}
+
+describe('computeAvoidability', () => {
+  it('Night Lord: high LUK primary, moderate DEX secondary', () => {
+    const build = makeBuild({
+      baseStats: { STR: 4, DEX: 23, INT: 4, LUK: 999 },
+      gearStats: { STR: 0, DEX: 168, INT: 0, LUK: 316 },
+      mwLevel: 20,
+    });
+    // totalLUK = floor(999 * 1.10) + 316 = 1098 + 316 = 1414
+    // totalDEX = floor(23 * 1.10) + 168 = 25 + 168 = 193
+    // avoid = 0.5*1414 + 0.25*193 + 30 = 707 + 48.25 + 30 = 785.25 → 785
+    expect(computeAvoidability(build, MW_DATA, 30)).toBe(785);
+  });
+
+  it('warrior: low LUK, moderate DEX secondary', () => {
+    const build = makeBuild({
+      baseStats: { STR: 999, DEX: 23, INT: 4, LUK: 4 },
+      gearStats: { STR: 316, DEX: 168, INT: 0, LUK: 0 },
+      mwLevel: 20,
+    });
+    // totalLUK = floor(4 * 1.10) + 0 = 4
+    // totalDEX = floor(23 * 1.10) + 168 = 25 + 168 = 193
+    // avoid = 0.5*4 + 0.25*193 + 30 = 2 + 48.25 + 30 = 80.25 → 80
+    expect(computeAvoidability(build, MW_DATA, 30)).toBe(80);
+  });
+
+  it('archer: high DEX primary', () => {
+    const build = makeBuild({
+      baseStats: { STR: 23, DEX: 999, INT: 4, LUK: 4 },
+      gearStats: { STR: 168, DEX: 316, INT: 0, LUK: 0 },
+      mwLevel: 20,
+    });
+    // totalLUK = floor(4 * 1.10) + 0 = 4
+    // totalDEX = floor(999 * 1.10) + 316 = 1098 + 316 = 1414
+    // avoid = 0.5*4 + 0.25*1414 + 30 = 2 + 353.5 + 30 = 385.5 → 386
+    expect(computeAvoidability(build, MW_DATA, 30)).toBe(386);
+  });
+
+  it('mage: minimal LUK and DEX', () => {
+    const build = makeBuild({
+      baseStats: { STR: 4, DEX: 4, INT: 999, LUK: 4 },
+      gearStats: { STR: 0, DEX: 0, INT: 300, LUK: 168 },
+      mwLevel: 20,
+    });
+    // totalLUK = floor(4 * 1.10) + 168 = 4 + 168 = 172
+    // totalDEX = floor(4 * 1.10) + 0 = 4
+    // avoid = 0.5*172 + 0.25*4 + 30 = 86 + 1 + 30 = 117
+    expect(computeAvoidability(build, MW_DATA, 30)).toBe(117);
+  });
+
+  it('MW off reduces avoidability', () => {
+    const build = makeBuild({
+      baseStats: { STR: 4, DEX: 23, INT: 4, LUK: 999 },
+      gearStats: { STR: 0, DEX: 168, INT: 0, LUK: 316 },
+      mwLevel: 0,
+    });
+    // totalLUK = floor(999 * 1.00) + 316 = 999 + 316 = 1315
+    // totalDEX = floor(23 * 1.00) + 168 = 23 + 168 = 191
+    // avoid = 0.5*1315 + 0.25*191 + 30 = 657.5 + 47.75 + 30 = 735.25 → 735
+    expect(computeAvoidability(build, MW_DATA, 30)).toBe(735);
+  });
+
+  it('zero equipment avoid', () => {
+    const build = makeBuild({
+      baseStats: { STR: 999, DEX: 23, INT: 4, LUK: 4 },
+      gearStats: { STR: 316, DEX: 168, INT: 0, LUK: 0 },
+      mwLevel: 20,
+    });
+    // avoid = 0.5*4 + 0.25*193 + 0 = 2 + 48.25 = 50.25 → 50
+    expect(computeAvoidability(build, MW_DATA)).toBe(50);
   });
 });

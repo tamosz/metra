@@ -1,6 +1,7 @@
 import { readFileSync } from 'fs';
 import { resolve } from 'path';
-import type { CharacterBuild, StatName } from '@metra/engine';
+import type { CharacterBuild, MWData, StatName } from '@metra/engine';
+import { computeAvoidability, getMWMultiplier } from '@metra/engine';
 
 export interface ClassBase {
   className: string;
@@ -21,6 +22,7 @@ export interface ClassBase {
   sharpEyes?: boolean;
   shadowPartner?: boolean;
   baseSecondaryOverride?: number;
+  equipmentAvoid?: number;
 }
 
 interface GearBudget {
@@ -36,6 +38,7 @@ interface GearBudget {
 const DATA_DIR = resolve(import.meta.dirname, '../../data');
 
 let budgetCache: GearBudget | null = null;
+let mwCache: MWData | null = null;
 
 function loadGearBudget(): GearBudget {
   if (!budgetCache) {
@@ -46,10 +49,21 @@ function loadGearBudget(): GearBudget {
   return budgetCache;
 }
 
+function loadMWData(): MWData {
+  if (!mwCache) {
+    const raw = JSON.parse(
+      readFileSync(resolve(DATA_DIR, 'mw.json'), 'utf-8')
+    ) as { entries: MWData };
+    mwCache = raw.entries;
+  }
+  return mwCache;
+}
+
 const ALL_STATS: StatName[] = ['STR', 'DEX', 'INT', 'LUK'];
 
 export function computeBuild(base: ClassBase): CharacterBuild {
   const budget = loadGearBudget();
+  const mwData = loadMWData();
 
   const totalWeaponAttack =
     base.godlyCleanWATK +
@@ -84,7 +98,9 @@ export function computeBuild(base: ClassBase): CharacterBuild {
   }
   baseStats[primary] = budget.basePrimary;
 
-  return {
+  const mwLevel = base.mwLevel ?? 20;
+
+  const build: CharacterBuild = {
     className: base.className,
     baseStats,
     gearStats,
@@ -94,9 +110,14 @@ export function computeBuild(base: ClassBase): CharacterBuild {
     attackPotion: budget.attackPotion,
     projectile: base.projectile,
     echoActive: base.echoActive ?? true,
-    mwLevel: base.mwLevel ?? 20,
+    mwLevel,
     speedInfusion: base.speedInfusion ?? true,
     sharpEyes: base.sharpEyes ?? true,
     shadowPartner: base.shadowPartner,
+    avoidability: 0,
   };
+
+  build.avoidability = computeAvoidability(build, mwData, base.equipmentAvoid ?? 0);
+
+  return build;
 }

@@ -11,7 +11,7 @@ import {
   type SkillEntry,
   type DpsResult,
 } from '@metra/engine';
-import type { ScenarioConfig, ScenarioResult } from './types.js';
+import type { KnockbackInfo, ScenarioConfig, ScenarioResult } from './types.js';
 
 /** Fallback scenario when none is provided: fully buffed, no overrides. */
 const FALLBACK_SCENARIO: ScenarioConfig[] = [{ name: 'Buffed' }];
@@ -134,6 +134,7 @@ export function runSimulation(
           const effectiveTargets = Math.min(skill.maxTargets ?? 1, scenario.targetCount);
           if (effectiveTargets > 1) effectiveDps = scaleDpsResult(effectiveDps, targetCountFactor(effectiveTargets, skill.bounceDecay));
         }
+        let kbInfo: KnockbackInfo | undefined;
         if (scenario.bossAttackInterval != null && scenario.bossAttackInterval > 0) {
           const isThief = (classData.shadowShifterRate ?? 0) > 0;
           const dodgeChance = calculateDodgeChance(
@@ -141,14 +142,15 @@ export function runSimulation(
             scenario.bossAccuracy ?? Infinity,
             isThief ? { minDodge: 0.05, maxDodge: 0.95 } : undefined
           );
-          const kbProb = calculateKnockbackProbability(
+          const kbProbability = calculateKnockbackProbability(
             dodgeChance,
             classData.stanceRate ?? 0,
             classData.shadowShifterRate ?? 0
           );
-          const recovery = getKnockbackRecovery(skill, effectiveDps.attackTime);
-          const uptime = calculateKnockbackUptime(kbProb, scenario.bossAttackInterval, recovery);
+          const recoveryTime = getKnockbackRecovery(skill, effectiveDps.attackTime);
+          const uptime = calculateKnockbackUptime(kbProbability, scenario.bossAttackInterval, recoveryTime);
           effectiveDps = scaleDpsResult(effectiveDps, uptime);
+          kbInfo = { dodgeChance, kbProbability, uptime, recoveryTime };
         }
 
         let resolvedSkillName = skill.name;
@@ -166,6 +168,7 @@ export function runSimulation(
           ...(skill.description ? { description: skill.description } : {}),
           ...(isHeadline ? {} : { headline: false }),
           ...(effectiveMaxTargets > 1 ? { maxTargets: effectiveMaxTargets } : {}),
+          ...(kbInfo ? { kb: kbInfo } : {}),
         };
 
         // Store all skills (including hidden) for mixed rotation lookups

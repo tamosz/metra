@@ -8,5 +8,6 @@
   "godlyCleanWATK": 113,
   "weaponStat": 7,
   "passiveWATK": 15,
-  "projectile": 10
+  "projectile": 10,
+  "equipmentAvoid": 30
 }

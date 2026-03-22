@@ -56,6 +56,7 @@ export {
   calculateKnockbackProbability,
   calculateKnockbackUptime,
   getKnockbackRecovery,
+  computeAvoidability,
   DEFAULT_KB_RECOVERY,
   CHANNEL_WIND_UP,
 } from './knockback.js';

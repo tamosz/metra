@@ -10,5 +10,6 @@
   "shieldWATK": 33,
   "shieldStats": { "LUK": 8, "STR": 14 },
   "projectile": 0,
-  "shadowPartner": false
+  "shadowPartner": false,
+  "equipmentAvoid": 30
 }

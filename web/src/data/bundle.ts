@@ -6,6 +6,7 @@ import {
   type ClassSkillData,
   type CharacterBuild,
   type StatName,
+  computeAvoidability,
 } from '@metra/engine';
 
 const STAT_NAMES: readonly StatName[] = ['STR', 'DEX', 'INT', 'LUK'];
@@ -72,6 +73,7 @@ export interface ClassBase {
   sharpEyes?: boolean;
   shadowPartner?: boolean;
   baseSecondaryOverride?: number;
+  equipmentAvoid?: number;
 }
 
 export interface GearBudget {
@@ -131,7 +133,9 @@ function computeBuildFromBudget(base: ClassBase, b: GearBudget): CharacterBuild 
   }
   baseStats[primary] = b.basePrimary;
 
-  return {
+  const mwLevel = base.mwLevel ?? 20;
+
+  const build: CharacterBuild = {
     className: base.className,
     baseStats,
     gearStats,
@@ -141,11 +145,16 @@ function computeBuildFromBudget(base: ClassBase, b: GearBudget): CharacterBuild 
     attackPotion: b.attackPotion,
     projectile: base.projectile,
     echoActive: base.echoActive ?? true,
-    mwLevel: base.mwLevel ?? 20,
+    mwLevel,
     speedInfusion: base.speedInfusion ?? true,
     sharpEyes: base.sharpEyes ?? true,
     shadowPartner: base.shadowPartner,
+    avoidability: 0,
   };
+
+  build.avoidability = computeAvoidability(build, mwData, base.equipmentAvoid ?? 0);
+
+  return build;
 }
 
 /**
@@ -181,11 +190,11 @@ export function computeBuildAtPowerLevel(base: ClassBase, fraction: number): Cha
 /**
  * Parse a mage flat-mode gear template into a CharacterBuild.
  */
-function parseMageTemplate(raw: Record<string, unknown>): CharacterBuild {
+function parseMageTemplate(raw: Record<string, unknown>, equipmentAvoid: number): CharacterBuild {
   const breakdown = raw.gearBreakdown as Record<string, Record<string, number>> | undefined;
   const computed = breakdown ? computeGearTotals(breakdown) : undefined;
 
-  return {
+  const build: CharacterBuild = {
     className: raw.className as string,
     baseStats: raw.baseStats as CharacterBuild['baseStats'],
     gearStats: computed?.gearStats ?? (raw.gearStats as CharacterBuild['gearStats']),
@@ -199,7 +208,12 @@ function parseMageTemplate(raw: Record<string, unknown>): CharacterBuild {
     speedInfusion: raw.speedInfusion as boolean,
     sharpEyes: raw.sharpEyes as boolean,
     shadowPartner: raw.shadowPartner as boolean | undefined,
+    avoidability: 0,
   };
+
+  build.avoidability = computeAvoidability(build, mwData, equipmentAvoid);
+
+  return build;
 }
 
 function findBaseForClass(className: string): ClassBase | null {
@@ -292,7 +306,7 @@ export function discoverClasses(): DiscoveryResult {
           className: base.className,
         };
 
-        builds.set(name, parseMageTemplate(merged));
+        builds.set(name, parseMageTemplate(merged, base.equipmentAvoid ?? 0));
         classNames.push(name);
       }
     }

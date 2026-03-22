@@ -89,8 +89,6 @@ estimate for a full HT run on melee characters.
 | HT (heads) | 160 | 250 |
 | Auf Haven | 180 | 270 |
 
-At accuracy 250, dodge chance from avoidability is negligible for all classes.
-
 ## Avoidability Formula (Monster → Player)
 
 **Source:** Client code extraction (iPippy, MapleLegends forum), confirmed on Royals by jamin
@@ -98,6 +96,9 @@ At accuracy 250, dodge chance from avoidability is negligible for all classes.
 **Forum threads:**
 - [MapleLegends avoidability formula](https://forum.maplelegends.com/index.php?threads/maplelegends-avoidability-formula.26694/)
 - [Royals avoidability question](https://royals.ms/forum/threads/avoidability-question.174715/)
+- [HTP vs Avoidability Analysis](https://forum.maplelegends.com/index.php?threads/htp-vs-mon-avoidability-analysis.27333/)
+
+### Dodge formula
 
 Pre-BB formula for physical (touch) damage:
 
@@ -110,8 +111,35 @@ Class-specific caps:
 - Non-thieves: [2%, 80%]
 - Thieves (NL, Shadower): [5%, 95%]
 
-At boss accuracy 250 with 0 avoidability, dodge = 2% (non-thief floor).
-For a Night Lord with ~300 avoid: `300 / (4.5 * 250) = 26.7%` dodge.
+### Avoidability calculation
+
+The `avoid` input to the dodge formula is computed from stats, not the character
+window display stat:
+
+```
+avoid = 0.5 × totalLUK + 0.25 × totalDEX + equipmentAvoid
+```
+
+Where `totalStat = floor(baseStat × mwMultiplier) + gearStat`.
+
+**Used in:** `packages/engine/src/knockback.ts` (`computeAvoidability`)
+
+### Per-class avoidability (default endgame builds)
+
+Computed at MW20 with standard gear budget. Equipment avoid ~30 for all classes
+(Zhelm innate, shoes/cape/earring).
+
+| Class | Avoid | Dodge @ ACC 250 | Key stat |
+|-------|------:|----------------:|----------|
+| Night Lord | ~785 | ~70% | LUK primary |
+| Shadower | ~789 | ~70% | LUK primary |
+| Bowmaster / Marksman | ~386 | ~34% | DEX primary |
+| Warriors | ~80 | ~7% | Low LUK/DEX |
+| Bucc / Corsair | ~80 | ~7% | Low LUK/DEX |
+| Mages | ~117 | ~10% | Gear LUK from secondary |
+
+Thief classes benefit most — their LUK primary gives 700+ avoid. Archers also
+gain significantly from high DEX. Warriors and pirates see minimal impact.
 
 **Previous incorrect formula:** The codebase previously used
 `floor(sqrt(avoid)) - floor(sqrt(accuracy))` from SouthPerry's "[BB] All Known
@@ -120,6 +148,11 @@ MapleRoyals (v62/pre-BB).
 
 **Not yet modeled:** Magic attack dodge uses a different formula:
 `magicDodge = 10/9 - accuracy / (0.9 * avoid)`.
+
+**Possible refinement:** Pirate classes may use a different avoid formula
+(Bucc: `0.225×STR + 0.25×DEX`, Corsair: `0.5×LUK + 0.125×DEX` per
+MapleLegends analysis). Currently using the standard formula for all classes.
+Impact is small since pirates have low relevant stats either way.
 
 ## Battleship KB Interaction
 
@@ -145,12 +178,15 @@ BOSS_ACCURACY        = 250   // representative endgame boss accuracy
 
 ### Expected DPS Loss (at default boss settings)
 
-| Class | Defense | Burst Loss | Channel Loss |
-|-------|---------|-----------|-------------|
-| Warriors (90% stance) | ~3% | — |
-| Bucc Demolition (i-frame) | ~0% | — |
-| Shadower (40% shifter) | ~20% | — |
-| Night Lord (30% shifter) | ~23% | — |
-| Archers (no defense) | ~33% | ~47% |
-| Corsair (no defense) | ~33% | ~47% |
-| Mages (no defense) | ~33% | — |
+Includes avoidability-based dodge. Dodge reduces the effective KB rate for
+all classes, with the largest impact on thieves (70% dodge) and archers (34%).
+
+| Class | Defense | Dodge | Burst Loss | Channel Loss |
+|-------|---------|------:|-----------|-------------|
+| Warriors (90% stance) | Power Stance | ~7% | ~3% | — |
+| Bucc Barrage+Demo (i-frame) | i-frame + Stance | ~7% | ~0% | — |
+| Shadower (40% shifter) | Shifter + dodge | ~70% | ~6% | — |
+| Night Lord (30% shifter) | Shifter + dodge | ~70% | ~7% | — |
+| Archers (no defense) | Dodge only | ~34% | ~22% | ~31% |
+| Corsair (no defense) | Dodge only | ~7% | ~22% | ~22% |
+| Mages (no defense) | Dodge only | ~10% | ~33% | — |
