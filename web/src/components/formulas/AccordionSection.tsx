@@ -28,12 +28,18 @@ export function AccordionSection({
       const timer = setTimeout(() => setHeight(undefined), 300);
       return () => clearTimeout(timer);
     } else {
-      // Set explicit height first so the transition has a start value
+      // Set explicit height so the transition has a start value
       setHeight(contentRef.current.scrollHeight);
-      // Force reflow so the browser commits the start value before animating to 0
-      void contentRef.current.offsetHeight;
-      const raf = requestAnimationFrame(() => setHeight(0));
-      return () => cancelAnimationFrame(raf);
+      // Double-rAF ensures the browser has painted the start value before animating to 0
+      let outer: number;
+      let inner: number;
+      outer = requestAnimationFrame(() => {
+        inner = requestAnimationFrame(() => setHeight(0));
+      });
+      return () => {
+        cancelAnimationFrame(outer);
+        cancelAnimationFrame(inner);
+      };
     }
   }, [isOpen]);
 

@@ -56,7 +56,11 @@ export function CriticalDamageSection({ selectedClass }: CriticalDamageSectionPr
         <p className="text-text-secondary text-sm mb-4 leading-relaxed border-l-2 border-accent pl-3">
           {classData!.className} has {Math.round(builtInCritSkill.builtInCritRate! * 100)}% built-in
           crit on {builtInCritSkill.name}, giving{' '}
-          {Math.min(Math.round(builtInCritSkill.builtInCritRate! * 100) + 15, 100)}% total with SE.
+          {Math.min(
+            Math.round(builtInCritSkill.builtInCritRate! * 100) +
+              Math.round(classData!.sharpEyesCritRate * 100),
+            100
+          )}% total with SE.
         </p>
       )}
 
