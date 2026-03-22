@@ -133,13 +133,15 @@ Computed at MW20 with standard gear budget. Equipment avoid ~30 for all classes
 |-------|------:|----------------:|----------|
 | Night Lord | ~785 | ~70% | LUK primary |
 | Shadower | ~789 | ~70% | LUK primary |
-| Bowmaster / Marksman | ~386 | ~34% | DEX primary |
+| Bowmaster / Marksman | ~385 | ~34% | DEX primary |
+| Corsair | ~382 | ~34% | DEX primary |
 | Warriors | ~80 | ~7% | Low LUK/DEX |
-| Bucc / Corsair | ~80 | ~7% | Low LUK/DEX |
+| Buccaneer | ~80 | ~7% | STR primary, low LUK/DEX |
 | Mages | ~117 | ~10% | Gear LUK from secondary |
 
-Thief classes benefit most — their LUK primary gives 700+ avoid. Archers also
-gain significantly from high DEX. Warriors and pirates see minimal impact.
+Thief classes benefit most — their LUK primary gives 700+ avoid. DEX-primary
+classes (archers, Corsair) also gain significantly. Warriors and Buccaneer
+see minimal impact.
 
 **Previous incorrect formula:** The codebase previously used
 `floor(sqrt(avoid)) - floor(sqrt(accuracy))` from SouthPerry's "[BB] All Known
@@ -152,7 +154,9 @@ MapleRoyals (v62/pre-BB).
 **Possible refinement:** Pirate classes may use a different avoid formula
 (Bucc: `0.225×STR + 0.25×DEX`, Corsair: `0.5×LUK + 0.125×DEX` per
 MapleLegends analysis). Currently using the standard formula for all classes.
-Impact is small since pirates have low relevant stats either way.
+If the pirate-specific formulas are correct, Bucc avoid would increase
+significantly (~396 from STR primary) while Corsair would decrease (~56 from
+halved DEX coefficient). Needs in-game verification.
 
 ## Battleship KB Interaction
 
@@ -188,5 +192,5 @@ all classes, with the largest impact on thieves (70% dodge) and archers (34%).
 | Shadower (40% shifter) | Shifter + dodge | ~70% | ~6% | — |
 | Night Lord (30% shifter) | Shifter + dodge | ~70% | ~7% | — |
 | Archers (no defense) | Dodge only | ~34% | ~22% | ~31% |
-| Corsair (no defense) | Dodge only | ~7% | ~22% | ~22% |
+| Corsair (no defense) | Dodge only | ~34% | ~22% | ~22% |
 | Mages (no defense) | Dodge only | ~10% | ~33% | — |
