@@ -22,30 +22,66 @@ function makeSkill(overrides: Partial<SkillEntry> = {}): SkillEntry {
 }
 
 describe('calculateDodgeChance', () => {
-  it('returns 0 when avoidability is 0', () => {
-    expect(calculateDodgeChance(0, 250)).toBe(0);
+  it('returns minDodge when avoidability is 0 (non-thief)', () => {
+    // 0 / (4.5 * 250) = 0, clamped to non-thief floor 0.02
+    expect(calculateDodgeChance(0, 250)).toBeCloseTo(0.02);
   });
 
-  it('returns 0 when boss accuracy overwhelms avoidability', () => {
-    // sqrt(100) = 10, sqrt(250) ≈ 15.8 → floor 10 - floor 15 = -5 → clamped to 0
-    expect(calculateDodgeChance(100, 250)).toBe(0);
+  it('returns minDodge when avoidability is 0 (thief)', () => {
+    expect(calculateDodgeChance(0, 250, { minDodge: 0.05, maxDodge: 0.95 })).toBeCloseTo(0.05);
   });
 
-  it('returns positive dodge when avoidability exceeds accuracy', () => {
-    // sqrt(10000) = 100, sqrt(250) ≈ 15.8 → 100 - 15 = 85 → 0.85
-    expect(calculateDodgeChance(10000, 250)).toBeCloseTo(0.85, 2);
+  it('computes linear dodge for moderate avoidability', () => {
+    // 300 / (4.5 * 250) = 0.2667
+    expect(calculateDodgeChance(300, 250)).toBeCloseTo(0.2667, 3);
   });
 
-  it('caps dodge chance at 0.95', () => {
-    // Very high avoidability → capped
-    expect(calculateDodgeChance(1000000, 1)).toBe(0.95);
+  it('caps at maxDodge for non-thieves (80%)', () => {
+    // 1000 / (4.5 * 250) = 0.889, capped to 0.80
+    expect(calculateDodgeChance(1000, 250)).toBeCloseTo(0.80);
   });
 
-  it('returns 0 for typical endgame scenario (low avoid vs boss accuracy)', () => {
-    // Most physical classes have ~200 avoid, boss accuracy 250
-    // sqrt(200) ≈ 14.1 → floor 14, sqrt(250) ≈ 15.8 → floor 15
-    // 14 - 15 = -1 → 0
-    expect(calculateDodgeChance(200, 250)).toBe(0);
+  it('caps at maxDodge for thieves (95%)', () => {
+    // 1000 / (4.5 * 100) = 2.22, capped to 0.95
+    expect(calculateDodgeChance(1000, 100, { minDodge: 0.05, maxDodge: 0.95 })).toBeCloseTo(0.95);
+  });
+
+  it('spot-check: Voodoos (acc ~210), 756 avoid = 80% cap', () => {
+    // 756 / (4.5 * 210) = 0.80, exactly at non-thief cap
+    expect(calculateDodgeChance(756, 210)).toBeCloseTo(0.80);
+  });
+
+  it('spot-check: NL 300 avoid vs boss acc 250', () => {
+    // 300 / (4.5 * 250) = 0.2667
+    expect(calculateDodgeChance(300, 250, { minDodge: 0.05, maxDodge: 0.95 })).toBeCloseTo(0.2667, 3);
+  });
+
+  it('spot-check: warrior 10 avoid vs boss acc 250 hits floor', () => {
+    // 10 / (4.5 * 250) = 0.0089, clamped to 0.02
+    expect(calculateDodgeChance(10, 250)).toBeCloseTo(0.02);
+  });
+
+  it('applies level penalty to avoidability', () => {
+    // effectiveAvoid = 300 - 20/2 = 290
+    // 290 / (4.5 * 250) = 0.2578
+    expect(calculateDodgeChance(300, 250, { levelDifference: 20 })).toBeCloseTo(0.2578, 3);
+  });
+
+  it('level penalty does not reduce avoidability below 0', () => {
+    // effectiveAvoid = 10 - 200/2 = -90 → clamped to 0
+    // 0 / (4.5 * 250) = 0, clamped to minDodge 0.02
+    expect(calculateDodgeChance(10, 250, { levelDifference: 200 })).toBeCloseTo(0.02);
+  });
+
+  it('handles 0 accuracy gracefully (returns maxDodge)', () => {
+    // Division by 0 → Infinity, capped to maxDodge
+    expect(calculateDodgeChance(100, 0)).toBeCloseTo(0.80);
+  });
+
+  it('negative level difference is ignored', () => {
+    // Player higher level than monster → no penalty
+    // effectiveAvoid = 300 - max(0, -10)/2 = 300
+    expect(calculateDodgeChance(300, 250, { levelDifference: -10 })).toBeCloseTo(0.2667, 3);
   });
 });
 
