@@ -31,9 +31,8 @@ export function AccordionSection({
       // Set explicit height so the transition has a start value
       setHeight(contentRef.current.scrollHeight);
       // Double-rAF ensures the browser has painted the start value before animating to 0
-      let outer: number;
       let inner: number | undefined;
-      outer = requestAnimationFrame(() => {
+      const outer = requestAnimationFrame(() => {
         inner = requestAnimationFrame(() => setHeight(0));
       });
       return () => {
