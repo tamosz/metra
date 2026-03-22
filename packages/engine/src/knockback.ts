@@ -99,7 +99,7 @@ export function computeAvoidability(
   const mwMult = getMWMultiplier(mwData, build.mwLevel);
   const totalLUK = Math.floor(build.baseStats.LUK * mwMult) + build.gearStats.LUK;
   const totalDEX = Math.floor(build.baseStats.DEX * mwMult) + build.gearStats.DEX;
-  return Math.round(0.5 * totalLUK + 0.25 * totalDEX + equipmentAvoid);
+  return Math.floor(0.5 * totalLUK + 0.25 * totalDEX + equipmentAvoid);
 }
 
 /**

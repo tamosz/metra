@@ -4,6 +4,7 @@ import {
   calculateKnockbackProbability,
   calculateKnockbackUptime,
   getKnockbackRecovery,
+  computeAvoidability,
   type ClassSkillData,
   type CharacterBuild,
   type GameData,
@@ -137,8 +138,11 @@ export function runSimulation(
         let kbInfo: KnockbackInfo | undefined;
         if (scenario.bossAttackInterval != null && scenario.bossAttackInterval > 0) {
           const isThief = (classData.shadowShifterRate ?? 0) > 0;
+          const avoidability = computeAvoidability(
+            effectiveBuild, gameData.mwData, effectiveBuild.equipmentAvoid ?? 0
+          );
           const dodgeChance = calculateDodgeChance(
-            effectiveBuild.avoidability ?? 0,
+            avoidability,
             scenario.bossAccuracy ?? Infinity,
             isThief ? { minDodge: 0.05, maxDodge: 0.95 } : undefined
           );

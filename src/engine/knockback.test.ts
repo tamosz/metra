@@ -246,8 +246,8 @@ describe('computeAvoidability', () => {
     });
     // totalLUK = floor(4 * 1.10) + 0 = 4
     // totalDEX = floor(999 * 1.10) + 316 = 1098 + 316 = 1414
-    // avoid = 0.5*4 + 0.25*1414 + 30 = 2 + 353.5 + 30 = 385.5 → 386
-    expect(computeAvoidability(build, MW_DATA, 30)).toBe(386);
+    // avoid = 0.5*4 + 0.25*1414 + 30 = 2 + 353.5 + 30 = 385.5 → floor = 385
+    expect(computeAvoidability(build, MW_DATA, 30)).toBe(385);
   });
 
   it('mage: minimal LUK and DEX', () => {

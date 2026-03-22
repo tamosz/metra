@@ -149,10 +149,11 @@ function computeBuildFromBudget(base: ClassBase, b: GearBudget): CharacterBuild 
     speedInfusion: base.speedInfusion ?? true,
     sharpEyes: base.sharpEyes ?? true,
     shadowPartner: base.shadowPartner,
+    equipmentAvoid: base.equipmentAvoid ?? 0,
     avoidability: 0,
   };
 
-  build.avoidability = computeAvoidability(build, mwData, base.equipmentAvoid ?? 0);
+  build.avoidability = computeAvoidability(build, mwData, build.equipmentAvoid);
 
   return build;
 }
@@ -208,6 +209,7 @@ function parseMageTemplate(raw: Record<string, unknown>, equipmentAvoid: number)
     speedInfusion: raw.speedInfusion as boolean,
     sharpEyes: raw.sharpEyes as boolean,
     shadowPartner: raw.shadowPartner as boolean | undefined,
+    equipmentAvoid,
     avoidability: 0,
   };
 
