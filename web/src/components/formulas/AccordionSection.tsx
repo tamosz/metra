@@ -18,7 +18,7 @@ export function AccordionSection({
   children,
 }: AccordionSectionProps) {
   const contentRef = useRef<HTMLDivElement>(null);
-  const [height, setHeight] = useState<number | undefined>(undefined);
+  const [height, setHeight] = useState<number | undefined>(0);
 
   useEffect(() => {
     if (!contentRef.current) return;
@@ -30,7 +30,8 @@ export function AccordionSection({
     } else {
       // Set explicit height first so the transition has a start value
       setHeight(contentRef.current.scrollHeight);
-      requestAnimationFrame(() => setHeight(0));
+      const raf = requestAnimationFrame(() => setHeight(0));
+      return () => cancelAnimationFrame(raf);
     }
   }, [isOpen]);
 
