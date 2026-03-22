@@ -1,6 +1,6 @@
 import { memo, useCallback, type KeyboardEvent } from 'react';
 import type { DpsResult } from '@metra/engine';
-import type { ComboSubResult } from '@engine/proposals/types.js';
+import type { ComboSubResult, KnockbackInfo } from '@engine/proposals/types.js';
 import { formatDps } from '../utils/format.js';
 import { SECTION_LABEL } from '../utils/styles.js';
 
@@ -10,6 +10,7 @@ interface SkillDetailPanelProps {
   isComposite: boolean;
   comboSubResults?: ComboSubResult[];
   capEnabled: boolean;
+  kb?: KnockbackInfo;
   editEnabled?: boolean;
   /** Current skill field values: { basePower: 260, multiplier: 1, ... } */
   skillFields?: Record<string, number>;
@@ -41,6 +42,7 @@ function SkillDetailPanelInner({
   isComposite,
   comboSubResults,
   capEnabled,
+  kb,
   editEnabled,
   skillFields,
   onFieldChange,
@@ -113,7 +115,7 @@ function SkillDetailPanelInner({
         {/* Formula breakdown */}
         {!isComposite && (
           <div className="flex-1 min-w-0">
-            <SkillBreakdown dps={dps} critContribution={critContribution} capEnabled={capEnabled} />
+            <SkillBreakdown dps={dps} critContribution={critContribution} capEnabled={capEnabled} kb={kb} />
           </div>
         )}
         {isComposite && comboSubResults && comboSubResults.length > 0 && (
@@ -145,10 +147,12 @@ function SkillBreakdown({
   dps,
   critContribution,
   capEnabled,
+  kb,
 }: {
   dps: DpsResult;
   critContribution: number;
   capEnabled: boolean;
+  kb?: KnockbackInfo;
 }) {
   return (
     <div className="grid grid-cols-2 gap-x-6 gap-y-1.5 text-sm">
@@ -169,6 +173,16 @@ function SkillBreakdown({
       )}
       {dps.hasShadowPartner && (
         <StatRow label="Shadow Partner" value="Active" />
+      )}
+      {kb && (
+        <>
+          <StatRow label="Dodge Chance" value={`${Math.round(kb.dodgeChance * 100)}%`} />
+          <StatRow
+            label="KB Uptime"
+            value={`${Math.round(kb.uptime * 100)}%`}
+            highlight={kb.uptime < 0.8}
+          />
+        </>
       )}
     </div>
   );

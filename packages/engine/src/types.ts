@@ -203,8 +203,10 @@ export interface CharacterBuild {
   sharpEyes: boolean;
   /** Whether Shadow Partner is active (1.5× damage multiplier). */
   shadowPartner?: boolean;
-  /** Character avoidability stat. Default 0 (negligible at boss level). */
+  /** Character avoidability stat. Computed from stats at build time; recomputed at simulation time when MW changes. */
   avoidability?: number;
+  /** Equipment innate avoidability (Zhelm, shoes, etc). Used to recompute avoidability when buffs change. */
+  equipmentAvoid?: number;
   /** Whether Bullseye is active (1.2× damage for marked skills). Default: true when undefined. */
   bullseye?: boolean;
 }

@@ -8,5 +8,6 @@
   "godlyCleanWATK": 155,
   "weaponStat": 29,
   "projectile": 0,
-  "speedInfusion": false
+  "speedInfusion": false,
+  "equipmentAvoid": 30
 }

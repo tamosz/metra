@@ -5,7 +5,7 @@ import { Tooltip } from '../Tooltip.js';
 import { formatDps } from '../../utils/format.js';
 import { getClassColor } from '../../utils/class-colors.js';
 import type { DpsResult } from '@metra/engine';
-import type { ComparisonResult, ComboSubResult } from '@engine/proposals/types.js';
+import type { ComparisonResult, ComboSubResult, KnockbackInfo } from '@engine/proposals/types.js';
 import { useProposalEdit } from '../../context/ProposalEditContext.js';
 import { discoveredData } from '../../data/bundle.js';
 import { skillSlug } from '@engine/proposals/apply.js';
@@ -39,7 +39,7 @@ export function RankingTable({
   editComparison,
   animation,
 }: {
-  data: { className: string; skillName: string; scenario: string; dps: DpsResult; description?: string; isComposite?: boolean; comboSubResults?: ComboSubResult[] }[];
+  data: { className: string; skillName: string; scenario: string; dps: DpsResult; description?: string; isComposite?: boolean; comboSubResults?: ComboSubResult[]; kb?: KnockbackInfo }[];
   capEnabled: boolean;
   editComparison?: ComparisonResult | null;
   animation?: AnimatedDpsResult;
@@ -405,7 +405,7 @@ function ExpandedRow({
   handleFieldChange,
   applyFieldChange,
 }: {
-  row: { className: string; skillName: string; dps: DpsResult; isComposite?: boolean; comboSubResults?: Array<{ skillName: string; dps: DpsResult; weight?: number }> };
+  row: { className: string; skillName: string; dps: DpsResult; isComposite?: boolean; comboSubResults?: Array<{ skillName: string; dps: DpsResult; weight?: number }>; kb?: KnockbackInfo };
   columnCount: number;
   capEnabled: boolean;
   editEnabled: boolean;
@@ -426,6 +426,7 @@ function ExpandedRow({
           isComposite={!!row.isComposite}
           comboSubResults={row.comboSubResults}
           capEnabled={capEnabled}
+          kb={row.kb}
           editEnabled={editEnabled}
           skillFields={editInfo?.skillFields}
           onFieldChange={(field, value, original) =>

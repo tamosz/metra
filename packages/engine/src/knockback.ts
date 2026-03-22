@@ -1,4 +1,5 @@
-import type { SkillEntry } from './types.js';
+import type { CharacterBuild, MWData, SkillEntry } from './types.js';
+import { getMWMultiplier } from './buffs.js';
 
 /**
  * Default KB recovery time for burst/normal skills (seconds).
@@ -77,6 +78,28 @@ export function calculateKnockbackUptime(
   const kbsPerSecond = kbProbability / bossAttackInterval;
   const timeLostPerSecond = kbsPerSecond * recoveryTime;
   return Math.max(0.1, 1 - timeLostPerSecond);
+}
+
+/**
+ * Compute character avoidability from MW-boosted stats and equipment avoid.
+ *
+ * Formula (pre-BB, all classes):
+ *   avoid = 0.5 × totalLUK + 0.25 × totalDEX + equipmentAvoid
+ *
+ * where totalStat = floor(baseStat × mwMultiplier) + gearStat.
+ *
+ * Source: client code extraction (AyumiLove formula page),
+ *         MapleLegends avoidability analysis (iPippy)
+ */
+export function computeAvoidability(
+  build: CharacterBuild,
+  mwData: MWData,
+  equipmentAvoid: number = 0
+): number {
+  const mwMult = getMWMultiplier(mwData, build.mwLevel);
+  const totalLUK = Math.floor(build.baseStats.LUK * mwMult) + build.gearStats.LUK;
+  const totalDEX = Math.floor(build.baseStats.DEX * mwMult) + build.gearStats.DEX;
+  return Math.floor(0.5 * totalLUK + 0.25 * totalDEX + equipmentAvoid);
 }
 
 /**

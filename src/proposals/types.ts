@@ -43,6 +43,14 @@ export interface ScenarioConfig {
   efficiencyOverrides?: Record<string, number[]>;
 }
 
+/** Knockback model metadata attached to simulation results when KB is active. */
+export interface KnockbackInfo {
+  dodgeChance: number;
+  kbProbability: number;
+  uptime: number;
+  recoveryTime: number;
+}
+
 /** DPS result for a single class/skill combination. */
 export interface ScenarioResult {
   className: string;
@@ -62,6 +70,8 @@ export interface ScenarioResult {
   isComposite?: boolean;
   /** Per-sub-skill DPS breakdowns for combo groups and mixed rotations. */
   comboSubResults?: ComboSubResult[];
+  /** KB model details when knockback simulation is active. */
+  kb?: KnockbackInfo;
 }
 
 /** DPS breakdown for a single sub-skill within a combo group or mixed rotation. */

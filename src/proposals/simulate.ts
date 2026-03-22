@@ -4,6 +4,7 @@ import {
   calculateKnockbackProbability,
   calculateKnockbackUptime,
   getKnockbackRecovery,
+  computeAvoidability,
   type ClassSkillData,
   type CharacterBuild,
   type GameData,
@@ -11,7 +12,7 @@ import {
   type SkillEntry,
   type DpsResult,
 } from '@metra/engine';
-import type { ScenarioConfig, ScenarioResult } from './types.js';
+import type { KnockbackInfo, ScenarioConfig, ScenarioResult } from './types.js';
 
 /** Fallback scenario when none is provided: fully buffed, no overrides. */
 const FALLBACK_SCENARIO: ScenarioConfig[] = [{ name: 'Buffed' }];
@@ -96,6 +97,27 @@ export function runSimulation(
 
       const effectiveBuild = applyScenarioOverrides(build, scenario);
 
+      // Pre-compute KB dodge/probability (per-build, not per-skill)
+      const kbActive = scenario.bossAttackInterval != null && scenario.bossAttackInterval > 0;
+      let kbDodgeChance = 0;
+      let kbProbability = 0;
+      if (kbActive) {
+        const isThief = (classData.shadowShifterRate ?? 0) > 0;
+        const avoidability = computeAvoidability(
+          effectiveBuild, gameData.mwData, effectiveBuild.equipmentAvoid ?? 0
+        );
+        kbDodgeChance = calculateDodgeChance(
+          avoidability,
+          scenario.bossAccuracy ?? Infinity,
+          isThief ? { minDodge: 0.05, maxDodge: 0.95 } : undefined
+        );
+        kbProbability = calculateKnockbackProbability(
+          kbDodgeChance,
+          classData.stanceRate ?? 0,
+          classData.shadowShifterRate ?? 0
+        );
+      }
+
       // Compute DPS for each individual skill
       const skillResults: { skill: SkillEntry; result: ScenarioResult }[] = [];
       const skillResultsByName = new Map<string, ScenarioResult>();
@@ -134,21 +156,12 @@ export function runSimulation(
           const effectiveTargets = Math.min(skill.maxTargets ?? 1, scenario.targetCount);
           if (effectiveTargets > 1) effectiveDps = scaleDpsResult(effectiveDps, targetCountFactor(effectiveTargets, skill.bounceDecay));
         }
-        if (scenario.bossAttackInterval != null && scenario.bossAttackInterval > 0) {
-          const isThief = (classData.shadowShifterRate ?? 0) > 0;
-          const dodgeChance = calculateDodgeChance(
-            effectiveBuild.avoidability ?? 0,
-            scenario.bossAccuracy ?? Infinity,
-            isThief ? { minDodge: 0.05, maxDodge: 0.95 } : undefined
-          );
-          const kbProb = calculateKnockbackProbability(
-            dodgeChance,
-            classData.stanceRate ?? 0,
-            classData.shadowShifterRate ?? 0
-          );
-          const recovery = getKnockbackRecovery(skill, effectiveDps.attackTime);
-          const uptime = calculateKnockbackUptime(kbProb, scenario.bossAttackInterval, recovery);
+        let kbInfo: KnockbackInfo | undefined;
+        if (kbActive) {
+          const recoveryTime = getKnockbackRecovery(skill, effectiveDps.attackTime);
+          const uptime = calculateKnockbackUptime(kbProbability, scenario.bossAttackInterval!, recoveryTime);
           effectiveDps = scaleDpsResult(effectiveDps, uptime);
+          kbInfo = { dodgeChance: kbDodgeChance, kbProbability, uptime, recoveryTime };
         }
 
         let resolvedSkillName = skill.name;
@@ -166,6 +179,7 @@ export function runSimulation(
           ...(skill.description ? { description: skill.description } : {}),
           ...(isHeadline ? {} : { headline: false }),
           ...(effectiveMaxTargets > 1 ? { maxTargets: effectiveMaxTargets } : {}),
+          ...(kbInfo ? { kb: kbInfo } : {}),
         };
 
         // Store all skills (including hidden) for mixed rotation lookups

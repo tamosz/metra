@@ -9,5 +9,6 @@
   "weaponStat": 20,
   "baseSecondaryOverride": 25,
   "projectile": 30,
-  "shadowPartner": true
+  "shadowPartner": true,
+  "equipmentAvoid": 30
 }

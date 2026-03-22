@@ -8,5 +8,6 @@
   "godlyCleanWATK": 88,
   "weaponStat": 21,
   "projectile": 0,
-  "shadowPartner": false
+  "shadowPartner": false,
+  "equipmentAvoid": 30
 }
