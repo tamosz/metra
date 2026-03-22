@@ -60,7 +60,7 @@ function buildExtrasLabel(base: ClassBase): string {
     const statsStr = base.shieldStats
       ? `, ${Object.entries(base.shieldStats).map(([s, v]) => `+${v} ${s}`).join(' ')}`
       : '';
-    parts.push(`Shield: 0\u2013${base.shieldWATK} WATK${statsStr}`);
+    parts.push(`0\u2013${base.shieldWATK} WATK${statsStr}`);
   }
   return parts.length > 0 ? parts.join(', ') : '\u2014';
 }
@@ -158,7 +158,9 @@ function WeaponTableSection({ rows }: { rows: ClassRow[] }) {
                 <td className="px-4 py-2 font-medium" style={{ color: getClassColor(row.base.className) }}>
                   {row.base.className}
                 </td>
-                <td className="px-4 py-2 text-text-secondary">{row.base.weaponType}</td>
+                <td className="px-4 py-2 text-text-secondary">
+                  {row.base.weaponType}{row.base.shieldWATK ? ' + Shield' : ''}
+                </td>
                 <td className="px-4 py-2 text-right text-text-secondary">{row.base.weaponSpeed}</td>
                 <td className="px-4 py-2 text-right text-text-bright">{row.base.godlyCleanWATK}</td>
                 <td className="px-4 py-2 text-text-secondary">{row.extrasLabel}</td>
