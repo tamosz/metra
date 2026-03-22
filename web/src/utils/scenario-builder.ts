@@ -19,26 +19,19 @@ export function buildScenarios(
       ? { ...buffOverrides }
       : undefined;
 
-  const scenario: ScenarioConfig = { name: 'Baseline' };
-  if (mergedOverrides) scenario.overrides = mergedOverrides;
-  if (hasElementMods) scenario.elementModifiers = { ...elementModifiers };
+  // Build common config once — shared across all scenarios
+  const common: Partial<ScenarioConfig> = {};
+  if (mergedOverrides) common.overrides = mergedOverrides;
+  if (hasElementMods) common.elementModifiers = { ...elementModifiers };
   if (kbConfig) {
-    scenario.bossAttackInterval = kbConfig.bossAttackInterval;
-    scenario.bossAccuracy = kbConfig.bossAccuracy;
+    common.bossAttackInterval = kbConfig.bossAttackInterval;
+    common.bossAccuracy = kbConfig.bossAccuracy;
   }
-  if (hasEfficiencyOverrides) scenario.efficiencyOverrides = { ...efficiencyOverrides };
+  if (hasEfficiencyOverrides) common.efficiencyOverrides = { ...efficiencyOverrides };
 
-  const scenarios: ScenarioConfig[] = [scenario];
+  const scenarios: ScenarioConfig[] = [{ name: 'Baseline', ...common }];
   if (targetCount != null && targetCount > 1) {
-    const training: ScenarioConfig = { name: `Training (${targetCount} mobs)`, targetCount };
-    if (mergedOverrides) training.overrides = mergedOverrides;
-    if (hasElementMods) training.elementModifiers = { ...elementModifiers };
-    if (kbConfig) {
-      training.bossAttackInterval = kbConfig.bossAttackInterval;
-      training.bossAccuracy = kbConfig.bossAccuracy;
-    }
-    if (hasEfficiencyOverrides) training.efficiencyOverrides = { ...efficiencyOverrides };
-    scenarios.push(training);
+    scenarios.push({ name: `Training (${targetCount} mobs)`, targetCount, ...common });
   }
 
   return scenarios;
