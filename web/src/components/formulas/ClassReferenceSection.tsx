@@ -12,7 +12,7 @@ function getNotables(classData: ClassSkillData): string[] {
   }
   // Shadow Partner / Berserk — hardcoded, no explicit data field
   const name = classData.className;
-  if (name === 'Night Lord' || name === 'Shadower') {
+  if (name === 'Night Lord') {
     notes.push('Shadow Partner');
   }
   if (name === 'Dark Knight') {

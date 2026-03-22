@@ -33,7 +33,7 @@ export function DpsFormulaSection() {
       <h4 className="text-sm font-semibold text-text-bright mt-8 mb-3">Shadow Partner</h4>
 
       <p className="text-text-secondary text-sm mb-4 leading-relaxed">
-        Night Lord and Shadower have a Shadow Partner clone that deals 50% of attack damage,
+        Night Lord has a Shadow Partner clone that deals 50% of attack damage,
         so total damage is 1.5x:
       </p>
 
