@@ -2,13 +2,13 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Replace the wrong post-BB sqrt dodge formula with the correct pre-BB linear formula, update all callers, tests, docs, and the web Formulas page.
+**Goal:** Replace the wrong post-BB sqrt dodge formula with the correct pre-BB linear formula, and update KB recovery constants to calibrated values. Covers spec Workstreams A and B.
 
-**Architecture:** The dodge formula lives in `packages/engine/src/knockback.ts` as a pure function. It's called from one place in the simulation pipeline (`src/proposals/simulate.ts`). The function signature gains optional cap/level parameters. The single caller is updated to pass thief-specific caps. Tests are rewritten, reference docs and the web Formulas page are updated.
+**Architecture:** The dodge formula lives in `packages/engine/src/knockback.ts` as a pure function. It's called from one place in the simulation pipeline (`src/proposals/simulate.ts`). The function signature gains optional cap/level parameters. The single caller is updated to pass thief-specific caps. Recovery constants are updated: burst 0.6→0.5s, channel expressed as burst+0.2s wind-up (0.7s). Tests are rewritten, reference docs and the web Formulas page are updated.
 
 **Tech Stack:** TypeScript, Vitest, React (web Formulas page only)
 
-**Spec:** `docs/superpowers/specs/2026-03-22-knockback-model-revision-design.md` (Workstream A)
+**Spec:** `docs/superpowers/specs/2026-03-22-knockback-model-revision-design.md` (Workstreams A + B)
 
 ---
 
@@ -300,7 +300,166 @@ git commit -m "update web formulas page with correct dodge formula"
 
 ---
 
-### Task 6: Final verification
+### Task 6: Update recovery constants (Workstream B)
+
+**Files:**
+- Modify: `packages/engine/src/knockback.ts:1-18` (constants) and `getKnockbackRecovery`
+- Modify: `src/engine/knockback.test.ts` (tests referencing old constants)
+- Modify: `data/references/knockback.md` (recovery time table)
+- Modify: `web/src/components/formulas/KnockbackModelingSection.tsx` (recovery time table)
+
+Channel recovery is no longer a separate flat constant — it's `DEFAULT_KB_RECOVERY + CHANNEL_WIND_UP` (0.5 + 0.2 = 0.7s). This keeps channel and burst recovery in sync.
+
+- [ ] **Step 1: Update constants in knockback.ts**
+
+Replace lines 1-18 with:
+
+```typescript
+import type { SkillEntry } from './types.js';
+
+/**
+ * Default KB recovery time for burst/normal skills (seconds).
+ * Blink animation + minor reposition.
+ */
+export const DEFAULT_KB_RECOVERY = 0.5;
+
+/**
+ * Extra wind-up time for channeled skills to restart the channel (seconds).
+ * Hurricane and Rapid Fire both have this overhead on top of the base recovery.
+ */
+export const CHANNEL_WIND_UP = 0.2;
+
+/** Attack time threshold to detect channeled skills (Hurricane/Rapid Fire use 0.12s). */
+const CHANNEL_ATTACK_TIME = 0.12;
+```
+
+- [ ] **Step 2: Update `getKnockbackRecovery` to derive channel recovery**
+
+Replace the `getKnockbackRecovery` function with:
+
+```typescript
+/**
+ * Get the KB recovery time for a skill.
+ *
+ * Priority:
+ * 1. Explicit `knockbackRecovery` on the skill (i-frames = 0, custom overrides)
+ * 2. Channeled skill heuristic: attackTime === 0.12s → DEFAULT_KB_RECOVERY + CHANNEL_WIND_UP
+ * 3. Default: DEFAULT_KB_RECOVERY
+ */
+export function getKnockbackRecovery(skill: SkillEntry, attackTime: number): number {
+  if (skill.knockbackRecovery != null) return skill.knockbackRecovery;
+  if (attackTime === CHANNEL_ATTACK_TIME) return DEFAULT_KB_RECOVERY + CHANNEL_WIND_UP;
+  return DEFAULT_KB_RECOVERY;
+}
+```
+
+- [ ] **Step 3: Update tests**
+
+In `src/engine/knockback.test.ts`:
+
+Update the import — replace `CHANNEL_KB_RECOVERY` with `CHANNEL_WIND_UP`:
+
+```typescript
+import {
+  calculateDodgeChance,
+  calculateKnockbackProbability,
+  calculateKnockbackUptime,
+  getKnockbackRecovery,
+  DEFAULT_KB_RECOVERY,
+  CHANNEL_WIND_UP,
+  type SkillEntry,
+} from '@metra/engine';
+```
+
+In the `calculateKnockbackUptime` tests, update expected values for the new 0.5s recovery:
+
+- "warrior with 90% stance" test: recovery 0.5 → `timeLost = 0.0667 * 0.5 = 0.0333`, uptime ≈ 0.967. Update `toBeCloseTo(0.97, 2)` and the comment to "loses ~3%".
+- "Night Lord with 30% shifter" test: recovery 0.5 → `timeLost = 0.467 * 0.5 = 0.2333`, uptime ≈ 0.767. Update `toBeCloseTo(0.77, 2)` and comment to "loses ~23%".
+- "Shadower with 40% shifter" test: recovery 0.5 → `timeLost = 0.4 * 0.5 = 0.2`, uptime ≈ 0.80. Update `toBeCloseTo(0.80, 2)` and comment to "loses ~20%".
+- "no-defense class with channeled skill" test: recovery becomes 0.7 → `timeLost = 0.667 * 0.7 = 0.4667`, uptime ≈ 0.533. Update `toBeCloseTo(0.533, 2)` and comment.
+
+In the `getKnockbackRecovery` tests:
+
+- Replace `CHANNEL_KB_RECOVERY` with `DEFAULT_KB_RECOVERY + CHANNEL_WIND_UP` in the "detects channeled skills" test:
+  ```typescript
+  expect(getKnockbackRecovery(skill, 0.12)).toBe(DEFAULT_KB_RECOVERY + CHANNEL_WIND_UP);
+  ```
+
+- [ ] **Step 4: Update engine exports**
+
+In `packages/engine/src/index.ts`, replace `CHANNEL_KB_RECOVERY` with `CHANNEL_WIND_UP`:
+
+```typescript
+// Knockback
+export {
+  calculateDodgeChance,
+  calculateKnockbackProbability,
+  calculateKnockbackUptime,
+  getKnockbackRecovery,
+  DEFAULT_KB_RECOVERY,
+  CHANNEL_WIND_UP,
+} from './knockback.js';
+```
+
+- [ ] **Step 5: Check for other references to `CHANNEL_KB_RECOVERY`**
+
+Search the codebase for any other imports/references to `CHANNEL_KB_RECOVERY`. If any exist in the web app or elsewhere, update them to `CHANNEL_WIND_UP` (or `DEFAULT_KB_RECOVERY + CHANNEL_WIND_UP` if they need the total).
+
+- [ ] **Step 6: Run tests**
+
+Run: `npx vitest run`
+
+Expected: All tests pass.
+
+- [ ] **Step 7: Update the recovery time table in knockback.md**
+
+In the "KB Recovery Times" section, update the table to:
+
+```markdown
+| Skill Type | Recovery Time | Notes |
+|------------|--------------|-------|
+| Burst/normal skills | ~0.5s | KB animation + reposition |
+| Channeled (Hurricane, Rapid Fire) | ~0.7s | Base recovery (0.5s) + channel restart wind-up (0.2s) |
+| I-frame skills (Demolition, Barrage) | 0s | Intangible during animation |
+```
+
+Also update the "Model Constants" section:
+
+```markdown
+DEFAULT_KB_RECOVERY  = 0.5   // burst skill recovery (seconds)
+CHANNEL_WIND_UP      = 0.2   // extra wind-up for channeled skills (seconds)
+BOSS_ATTACK_INTERVAL = 1.5   // representative endgame boss (seconds)
+BOSS_ACCURACY        = 250   // representative endgame boss accuracy
+```
+
+And update the "Expected DPS Loss" table with new values.
+
+- [ ] **Step 8: Update the recovery time table in KnockbackModelingSection.tsx**
+
+Update the `recoveryTimes` array (line 13-17):
+
+```typescript
+  const recoveryTimes: Array<{ type: string; time: string; examples: string }> = [
+    { type: 'Burst / normal', time: '0.5s', examples: 'Brandish, Crusher, Triple Throw, etc.' },
+    { type: 'Channeled', time: '0.7s', examples: 'Hurricane, Rapid Fire (0.5s base + 0.2s wind-up)' },
+    { type: 'I-frame', time: '0s', examples: 'Demolition, Barrage' },
+  ];
+```
+
+- [ ] **Step 9: Commit**
+
+```bash
+git add packages/engine/src/knockback.ts packages/engine/src/index.ts src/engine/knockback.test.ts data/references/knockback.md web/src/components/formulas/KnockbackModelingSection.tsx
+git commit -m "update KB recovery constants: burst 0.5s, channel 0.5+0.2s wind-up
+
+burst recovery 0.6→0.5s. channel recovery expressed as
+DEFAULT_KB_RECOVERY + CHANNEL_WIND_UP (0.7s) instead of a flat 1.0s.
+keeps channel in sync if burst constant changes later."
+```
+
+---
+
+### Task 7: Final verification
 
 - [ ] **Step 1: Run full test suite (root)**
 

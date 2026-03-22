@@ -76,47 +76,38 @@ Spot-checks against known values:
 
 ### Problem
 
-The two recovery constants are the highest-leverage numbers in the KB model:
+The two recovery constants were unverified community estimates:
 
-| Constant | Current | Source |
-|----------|---------|--------|
-| `DEFAULT_KB_RECOVERY` (burst skills) | 0.6s | "Community timing estimates" |
-| `CHANNEL_KB_RECOVERY` (Hurricane etc.) | 1.0s | "Community timing estimates" |
+| Constant | Old | New | Source |
+|----------|-----|-----|--------|
+| `DEFAULT_KB_RECOVERY` (burst skills) | 0.6s | **0.5s** | User-provided estimate |
+| `CHANNEL_KB_RECOVERY` (Hurricane etc.) | 1.0s | **0.7s** | Derived: 0.5 + 0.2s channel wind-up |
 
-These are guesses. A 0.2s error on channel recovery shifts Bowmaster's KB uptime from 33% to 40% (or 27%), a 7-point DPS swing on their headline skill.
+### Model change
 
-### Method
+Channel recovery is no longer a separate flat constant. It's expressed as `DEFAULT_KB_RECOVERY + CHANNEL_WIND_UP` where `CHANNEL_WIND_UP = 0.2s` is the time to restart the channel after the base KB recovery. This keeps channel and burst recovery in sync — if the burst constant is refined later, channel adjusts automatically.
 
-Frame-count analysis of recorded gameplay footage:
+Both Hurricane and Rapid Fire share the same 0.2s wind-up.
 
-1. Record Hurricane channeling against a boss that knocks back
-2. Step through frames (VLC `e` key) to measure: KB hit frame → first damage number frame
-3. Repeat for 5-10 KB events, average the results
-4. At 30fps: ±33ms precision, at 60fps: ±17ms — both sufficient
+### Impact (no-defense class, 1.5s boss interval)
 
-Same method for burst skills if footage is available (any melee class getting KB'd mid-attack).
+| Skill type | Old uptime | New uptime |
+|------------|-----------|-----------|
+| Burst | 60.0% | 66.7% |
+| Channel | 33.3% | 53.3% |
 
 ### Changes
 
 **Engine (`packages/engine/src/knockback.ts`):**
-- Update `DEFAULT_KB_RECOVERY` and `CHANNEL_KB_RECOVERY` constants to measured values
-- Possibly split `CHANNEL_KB_RECOVERY` into Hurricane vs Rapid Fire if they differ (the reference doc already notes RF can fire mid-air, suggesting shorter recovery)
+- `DEFAULT_KB_RECOVERY`: 0.6 → 0.5
+- Replace `CHANNEL_KB_RECOVERY = 1.0` with `CHANNEL_WIND_UP = 0.2` and derive channel recovery as `DEFAULT_KB_RECOVERY + CHANNEL_WIND_UP`
+- Update `getKnockbackRecovery` to use the derived value
 
 **Reference (`data/references/knockback.md`):**
-- Replace "community timing estimates" with measured values, methodology, and footage source
+- Update recovery time table with new values and additive model explanation
 
 **Tests:**
-- Update any tests that hardcode the old constants
-
-### Dependency
-
-Blocked on footage. Workstream A can proceed independently.
-
-### Open questions
-
-**Should Rapid Fire get its own recovery constant?** The reference doc says RF can fire mid-air unlike Hurricane, implying shorter recovery (~0.5s per the doc). If we can't get RF footage, we could keep the doc's 0.5s estimate and note the source, or leave RF at the Hurricane value with a TODO.
-
-**Detection mechanism if RF splits from Hurricane:** Both Hurricane and Rapid Fire use 0.12s attack time, so the current `attackTime === 0.12` heuristic can't distinguish them. If they get different constants, the cleanest approach is adding explicit `knockbackRecovery` overrides on the skill data entries (same mechanism already used for i-frame skills), rather than complicating the heuristic.
+- Update tests that reference the old constants
 
 ## Workstream C: Model Per-Class Avoidability
 
@@ -163,12 +154,12 @@ This is a research task that hasn't been done yet. The estimates in the table ab
 ## Execution Order
 
 ```
-A (dodge formula) ──→ can start now, no dependencies
-B (recovery calibration) ──→ blocked on footage
-C (avoidability modeling) ──→ blocked on avoid research, depends on A being merged
+A (dodge formula) ──→ can start now
+B (recovery constants) ──→ can start now, ships with A in same PR
+C (avoidability modeling) ──→ blocked on avoid research, depends on A+B being merged
 ```
 
-A and B are independent of each other. C depends on A (needs the correct formula to produce meaningful results).
+A and B are independent and small enough to land in a single PR. C depends on A (needs the correct formula to produce meaningful results).
 
 ## Files Touched
 
