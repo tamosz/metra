@@ -1,7 +1,7 @@
 import { readFileSync } from 'fs';
 import { resolve } from 'path';
 import type { CharacterBuild, MWData, StatName } from '@metra/engine';
-import { computeAvoidability, getMWMultiplier } from '@metra/engine';
+import { computeAvoidability } from '@metra/engine';
 
 export interface ClassBase {
   className: string;
