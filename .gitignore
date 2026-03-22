@@ -6,3 +6,4 @@ web/node_modules/
 .worktrees/
 .claude/worktrees/
 docs/plans/
+.superpowers/
