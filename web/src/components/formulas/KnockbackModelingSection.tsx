@@ -33,13 +33,15 @@ export function KnockbackModelingSection() {
       </p>
 
       <div className="my-6">
-        <BlockMath math="\text{dodge} = \frac{\lfloor\sqrt{\text{avoidability}}\rfloor - \lfloor\sqrt{\text{bossAccuracy}}\rfloor}{100}" />
+        <BlockMath math="\text{dodge} = \frac{\text{avoidability}}{4.5 \times \text{bossAccuracy}}" />
       </div>
 
       <p className="text-text-secondary text-sm mb-4 leading-relaxed">
-        Clamped to [0, 0.95]. At boss accuracy 250, <InlineMath math="\lfloor\sqrt{250}\rfloor = 15" />,
-        so a player would need avoidability &gt;255 just to get 1% dodge. In practice, dodge is
-        negligible against endgame bosses.
+        Clamped to class-specific ranges: [2%, 80%] for non-thieves, [5%, 95%] for thieves
+        (Night Lord, Shadower). When the boss is higher level than the player, avoidability
+        is reduced by <InlineMath math="(\text{monsterLevel} - \text{charLevel}) / 2" /> first.
+        In practice, dodge is small against endgame bosses — a Night Lord with 300 avoid
+        vs boss accuracy 250 gets ~27% dodge.
       </p>
 
       <h4 className="text-sm font-semibold text-text-bright mt-8 mb-3">KB Probability</h4>
