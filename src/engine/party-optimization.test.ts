@@ -74,9 +74,9 @@ function makeFixtures() {
     ['gamma', makeClassData('gamma', 100)],
   ]);
   const gearTemplates = new Map<string, CharacterBuild>([
-    ['alpha-perfect', makeBuild('alpha')],
-    ['beta-perfect', makeBuild('beta')],
-    ['gamma-perfect', makeBuild('gamma')],
+    ['alpha', makeBuild('alpha')],
+    ['beta', makeBuild('beta')],
+    ['gamma', makeBuild('gamma')],
   ]);
   return { classDataMap, gearTemplates };
 }
@@ -116,7 +116,7 @@ describe('findOptimalParty', () => {
       ['alpha', makeClassData('alpha', 400)],
     ]);
     const gearTemplates = new Map<string, CharacterBuild>([
-      ['alpha-perfect', makeBuild('alpha')],
+      ['alpha', makeBuild('alpha')],
     ]);
     // Only 1 combination with 1 class and party size 1
     const result = findOptimalParty(classDataMap, gearTemplates, gameData, 1, undefined, 10);
@@ -182,8 +182,8 @@ describe('findOptimalParty', () => {
       ['no-gear', makeClassData('no-gear', 9999)], // no gear template — should be excluded
     ]);
     const gearTemplates = new Map<string, CharacterBuild>([
-      ['alpha-perfect', makeBuild('alpha')],
-      // no 'no-gear-perfect' entry
+      ['alpha', makeBuild('alpha')],
+      // no 'no-gear' entry
     ]);
 
     const result = findOptimalParty(classDataMap, gearTemplates, gameData, 1);
