@@ -94,10 +94,8 @@ export function PowerScalingChart({ data }: PowerScalingChartProps) {
   return (
     <div data-testid="power-scaling-chart">
       <p className="mb-2 px-1 text-xs text-text-muted">
-        All build parameters scaled uniformly from 10–100% of their max
-        values — base stats, weapon attack, gear stats, projectiles, and
-        potions. See the Gear page for the full breakdown of what each
-        class is given.
+        Each class's build scaled from 10–100% of its max values.
+        See the Gear tab for per-class breakdowns.
       </p>
       <div style={{ width: '100%', height: chartHeight }}>
         <ResponsiveContainer>
