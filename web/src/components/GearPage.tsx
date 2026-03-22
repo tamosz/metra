@@ -3,6 +3,7 @@ import { allClassBases, type ClassBase, type GearBudget } from '../data/bundle.j
 import { getClassColor, VARIANT_CLASS_SLUGS } from '../utils/class-colors.js';
 import { colors } from '../theme.js';
 import gearBudgetJson from '@data/gear-budget.json';
+import { GearSlider } from './GearSlider.js';
 
 const budget = gearBudgetJson as GearBudget;
 
@@ -293,6 +294,7 @@ export function GearPage() {
 
       <div className="space-y-10">
         <CommonGearSection />
+        <GearSlider />
         <WeaponTableSection rows={rows} />
         <WatkCompositionSection rows={rows} />
         <ScalingChartSection />
