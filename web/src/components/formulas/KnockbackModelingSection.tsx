@@ -13,7 +13,7 @@ export function KnockbackModelingSection({ selectedClass }: KnockbackModelingSec
       classes: 'Hero, Dark Knight, Paladin',
       defense: 'Power Stance',
       rate: '90%',
-      match: !!classData && (classData.stanceRate ?? 0) > 0,
+      match: !!classData && (classData.stanceRate ?? 0) > 0 && classData.className !== 'Buccaneer',
     },
     {
       classes: 'Buccaneer',

@@ -36,7 +36,7 @@ export function getClassMetadata(classKey: string): ClassMetadata | null {
     damageFormula: parseDamageFormula(classData.damageFormula),
     hasStance: (classData.stanceRate ?? 0) > 0,
     hasShifter: (classData.shadowShifterRate ?? 0) > 0,
-    hasShadowPartner: classData.className === 'Night Lord',
+    hasShadowPartner: !!base.shadowPartner,
     builtInCritRate: builtInCritSkill?.builtInCritRate ?? 0,
   };
 }
