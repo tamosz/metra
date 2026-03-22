@@ -57,7 +57,7 @@ export {
   calculateKnockbackUptime,
   getKnockbackRecovery,
   DEFAULT_KB_RECOVERY,
-  CHANNEL_KB_RECOVERY,
+  CHANNEL_WIND_UP,
 } from './knockback.js';
 
 // Marginal gains

@@ -5,14 +5,13 @@ import type { SkillEntry } from './types.js';
  * Blink animation + minor reposition.
  * Source: data/references/knockback.md
  */
-export const DEFAULT_KB_RECOVERY = 0.6;
+export const DEFAULT_KB_RECOVERY = 0.5;
 
 /**
- * KB recovery time for channeled skills like Hurricane (seconds).
- * Landing + reposition + channel restart (~300ms startup).
- * Source: data/references/knockback.md
+ * Extra wind-up time for channeled skills to restart the channel (seconds).
+ * Hurricane and Rapid Fire both have this overhead on top of the base recovery.
  */
-export const CHANNEL_KB_RECOVERY = 1.0;
+export const CHANNEL_WIND_UP = 0.2;
 
 /** Attack time threshold to detect channeled skills (Hurricane/Rapid Fire use 0.12s). */
 const CHANNEL_ATTACK_TIME = 0.12;
@@ -20,15 +19,27 @@ const CHANNEL_ATTACK_TIME = 0.12;
 /**
  * Calculate dodge chance from avoidability vs boss accuracy.
  *
- * Formula (pre-BB, monster → player):
- *   dodgeRate = floor(sqrt(playerAvoid)) - floor(sqrt(monsterAccuracy))
- * Clamped to [0, 0.95].
+ * Formula (pre-BB, monster → player, physical touch damage):
+ *   effectiveAvoid = avoid - max(0, levelDifference) / 2
+ *   dodgeRate = effectiveAvoid / (4.5 * monsterAccuracy)
  *
- * Source: SouthPerry All Known Formulas, data/references/knockback.md
+ * Clamped to class-specific range:
+ *   Non-thieves: [2%, 80%]
+ *   Thieves (NL, Shadower): [5%, 95%]
+ *
+ * Source: client code extraction (iPippy, MapleLegends forum),
+ *         in-game testing on Royals (jamin, royals.ms/forum/threads/avoidability-question.174715/)
  */
-export function calculateDodgeChance(avoidability: number, bossAccuracy: number): number {
-  const dodgeRate = Math.floor(Math.sqrt(avoidability)) - Math.floor(Math.sqrt(bossAccuracy));
-  return Math.max(0, Math.min(dodgeRate / 100, 0.95));
+export function calculateDodgeChance(
+  avoidability: number,
+  bossAccuracy: number,
+  options?: { minDodge?: number; maxDodge?: number; levelDifference?: number }
+): number {
+  const { minDodge = 0.02, maxDodge = 0.80, levelDifference = 0 } = options ?? {};
+  const levelPenalty = Math.max(0, levelDifference) / 2;
+  const effectiveAvoid = Math.max(0, avoidability - levelPenalty);
+  const dodgeRate = bossAccuracy > 0 ? effectiveAvoid / (4.5 * bossAccuracy) : maxDodge;
+  return Math.max(minDodge, Math.min(dodgeRate, maxDodge));
 }
 
 /**
@@ -73,11 +84,11 @@ export function calculateKnockbackUptime(
  *
  * Priority:
  * 1. Explicit `knockbackRecovery` on the skill (i-frames = 0, custom overrides)
- * 2. Channeled skill heuristic: attackTime === 0.12s → CHANNEL_KB_RECOVERY
+ * 2. Channeled skill heuristic: attackTime === 0.12s → DEFAULT_KB_RECOVERY + CHANNEL_WIND_UP
  * 3. Default: DEFAULT_KB_RECOVERY
  */
 export function getKnockbackRecovery(skill: SkillEntry, attackTime: number): number {
   if (skill.knockbackRecovery != null) return skill.knockbackRecovery;
-  if (attackTime === CHANNEL_ATTACK_TIME) return CHANNEL_KB_RECOVERY;
+  if (attackTime === CHANNEL_ATTACK_TIME) return DEFAULT_KB_RECOVERY + CHANNEL_WIND_UP;
   return DEFAULT_KB_RECOVERY;
 }

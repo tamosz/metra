@@ -135,9 +135,11 @@ export function runSimulation(
           if (effectiveTargets > 1) effectiveDps = scaleDpsResult(effectiveDps, targetCountFactor(effectiveTargets, skill.bounceDecay));
         }
         if (scenario.bossAttackInterval != null && scenario.bossAttackInterval > 0) {
+          const isThief = (classData.shadowShifterRate ?? 0) > 0;
           const dodgeChance = calculateDodgeChance(
             effectiveBuild.avoidability ?? 0,
-            scenario.bossAccuracy ?? Infinity
+            scenario.bossAccuracy ?? Infinity,
+            isThief ? { minDodge: 0.05, maxDodge: 0.95 } : undefined
           );
           const kbProb = calculateKnockbackProbability(
             dodgeChance,
