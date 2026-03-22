@@ -1,16 +1,10 @@
+import { useState } from 'react';
 import { BlockMath, InlineMath } from 'react-katex';
+import { FormulaTabs } from './FormulaTabs.js';
 
-export function DamageRangeSection() {
+function StandardFormula() {
   return (
     <>
-
-      <p className="text-text-secondary text-sm mb-4 leading-relaxed">
-        Three formula variants exist depending on class type. Each attack deals uniform random
-        damage between Min and Max.
-      </p>
-
-      {/* Standard formula */}
-      <h4 className="text-sm font-semibold text-text-bright mt-8 mb-3">Standard Formula</h4>
       <p className="text-text-secondary text-sm mb-4 leading-relaxed">
         Used by: Hero, Dark Knight, Paladin, Bowmaster, Marksman, Corsair, Buccaneer, Shadower.
       </p>
@@ -30,9 +24,13 @@ export function DamageRangeSection() {
       <div className="my-6">
         <BlockMath math="\text{Avg} = (\text{Min} + \text{Max}) / 2" />
       </div>
+    </>
+  );
+}
 
-      {/* Throwing star formula */}
-      <h4 className="text-sm font-semibold text-text-bright mt-8 mb-3">Throwing Star Formula</h4>
+function ThrowingStarFormula() {
+  return (
+    <>
       <p className="text-text-secondary text-sm mb-4 leading-relaxed">
         Used by: Night Lord. No weapon multiplier or secondary stat — pure LUK scaling.
       </p>
@@ -46,9 +44,13 @@ export function DamageRangeSection() {
       <div className="my-6">
         <BlockMath math="\text{Avg} = (\text{Min} + \text{Max}) / 2" />
       </div>
+    </>
+  );
+}
 
-      {/* Magic formula */}
-      <h4 className="text-sm font-semibold text-text-bright mt-8 mb-3">Magic Formula</h4>
+function MagicFormula() {
+  return (
+    <>
       <p className="text-text-secondary text-sm mb-4 leading-relaxed">
         Used by: Archmage I/L, Archmage F/P, Bishop.
       </p>
@@ -69,6 +71,27 @@ export function DamageRangeSection() {
       <div className="my-6">
         <BlockMath math="\text{Avg} = (\text{Min} + \text{Max}) / 2" />
       </div>
+    </>
+  );
+}
+
+export function DamageRangeSection() {
+  const [activeTab, setActiveTab] = useState('standard');
+
+  const tabs = [
+    { id: 'standard', label: 'Standard', content: <StandardFormula /> },
+    { id: 'throwingStar', label: 'Throwing Star', content: <ThrowingStarFormula /> },
+    { id: 'magic', label: 'Magic', content: <MagicFormula /> },
+  ];
+
+  return (
+    <>
+      <p className="text-text-secondary text-sm mb-4 leading-relaxed">
+        Three formula variants exist depending on class type. Each attack deals uniform random
+        damage between Min and Max.
+      </p>
+
+      <FormulaTabs tabs={tabs} activeTab={activeTab} onTabChange={setActiveTab} />
     </>
   );
 }

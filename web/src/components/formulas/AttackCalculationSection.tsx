@@ -1,12 +1,13 @@
+import { useState } from 'react';
 import { BlockMath, InlineMath } from 'react-katex';
 import { weaponData } from '../../data/bundle.js';
+import { FormulaTabs } from './FormulaTabs.js';
 
 // Group weapons by whether slash = stab
 function partitionWeapons() {
   const uniform: Array<{ names: string[]; multiplier: number }> = [];
   const split: Array<{ name: string; slash: number; stab: number }> = [];
 
-  // Collect uniform weapons, grouping by multiplier value
   const uniformByValue = new Map<number, string[]>();
   for (const w of weaponData.types) {
     if (w.slashMultiplier === w.stabMultiplier) {
@@ -21,12 +22,10 @@ function partitionWeapons() {
     }
   }
 
-  // Sort uniform groups by multiplier descending
   for (const [multiplier, names] of [...uniformByValue.entries()].sort((a, b) => b[0] - a[0])) {
     uniform.push({ names, multiplier });
   }
 
-  // Merge split weapons with identical slash/stab pairs (e.g., 1H Axe and 1H BW)
   const splitGrouped: Array<{ names: string[]; slash: number; stab: number }> = [];
   for (const w of split) {
     const existing = splitGrouped.find((g) => g.slash === w.slash && g.stab === w.stab);
@@ -37,32 +36,20 @@ function partitionWeapons() {
     }
   }
 
-  // Sort by highest of the two values descending
   splitGrouped.sort((a, b) => Math.max(b.slash, b.stab) - Math.max(a.slash, a.stab));
 
   return { uniform, split: splitGrouped };
 }
 
-export function AttackCalculationSection() {
-  const { uniform, split } = partitionWeapons();
-
+function PhysicalFormulas() {
   return (
     <>
       <p className="text-text-secondary text-sm mb-4 leading-relaxed">
-        Echo of Hero adds a 4% bonus to attack. For physical classes it applies to WATK + potion +
-        projectile:
+        Echo of Hero adds a 4% bonus to WATK + potion + projectile:
       </p>
 
       <div className="my-6">
         <BlockMath math="\text{echo} = \lfloor (\text{WATK} + \text{potion} + \text{projectile}) \times 0.04 \rfloor" />
-      </div>
-
-      <p className="text-text-secondary text-sm mb-4 leading-relaxed">
-        Mage echo includes INT in the base:
-      </p>
-
-      <div className="my-6">
-        <BlockMath math="\text{echo}_{\text{mage}} = \lfloor (\text{INT} + \text{MATK} + \text{potion}) \times 0.04 \rfloor" />
       </div>
 
       <p className="text-text-secondary text-sm mb-4 leading-relaxed">
@@ -72,14 +59,44 @@ export function AttackCalculationSection() {
       <div className="my-6">
         <BlockMath math="\text{totalAttack} = \text{WATK} + \text{potion} + \text{projectile} + \text{echo}" />
       </div>
+    </>
+  );
+}
+
+function MageFormulas() {
+  return (
+    <>
+      <p className="text-text-secondary text-sm mb-4 leading-relaxed">
+        Mage echo includes INT in the base:
+      </p>
+
+      <div className="my-6">
+        <BlockMath math="\text{echo}_{\text{mage}} = \lfloor (\text{INT} + \text{MATK} + \text{potion}) \times 0.04 \rfloor" />
+      </div>
 
       <p className="text-text-secondary text-sm mb-4 leading-relaxed">
-        For mages, total magic attack (TMA) is used instead:
+        Total magic attack (TMA) for the damage formula:
       </p>
 
       <div className="my-6">
         <BlockMath math="\text{TMA} = \text{INT} + \text{MATK} + \text{potion} + \text{echo}_{\text{mage}}" />
       </div>
+    </>
+  );
+}
+
+export function AttackCalculationSection() {
+  const [activeTab, setActiveTab] = useState('physical');
+  const { uniform, split } = partitionWeapons();
+
+  const tabs = [
+    { id: 'physical', label: 'Physical', content: <PhysicalFormulas /> },
+    { id: 'mage', label: 'Mage', content: <MageFormulas /> },
+  ];
+
+  return (
+    <>
+      <FormulaTabs tabs={tabs} activeTab={activeTab} onTabChange={setActiveTab} />
 
       <h4 className="text-sm font-semibold text-text-bright mt-8 mb-3">Weapon Multipliers</h4>
 
