@@ -1,13 +1,47 @@
 import { BlockMath, InlineMath } from 'react-katex';
-import { SectionHeading } from './SectionHeading.js';
+import { discoveredData } from '../../data/bundle.js';
 
-export function KnockbackModelingSection() {
-  const kbDefenses: Array<{ classes: string; defense: string; rate: string }> = [
-    { classes: 'Hero, Dark Knight, Paladin', defense: 'Power Stance', rate: '90%' },
-    { classes: 'Buccaneer', defense: 'Energy Charge', rate: '90%' },
-    { classes: 'Shadower', defense: 'Shadow Shifter', rate: '40%' },
-    { classes: 'Night Lord', defense: 'Shadow Shifter', rate: '30%' },
-    { classes: 'Archers, Corsair, Mages', defense: 'None', rate: '0%' },
+interface KnockbackModelingSectionProps {
+  selectedClass?: string | null;
+}
+
+export function KnockbackModelingSection({ selectedClass }: KnockbackModelingSectionProps) {
+  const classData = selectedClass ? discoveredData.classDataMap.get(selectedClass) : null;
+
+  const kbDefenses: Array<{ classes: string; defense: string; rate: string; match: boolean }> = [
+    {
+      classes: 'Hero, Dark Knight, Paladin',
+      defense: 'Power Stance',
+      rate: '90%',
+      match: !!classData && (classData.stanceRate ?? 0) > 0 && classData.className !== 'Buccaneer',
+    },
+    {
+      classes: 'Buccaneer',
+      defense: 'Energy Charge',
+      rate: '90%',
+      match: classData?.className === 'Buccaneer',
+    },
+    {
+      classes: 'Shadower',
+      defense: 'Shadow Shifter',
+      rate: '40%',
+      match: classData?.className === 'Shadower',
+    },
+    {
+      classes: 'Night Lord',
+      defense: 'Shadow Shifter',
+      rate: '30%',
+      match: classData?.className === 'Night Lord',
+    },
+    {
+      classes: 'Archers, Corsair, Mages',
+      defense: 'None',
+      rate: '0%',
+      match: !!classData &&
+        (classData.stanceRate ?? 0) === 0 &&
+        (classData.shadowShifterRate ?? 0) === 0 &&
+        classData.className !== 'Buccaneer',
+    },
   ];
 
   const recoveryTimes: Array<{ type: string; time: string; examples: string }> = [
@@ -17,9 +51,7 @@ export function KnockbackModelingSection() {
   ];
 
   return (
-    <section id="knockback" className="mb-16 scroll-mt-8">
-      <SectionHeading label="Knockback Modeling" />
-
+    <>
       <p className="text-text-secondary text-sm mb-4 leading-relaxed">
         Boss attacks interrupt skills, reducing effective DPS. The KB model estimates uptime loss
         based on boss attack frequency, class defenses, and skill recovery time. This is an
@@ -70,8 +102,15 @@ export function KnockbackModelingSection() {
           </thead>
           <tbody>
             {kbDefenses.map((row) => (
-              <tr key={row.classes} className="border-b border-border-default/50">
-                <td className="px-3 py-1.5 text-text-primary">{row.classes}</td>
+              <tr
+                key={row.classes}
+                className={`border-b border-border-default/50 transition-colors ${
+                  row.match ? 'bg-bg-active/50' : ''
+                }`}
+              >
+                <td className={`px-3 py-1.5 ${row.match ? 'text-text-bright' : 'text-text-primary'}`}>
+                  {row.classes}
+                </td>
                 <td className="px-3 py-1.5 text-text-secondary">{row.defense}</td>
                 <td className="px-3 py-1.5 text-right text-text-secondary tabular-nums">
                   {row.rate}
@@ -151,6 +190,6 @@ export function KnockbackModelingSection() {
         Boss AI uses cooldown-based skill systems rather than fixed intervals, so the interval
         parameter is an average estimate. Actual attack frequency varies by boss and encounter phase.
       </p>
-    </section>
+    </>
   );
 }

@@ -1,10 +1,8 @@
 import { BlockMath, InlineMath } from 'react-katex';
-import { SectionHeading } from './SectionHeading.js';
 
 export function AttackSpeedSection() {
   return (
-    <section id="speed" className="mb-16 scroll-mt-8">
-      <SectionHeading label="Attack Speed" />
+    <>
 
       <p className="text-text-secondary text-sm mb-4 leading-relaxed">
         Each weapon has a base speed tier. Booster reduces it by 2, and Speed Infusion
@@ -32,6 +30,6 @@ export function AttackSpeedSection() {
         <li>Demolition (Buccaneer): 2.34s cycle</li>
         <li>Mage skills: fixed per-skill (Chain Lightning 0.69s, Blizzard 3.06s, Paralyze 0.69s, Meteor 3.06s, Angel Ray 0.81s, Genesis 2.7s)</li>
       </ul>
-    </section>
+    </>
   );
 }

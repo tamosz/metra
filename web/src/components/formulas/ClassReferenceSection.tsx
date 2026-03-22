@@ -1,6 +1,5 @@
 import { discoveredData } from '../../data/bundle.js';
 import type { ClassSkillData } from '@metra/engine';
-import { SectionHeading } from './SectionHeading.js';
 
 function getNotables(classData: ClassSkillData): string[] {
   const notes: string[] = [];
@@ -10,13 +9,12 @@ function getNotables(classData: ClassSkillData): string[] {
   if (classData.shadowShifterRate && classData.shadowShifterRate > 0) {
     notes.push(`Shadow Shifter (${Math.round(classData.shadowShifterRate * 100)}%)`);
   }
-  // Shadow Partner / Berserk — hardcoded, no explicit data field
   const name = classData.className;
-  if (name === 'Night Lord' || name === 'Shadower') {
+  if (name === 'Night Lord') {
     notes.push('Shadow Partner');
   }
   if (name === 'Dark Knight') {
-    notes.push('Berserk (2.1×)');
+    notes.push('Berserk (2.1\u00d7)');
   }
   if (classData.spellAmplification && classData.spellAmplification !== 1) {
     notes.push(`Spell Amp (${classData.spellAmplification})`);
@@ -24,7 +22,6 @@ function getNotables(classData: ClassSkillData): string[] {
   if (classData.weaponAmplification && classData.weaponAmplification !== 1) {
     notes.push(`Weapon Amp (${classData.weaponAmplification})`);
   }
-  // Built-in crit from skills
   const critSkills = classData.skills.filter((s) => s.builtInCritRate && s.builtInCritRate > 0);
   if (critSkills.length > 0) {
     const rate = critSkills[0].builtInCritRate!;
@@ -33,15 +30,17 @@ function getNotables(classData: ClassSkillData): string[] {
   return notes;
 }
 
-export function ClassReferenceSection() {
+interface ClassReferenceSectionProps {
+  selectedClass?: string | null;
+}
+
+export function ClassReferenceSection({ selectedClass }: ClassReferenceSectionProps) {
   const entries = Array.from(discoveredData.classDataMap.entries()).sort((a, b) =>
     a[0].localeCompare(b[0])
   );
 
   return (
-    <section id="class-reference" className="mb-16 scroll-mt-8">
-      <SectionHeading label="Class Reference" />
-
+    <>
       <p className="text-text-secondary text-sm mb-4 leading-relaxed">
         Per-class configuration used by the simulator, populated from the data files.
       </p>
@@ -67,10 +66,16 @@ export function ClassReferenceSection() {
               const critFormula =
                 classData.seCritFormula === 'multiplicative' ? 'multiplicative' : '\u2014';
               const notables = getNotables(classData);
+              const isHighlighted = selectedClass === key;
 
               return (
-                <tr key={key} className="border-b border-border-default/50">
-                  <td className="px-3 py-1.5 font-medium text-text-primary">
+                <tr
+                  key={key}
+                  className={`border-b border-border-default/50 transition-colors ${
+                    isHighlighted ? 'bg-bg-active/50' : ''
+                  }`}
+                >
+                  <td className={`px-3 py-1.5 font-medium ${isHighlighted ? 'text-text-bright' : 'text-text-primary'}`}>
                     {classData.className}
                   </td>
                   <td className="px-3 py-1.5 text-text-secondary">
@@ -91,6 +96,6 @@ export function ClassReferenceSection() {
           </tbody>
         </table>
       </div>
-    </section>
+    </>
   );
 }

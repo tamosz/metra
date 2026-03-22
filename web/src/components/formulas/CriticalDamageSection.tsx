@@ -1,11 +1,18 @@
 import { BlockMath, InlineMath } from 'react-katex';
-import { SectionHeading } from './SectionHeading.js';
+import { discoveredData } from '../../data/bundle.js';
 
-export function CriticalDamageSection() {
+interface CriticalDamageSectionProps {
+  selectedClass?: string | null;
+}
+
+export function CriticalDamageSection({ selectedClass }: CriticalDamageSectionProps) {
+  const classData = selectedClass ? discoveredData.classDataMap.get(selectedClass) : null;
+  const builtInCritSkill = classData?.skills.find(
+    (s) => s.builtInCritRate && s.builtInCritRate > 0
+  );
+
   return (
-    <section id="crit" className="mb-16 scroll-mt-8">
-      <SectionHeading label="Critical Damage" />
-
+    <>
       <p className="text-text-secondary text-sm mb-4 leading-relaxed">
         Physical classes all use the same crit damage formula:
       </p>
@@ -37,9 +44,25 @@ export function CriticalDamageSection() {
         Classes with built-in crit (additive with SE):
       </p>
       <ul className="text-text-secondary text-sm mb-4 leading-relaxed list-disc list-inside space-y-1">
-        <li>Night Lord (Triple Throw): 50% rate, +100 damage bonus</li>
-        <li>Bowmaster / Marksman (Critical Shot): 40% rate, +100 damage bonus</li>
+        <li className={selectedClass && classData?.className === 'Night Lord' ? 'text-text-bright' : ''}>
+          Night Lord (Triple Throw): 50% rate, +100 damage bonus
+        </li>
+        <li className={selectedClass && (classData?.className === 'Bowmaster' || classData?.className === 'Marksman') ? 'text-text-bright' : ''}>
+          Bowmaster / Marksman (Critical Shot): 40% rate, +100 damage bonus
+        </li>
       </ul>
+
+      {selectedClass && builtInCritSkill && (
+        <p className="text-text-secondary text-sm mb-4 leading-relaxed border-l-2 border-accent pl-3">
+          {classData!.className} has {Math.round(builtInCritSkill.builtInCritRate! * 100)}% built-in
+          crit on {builtInCritSkill.name}, giving{' '}
+          {Math.min(
+            Math.round(builtInCritSkill.builtInCritRate! * 100) +
+              Math.round(classData!.sharpEyesCritRate * 100),
+            100
+          )}% total with SE.
+        </p>
+      )}
 
       <h4 className="text-sm font-semibold text-text-bright mt-8 mb-3">Known Limitation: Assassinate</h4>
 
@@ -50,6 +73,6 @@ export function CriticalDamageSection() {
         simulator does not model this &mdash; Assassinate uses the standard SE crit formula.
         If the bug exists, Shadower combo DPS with SE active may be slightly overestimated.
       </p>
-    </section>
+    </>
   );
 }

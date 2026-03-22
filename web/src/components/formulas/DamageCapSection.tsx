@@ -1,10 +1,8 @@
 import { BlockMath, InlineMath } from 'react-katex';
-import { SectionHeading } from './SectionHeading.js';
 
 export function DamageCapSection() {
   return (
-    <section id="damage-cap" className="mb-16 scroll-mt-8">
-      <SectionHeading label="Damage Cap" />
+    <>
 
       <p className="text-text-secondary text-sm mb-4 leading-relaxed">
         The game enforces a damage cap of 199,999 per hit line. Skills that deal high damage
@@ -51,6 +49,6 @@ export function DamageCapSection() {
         If <InlineMath math="\text{rangeCap} \leq \text{min}" />: fully capped,
         use <InlineMath math="\text{rangeCap}" /> as the average.
       </p>
-    </section>
+    </>
   );
 }
