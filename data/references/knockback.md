@@ -94,19 +94,33 @@ At accuracy 250, dodge chance from avoidability is negligible for all classes.
 
 ## Avoidability Formula (Monster → Player)
 
-**Source:** [SouthPerry All Known Formulas](https://www.southperry.net/showthread.php?t=31480)
-**Accessed:** 2026-03-02
+**Source:** Client code extraction (iPippy, MapleLegends forum), confirmed on Royals by jamin
+**Accessed:** 2026-03-22
+**Forum threads:**
+- [MapleLegends avoidability formula](https://forum.maplelegends.com/index.php?threads/maplelegends-avoidability-formula.26694/)
+- [Royals avoidability question](https://royals.ms/forum/threads/avoidability-question.174715/)
+
+Pre-BB formula for physical (touch) damage:
 
 ```
-dodgeRate = floor(sqrt(playerAvoid)) - floor(sqrt(monsterAccuracy))
-if monsterLevel > playerLevel:
-    dodgeRate -= 5 * (monsterLevel - playerLevel)
-dodgeRate = max(dodgeRate, 0)
+effectiveAvoid = avoid - max(0, monsterLevel - charLevel) / 2
+dodgeRate = effectiveAvoid / (4.5 * monsterAccuracy)
 ```
 
-At boss accuracy 250: `sqrt(250) ≈ 15.8`, so `floor(sqrt(playerAvoid))`
-would need to exceed 15 just to get 1% dodge. Most physical classes have
-negligible avoidability at boss level → dodge ≈ 0%.
+Class-specific caps:
+- Non-thieves: [2%, 80%]
+- Thieves (NL, Shadower): [5%, 95%]
+
+At boss accuracy 250 with 0 avoidability, dodge = 2% (non-thief floor).
+For a Night Lord with ~300 avoid: `300 / (4.5 * 250) = 26.7%` dodge.
+
+**Previous incorrect formula:** The codebase previously used
+`floor(sqrt(avoid)) - floor(sqrt(accuracy))` from SouthPerry's "[BB] All Known
+Formulas" thread — this is a post-Big Bang formula, not applicable to
+MapleRoyals (v62/pre-BB).
+
+**Not yet modeled:** Magic attack dodge uses a different formula:
+`magicDodge = 10/9 - accuracy / (0.9 * avoid)`.
 
 ## Battleship KB Interaction
 
