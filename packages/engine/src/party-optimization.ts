@@ -37,7 +37,7 @@ export function findOptimalParty(
   constraints?: OptimizationConstraints,
   topN: number = 10,
 ): OptimizationResult {
-  let availableClasses = [...classDataMap.keys()].filter((c) => gearTemplates.has(`${c}-perfect`));
+  let availableClasses = [...classDataMap.keys()].filter((c) => gearTemplates.has(c));
 
   if (constraints?.excluded) {
     const excluded = new Set(constraints.excluded);

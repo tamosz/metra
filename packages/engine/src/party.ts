@@ -49,8 +49,6 @@ export function resolvePartyBuffs(members: PartyMember[]): PartyBuffState {
   return { sharpEyes, speedInfusion };
 }
 
-const DEFAULT_TIER = 'perfect';
-
 function getTopSkill(aggregated: SkillDpsRow[], classData: ClassSkillData): SkillDpsRow | null {
   if (aggregated.length === 0) return null;
   const hidden = new Set<string>();
@@ -79,7 +77,7 @@ function simulateMember(
   buffs: PartyBuffState,
 ): { skillName: string; dps: number } | null {
   const classData = classDataMap.get(className);
-  const baseBuild = gearTemplates.get(`${className}-${DEFAULT_TIER}`);
+  const baseBuild = gearTemplates.get(className);
   if (!classData || !baseBuild) return null;
   const build = applyPartyBuffs(baseBuild, buffs);
   const result = calculateBuildDps(build, classData, gameData);

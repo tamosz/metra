@@ -156,7 +156,7 @@ describe('simulateParty', () => {
       members: [{ className: 'hero' }, { className: 'hero' }],
     };
     const classDataMap = new Map([['hero', makeClassData()]]);
-    const gearTemplates = new Map([['hero-perfect', makeBuild()]]);
+    const gearTemplates = new Map([['hero', makeBuild()]]);
 
     const result = simulateParty(party, classDataMap, gearTemplates, gameData);
 
@@ -174,7 +174,7 @@ describe('simulateParty', () => {
       members: [{ className: 'hero' }, { className: 'hero' }],
     };
     const classDataMap = new Map([['hero', makeClassData()]]);
-    const gearTemplates = new Map([['hero-perfect', makeBuild()]]);
+    const gearTemplates = new Map([['hero', makeBuild()]]);
 
     const result = simulateParty(party, classDataMap, gearTemplates, gameData);
     const expectedTotal = result.members.reduce((sum, m) => sum + m.dps, 0);
@@ -202,8 +202,8 @@ describe('simulateParty', () => {
       ['bowmaster', makeArcherClassData()],
     ]);
     const gearTemplates = new Map([
-      ['hero-perfect', heroBuildNoSE],
-      ['bowmaster-perfect', makeArcherBuild()],
+      ['hero', heroBuildNoSE],
+      ['bowmaster', makeArcherBuild()],
     ]);
 
     const withArcher = simulateParty(partyWithArcher, classDataMap, gearTemplates, gameData);
@@ -221,7 +221,7 @@ describe('simulateParty', () => {
       members: [{ className: 'unknown-class' }],
     };
     const classDataMap = new Map([['hero', makeClassData()]]);
-    const gearTemplates = new Map([['hero-perfect', makeBuild()]]);
+    const gearTemplates = new Map([['hero', makeBuild()]]);
 
     const result = simulateParty(party, classDataMap, gearTemplates, gameData);
 
@@ -257,7 +257,7 @@ describe('simulateParty', () => {
       members: [{ className: 'hero' }],
     };
     const classDataMap = new Map([['hero', classDataWithHidden]]);
-    const gearTemplates = new Map([['hero-perfect', makeBuild()]]);
+    const gearTemplates = new Map([['hero', makeBuild()]]);
 
     const result = simulateParty(party, classDataMap, gearTemplates, gameData);
     expect(result.members[0].skillName).toBe('Visible Skill');
@@ -277,7 +277,7 @@ describe('computeBuffAttribution', () => {
       members: [{ className: 'night-lord' }, { className: 'night-lord' }],
     };
     const classDataMap = new Map([['night-lord', nightLordData]]);
-    const gearTemplates = new Map([['night-lord-perfect', nightLordBuild]]);
+    const gearTemplates = new Map([['night-lord', nightLordBuild]]);
 
     const result = computeBuffAttribution(party, classDataMap, gearTemplates, gameData);
 
@@ -302,8 +302,8 @@ describe('computeBuffAttribution', () => {
       ['bowmaster', archerData],
     ]);
     const gearTemplates = new Map([
-      ['hero-perfect', heroBuildNoSE],
-      ['bowmaster-perfect', archerBuild],
+      ['hero', heroBuildNoSE],
+      ['bowmaster', archerBuild],
     ]);
 
     const result = computeBuffAttribution(party, classDataMap, gearTemplates, gameData);
