@@ -5,14 +5,13 @@ import type { SkillEntry } from './types.js';
  * Blink animation + minor reposition.
  * Source: data/references/knockback.md
  */
-export const DEFAULT_KB_RECOVERY = 0.6;
+export const DEFAULT_KB_RECOVERY = 0.5;
 
 /**
- * KB recovery time for channeled skills like Hurricane (seconds).
- * Landing + reposition + channel restart (~300ms startup).
- * Source: data/references/knockback.md
+ * Extra wind-up time for channeled skills to restart the channel (seconds).
+ * Hurricane and Rapid Fire both have this overhead on top of the base recovery.
  */
-export const CHANNEL_KB_RECOVERY = 1.0;
+export const CHANNEL_WIND_UP = 0.2;
 
 /** Attack time threshold to detect channeled skills (Hurricane/Rapid Fire use 0.12s). */
 const CHANNEL_ATTACK_TIME = 0.12;
@@ -85,11 +84,11 @@ export function calculateKnockbackUptime(
  *
  * Priority:
  * 1. Explicit `knockbackRecovery` on the skill (i-frames = 0, custom overrides)
- * 2. Channeled skill heuristic: attackTime === 0.12s → CHANNEL_KB_RECOVERY
+ * 2. Channeled skill heuristic: attackTime === 0.12s → DEFAULT_KB_RECOVERY + CHANNEL_WIND_UP
  * 3. Default: DEFAULT_KB_RECOVERY
  */
 export function getKnockbackRecovery(skill: SkillEntry, attackTime: number): number {
   if (skill.knockbackRecovery != null) return skill.knockbackRecovery;
-  if (attackTime === CHANNEL_ATTACK_TIME) return CHANNEL_KB_RECOVERY;
+  if (attackTime === CHANNEL_ATTACK_TIME) return DEFAULT_KB_RECOVERY + CHANNEL_WIND_UP;
   return DEFAULT_KB_RECOVERY;
 }

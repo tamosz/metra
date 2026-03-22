@@ -14,9 +14,8 @@ Estimates based on gameplay observation:
 
 | Skill Type | Recovery Time | Notes |
 |------------|--------------|-------|
-| Burst/normal skills | ~0.6s | Blink animation + minor reposition |
-| Channeled (Hurricane) | ~1.0s | Landing + reposition + 300ms channel restart |
-| Channeled (Rapid Fire) | ~0.5s | Can fire mid-air unlike Hurricane |
+| Burst/normal skills | ~0.5s | KB animation + reposition |
+| Channeled (Hurricane, Rapid Fire) | ~0.7s | Base recovery (0.5s) + channel restart wind-up (0.2s) |
 | I-frame skills (Demolition, Barrage) | 0s | Intangible during animation |
 
 Hurricane has a ~300ms startup delay before the first arrow fires, and cannot
@@ -138,8 +137,8 @@ Not modeled: ship destruction downtime (would require additional mechanics).
 Based on the above research:
 
 ```
-DEFAULT_KB_RECOVERY  = 0.6   // burst skill recovery (seconds)
-CHANNEL_KB_RECOVERY  = 1.0   // channeled skill recovery (seconds)
+DEFAULT_KB_RECOVERY  = 0.5   // burst skill recovery (seconds)
+CHANNEL_WIND_UP      = 0.2   // extra wind-up for channeled skills (seconds)
 BOSS_ATTACK_INTERVAL = 1.5   // representative endgame boss (seconds)
 BOSS_ACCURACY        = 250   // representative endgame boss accuracy
 ```
@@ -148,10 +147,10 @@ BOSS_ACCURACY        = 250   // representative endgame boss accuracy
 
 | Class | Defense | Burst Loss | Channel Loss |
 |-------|---------|-----------|-------------|
-| Warriors (90% stance) | ~4% | — |
+| Warriors (90% stance) | ~3% | — |
 | Bucc Demolition (i-frame) | ~0% | — |
-| Shadower (40% shifter) | ~24% | — |
-| Night Lord (30% shifter) | ~28% | — |
-| Archers (no defense) | ~40% | ~67% |
-| Corsair (no defense) | ~40% | ~67% |
-| Mages (no defense) | ~40% | — |
+| Shadower (40% shifter) | ~20% | — |
+| Night Lord (30% shifter) | ~23% | — |
+| Archers (no defense) | ~33% | ~47% |
+| Corsair (no defense) | ~33% | ~47% |
+| Mages (no defense) | ~33% | — |

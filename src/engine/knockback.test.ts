@@ -5,7 +5,7 @@ import {
   calculateKnockbackUptime,
   getKnockbackRecovery,
   DEFAULT_KB_RECOVERY,
-  CHANNEL_KB_RECOVERY,
+  CHANNEL_WIND_UP,
   type SkillEntry,
 } from '@metra/engine';
 
@@ -120,35 +120,35 @@ describe('calculateKnockbackProbability', () => {
 
 describe('calculateKnockbackUptime', () => {
   it('returns 1.0 when KB probability is 0 (full stance)', () => {
-    expect(calculateKnockbackUptime(0, 1.5, 0.6)).toBe(1.0);
+    expect(calculateKnockbackUptime(0, 1.5, 0.5)).toBe(1.0);
   });
 
-  it('warrior with 90% stance loses ~4% uptime', () => {
-    // kbProb=0.1, interval=1.5, recovery=0.6
-    // kbs/sec = 0.1/1.5 ≈ 0.0667, timeLost = 0.0667 * 0.6 = 0.04
-    const uptime = calculateKnockbackUptime(0.1, 1.5, 0.6);
-    expect(uptime).toBeCloseTo(0.96, 2);
+  it('warrior with 90% stance loses ~3% uptime', () => {
+    // kbProb=0.1, interval=1.5, recovery=0.5
+    // kbs/sec = 0.1/1.5 ≈ 0.0667, timeLost = 0.0667 * 0.5 = 0.0333
+    const uptime = calculateKnockbackUptime(0.1, 1.5, 0.5);
+    expect(uptime).toBeCloseTo(0.97, 2);
   });
 
-  it('Night Lord with 30% shifter loses ~28% uptime on burst skills', () => {
-    // kbProb=0.7, interval=1.5, recovery=0.6
-    // kbs/sec = 0.467, timeLost = 0.28
-    const uptime = calculateKnockbackUptime(0.7, 1.5, 0.6);
-    expect(uptime).toBeCloseTo(0.72, 2);
+  it('Night Lord with 30% shifter loses ~23% uptime on burst skills', () => {
+    // kbProb=0.7, interval=1.5, recovery=0.5
+    // kbs/sec = 0.467, timeLost = 0.467 * 0.5 = 0.2333
+    const uptime = calculateKnockbackUptime(0.7, 1.5, 0.5);
+    expect(uptime).toBeCloseTo(0.77, 2);
   });
 
-  it('Shadower with 40% shifter loses ~24% uptime on burst skills', () => {
-    // kbProb=0.6, interval=1.5, recovery=0.6
-    // kbs/sec = 0.4, timeLost = 0.24
-    const uptime = calculateKnockbackUptime(0.6, 1.5, 0.6);
-    expect(uptime).toBeCloseTo(0.76, 2);
+  it('Shadower with 40% shifter loses ~20% uptime on burst skills', () => {
+    // kbProb=0.6, interval=1.5, recovery=0.5
+    // kbs/sec = 0.4, timeLost = 0.4 * 0.5 = 0.20
+    const uptime = calculateKnockbackUptime(0.6, 1.5, 0.5);
+    expect(uptime).toBeCloseTo(0.80, 2);
   });
 
   it('no-defense class with channeled skill loses heavily', () => {
-    // kbProb=1.0, interval=1.5, recovery=1.0
-    // kbs/sec = 0.667, timeLost = 0.667
-    const uptime = calculateKnockbackUptime(1.0, 1.5, 1.0);
-    expect(uptime).toBeCloseTo(0.333, 2);
+    // kbProb=1.0, interval=1.5, recovery=0.7
+    // kbs/sec = 0.667, timeLost = 0.667 * 0.7 = 0.4667
+    const uptime = calculateKnockbackUptime(1.0, 1.5, 0.7);
+    expect(uptime).toBeCloseTo(0.533, 2);
   });
 
   it('clamps to minimum 0.1', () => {
@@ -176,7 +176,7 @@ describe('getKnockbackRecovery', () => {
 
   it('detects channeled skills by 0.12s attack time', () => {
     const skill = makeSkill();
-    expect(getKnockbackRecovery(skill, 0.12)).toBe(CHANNEL_KB_RECOVERY);
+    expect(getKnockbackRecovery(skill, 0.12)).toBe(DEFAULT_KB_RECOVERY + CHANNEL_WIND_UP);
   });
 
   it('returns DEFAULT_KB_RECOVERY for normal skills', () => {

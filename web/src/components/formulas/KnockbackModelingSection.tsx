@@ -11,8 +11,8 @@ export function KnockbackModelingSection() {
   ];
 
   const recoveryTimes: Array<{ type: string; time: string; examples: string }> = [
-    { type: 'Burst / normal', time: '0.6s', examples: 'Brandish, Crusher, Triple Throw, etc.' },
-    { type: 'Channeled', time: '1.0s', examples: 'Hurricane, Rapid Fire' },
+    { type: 'Burst / normal', time: '0.5s', examples: 'Brandish, Crusher, Triple Throw, etc.' },
+    { type: 'Channeled', time: '0.7s', examples: 'Hurricane, Rapid Fire (0.5s base + 0.2s wind-up)' },
     { type: 'I-frame', time: '0s', examples: 'Demolition, Barrage' },
   ];
 
