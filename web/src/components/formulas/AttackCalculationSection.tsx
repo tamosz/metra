@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { BlockMath, InlineMath } from 'react-katex';
 import { weaponData } from '../../data/bundle.js';
 import { FormulaTabs } from './FormulaTabs.js';
@@ -39,6 +39,13 @@ function partitionWeapons() {
   splitGrouped.sort((a, b) => Math.max(b.slash, b.stab) - Math.max(a.slash, a.stab));
 
   return { uniform, split: splitGrouped };
+}
+
+/** Check if a weapon type name matches the highlight target */
+function weaponMatches(names: string[], highlight: string): boolean {
+  // Direct match or prefix match (e.g., "2H Sword" matches "2H Sword",
+  // "Claw" doesn't appear in weapon data but "Dagger" does for Shadower)
+  return names.some((n) => n === highlight || n.startsWith(highlight));
 }
 
 function PhysicalFormulas() {
@@ -85,14 +92,28 @@ function MageFormulas() {
   );
 }
 
-export function AttackCalculationSection() {
-  const [activeTab, setActiveTab] = useState('physical');
+interface AttackCalculationSectionProps {
+  defaultTab?: string;
+  highlightWeapon?: string;
+}
+
+export function AttackCalculationSection({ defaultTab, highlightWeapon }: AttackCalculationSectionProps) {
+  const [activeTab, setActiveTab] = useState(defaultTab ?? 'physical');
   const { uniform, split } = partitionWeapons();
+
+  useEffect(() => {
+    if (defaultTab) setActiveTab(defaultTab);
+  }, [defaultTab]);
 
   const tabs = [
     { id: 'physical', label: 'Physical', content: <PhysicalFormulas /> },
     { id: 'mage', label: 'Mage', content: <MageFormulas /> },
   ];
+
+  const highlightRow = (names: string[]) =>
+    highlightWeapon && weaponMatches(names, highlightWeapon)
+      ? 'bg-bg-active/50'
+      : '';
 
   return (
     <>
@@ -119,7 +140,10 @@ export function AttackCalculationSection() {
           </thead>
           <tbody>
             {uniform.map((group) => (
-              <tr key={group.multiplier} className="border-b border-border-default/50">
+              <tr
+                key={group.multiplier}
+                className={`border-b border-border-default/50 transition-colors ${highlightRow(group.names)}`}
+              >
                 <td className="px-3 py-1.5 font-medium text-text-muted">
                   {group.names.join(', ')}
                 </td>
@@ -151,7 +175,7 @@ export function AttackCalculationSection() {
                 {split.map((group) => (
                   <tr
                     key={group.names.join(',')}
-                    className="border-b border-border-default/50"
+                    className={`border-b border-border-default/50 transition-colors ${highlightRow(group.names)}`}
                   >
                     <td className="px-3 py-1.5 font-medium text-text-muted">
                       {group.names.join(' / ')}

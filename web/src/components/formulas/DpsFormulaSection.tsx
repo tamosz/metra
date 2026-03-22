@@ -1,9 +1,16 @@
 import { BlockMath, InlineMath } from 'react-katex';
+import { getClassMetadata } from './class-metadata.js';
 
-export function DpsFormulaSection() {
+interface DpsFormulaSectionProps {
+  selectedClass?: string | null;
+}
+
+export function DpsFormulaSection({ selectedClass }: DpsFormulaSectionProps) {
+  const meta = selectedClass ? getClassMetadata(selectedClass) : null;
+  const showShadowPartner = !meta || meta.hasShadowPartner;
+
   return (
     <>
-
       <p className="text-text-secondary text-sm mb-4 leading-relaxed">
         The final pipeline combining everything into damage per second.
       </p>
@@ -28,16 +35,20 @@ export function DpsFormulaSection() {
         For magic skills, the multiplier is used directly (not divided by 100).
       </p>
 
-      <h4 className="text-sm font-semibold text-text-bright mt-8 mb-3">Shadow Partner</h4>
+      {showShadowPartner && (
+        <>
+          <h4 className="text-sm font-semibold text-text-bright mt-8 mb-3">Shadow Partner</h4>
 
-      <p className="text-text-secondary text-sm mb-4 leading-relaxed">
-        Night Lord has a Shadow Partner clone that deals 50% of attack damage,
-        so total damage is 1.5x:
-      </p>
+          <p className="text-text-secondary text-sm mb-4 leading-relaxed">
+            Night Lord has a Shadow Partner clone that deals 50% of attack damage,
+            so total damage is 1.5x:
+          </p>
 
-      <div className="my-6">
-        <BlockMath math="\text{avgDmg}_{\text{SP}} = \text{avgDmg} \times 1.5" />
-      </div>
+          <div className="my-6">
+            <BlockMath math="\text{avgDmg}_{\text{SP}} = \text{avgDmg} \times 1.5" />
+          </div>
+        </>
+      )}
 
       <h4 className="text-sm font-semibold text-text-bright mt-8 mb-3">Final DPS</h4>
 

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { BlockMath, InlineMath } from 'react-katex';
 import { FormulaTabs } from './FormulaTabs.js';
 
@@ -75,8 +75,16 @@ function MagicFormula() {
   );
 }
 
-export function DamageRangeSection() {
-  const [activeTab, setActiveTab] = useState('standard');
+interface DamageRangeSectionProps {
+  defaultTab?: string;
+}
+
+export function DamageRangeSection({ defaultTab }: DamageRangeSectionProps) {
+  const [activeTab, setActiveTab] = useState(defaultTab ?? 'standard');
+
+  useEffect(() => {
+    if (defaultTab) setActiveTab(defaultTab);
+  }, [defaultTab]);
 
   const tabs = [
     { id: 'standard', label: 'Standard', content: <StandardFormula /> },
