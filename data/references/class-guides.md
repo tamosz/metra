@@ -130,7 +130,6 @@ Per-class verified values extracted from community guides on royals.ms.
 - Assassinate 30: 950% base (buffed from 600%, charge removed), 3 hits
 - Assassinate crit behavior: community reports a v62 bug where SE crits use a stale 250% crit damage value instead of 950%. Not modeled — see damage-formulas.md for details.
 - Savage Blow: 80% base, 6 hits
-- Shadow Partner active (1.5x multiplier)
 - Dagger 3.6x multiplier, LUK primary, STR+DEX secondary (both summed)
 
 ## Archmage I/L

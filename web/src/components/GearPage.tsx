@@ -172,7 +172,7 @@ function WeaponTableSection({ rows }: { rows: ClassRow[] }) {
       </div>
       <p className="text-xs text-text-dim mt-2">
         Total WATK = Godly Clean + Scrolling ({budget.scrollBonus}) + C/G/S ({budget.nonWeaponWATK}) + Extras.
-        Night Lord and Shadower have Shadow Partner active (1.5&times; damage multiplier, not reflected in WATK totals).
+        Night Lord has Shadow Partner active (1.5&times; damage multiplier, not reflected in WATK totals).
       </p>
     </section>
   );

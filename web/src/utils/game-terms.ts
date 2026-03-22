@@ -6,7 +6,7 @@ export const GAME_TERMS: Record<string, string> = {
   WATK: 'Weapon Attack — the main offensive stat on gear. Higher WATK = more damage.',
   Mastery: 'Determines the minimum damage range. Higher mastery = more consistent damage.',
   Echo: 'Echo of Hero — event buff that adds +4% total attack.',
-  'Shadow Partner': 'Shadower/Night Lord buff that adds a clone dealing 50% of your damage (1.5x total).',
+  'Shadow Partner': 'Night Lord buff that adds a clone dealing 50% of your damage (1.5x total).',
   Berserk: 'Dark Knight HP-sacrifice buff that multiplies damage by 2.1x when HP is low.',
   Rotation: 'A repeating sequence of skills used for sustained DPS (e.g., Snipe + Strafes).',
   Bullseye: 'Corsair buff that marks a target (via Homing Beacon) and increases damage by 20%.',
