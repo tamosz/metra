@@ -1,10 +1,53 @@
 import { BlockMath, InlineMath } from 'react-katex';
 import { weaponData } from '../../data/bundle.js';
 
+// Group weapons by whether slash = stab
+function partitionWeapons() {
+  const uniform: Array<{ names: string[]; multiplier: number }> = [];
+  const split: Array<{ name: string; slash: number; stab: number }> = [];
+
+  // Collect uniform weapons, grouping by multiplier value
+  const uniformByValue = new Map<number, string[]>();
+  for (const w of weaponData.types) {
+    if (w.slashMultiplier === w.stabMultiplier) {
+      const existing = uniformByValue.get(w.slashMultiplier);
+      if (existing) {
+        existing.push(w.name);
+      } else {
+        uniformByValue.set(w.slashMultiplier, [w.name]);
+      }
+    } else {
+      split.push({ name: w.name, slash: w.slashMultiplier, stab: w.stabMultiplier });
+    }
+  }
+
+  // Sort uniform groups by multiplier descending
+  for (const [multiplier, names] of [...uniformByValue.entries()].sort((a, b) => b[0] - a[0])) {
+    uniform.push({ names, multiplier });
+  }
+
+  // Merge split weapons with identical slash/stab pairs (e.g., 1H Axe and 1H BW)
+  const splitGrouped: Array<{ names: string[]; slash: number; stab: number }> = [];
+  for (const w of split) {
+    const existing = splitGrouped.find((g) => g.slash === w.slash && g.stab === w.stab);
+    if (existing) {
+      existing.names.push(w.name);
+    } else {
+      splitGrouped.push({ names: [w.name], slash: w.slash, stab: w.stab });
+    }
+  }
+
+  // Sort by highest of the two values descending
+  splitGrouped.sort((a, b) => Math.max(b.slash, b.stab) - Math.max(a.slash, a.stab));
+
+  return { uniform, split: splitGrouped };
+}
+
 export function AttackCalculationSection() {
+  const { uniform, split } = partitionWeapons();
+
   return (
     <>
-
       <p className="text-text-secondary text-sm mb-4 leading-relaxed">
         Echo of Hero adds a 4% bonus to attack. For physical classes it applies to WATK + potion +
         projectile:
@@ -41,10 +84,10 @@ export function AttackCalculationSection() {
       <h4 className="text-sm font-semibold text-text-bright mt-8 mb-3">Weapon Multipliers</h4>
 
       <p className="text-text-secondary text-sm mb-4 leading-relaxed">
-        Each weapon type has slash and stab multipliers applied to the primary stat in the damage
-        formula. Some skills use a weighted mix of both (e.g., BW Blast with a 3:2
-        slash:stab ratio gives an effective multiplier
-        of <InlineMath math="\text{slash} \times 0.6 + \text{stab} \times 0.4" />).
+        Each weapon type has a multiplier <InlineMath math="W" /> applied to the primary stat. Most
+        weapons use a single value. Axes, blunt weapons, and polearms have different slash and stab
+        multipliers — some skills use a weighted mix (e.g., BW Blast with a 3:2 ratio
+        gives <InlineMath math="W = \text{slash} \times 0.6 + \text{stab} \times 0.4" />).
       </p>
 
       <div className="overflow-x-auto">
@@ -52,25 +95,63 @@ export function AttackCalculationSection() {
           <thead>
             <tr className="border-b border-border-default">
               <th className="px-3 py-2 text-left font-medium text-text-dim">Weapon Type</th>
-              <th className="px-3 py-2 text-right font-medium text-text-dim">Slash</th>
-              <th className="px-3 py-2 text-right font-medium text-text-dim">Stab</th>
+              <th className="px-3 py-2 text-right font-medium text-text-dim">
+                <InlineMath math="W" />
+              </th>
             </tr>
           </thead>
           <tbody>
-            {weaponData.types.map((weapon) => (
-              <tr key={weapon.name} className="border-b border-border-default/50">
-                <td className="px-3 py-1.5 font-medium text-text-muted">{weapon.name}</td>
-                <td className="px-3 py-1.5 text-right text-text-secondary tabular-nums">
-                  {weapon.slashMultiplier.toFixed(1)}
+            {uniform.map((group) => (
+              <tr key={group.multiplier} className="border-b border-border-default/50">
+                <td className="px-3 py-1.5 font-medium text-text-muted">
+                  {group.names.join(', ')}
                 </td>
                 <td className="px-3 py-1.5 text-right text-text-secondary tabular-nums">
-                  {weapon.stabMultiplier.toFixed(1)}
+                  {group.multiplier.toFixed(1)}
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
+
+      {split.length > 0 && (
+        <>
+          <h4 className="text-xs font-medium text-text-dim mt-6 mb-2 uppercase tracking-wide">
+            Slash / Stab Differ
+          </h4>
+
+          <div className="overflow-x-auto">
+            <table className="w-full border-collapse text-xs">
+              <thead>
+                <tr className="border-b border-border-default">
+                  <th className="px-3 py-2 text-left font-medium text-text-dim">Weapon Type</th>
+                  <th className="px-3 py-2 text-right font-medium text-text-dim">Slash</th>
+                  <th className="px-3 py-2 text-right font-medium text-text-dim">Stab</th>
+                </tr>
+              </thead>
+              <tbody>
+                {split.map((group) => (
+                  <tr
+                    key={group.names.join(',')}
+                    className="border-b border-border-default/50"
+                  >
+                    <td className="px-3 py-1.5 font-medium text-text-muted">
+                      {group.names.join(' / ')}
+                    </td>
+                    <td className="px-3 py-1.5 text-right text-text-secondary tabular-nums">
+                      {group.slash.toFixed(1)}
+                    </td>
+                    <td className="px-3 py-1.5 text-right text-text-secondary tabular-nums">
+                      {group.stab.toFixed(1)}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </>
+      )}
     </>
   );
 }
