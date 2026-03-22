@@ -11,6 +11,15 @@ export interface ClassMetadata {
   builtInCritRate: number;
 }
 
+const VALID_FORMULAS = new Set<ClassMetadata['damageFormula']>(['standard', 'throwingStar', 'magic']);
+
+function parseDamageFormula(raw: string | undefined): ClassMetadata['damageFormula'] {
+  const value = raw ?? 'standard';
+  return VALID_FORMULAS.has(value as ClassMetadata['damageFormula'])
+    ? (value as ClassMetadata['damageFormula'])
+    : 'standard';
+}
+
 export function getClassMetadata(classKey: string): ClassMetadata | null {
   const classData = discoveredData.classDataMap.get(classKey);
   const base = allClassBases.get(classKey);
@@ -24,7 +33,7 @@ export function getClassMetadata(classKey: string): ClassMetadata | null {
     className: classData.className,
     classKey,
     weaponType: base.weaponType,
-    damageFormula: (classData.damageFormula ?? 'standard') as ClassMetadata['damageFormula'],
+    damageFormula: parseDamageFormula(classData.damageFormula),
     hasStance: (classData.stanceRate ?? 0) > 0,
     hasShifter: (classData.shadowShifterRate ?? 0) > 0,
     hasShadowPartner: classData.className === 'Night Lord',
