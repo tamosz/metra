@@ -128,8 +128,7 @@ Knuckle multiplier 4.8x.
 
 ### Shadower
 
-Dagger + Shield. Shield WATK and stats are encoded in the class base file. Shadow Partner
-always active (1.5x multiplier). Secondary stat is `["STR", "DEX"]`.
+Dagger + Shield. Shield WATK and stats are encoded in the class base file. Secondary stat is `["STR", "DEX"]`.
 
 ### Projectile WATK (Arrows / Bolts / Stars / Capsules)
 
