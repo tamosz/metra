@@ -156,7 +156,7 @@ function computeBuildBrowser(base: ClassBase): CharacterBuild {
   return computeBuildFromBudget(base, budget);
 }
 
-// Shadower shield godly clean WATK before scrolling. Scrolling adds up to +23.
+// Shadower shield godly clean WATK before scrolling.
 export const SHIELD_BASE_WATK = 10;
 
 export function computeBuildAtPowerLevel(base: ClassBase, fraction: number): CharacterBuild {
@@ -167,7 +167,7 @@ export function computeBuildAtPowerLevel(base: ClassBase, fraction: number): Cha
     projectile: Math.round(base.projectile * fraction),
     passiveWATK: base.passiveWATK ? Math.round(base.passiveWATK * fraction) : undefined,
     shieldWATK: base.shieldWATK
-      ? Math.round(SHIELD_BASE_WATK + (base.shieldWATK - SHIELD_BASE_WATK) * fraction)
+      ? Math.round(base.shieldWATK * fraction)
       : undefined,
     shieldStats: base.shieldStats
       ? Object.fromEntries(
