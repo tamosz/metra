@@ -41,6 +41,9 @@ function partitionWeapons() {
   return { uniform, split: splitGrouped };
 }
 
+// Static data — compute once at module level
+const weaponGroups = partitionWeapons();
+
 /** Check if a weapon type name matches the highlight target */
 function weaponMatches(names: string[], highlight: string): boolean {
   // Direct match or prefix match (e.g., "2H Sword" matches "2H Sword",
@@ -99,7 +102,7 @@ interface AttackCalculationSectionProps {
 
 export function AttackCalculationSection({ defaultTab, highlightWeapon }: AttackCalculationSectionProps) {
   const [activeTab, setActiveTab] = useState(defaultTab ?? 'physical');
-  const { uniform, split } = partitionWeapons();
+  const { uniform, split } = weaponGroups;
 
   useEffect(() => {
     if (defaultTab) setActiveTab(defaultTab);
