@@ -12,6 +12,6 @@ COPY packages/ packages/
 COPY web/ web/
 RUN cd web && npx vite build
 
-FROM cgr.dev/chainguard/nginx:latest@sha256:95df12ef26c78090c3908908c81a6b9e2df2c80e9566630abce72ec7fd4082ab
+FROM cgr.dev/chainguard/nginx:latest@sha256:d5b9daa0f96c23e62412ffe80d6de0b507f406fe6568b90eecc6c5dbbed59a3d
 COPY web/nginx.conf /etc/nginx/conf.d/default.conf
 COPY --from=build /app/web/dist/ /usr/share/nginx/html/metra/
