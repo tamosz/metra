@@ -76,8 +76,8 @@ describe('computeBuild', () => {
     const build = computeBuild(hero);
 
     it('totalWeaponAttack = godlyClean + scrollBonus + nonWeaponWATK', () => {
-      // 115 + 35 + 72 = 222
-      expect(build.totalWeaponAttack).toBe(222);
+      // 115 + 35 + 86 = 236
+      expect(build.totalWeaponAttack).toBe(236);
     });
 
     it('gearStats primary = gearPrimary + weaponStat', () => {
@@ -121,8 +121,8 @@ describe('computeBuild', () => {
     const build = computeBuild(shadower);
 
     it('totalWeaponAttack includes shieldWATK', () => {
-      // 110 + 35 + 72 + 33 = 250
-      expect(build.totalWeaponAttack).toBe(250);
+      // 110 + 35 + 86 + 33 = 264
+      expect(build.totalWeaponAttack).toBe(264);
     });
 
     it('gearStats primary includes weaponStat + shieldStats', () => {
@@ -154,8 +154,8 @@ describe('computeBuild', () => {
     const build = computeBuild(bowmaster);
 
     it('totalWeaponAttack includes passiveWATK', () => {
-      // 110 + 35 + 72 + 10 = 227
-      expect(build.totalWeaponAttack).toBe(227);
+      // 110 + 35 + 86 + 10 = 241
+      expect(build.totalWeaponAttack).toBe(241);
     });
 
     it('primary stat is DEX', () => {

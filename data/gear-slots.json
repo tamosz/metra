@@ -1,0 +1,18 @@
+{
+  "helmet":   { "primary": 87, "secondary": 87, "watk": 0 },
+  "overall":  { "primary": 64, "secondary": 12, "watk": 0 },
+  "glove":    { "primary": 0,  "secondary": 0,  "watk": 24 },
+  "cape":     { "primary": 0,  "secondary": 0,  "watk": 24 },
+  "shoe":     { "primary": 0,  "secondary": 0,  "watk": 24 },
+  "earring":  { "primary": 28, "secondary": 7,  "watk": 0 },
+  "eye":      { "primary": 20, "secondary": 0,  "watk": 0 },
+  "face":     { "primary": 25, "secondary": 0,  "watk": 0 },
+  "pendant":  { "primary": 28, "secondary": 28, "watk": 0 },
+  "shoulder": { "primary": 3,  "secondary": 3,  "watk": 0 },
+  "belt":     { "primary": 5,  "secondary": 5,  "watk": 10 },
+  "medal":    { "primary": 0,  "secondary": 0,  "watk": 3 },
+  "ring1":    { "primary": 3,  "secondary": 3,  "watk": 1 },
+  "ring2":    { "primary": 10, "secondary": 7,  "watk": 0 },
+  "ring3":    { "primary": 14, "secondary": 8,  "watk": 0 },
+  "ring4":    { "primary": 8,  "secondary": 8,  "watk": 0 }
+}
