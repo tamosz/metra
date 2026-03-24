@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { allClassBases, type ClassBase, type GearBudget } from '../data/bundle.js';
+import { allClassBases, gearSlots, type ClassBase, type GearBudget } from '../data/bundle.js';
 import { getClassColor, VARIANT_CLASS_SLUGS } from '../utils/class-colors.js';
 import { colors } from '../theme.js';
 import gearBudgetJson from '@data/gear-budget.json';
@@ -7,15 +7,24 @@ import { GearMannequin } from './GearMannequin.js';
 
 const budget = gearBudgetJson as GearBudget;
 
+// Derive WATK segments from gear-slots.json — single source of truth
+const WATK_SLOT_COLORS: Record<string, { label: string; color: string }> = {
+  glove: { label: 'Gloves', color: '#3b82f6' },
+  cape: { label: 'Cape', color: '#8b5cf6' },
+  shoe: { label: 'Shoes', color: '#06b6d4' },
+  belt: { label: 'Belt', color: '#14b8a6' },
+  medal: { label: 'Medal', color: '#f59e0b' },
+  ring1: { label: 'Ring', color: '#a78bfa' },
+};
 
-const GEAR_WATK_SEGMENTS = [
-  { label: 'Gloves', value: 24, color: '#3b82f6' },
-  { label: 'Cape', value: 24, color: '#8b5cf6' },
-  { label: 'Shoes', value: 24, color: '#06b6d4' },
-  { label: 'Belt', value: 10, color: '#14b8a6' },
-  { label: 'Medal', value: 3, color: '#f59e0b' },
-  { label: 'Ring', value: 1, color: '#a78bfa' },
-] as const;
+const GEAR_WATK_SEGMENTS = Object.entries(gearSlots)
+  .filter(([key]) => key in WATK_SLOT_COLORS)
+  .filter(([, slot]) => slot.watk > 0)
+  .map(([key, slot]) => ({
+    label: WATK_SLOT_COLORS[key].label,
+    value: slot.watk,
+    color: WATK_SLOT_COLORS[key].color,
+  }));
 
 const GEAR_WATK_TOTAL = GEAR_WATK_SEGMENTS.reduce((sum, s) => sum + s.value, 0);
 if (GEAR_WATK_TOTAL !== budget.nonWeaponWATK) {
