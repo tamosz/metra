@@ -4,6 +4,7 @@ import { getClassColor, VARIANT_CLASS_SLUGS } from '../utils/class-colors.js';
 import { colors } from '../theme.js';
 import gearBudgetJson from '@data/gear-budget.json';
 import { GearMannequin } from './GearMannequin.js';
+import { WeaponCardGrid } from './WeaponCardGrid.js';
 
 const budget = gearBudgetJson as GearBudget;
 
@@ -42,40 +43,7 @@ interface ClassRow {
   slug: string;
   base: ClassBase;
   extras: number;
-  extrasLabel: string;
   totalWATK: number;
-}
-
-function getProjectileLabel(weaponType: string): string {
-  switch (weaponType) {
-    case 'Claw': return 'Stars';
-    case 'Bow': return 'Arrows';
-    case 'Crossbow': return 'Bolts';
-    case 'Gun': return 'Bullets';
-    default: return 'Projectile';
-  }
-}
-
-function getPassiveLabel(className: string): string {
-  if (className === 'Marksman') return 'MM Boost';
-  return 'Bow Expert';
-}
-
-function buildExtrasLabel(base: ClassBase): string {
-  const parts: string[] = [];
-  if (base.passiveWATK) {
-    parts.push(`${getPassiveLabel(base.className)}: 0\u2013${base.passiveWATK}`);
-  }
-  if (base.projectile > 0) {
-    parts.push(`${getProjectileLabel(base.weaponType)}: 0\u2013${base.projectile}`);
-  }
-  if (base.shieldWATK) {
-    const statsStr = base.shieldStats
-      ? `, ${Object.entries(base.shieldStats).map(([s, v]) => `+${v} ${s}`).join(' ')}`
-      : '';
-    parts.push(`0\u2013${base.shieldWATK} WATK${statsStr}`);
-  }
-  return parts.length > 0 ? parts.join(', ') : '\u2014';
 }
 
 function buildClassRows(): ClassRow[] {
@@ -91,7 +59,6 @@ function buildClassRows(): ClassRow[] {
       slug,
       base,
       extras,
-      extrasLabel: buildExtrasLabel(base),
       totalWATK,
     });
   }
@@ -142,51 +109,6 @@ function CommonGearSection() {
           </div>
         </div>
       </div>
-    </section>
-  );
-}
-
-function WeaponTableSection({ rows }: { rows: ClassRow[] }) {
-  return (
-    <section>
-      <h3 className="text-base font-semibold text-text-bright mb-1">Per-Class Weapons & Extras</h3>
-      <p className="text-sm text-text-secondary mb-4">
-        Weapon choice, speed tier, and class-specific WATK bonuses.
-      </p>
-      <div className="rounded-lg border border-border bg-bg-raised overflow-x-auto">
-        <table className="w-full text-sm">
-          <thead>
-            <tr className="border-b border-border text-text-muted text-xs">
-              <th className="text-left px-4 py-2.5 font-medium">Class</th>
-              <th className="text-left px-4 py-2.5 font-medium">Weapon Type</th>
-              <th className="text-right px-4 py-2.5 font-medium">Speed</th>
-              <th className="text-right px-4 py-2.5 font-medium">Godly Clean</th>
-              <th className="text-left px-4 py-2.5 font-medium">Extras</th>
-              <th className="text-right px-4 py-2.5 font-medium">Total WATK</th>
-            </tr>
-          </thead>
-          <tbody>
-            {rows.map((row) => (
-              <tr key={row.slug} className="border-b border-border/50 last:border-0">
-                <td className="px-4 py-2 font-medium" style={{ color: getClassColor(row.base.className) }}>
-                  {row.base.className}
-                </td>
-                <td className="px-4 py-2 text-text-secondary">
-                  {row.base.weaponType}{row.base.shieldWATK ? ' + Shield' : ''}
-                </td>
-                <td className="px-4 py-2 text-right text-text-secondary">{row.base.weaponSpeed}</td>
-                <td className="px-4 py-2 text-right text-text-bright">{row.base.godlyCleanWATK}</td>
-                <td className="px-4 py-2 text-text-secondary">{row.extrasLabel}</td>
-                <td className="px-4 py-2 text-right font-medium text-text-bright">{row.totalWATK}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-      <p className="text-xs text-text-dim mt-2">
-        Total WATK = Godly Clean + Scrolling ({budget.scrollBonus}) + Gear WATK ({budget.nonWeaponWATK}) + Extras.
-        Night Lord has Shadow Partner active (1.5&times; damage multiplier, not reflected in WATK totals).
-      </p>
     </section>
   );
 }
@@ -307,7 +229,7 @@ export function GearPage() {
       <div className="space-y-10">
         <GearMannequin />
         <CommonGearSection />
-        <WeaponTableSection rows={rows} />
+        <WeaponCardGrid rows={rows} />
         <WatkCompositionSection rows={rows} />
         <ScalingChartSection />
       </div>

@@ -9,7 +9,6 @@ interface ClassRow {
   slug: string;
   base: ClassBase;
   extras: number;
-  extrasLabel: string;
   totalWATK: number;
 }
 
