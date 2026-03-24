@@ -36,6 +36,7 @@ import weaponsJson from '@data/weapons.json';
 import attackSpeedJson from '@data/attack-speed.json';
 import mwJson from '@data/mw.json';
 import gearBudgetJson from '@data/gear-budget.json';
+import gearSlotsJson from '@data/gear-slots.json';
 
 // Skill data
 const skillModules = import.meta.glob('@data/skills/*.json', { eager: true, import: 'default' }) as Record<string, ClassSkillData>;
@@ -85,6 +86,16 @@ export interface GearBudget {
   baseSecondary: number;
   attackPotion: number;
 }
+
+export interface GearSlotStats {
+  primary: number;
+  secondary: number;
+  watk: number;
+}
+
+export type GearSlots = Record<string, GearSlotStats>;
+
+export const gearSlots = gearSlotsJson as GearSlots;
 
 const budget = gearBudgetJson as GearBudget;
 
