@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { gearSlots, type GearSlotStats } from '../data/bundle.js';
+import { gearSlots, type GearSlotStats, type GearBudget } from '../data/bundle.js';
+import gearBudgetJson from '@data/gear-budget.json';
 
 const SLOT_DISPLAY_NAMES: Record<string, string> = {
   helmet: 'Helmet',
@@ -26,6 +27,14 @@ const TOTALS = {
   watk: Object.values(gearSlots).reduce((s, v) => s + v.watk, 0),
 };
 
+const budget = gearBudgetJson as GearBudget;
+if (TOTALS.primary !== budget.gearPrimary) {
+  throw new Error(`gear-slots primary (${TOTALS.primary}) != gearPrimary (${budget.gearPrimary})`);
+}
+if (TOTALS.watk !== budget.nonWeaponWATK) {
+  throw new Error(`gear-slots WATK (${TOTALS.watk}) != nonWeaponWATK (${budget.nonWeaponWATK})`);
+}
+
 // SVG body slots — keys map to gear-slots.json
 const BODY_SLOTS: Record<string, { type: 'ellipse' | 'path'; attrs: Record<string, string | number> }[]> = {
   helmet: [{ type: 'ellipse', attrs: { cx: 90, cy: 32, rx: 24, ry: 28 } }],
@@ -40,18 +49,18 @@ const BODY_SLOTS: Record<string, { type: 'ellipse' | 'path'; attrs: Record<strin
   ],
 };
 
-// Floating accessory positions (left side, right side)
+// Floating accessory positions (pixel offsets within the 260px-wide container)
 const LEFT_ACCESSORIES = [
-  { key: 'earring', top: 20, left: -56 },
-  { key: 'eye', top: 60, left: -56 },
-  { key: 'face', top: 100, left: -56 },
-  { key: 'pendant', top: 140, left: -56 },
+  { key: 'earring', top: 20, left: 0 },
+  { key: 'eye', top: 60, left: 0 },
+  { key: 'face', top: 100, left: 0 },
+  { key: 'pendant', top: 140, left: 0 },
 ];
 
 const RIGHT_ACCESSORIES = [
-  { key: 'shoulder', top: 20, right: -56 },
-  { key: 'belt', top: 60, right: -56 },
-  { key: 'medal', top: 100, right: -56 },
+  { key: 'shoulder', top: 20, right: 0 },
+  { key: 'belt', top: 60, right: 0 },
+  { key: 'medal', top: 100, right: 0 },
 ];
 
 const RINGS = ['ring1', 'ring2', 'ring3', 'ring4'];
@@ -200,7 +209,7 @@ export function GearMannequin() {
               className="absolute flex items-center justify-center rounded-md text-xs text-text-secondary cursor-pointer select-none"
               style={{
                 top,
-                left: 130 + left - 20,
+                left,
                 width: 44,
                 height: 32,
                 ...iconStyle(key, hoveredSlot),
@@ -218,7 +227,7 @@ export function GearMannequin() {
               className="absolute flex items-center justify-center rounded-md text-xs text-text-secondary cursor-pointer select-none"
               style={{
                 top,
-                right: 130 + right - 20 - 44,
+                right,
                 width: 44,
                 height: 32,
                 ...iconStyle(key, hoveredSlot),
