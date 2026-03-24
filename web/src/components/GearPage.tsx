@@ -7,21 +7,24 @@ import gearBudgetJson from '@data/gear-budget.json';
 const budget = gearBudgetJson as GearBudget;
 
 
-const CGS_SEGMENTS = [
+const GEAR_WATK_SEGMENTS = [
   { label: 'Gloves', value: 24, color: '#3b82f6' },
   { label: 'Cape', value: 24, color: '#8b5cf6' },
   { label: 'Shoes', value: 24, color: '#06b6d4' },
+  { label: 'Belt', value: 10, color: '#14b8a6' },
+  { label: 'Medal', value: 3, color: '#f59e0b' },
+  { label: 'Ring', value: 1, color: '#a78bfa' },
 ] as const;
 
-const CGS_TOTAL = CGS_SEGMENTS.reduce((sum, s) => sum + s.value, 0);
-if (CGS_TOTAL !== budget.nonWeaponWATK) {
-  throw new Error(`CGS segments (${CGS_TOTAL}) don't match nonWeaponWATK (${budget.nonWeaponWATK})`);
+const GEAR_WATK_TOTAL = GEAR_WATK_SEGMENTS.reduce((sum, s) => sum + s.value, 0);
+if (GEAR_WATK_TOTAL !== budget.nonWeaponWATK) {
+  throw new Error(`Gear WATK segments (${GEAR_WATK_TOTAL}) don't match nonWeaponWATK (${budget.nonWeaponWATK})`);
 }
 
 const CHART_SEGMENTS = [
   { key: 'godlyClean', label: 'Godly Clean', color: colors.accent },
   { key: 'scrolling', label: 'Scrolling (+35)', color: '#8b5cf6' },
-  { key: 'cgs', label: 'C/G/S (72)', color: '#06b6d4' },
+  { key: 'gearWatk', label: `Gear WATK (${budget.nonWeaponWATK})`, color: '#06b6d4' },
   { key: 'extras', label: 'Extras', color: '#f59e0b' },
 ] as const;
 
@@ -109,17 +112,17 @@ function CommonGearSection() {
           ))}
           <div className="rounded-lg bg-bg-surface px-4 py-3">
             <div className="text-xs text-text-muted mb-1">WATK from Gear</div>
-            <div className="text-xl font-bold text-text-bright mb-2">{CGS_TOTAL}</div>
+            <div className="text-xl font-bold text-text-bright mb-2">{GEAR_WATK_TOTAL}</div>
             <div className="h-3 rounded-full overflow-hidden flex">
-              {CGS_SEGMENTS.map((seg) => (
+              {GEAR_WATK_SEGMENTS.map((seg) => (
                 <div
                   key={seg.label}
-                  style={{ width: `${(seg.value / CGS_TOTAL * 100).toFixed(1)}%`, backgroundColor: seg.color }}
+                  style={{ width: `${(seg.value / GEAR_WATK_TOTAL * 100).toFixed(1)}%`, backgroundColor: seg.color }}
                 />
               ))}
             </div>
-            <div className="flex gap-3 mt-2">
-              {CGS_SEGMENTS.map((seg) => (
+            <div className="flex gap-3 mt-2 flex-wrap">
+              {GEAR_WATK_SEGMENTS.map((seg) => (
                 <div key={seg.label} className="flex items-center gap-1">
                   <span className="inline-block w-2 h-2 rounded-full" style={{ backgroundColor: seg.color }} />
                   <span className="text-xs text-text-dim">{seg.label} {seg.value}</span>
@@ -171,7 +174,7 @@ function WeaponTableSection({ rows }: { rows: ClassRow[] }) {
         </table>
       </div>
       <p className="text-xs text-text-dim mt-2">
-        Total WATK = Godly Clean + Scrolling ({budget.scrollBonus}) + C/G/S ({budget.nonWeaponWATK}) + Extras.
+        Total WATK = Godly Clean + Scrolling ({budget.scrollBonus}) + Gear WATK ({budget.nonWeaponWATK}) + Extras.
         Night Lord has Shadow Partner active (1.5&times; damage multiplier, not reflected in WATK totals).
       </p>
     </section>
@@ -263,7 +266,7 @@ function ScalingChartSection() {
         <ul className="text-sm text-text-secondary space-y-1 list-disc list-inside">
           <li>Base stats (from leveling/AP)</li>
           <li>Primary & secondary stat from gear</li>
-          <li>C/G/S WATK</li>
+          <li>Gear WATK</li>
           <li>Weapon clean WATK & scrolling bonus</li>
           <li>Attack potion</li>
           <li>Passive WATK (Bow Expert, MM Boost)</li>

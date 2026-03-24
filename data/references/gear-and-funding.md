@@ -25,7 +25,7 @@ instead of STR/WATK. A follow-up is planned to compute mage builds the same way.
 |-------|:-----:|---------|
 | `gearPrimary` | 295 | Total primary stat from all non-weapon gear (armor, accessories, scrolls) |
 | `gearSecondary` | 168 | Total secondary stat from all non-weapon gear |
-| `nonWeaponWATK` | 72 | Total WATK from non-weapon sources (gloves, cape, shoe, earring, eye, face, belt, medal) |
+| `nonWeaponWATK` | 86 | Total WATK from non-weapon sources (gloves, cape, shoe, belt, medal, ring) |
 | `scrollBonus` | 35 | WATK from weapon scrolling (7 slots x 5 WATK per 30% dark scroll) |
 | `basePrimary` | 999 | Base primary stat (level 200 cap) |
 | `baseSecondary` | 23 | Base secondary stat (dexless/lukless builds). Per-class overrides exist (e.g., Night Lord DEX 25) |
