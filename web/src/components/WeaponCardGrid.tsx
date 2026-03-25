@@ -33,8 +33,8 @@ function cardStyle(row: ClassRow, hoveredSlug: string | null) {
   };
 }
 
-function WeaponIcon({ className, color }: { className: string; color: string }) {
-  switch (className) {
+function WeaponIcon({ gameClass, color }: { gameClass: string; color: string }) {
+  switch (gameClass) {
     case 'Hero':
       return (
         <svg width="32" height="32" viewBox="0 0 32 32" className="mx-auto mb-1">
@@ -202,7 +202,7 @@ export function WeaponCardGrid({ rows }: { rows: ClassRow[] }) {
   hoveredRef.current = hoveredSlug;
 
   const handlers = (slug: string) => ({
-    onMouseEnter: () => { if (!sticky) setHoveredSlug(slug); },
+    onMouseEnter: () => { setSticky(false); setHoveredSlug(slug); },
     onMouseLeave: () => { if (!sticky) setHoveredSlug(null); },
     onClick: () => {
       const wasSticky = sticky && hoveredRef.current === slug;
@@ -230,11 +230,14 @@ export function WeaponCardGrid({ rows }: { rows: ClassRow[] }) {
             return (
               <div
                 key={row.slug}
+                role="button"
+                tabIndex={0}
                 className="rounded-lg text-center cursor-pointer"
                 style={cardStyle(row, hoveredSlug)}
+                onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handlers(row.slug).onClick(); } }}
                 {...handlers(row.slug)}
               >
-                <WeaponIcon className={row.base.className} color={color} />
+                <WeaponIcon gameClass={row.base.className} color={color} />
                 <div className="text-[22px] font-bold text-text-bright mb-0.5">
                   {weaponWATK(row.base)}
                 </div>
