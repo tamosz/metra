@@ -16,8 +16,8 @@ function weaponLabel(base: ClassBase): string {
   return base.shieldWATK ? `${base.weaponType} + Shield` : base.weaponType;
 }
 
-function scrolledWATK(base: ClassBase): number {
-  return base.godlyCleanWATK + budget.scrollBonus + (base.shieldWATK ?? 0);
+function weaponWATK(base: ClassBase): number {
+  return base.godlyCleanWATK + budget.scrollBonus;
 }
 
 function cardStyle(row: ClassRow, hoveredSlug: string | null) {
@@ -146,7 +146,7 @@ function WeaponIcon({ className, color }: { className: string; color: string }) 
 
 function StatPanel({ rows, hoveredSlug }: { rows: ClassRow[]; hoveredSlug: string | null }) {
   if (hoveredSlug === null) {
-    const watks = rows.map((r) => scrolledWATK(r.base));
+    const watks = rows.map((r) => weaponWATK(r.base));
     const avg = Math.round(watks.reduce((a, b) => a + b, 0) / watks.length);
     const min = Math.min(...watks);
     const max = Math.max(...watks);
@@ -158,7 +158,7 @@ function StatPanel({ rows, hoveredSlug }: { rows: ClassRow[]; hoveredSlug: strin
         </div>
         <div className="text-center">
           <div className="text-lg font-semibold text-text-bright">{avg}</div>
-          <div className="text-xs text-text-muted">Avg WATK</div>
+          <div className="text-xs text-text-muted">Avg Weapon</div>
         </div>
         <div className="text-center">
           <div className="text-lg font-semibold text-text-bright">{min}–{max}</div>
@@ -197,17 +197,26 @@ function StatPanel({ rows, hoveredSlug }: { rows: ClassRow[]; hoveredSlug: strin
 export function WeaponCardGrid({ rows }: { rows: ClassRow[] }) {
   const [hoveredSlug, setHoveredSlug] = useState<string | null>(null);
 
+  const [sticky, setSticky] = useState(false);
+
   const handlers = (slug: string) => ({
-    onMouseEnter: () => setHoveredSlug(slug),
-    onMouseLeave: () => setHoveredSlug(null),
-    onClick: () => setHoveredSlug((prev) => (prev === slug ? null : slug)),
+    onMouseEnter: () => { if (!sticky) setHoveredSlug(slug); },
+    onMouseLeave: () => { if (!sticky) setHoveredSlug(null); },
+    onClick: () => {
+      setSticky((prev) => {
+        const wasSticky = prev && hoveredSlug === slug;
+        if (wasSticky) { setHoveredSlug(null); return false; }
+        setHoveredSlug(slug);
+        return true;
+      });
+    },
   });
 
   return (
     <section>
       <h3 className="text-base font-semibold text-text-bright mb-1">Per-Class Weapons</h3>
       <p className="text-sm text-text-secondary mb-4">
-        Weapon attack at perfect scrolling. Hover for breakdown.
+        Weapon WATK at perfect scrolling. Hover for breakdown.
       </p>
 
       <div className="rounded-lg border border-border bg-bg-raised p-6">
@@ -223,7 +232,7 @@ export function WeaponCardGrid({ rows }: { rows: ClassRow[] }) {
               >
                 <WeaponIcon className={row.base.className} color={color} />
                 <div className="text-[22px] font-bold text-text-bright mb-0.5">
-                  {scrolledWATK(row.base)}
+                  {weaponWATK(row.base)}
                 </div>
                 <div className="text-xs font-semibold" style={{ color }}>
                   {row.base.className}
