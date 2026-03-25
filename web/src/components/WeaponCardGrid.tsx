@@ -17,7 +17,7 @@ function weaponLabel(base: ClassBase): string {
 }
 
 function weaponWATK(base: ClassBase): number {
-  return base.godlyCleanWATK + budget.scrollBonus;
+  return base.godlyCleanWATK + budget.scrollBonus + (base.shieldWATK ?? 0);
 }
 
 function cardStyle(row: ClassRow, hoveredSlug: string | null) {
