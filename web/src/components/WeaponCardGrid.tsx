@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { type ClassBase, type GearBudget } from '../data/bundle.js';
 import { getClassColor, getClassColorWithOpacity } from '../utils/class-colors.js';
 import gearBudgetJson from '@data/gear-budget.json';
@@ -147,6 +147,7 @@ function WeaponIcon({ className, color }: { className: string; color: string }) 
 function StatPanel({ rows, hoveredSlug }: { rows: ClassRow[]; hoveredSlug: string | null }) {
   if (hoveredSlug === null) {
     const watks = rows.map((r) => weaponWATK(r.base));
+    if (watks.length === 0) return null;
     const avg = Math.round(watks.reduce((a, b) => a + b, 0) / watks.length);
     const min = Math.min(...watks);
     const max = Math.max(...watks);
@@ -196,19 +197,22 @@ function StatPanel({ rows, hoveredSlug }: { rows: ClassRow[]; hoveredSlug: strin
 
 export function WeaponCardGrid({ rows }: { rows: ClassRow[] }) {
   const [hoveredSlug, setHoveredSlug] = useState<string | null>(null);
-
   const [sticky, setSticky] = useState(false);
+  const hoveredRef = useRef<string | null>(null);
+  hoveredRef.current = hoveredSlug;
 
   const handlers = (slug: string) => ({
     onMouseEnter: () => { if (!sticky) setHoveredSlug(slug); },
     onMouseLeave: () => { if (!sticky) setHoveredSlug(null); },
     onClick: () => {
-      setSticky((prev) => {
-        const wasSticky = prev && hoveredSlug === slug;
-        if (wasSticky) { setHoveredSlug(null); return false; }
+      const wasSticky = sticky && hoveredRef.current === slug;
+      if (wasSticky) {
+        setHoveredSlug(null);
+        setSticky(false);
+      } else {
         setHoveredSlug(slug);
-        return true;
-      });
+        setSticky(true);
+      }
     },
   });
 
