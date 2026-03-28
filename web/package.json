@@ -30,7 +30,7 @@
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
     "@types/react-katex": "^3.0.4",
-    "@vitejs/plugin-react": "^5.0.0",
+    "@vitejs/plugin-react": "^6.0.0",
     "eslint": "^10.0.3",
     "eslint-plugin-react-hooks": "7.1.0-canary-e0cc7202-20260227",
     "jsdom": "^29.0.0",
