@@ -27,7 +27,7 @@ jobs:
           fi
 
       - name: Build container image
-        run: nerdctl --address /run/containerd/containerd.sock --namespace k8s.io build -t tomeblog/metra:${{ steps.slot.outputs.target }} -f web/Dockerfile .
+        run: nerdctl --address /run/containerd/containerd.sock --namespace k8s.io build --platform linux/arm64 -t tomeblog/metra:${{ steps.slot.outputs.target }} -f web/Dockerfile .
 
       - name: Deploy to inactive slot
         run: |
