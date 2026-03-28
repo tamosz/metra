@@ -2,7 +2,7 @@ import { describe, it, expect, afterEach } from 'vitest';
 import { writeFileSync, mkdtempSync } from 'fs';
 import { join } from 'path';
 import { tmpdir } from 'os';
-import { loadProposal, parseTargetsFlag, main } from './cli.js';
+import { loadProposal, parseTargetsFlag, parseKbFlags, main } from './cli.js';
 
 describe('loadProposal', () => {
   function withTempFile(filename: string, content: string): string {
@@ -106,5 +106,85 @@ describe('parseTargetsFlag', () => {
   it('throws on negative value', () => {
     process.argv = ['node', 'cli.ts', '--targets', '-1'];
     expect(() => parseTargetsFlag()).toThrow(/positive integer/);
+  });
+});
+
+describe('parseKbFlags', () => {
+  const origArgv = process.argv;
+  afterEach(() => { process.argv = origArgv; });
+
+  it('returns undefined when --kb is not present', () => {
+    process.argv = ['node', 'cli.ts'];
+    expect(parseKbFlags()).toBeUndefined();
+  });
+
+  it('returns defaults when only --kb is passed', () => {
+    process.argv = ['node', 'cli.ts', '--kb'];
+    const result = parseKbFlags();
+    expect(result).toBeDefined();
+    expect(result!.bossAttackInterval).toBe(1.5);
+    expect(result!.bossAccuracy).toBe(250);
+  });
+
+  it('parses custom --kb-interval', () => {
+    process.argv = ['node', 'cli.ts', '--kb', '--kb-interval', '2.0'];
+    const result = parseKbFlags();
+    expect(result!.bossAttackInterval).toBe(2.0);
+    expect(result!.bossAccuracy).toBe(250);
+  });
+
+  it('parses custom --kb-accuracy', () => {
+    process.argv = ['node', 'cli.ts', '--kb', '--kb-accuracy', '270'];
+    const result = parseKbFlags();
+    expect(result!.bossAttackInterval).toBe(1.5);
+    expect(result!.bossAccuracy).toBe(270);
+  });
+
+  it('parses both custom --kb-interval and --kb-accuracy', () => {
+    process.argv = ['node', 'cli.ts', '--kb', '--kb-interval', '3.0', '--kb-accuracy', '300'];
+    const result = parseKbFlags();
+    expect(result!.bossAttackInterval).toBe(3.0);
+    expect(result!.bossAccuracy).toBe(300);
+  });
+
+  it('throws on zero --kb-interval', () => {
+    process.argv = ['node', 'cli.ts', '--kb', '--kb-interval', '0'];
+    expect(() => parseKbFlags()).toThrow(/positive number/);
+  });
+
+  it('throws on negative --kb-interval', () => {
+    process.argv = ['node', 'cli.ts', '--kb', '--kb-interval', '-1'];
+    expect(() => parseKbFlags()).toThrow(/positive number/);
+  });
+
+  it('throws on non-numeric --kb-interval', () => {
+    process.argv = ['node', 'cli.ts', '--kb', '--kb-interval', 'abc'];
+    expect(() => parseKbFlags()).toThrow(/positive number/);
+  });
+
+  it('throws on --kb-accuracy below 1', () => {
+    process.argv = ['node', 'cli.ts', '--kb', '--kb-accuracy', '0'];
+    expect(() => parseKbFlags()).toThrow(/positive integer/);
+  });
+
+  it('throws on negative --kb-accuracy', () => {
+    process.argv = ['node', 'cli.ts', '--kb', '--kb-accuracy', '-5'];
+    expect(() => parseKbFlags()).toThrow(/positive integer/);
+  });
+
+  it('throws on non-numeric --kb-accuracy', () => {
+    process.argv = ['node', 'cli.ts', '--kb', '--kb-accuracy', 'xyz'];
+    expect(() => parseKbFlags()).toThrow(/positive integer/);
+  });
+
+  it('accepts fractional --kb-interval values', () => {
+    process.argv = ['node', 'cli.ts', '--kb', '--kb-interval', '0.5'];
+    const result = parseKbFlags();
+    expect(result!.bossAttackInterval).toBe(0.5);
+  });
+
+  it('ignores --kb-interval and --kb-accuracy without --kb flag', () => {
+    process.argv = ['node', 'cli.ts', '--kb-interval', '2.0', '--kb-accuracy', '300'];
+    expect(parseKbFlags()).toBeUndefined();
   });
 });
