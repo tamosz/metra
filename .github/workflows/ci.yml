@@ -35,7 +35,7 @@ jobs:
             Only post GitHub comments - don't submit review text as messages.
 
   check:
-    runs-on: ${{ github.event_name == 'pull_request' && 'arc-ci' || 'ubuntu-latest' }}
+    runs-on: arc-ci
     steps:
       - uses: actions/checkout@v6
 
