@@ -9,7 +9,7 @@ on:
 jobs:
   review:
     if: github.event_name == 'pull_request'
-    runs-on: ubuntu-latest
+    runs-on: arc-ci
     permissions:
       contents: read
       pull-requests: write
@@ -35,7 +35,7 @@ jobs:
             Only post GitHub comments - don't submit review text as messages.
 
   check:
-    runs-on: ubuntu-latest
+    runs-on: ${{ github.event_name == 'pull_request' && 'arc-ci' || 'ubuntu-latest' }}
     steps:
       - uses: actions/checkout@v6
 
