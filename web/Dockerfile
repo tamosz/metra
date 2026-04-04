@@ -1,5 +1,4 @@
-FROM --platform=linux/arm64 cgr.dev/chainguard/node:latest-dev AS build
-USER root
+FROM --platform=linux/arm64 node:22-alpine AS build
 WORKDIR /app
 COPY package.json package-lock.json tsconfig.json ./
 COPY packages/engine/package.json packages/engine/
