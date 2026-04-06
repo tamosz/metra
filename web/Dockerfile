@@ -1,4 +1,4 @@
-FROM --platform=linux/arm64 node:22-alpine AS build
+FROM --platform=linux/arm64 node:24-alpine AS build
 WORKDIR /app
 COPY package.json package-lock.json tsconfig.json ./
 COPY packages/engine/package.json packages/engine/
