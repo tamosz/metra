@@ -30,7 +30,7 @@ export function PartyBuffBar({ buffs, totalDps }: PartyBuffBarProps) {
       </div>
       <div className="text-right">
         <div className="text-[10px] uppercase tracking-widest text-text-dim">Total Party DPS</div>
-        <div className="text-2xl font-bold text-accent">{totalDps.toLocaleString()}</div>
+        <div className="text-2xl font-bold text-accent">{Math.round(totalDps).toLocaleString()}</div>
       </div>
     </div>
   );

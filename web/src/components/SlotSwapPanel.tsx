@@ -51,11 +51,11 @@ export function SlotSwapPanel({ currentClassName, options }: SlotSwapPanelProps)
                       <span className="text-text-dim">—</span>
                     ) : option.partyDpsDelta >= 0 ? (
                       <span style={{ color: 'rgb(34, 197, 94)' }}>
-                        +{option.partyDpsDelta.toLocaleString()}
+                        +{Math.round(option.partyDpsDelta).toLocaleString()}
                       </span>
                     ) : (
                       <span style={{ color: 'rgb(239, 68, 68)' }}>
-                        {option.partyDpsDelta.toLocaleString()}
+                        {Math.round(option.partyDpsDelta).toLocaleString()}
                       </span>
                     )}
                   </td>

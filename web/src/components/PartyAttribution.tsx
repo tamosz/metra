@@ -30,7 +30,7 @@ export function PartyAttribution({ members, onSelectMember, selectedMemberIndex 
             return (
               <div
                 key={i}
-                title={`${displayName}: ${member.dps.toLocaleString()} DPS`}
+                title={`${displayName}: ${Math.round(member.dps).toLocaleString()} DPS`}
                 style={{ width: `${widthPercent}%`, backgroundColor: color }}
               />
             );
@@ -73,19 +73,19 @@ export function PartyAttribution({ members, onSelectMember, selectedMemberIndex 
                   <span className="text-text-primary">{displayName}</span>
                 </td>
                 <td className="py-2 text-right text-text-secondary">
-                  {member.dps.toLocaleString()}
+                  {Math.round(member.dps).toLocaleString()}
                 </td>
                 <td className="py-2 text-right">
                   {member.buffContribution > 0 ? (
                     <span style={{ color: 'rgb(34, 197, 94)' }}>
-                      +{member.buffContribution.toLocaleString()}
+                      +{Math.round(member.buffContribution).toLocaleString()}
                     </span>
                   ) : (
                     <span className="text-text-dim">—</span>
                   )}
                 </td>
                 <td className="py-2 text-right font-medium text-text-bright">
-                  {slotValue.toLocaleString()}
+                  {Math.round(slotValue).toLocaleString()}
                 </td>
               </tr>
             );
